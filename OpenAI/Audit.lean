@@ -737,8 +737,8 @@ import OpenAI.CollarBound
 
 `#print axioms` for every proved result of the `OpenAI` library, confirming that each depends
 only on `propext`, `Classical.choice` and `Quot.sound`: no `sorry`, no `native_decide`, no
-custom axiom.  The sorried spine theorems of `OpenAI.Statements` are not enrolled; a
-theorem proved from one of them would report `sorryAx` and is not enrolled either.
+custom axiom.  No result of the library is sorried; Theorem 1.1 and the steps of its proof are
+audited in `OpenAI.AuditAreaLaw`.
 -/
 
 -- Domination by a canonical marginal and inverse antitonicity.

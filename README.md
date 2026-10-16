@@ -20,6 +20,7 @@ decomposition), and the lemmas of Sections 2, 3 and 11.
 | `OpenAI/PositiveReplacement.lean`, `OpenAI/CollarBound.lean`, `OpenAI/Amplification.lean`, `OpenAI/TwoFamilyDecomposition.lean`, `OpenAI/TwoFamily.lean` | Propositions 4.3, 9.6, 10.2, 11.2 and Lemma 11.1. |
 | `OpenAI/` (remaining modules) | The supporting theory: entropy and conditional entropy, Lieb-Robinson bounds, spectral filters, comparators, the scanner, the dyadic geometry of Section 11. |
 | `OpenAI/Audit.lean`, `OpenAI/AuditAreaLaw.lean` | `#print axioms` for every proved result. |
+| `Challenge/`, `Solution/`, `Comparator/` | The comparator pair for Theorem 1.1: `Challenge/Basic.lean` restates `OpenAI.area_law` with every definition it needs copied in, importing only Mathlib and Physlib, and leaves the objective and two partial-trace facts as `sorry` by design; `Solution/` proves them from the development; `Comparator/` records the run that accepted the solution. These three `sorry` in the challenge file are the only ones in the repository. |
 | `Arealaw/` | The region, partial trace and entropy library the statement layer is built on, developed for the Brandão-Horodecki area law (arXiv:1206.2947) in the `quantum-arealaw` project. |
 | `docs/oai265/` | Working notes: the plan, the inventory of what existed upstream, the record of every decision and deviation from the paper, and one plan file per proposition. |
 
