@@ -1,0 +1,9 @@
+{
+    "objectives": [
+        {
+            "charter_alias": "OpenAI.area_law",
+            "tag": "area_law",
+            "lean_decl": "OpenAI.Challenge.area_law"
+        }
+    ]
+}

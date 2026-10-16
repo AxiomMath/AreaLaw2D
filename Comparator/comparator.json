@@ -1,0 +1,15 @@
+{
+    "challenge_module": "Challenge.Basic",
+    "solution_module": "Solution.Basic",
+    "theorem_names": [
+        "OpenAI.Challenge.area_law",
+        "Arealaw.posSemidef_ptrace",
+        "Arealaw.trace_ptrace"
+    ],
+    "permitted_axioms": [
+        "propext",
+        "Quot.sound",
+        "Classical.choice"
+    ],
+    "enable_nanoda": true
+}
