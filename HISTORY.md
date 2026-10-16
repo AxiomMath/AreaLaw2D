@@ -4,9 +4,9 @@ Commit messages of the development branch (AxiomMath/quantum-arealaw, branch rui
 
 - 2026-06-18 Area law for the dimer/EPR-pair state (Brandão–Horodecki Fig 1a)
 - 2026-06-18 Add von Neumann -tr(ρ log ρ) form (Eq. 3) and EE = log d generalization
-- 2026-06-23 Refactor to RCLike generality + quality charter (CLAUDE.md, BENCHMARK.md)
+- 2026-06-23 Refactor to RCLike generality + quality charter (the charter file, BENCHMARK.md)
 - 2026-06-24 Tidy: remove proof-narration comments, fix stale doc note
-- 2026-06-24 Update CLAUDE.md: push target is AxiomMath/quantum-arealaw (internal)
+- 2026-06-24 Update the charter file: push target is AxiomMath/quantum-arealaw (internal)
 - 2026-06-24 Adopt auctionlib repo conventions
 - 2026-06-24 Remove BENCHMARK.md and its references
 - 2026-08-05 style(arealaw): golf proofs and change naming (#1)
@@ -394,7 +394,6 @@ Commit messages of the development branch (AxiomMath/quantum-arealaw, branch rui
 - 2026-10-15 feat(oai265): compress paired auxiliary labels
 - 2026-10-15 feat(oai265): compare invariant exponentials
 - 2026-10-15 feat(oai265): transport symmetric projections
-- 2026-10-15 chore: record the Axile environment
 - 2026-10-15 feat(oai265): freeze the deterministic Prop 9.6 statements
 - 2026-10-15 feat(oai265): reduce Prop 9.6 to its mutual-information inequality
 - 2026-10-15 feat(oai265): prove the collar leaf entropy identity and MI continuity

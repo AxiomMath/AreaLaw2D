@@ -1,4 +1,4 @@
-# CLAUDE.md: working charter for `quantum-arealaw`
+# Working charter for `quantum-arealaw`
 
 ## What this repo is
 

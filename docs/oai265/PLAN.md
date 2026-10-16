@@ -158,7 +158,7 @@ eigen-equation → gap → ∀ A hA`. Theorem 1.1 has not changed since 2b4f982.
 
 ### 2.6 Field
 
-- Paper and TNLean: `ℂ`. Here: `RCLike 𝕜` (CLAUDE.md criterion 3). Physlib entropy and
+- Paper and TNLean: `ℂ`. Here: `RCLike 𝕜` (charter criterion 3). Physlib entropy and
   `Arealaw/Subadditivity.lean` are `ℂ`-only. See Section 3 and decision 4.3.
 
 ## 3. Verdict: statement shape
@@ -180,8 +180,8 @@ Comparison with `OpenAI.AreaLaw` (:194) plus `area_law` (:205):
 | Axis | TNLean | Ours | Consequence |
 |---|---|---|---|
 | Quantifiers | `∃ C` after `q R J Δ`, before `Λ h E₀ Ω A` | same | Equivalent. TNLean's `0 ≤ C` is free (replace `C` by `max C 0`; `S ≥ 0`). |
-| Field | `ℂ` (`StateSpace := EuclideanSpace ℂ _`, terms `Matrix _ _ ℂ`) | `RCLike 𝕜` | Ours is the CLAUDE.md-required generality. The `𝕜 = ℝ` instance is a consequence of the `ℂ` one, but only through a transfer lemma we do not have yet. |
-| Hamiltonian | `structure LocalHamiltonian` (`LocalHamiltonian.lean:45`): `term : AdmissibleSupport Λ R → Matrix (Configuration Λ q) …`, full-domain matrices with a membership proof in `QuantumCircuit.supportedOperators q X` | total family `Φ X : Matrix (Reg X) (Reg X) 𝕜` over every `X`, placed by `Arealaw.extendId` (`Arealaw/PTrace.lean:216`), `IsAdmissible` :171 a separate `Prop` | Same class of `H`. Ours keeps definitions total with side conditions on the theorem (CLAUDE.md, API shape) and reuses this repo's `extendId` algebra. TNLean's encoding needs a bridge: `supportedOperators q X = range (extendId)` after reindexing `Configuration Λ q ≃ Reg (Qudits q) Λ`. |
+| Field | `ℂ` (`StateSpace := EuclideanSpace ℂ _`, terms `Matrix _ _ ℂ`) | `RCLike 𝕜` | Ours is the charter-required generality. The `𝕜 = ℝ` instance is a consequence of the `ℂ` one, but only through a transfer lemma we do not have yet. |
+| Hamiltonian | `structure LocalHamiltonian` (`LocalHamiltonian.lean:45`): `term : AdmissibleSupport Λ R → Matrix (Configuration Λ q) …`, full-domain matrices with a membership proof in `QuantumCircuit.supportedOperators q X` | total family `Φ X : Matrix (Reg X) (Reg X) 𝕜` over every `X`, placed by `Arealaw.extendId` (`Arealaw/PTrace.lean:216`), `IsAdmissible` :171 a separate `Prop` | Same class of `H`. Ours keeps definitions total with side conditions on the theorem (charter, API shape) and reuses this repo's `extendId` algebra. TNLean's encoding needs a bridge: `supportedOperators q X = range (extendId)` after reindexing `Configuration Λ q ≃ Reg (Qudits q) Λ`. |
 | Sites and cuts | `Site Λ := ↥Λ`, `A : Finset (Site Λ)` | `A : Finset (ℤ × ℤ)`, `hA : A ⊆ Λ` | Ours composes with `Arealaw`'s region API (`Finset σ` with subset proofs). Bridge: `Finset.subtype`/`map` plus the `interedges`/`Sym2` cardinality lemma (2.2). |
 | Graph | hand-written `domainGraph` (`FiniteDomain.lean:47`) | Mathlib `(hasse ℤ □ hasse ℤ).induce Λ` | Ours uses Mathlib's notions (later-phase rule). Bridge: an iso `domainGraph Λ ≃g (hasse ℤ □ hasse ℤ).induce Λ`, short. |
 | Gap | `IsGappedGroundState` with `‖Ω‖ = 1` on `EuclideanSpace` | `star Ω ⬝ᵥ Ω = 1`, `H *ᵥ Ω = E₀ • Ω`, `HasGlobalGap` | Same proposition (2.4). |

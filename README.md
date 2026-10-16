@@ -55,7 +55,7 @@ The two-family decomposition (Proposition 11.2), the collar bound (Proposition 9
 amplification (Proposition 10.2) and the final assembly were proved here from the paper; the
 notes in `docs/oai265/` say for each file whether it is a port or native.
 
-The proofs were produced by Axiom's agents (AxiomCode and OpenAI Codex), directed by Ruiz Chen,
+The proofs were produced by Axiom's agent tooling and OpenAI Codex, directed by Ruiz Chen,
 who froze and audited the statement layer and checked each result independently. The history of
 the development is in `HISTORY.md`.
 
