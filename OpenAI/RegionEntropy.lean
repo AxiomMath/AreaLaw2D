@@ -170,7 +170,7 @@ disjoint `X`, `Y`. -/
 theorem regionEntropy_union_le (ρ : MState (Reg loc U) 𝕜) {X Y : Finset σ} (hd : Disjoint X Y)
     (hX : X ⊆ U) (hY : Y ⊆ U) :
     ρ.regionEntropy (Finset.union_subset hX hY) ≤ ρ.regionEntropy hX + ρ.regionEntropy hY := by
-  -- Deviation (CLAUDE.md criterion 3, decision 4.3 in docs/oai265/Memory.md): proved over `ℂ` because
+  -- Deviation (docs/charter-quantum-arealaw.md criterion 3, decision 4.3 in docs/oai265/Memory.md): proved over `ℂ` because
   -- `Arealaw.regionEntropy_union_le` (Physlib's `Sᵥₙ_subadditivity`) is `ℂ`-only; transferred
   -- by `OpenAI/Embedding.lean`.
   simpa using Arealaw.regionEntropy_union_le ρ.toComplex hd hX hY

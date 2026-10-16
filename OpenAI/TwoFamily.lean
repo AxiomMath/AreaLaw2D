@@ -22,7 +22,7 @@ single-piece entropies.
 
 ## Implementation notes
 
-Deviation (CLAUDE.md criterion 3, decision 4.3 in docs/oai265/Memory.md): subadditivity enters through
+Deviation (docs/charter-quantum-arealaw.md criterion 3, decision 4.3 in docs/oai265/Memory.md): subadditivity enters through
 `Arealaw.MState.regionEntropy_union_biUnion_le`, which is proved over `ℂ`, where Physlib's
 `Sᵥₙ_subadditivity` lives, and transferred to `𝕜` by `OpenAI.Embedding`.  Purity and the
 chain rule are native over `𝕜`.
