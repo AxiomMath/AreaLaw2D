@@ -252,13 +252,8 @@ region-layer notions living in `OpenAI/` only because Phase 0 does not touch `Ar
    with no theorem. Choose: keep as is, add `two_family_decomposition` as a seventh sorried
    theorem, or both. §11.8 (proof of Thm 1.1) consumes Props 9.6, 10.2, 11.2, Lemma 11.1 and
    Lemma 2.2.
-2. **Charter persistence of `allow_sorried_statements = true`.** `set_charter` refused to write
-   (no `dashboard.toml`; AxiomMath/axiom#12718). In this session the MCP `charter` tool reports
-   `"allow_sorried_statements": true`, `"elicited": true`, while `axc charter` from a fresh
+   (no the project configuration file; an internal tool issue). In this session the tool configuration reports
    process reports `charter   defaults` and `sorried statements   not allowed`, and no
-   `.axiomcode/charter.toml` exists. The setting does not survive the session (the MCP server
-   keeps the refused write in memory: AxiomMath/axiom#12732). Options: add a
-   `dashboard.toml`, or wait for the fix. The intent is recorded in `Memory.md`.
 3. **Field generality of proofs.** Statements are over `RCLike 𝕜`. Physlib entropy, this repo's
    Subadditivity and all TNLean/QICLean proofs are `ℂ`. Either prove over `𝕜` (new `RCLike`
    versions of SSA etc.), or prove over `ℂ` and transfer through a reusable embedding lemma set
@@ -271,7 +266,7 @@ region-layer notions living in `OpenAI/` only because Phase 0 does not touch `Ar
 
 Rules carried from the brief: Mathlib and Physlib first, never re-define a notion they have; no
 "structure with the properties I need" plus a sorried existence lemma (a hard definition stops
-work and goes to the owner); at most 3 subagents until `Statements.lean` builds (it does), one
+work and goes to the owner); at most 3 workers until `Statements.lean` builds (it does), one
 writer per file; commit and push after every step; decisions in `Memory.md`.
 
 1. Owner review of Sections 1–4; resolve 4.1–4.4. Fix the `HasGlobalGap` citation (2.4).

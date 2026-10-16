@@ -14,13 +14,13 @@ Every name in the tables carries one tag saying how it was checked.
 
 | Tag | Meaning |
 |---|---|
-| **E** | Elaborated with `#check` through the hosted Lean session (`mcp__axile__diagnostics` on a gitignored `Arealaw/Probe.lean` in this worktree): Lean 4.33.0, Mathlib v4.33.0 (`db584cd`), Physlib `a50684a1`, this repo at `014e4d9`. |
+| **E** | Elaborated with `#check` through the hosted Lean environment (the Lean checking tool on a gitignored `Arealaw/Probe.lean` in this worktree): Lean 4.33.0, Mathlib v4.33.0 (`db584cd`), Physlib `a50684a1`, this repo at `014e4d9`. |
 | **A** | Also `#print axioms` in the same session: `[propext, Classical.choice, Quot.sound]`. |
 | **U** | Elaborated and rejected (`Unknown constant` / `Unknown identifier`). Counts as absent. |
 | **G** | Found verbatim, `path:line`, in a read-only clone. Not elaborated: TNLean and QICLean need Lean v4.35.0-rc3, which this machine does not have built. |
 | **absent** | No name could be produced. Per the rules of this inventory, that means absent. |
 
-Clones (all read-only, in `.axiomcode/scratch/oai265-inventory/`, not committed):
+Clones (all read-only, in a scratch directory, not committed):
 
 - **TNLean** `LionSR/TNLean` at `f4c2d204ab64a9635c15f709170971bdf8d18d24` (2026-10-12). Toolchain
   `leanprover/lean4:v4.35.0-rc3`; Mathlib `v4.35.0-rc3` (`c55e6e78`); QICLean
@@ -385,6 +385,3 @@ distance.
 - `#print axioms` was run only on the declarations marked A, not on every E name.
 - TNLean's §4.4-§8 and §10 partial work was listed by module, not audited.
 - The PEPS companion (its Appendix A import list) was not read.
-- `mcp__plugin_axiomcode_axiomcode__lean_run_code` timed out without checking anything (no Axile environment
-  for this repo; filed as a duplicate of AxiomMath/axiom#12706) and `axile_provision` refused the worktree
-  (duplicate of #12587). The checks above used `mcp__axile__diagnostics` instead.

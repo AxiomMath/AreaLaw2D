@@ -18,7 +18,7 @@ signature, in its own file (`OpenAI/Amplification.lean`), then enrolled in `Open
   `TNLean.PEPS.AreaLaw.amplificationBound` (`TNLean/PEPS/AreaLaw/AmplificationProof.lean:103`),
   no `sorry`/`axiom`/`native_decide` in its cone.  Its pin of QICLean is
   `LionSR/QICLean@ed700e7b45ff`.  Clones (read-only, not committed) in
-  `.axiomcode/scratch/amp/`.
+  a scratch directory.
 - Route: port the cone file by file at v4.33 (charter: "Port TNLean file by file at v4.33 with
   attribution, only along a spine theorem's cone"), then restate the final theorem for the frozen
   `Amplification ℂ` and transfer to `RCLike 𝕜` through `OpenAI.toComplex`, as
@@ -186,4 +186,4 @@ declaration downstream uses from them already exists (`Arealaw.extendId_eq_krone
    `amplificationBound`, transfer to `𝕜`, removal of the sorried copy from Statements.lean,
    Audit.lean enrolment, umbrella, `lean_check_project`, `axiom_audit`.
 
-Step budget: at most 120 subagent runs over all waves.
+Step budget: at most 120 workers runs over all waves.

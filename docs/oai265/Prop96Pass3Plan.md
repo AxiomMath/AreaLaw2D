@@ -5,7 +5,7 @@ lemmas.  `OpenAI.collarBound_of_collarInformationBound` (OpenAI/CollarReduction.
 to `OpenAI.CollarInformationBound`; the chain below proves that from the freeze.
 
 TeX paths are relative to
-`.axiomcode/scratch/prop96-pass3/oaimath/preprints/A-two-dimensional-area-law-from-a-global-spectral-gap-September-24-2026/build/sections/`.
+a scratch directory.
 Equation numbers are those of the compiled paper (`08-scanner.tex` numbers (9.1)–(9.20) in
 order of appearance: scales (9.1), test geometry (9.2), entropy input (9.4), energy output (9.5),
 density (9.6), template entropy (9.11), bootstrap parameters (9.13), bootstrap energy (9.14),
