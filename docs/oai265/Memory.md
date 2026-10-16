@@ -128,7 +128,6 @@ needs.
   (4.8) is `eq:quasilocal-positive`, the conclusion `0 ≤ k_i ≤ I, …, H_F ≥ c_*⁻¹(H-E₀) ≥ g(I-P)`.
 - (c) the project configuration file at the repo root, fields `[project] slug, display_name, github_repo`
   and `[layout] human_tree = "Arealaw"`, `draft_tree = "OpenAI"`. No blueprint, audit,
-  tag, server, prover or axile fields: none of those exist for this repo. Its existence is
   to write with the configuration write.
 
 ## Phase 1, step 2: audit file (2026-10-12)
