@@ -1,0 +1,36 @@
+name = "arealaw"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["Arealaw"]
+
+lintDriver = "batteries/runLinter"
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+autoImplicit = false
+relaxedAutoImplicit = false
+
+# Mathlib's documented entry point for downstream projects: ~25 linters including
+# longLine, docString, setOption, nativeDecide, unusedDecidableInType and flexible.
+# `weak.` so a Mathlib bump that drops an option is ignored, not a build error.
+weak.linter.mathlibStandardSet = true
+# Explicit `false`, not omitted: the set turns this on, and it enforces Mathlib's
+# `Copyright (c) … Authors: …` block — one warning per file here.
+weak.linter.style.header = false
+weak.linter.style.admit = true # the one `sorry` variant the set omits
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.0"
+
+[[require]]
+name = "Physlib"
+git = "https://github.com/leanprover-community/physlib"
+rev = "a50684a1919e84dc1c761028ff4f77cd59e2de6b"
+
+[[lean_lib]]
+name = "Arealaw"
+
+[[lean_lib]]
+name = "OpenAI"

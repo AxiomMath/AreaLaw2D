@@ -1,0 +1,232 @@
+/-
+Copyright (c) 2026 QICLean contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: QICLean contributors
+
+Ported from `LionSR/QICLean`,
+`QICLean/Analysis/ResolventDefect.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
+-/
+import OpenAI.SpectralFun
+
+/-! # Resolvent defects of spectral compressions -/
+
+open scoped Matrix ComplexOrder
+
+noncomputable section
+
+namespace Matrix
+
+variable {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+
+/-- The quadratic form of a spectral function in eigencoordinates. -/
+theorem dotProduct_spectralFun_mulVec (U : unitary (Matrix n n ℂ)) (f : n → ℂ)
+    (x : n → ℂ) :
+    star x ⬝ᵥ (spectralFun U f *ᵥ x) =
+      ∑ k, f k * ((Complex.normSq ((star (U : Matrix n n ℂ) *ᵥ x) k) : ℝ) : ℂ) := by
+  set c := star (U : Matrix n n ℂ) *ᵥ x
+  have hx : star x ⬝ᵥ (spectralFun U f *ᵥ x) =
+      star c ⬝ᵥ (diagonal f *ᵥ c) := by
+    simp only [spectralFun, c, ← mulVec_mulVec]
+    rw [dotProduct_mulVec, star_mulVec, star_eq_conjTranspose,
+      conjTranspose_conjTranspose]
+  rw [hx]
+  simp only [dotProduct, mulVec_diagonal, Pi.star_apply]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [Complex.normSq_eq_conj_mul_self]
+  simp only [RCLike.star_def]
+  ring
+
+omit [DecidableEq n] [DecidableEq m] in
+theorem star_mulVec_dotProduct (W : Matrix n m ℂ) (x : m → ℂ) (y : n → ℂ) :
+    star (W *ᵥ x) ⬝ᵥ y = star x ⬝ᵥ (Wᴴ *ᵥ y) := by
+  rw [star_mulVec, ← dotProduct_mulVec]
+
+omit [DecidableEq n] in
+theorem star_mulVec_dotProduct_of_isHermitian {H : Matrix n n ℂ} (hH : H.IsHermitian)
+    (x y : n → ℂ) : star (H *ᵥ x) ⬝ᵥ y = star x ⬝ᵥ (H *ᵥ y) := by
+  rw [star_mulVec_dotProduct, hH.eq]
+
+/-- Positive spectral operators `A`, `B`, an isometry `V` with `Vᴴ A V = B`, and `b₀`. -/
+structure ResolventCompression (n m : Type*) [Fintype n] [DecidableEq n] [Fintype m]
+    [DecidableEq m] where
+  UA : unitary (Matrix n n ℂ)
+  lam : n → ℝ
+  UB : unitary (Matrix m m ℂ)
+  mu : m → ℝ
+  V : Matrix n m ℂ
+  b0 : m → ℂ
+  lam_pos : ∀ k, 0 < lam k
+  mu_pos : ∀ j, 0 < mu j
+  isometry : Vᴴ * V = 1
+  compress : Vᴴ * spectralFun UA (fun k => (lam k : ℂ)) * V =
+    spectralFun UB (fun j => (mu j : ℂ))
+
+namespace ResolventCompression
+
+variable (R : ResolventCompression n m)
+
+def opA : Matrix n n ℂ := spectralFun R.UA (fun k => (R.lam k : ℂ))
+
+def opB : Matrix m m ℂ := spectralFun R.UB (fun j => (R.mu j : ℂ))
+
+def a0 : n → ℂ := R.V *ᵥ R.b0
+
+def resA (v : ℝ) : Matrix n n ℂ :=
+  spectralFun R.UA (fun k => ((R.lam k + v)⁻¹ : ℝ))
+
+def resB (v : ℝ) : Matrix m m ℂ :=
+  spectralFun R.UB (fun j => ((R.mu j + v)⁻¹ : ℝ))
+
+/-- The resolvent defect. -/
+noncomputable def defect (v : ℝ) : ℝ :=
+  (star R.a0 ⬝ᵥ (R.resA v *ᵥ R.a0)).re -
+    (star R.b0 ⬝ᵥ (R.resB v *ᵥ R.b0)).re
+
+/-- The resolvent discrepancy. -/
+def discrepancy (v : ℝ) : n → ℂ :=
+  R.resA v *ᵥ R.a0 - R.V *ᵥ (R.resB v *ᵥ R.b0)
+
+theorem opA_add_mul_resA {v : ℝ} (hv : 0 ≤ v) :
+    (R.opA + (v : ℂ) • 1) * R.resA v = 1 := by
+  rw [opA, ← spectralFun_const R.UA (v : ℂ), ← spectralFun_add, resA,
+    spectralFun_mul, ← spectralFun_one R.UA]
+  congr 1
+  funext k
+  have : ((R.lam k : ℂ) + v) ≠ 0 := by
+    exact_mod_cast (add_pos_of_pos_of_nonneg (R.lam_pos k) hv).ne'
+  simp only [Pi.mul_apply, Pi.add_apply]
+  push_cast
+  field_simp
+
+theorem resB_mul_opB_add {v : ℝ} (hv : 0 ≤ v) :
+    R.resB v * (R.opB + (v : ℂ) • 1) = 1 := by
+  rw [opB, ← spectralFun_const R.UB (v : ℂ), ← spectralFun_add, resB,
+    spectralFun_mul, ← spectralFun_one R.UB]
+  congr 1
+  funext k
+  have : ((R.mu k : ℂ) + v) ≠ 0 := by
+    exact_mod_cast (add_pos_of_pos_of_nonneg (R.mu_pos k) hv).ne'
+  simp only [Pi.mul_apply, Pi.add_apply]
+  push_cast
+  field_simp
+
+theorem compress_add (v : ℝ) :
+    R.Vᴴ * (R.opA + (v : ℂ) • 1) * R.V = R.opB + (v : ℂ) • 1 := by
+  rw [Matrix.mul_add, Matrix.add_mul, opA, R.compress, opB, Matrix.mul_smul,
+    Matrix.mul_one, Matrix.smul_mul, R.isometry]
+
+theorem resA_isHermitian (v : ℝ) : (R.resA v).IsHermitian := by
+  rw [IsHermitian, resA, conjTranspose_spectralFun]
+  congr 1
+  funext k
+  simp
+
+theorem resB_isHermitian (v : ℝ) : (R.resB v).IsHermitian := by
+  rw [IsHermitian, resB, conjTranspose_spectralFun]
+  congr 1
+  funext k
+  simp
+
+theorem opA_isHermitian : R.opA.IsHermitian := by
+  rw [IsHermitian, opA, conjTranspose_spectralFun]
+  congr 1
+  funext k
+  simp
+
+theorem opB_add_mul_resB {v : ℝ} (hv : 0 ≤ v) :
+    (R.opB + (v : ℂ) • 1) * R.resB v = 1 := by
+  rw [opB, ← spectralFun_const R.UB (v : ℂ), ← spectralFun_add, resB,
+    spectralFun_mul, ← spectralFun_one R.UB]
+  congr 1
+  funext k
+  have : ((R.mu k : ℂ) + v) ≠ 0 := by
+    exact_mod_cast (add_pos_of_pos_of_nonneg (R.mu_pos k) hv).ne'
+  simp only [Pi.mul_apply, Pi.add_apply]
+  push_cast
+  field_simp
+
+theorem opA_add_eq_spectralFun (v : ℝ) :
+    R.opA + (v : ℂ) • 1 =
+      spectralFun R.UA (fun k => ((R.lam k + v : ℝ) : ℂ)) := by
+  rw [opA, ← spectralFun_const R.UA (v : ℂ), ← spectralFun_add]
+  congr 1
+  funext k
+  simp
+
+theorem opA_add_isHermitian (v : ℝ) :
+    (R.opA + (v : ℂ) • 1).IsHermitian := by
+  rw [opA_add_eq_spectralFun, IsHermitian, conjTranspose_spectralFun]
+  congr 1
+  funext k
+  simp
+
+/-- The resolvent compression quadratic identity. -/
+theorem discrepancy_quadratic {v : ℝ} (hv : 0 ≤ v) :
+    star (R.discrepancy v) ⬝ᵥ
+        ((R.opA + (v : ℂ) • 1) *ᵥ R.discrepancy v) =
+      star R.a0 ⬝ᵥ (R.resA v *ᵥ R.a0) -
+        star R.b0 ⬝ᵥ (R.resB v *ᵥ R.b0) := by
+  set M := R.opA + (v : ℂ) • 1
+  set y := R.resB v *ᵥ R.b0
+  have hM : M.IsHermitian := R.opA_add_isHermitian v
+  have e1 : M *ᵥ (R.resA v *ᵥ R.a0) = R.a0 := by
+    rw [mulVec_mulVec, R.opA_add_mul_resA hv, one_mulVec]
+  have e2 : (R.opB + (v : ℂ) • 1) *ᵥ y = R.b0 := by
+    rw [mulVec_mulVec, R.opB_add_mul_resB hv, one_mulVec]
+  have hVV : R.Vᴴ *ᵥ (R.V *ᵥ R.b0) = R.b0 := by
+    rw [mulVec_mulVec, R.isometry, one_mulVec]
+  have hVVy : R.Vᴴ *ᵥ (R.V *ᵥ y) = y := by
+    rw [mulVec_mulVec, R.isometry, one_mulVec]
+  have hy : star y ⬝ᵥ R.b0 = star R.b0 ⬝ᵥ y :=
+    star_mulVec_dotProduct_of_isHermitian (R.resB_isHermitian v) _ _
+  have t1 : star (R.resA v *ᵥ R.a0) ⬝ᵥ R.a0 =
+      star R.a0 ⬝ᵥ (R.resA v *ᵥ R.a0) :=
+    star_mulVec_dotProduct_of_isHermitian (R.resA_isHermitian v) _ _
+  have t2 : star (R.resA v *ᵥ R.a0) ⬝ᵥ (M *ᵥ (R.V *ᵥ y)) =
+      star R.b0 ⬝ᵥ y := by
+    rw [← star_mulVec_dotProduct_of_isHermitian hM, e1, a0,
+      star_mulVec_dotProduct, hVVy]
+  have t3 : star (R.V *ᵥ y) ⬝ᵥ R.a0 = star R.b0 ⬝ᵥ y := by
+    rw [a0, star_mulVec_dotProduct, hVV, hy]
+  have t4 : star (R.V *ᵥ y) ⬝ᵥ (M *ᵥ (R.V *ᵥ y)) =
+      star R.b0 ⬝ᵥ y := by
+    rw [star_mulVec_dotProduct, mulVec_mulVec, mulVec_mulVec, R.compress_add v,
+      e2, hy]
+  rw [discrepancy, mulVec_sub, e1, star_sub, sub_dotProduct, dotProduct_sub,
+    dotProduct_sub, t1, t2, t3, t4]
+  ring
+
+theorem re_dotProduct_spectralFun_ge (U : unitary (Matrix n n ℂ)) (f : n → ℝ)
+    {c : ℝ} (hf : ∀ k, c ≤ f k) (x : n → ℂ) :
+    c * (star x ⬝ᵥ x).re ≤
+      (star x ⬝ᵥ (spectralFun U (fun k => (f k : ℂ)) *ᵥ x)).re := by
+  have h1 := dotProduct_spectralFun_mulVec U (fun _ => (1 : ℂ)) x
+  rw [spectralFun_one, one_mulVec] at h1
+  rw [h1, dotProduct_spectralFun_mulVec]
+  simp only [one_mul, Complex.re_sum, Finset.mul_sum]
+  refine Finset.sum_le_sum fun k _ => ?_
+  simp only [← Complex.ofReal_mul, Complex.ofReal_re]
+  exact mul_le_mul_of_nonneg_right (hf k) (Complex.normSq_nonneg _)
+
+/-- `v ‖δ_v‖² ≤ h(v)`. -/
+theorem mul_norm_discrepancy_sq_le {v : ℝ} (hv : 0 ≤ v) :
+    v * (star (R.discrepancy v) ⬝ᵥ R.discrepancy v).re ≤ R.defect v := by
+  have h := re_dotProduct_spectralFun_ge R.UA (fun k => R.lam k + v)
+    (c := v) (fun k => by linarith [R.lam_pos k]) (R.discrepancy v)
+  rw [← opA_add_eq_spectralFun, R.discrepancy_quadratic hv, Complex.sub_re] at h
+  exact h
+
+/-- The resolvent defect is nonnegative. -/
+theorem defect_nonneg {v : ℝ} (hv : 0 ≤ v) : 0 ≤ R.defect v := by
+  have h := re_dotProduct_spectralFun_ge R.UA (fun k => R.lam k + v)
+    (c := 0) (fun k => by linarith [R.lam_pos k]) (R.discrepancy v)
+  rw [← opA_add_eq_spectralFun, R.discrepancy_quadratic hv, Complex.sub_re,
+    zero_mul] at h
+  exact h
+
+end ResolventCompression
+
+end Matrix
+
+end

@@ -1,0 +1,89 @@
+name: Lean Action CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Without this the Lean build succeeds and the job then dies in `actions/cache/save`,
+      # which needs room for cache.tzst on top of the `.lake` tree it archives.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+                      /opt/hostedtoolcache/CodeQL
+          df -h /
+      - uses: actions/checkout@v5
+
+      # lean-action registers no problem matcher; Lean's `file:line:col: error:`
+      # output is GCC-shaped, so this renders diagnostics inline on the PR diff.
+      - uses: leanprover-community/gh-problem-matcher-wrap@65a654fcdf7b64ff7633bc7a558f7b46d59a27bf # 2026-06-25
+        with:
+          action: add
+          linters: gcc
+
+      - uses: leanprover/lean-action@v1
+        with:
+          # verify the root aggregator (Arealaw.lean) is in sync with the module tree
+          mk_all-check: true
+          lint: "true"         # `lake lint` -> the lintDriver in lakefile.toml
+          # No `nanoda`: its module-name detection requires a `[package]` header we do not use.
+
+      - uses: leanprover-community/gh-problem-matcher-wrap@65a654fcdf7b64ff7633bc7a558f7b46d59a27bf # 2026-06-25
+        if: always()
+        with:
+          action: remove
+          linters: gcc
+
+      # Only this step catches a custom `axiom`, or one arriving through a dependency
+      # — live, not hypothetical: every physlib lib sets `-Dwarn.sorry=false`, and
+      # EntropyBounds.lean and PTrace.lean both import QuantumInfo.
+      # Runs after the build so it audits freshly built oleans, not stale ones.
+      - name: Axiom audit (Arealaw/Audit.lean)
+        shell: bash
+        run: |
+          set -uo pipefail
+          set +e   # GitHub's shell:bash forces -e; without this, grep's exit-1 (no match) fails the clean run
+          # anchored to real commands, not the docstring's own "#print axioms" mention
+          expected="$(grep -cE '^#print axioms ' Arealaw/Audit.lean)"
+          if [ "$expected" -lt 1 ]; then
+            echo "::error::no '#print axioms' commands found in Arealaw/Audit.lean"; exit 1
+          fi
+          out="$(lake env lean Arealaw/Audit.lean 2>&1)"
+          echo "$out"
+          n="$(printf '%s\n' "$out" | grep -c 'depends on axioms')"
+          if [ "$n" -ne "$expected" ]; then
+            echo "::error::expected $expected audited results, saw $n (audit did not run, or a #print axioms failed)"; exit 1
+          fi
+          bad="$(printf '%s\n' "$out" | grep 'depends on axioms' \
+            | grep -oE '\[[^]]*\]' | tr -d '[]' | tr ',' '\n' | sed 's/[[:space:]]//g' \
+            | grep -vE '^(propext|Classical.choice|Quot.sound)$' | grep -v '^$' | sort -u)"
+          if [ -n "$bad" ]; then
+            echo "::error::disallowed axioms in headline results:"; printf '  %s\n' "$bad"; exit 1
+          fi
+          echo "Axiom audit OK: $n headline results depend only on {propext, Classical.choice, Quot.sound}."
+
+  # Concurrent with `build`: text-based linting needs only the source files, so it
+  # returns in seconds rather than waiting on a Mathlib build.
+  style:
+    name: Lint style
+    runs-on: ubuntu-latest
+    # PR-only: this workflow also runs on push to main, where there is no PR to
+    # comment on. Drafts excluded so suggestions do not arrive mid-iteration.
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      # `suggest` posts review comments, which — unlike the build job's check-run
+      # annotations — create resolvable threads and so gate merging under the
+      # ruleset. Explicit because this repo's default workflow token is read-only.
+      pull-requests: write
+    steps:
+      - uses: leanprover-community/lint-style-action@a7e7428fa44f9635d6eb8e01919d16fd498d387a # 2025-08-18
+        with:
+          mode: suggest
+          lint-bib-file: false # no bibliography here

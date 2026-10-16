@@ -1,0 +1,13 @@
+/.lake
+
+# scratch development files
+Arealaw/Probe.lean
+Arealaw/Playground/*
+
+# reference material (papers, notes) kept locally, not committed
+documents/
+
+logs/
+reports/
+
+.DS_Store
