@@ -299,4 +299,516 @@ theorem step_3_16_8 (hF : Monotone F) (hM : 2 ≤ M) (hlam : (M : ℝ) < lam) (h
 
 end Recursion
 
+/-! ## D3.16 Proposition 3.3 -/
+
+section D316
+
+open Matrix
+
+/-- D3.16.3. `p₀ = (2 C_pad + 5)⁻²`. -/
+noncomputable def p₀ (Cpad : ℕ) : ℝ := 1 / (2 * Cpad + 5 : ℝ) ^ 2
+
+/-- D3.16.2. `B_M = 4 (C_pad + 2) M`. -/
+def B_M (Cpad M : ℕ) : ℕ := 4 * (Cpad + 2) * M
+
+/-- Telescoping chain rule along an order `π` of the children (child `i` sits at position `π i`). -/
+theorem step_3_16_3_chain {σ : Type*} [DecidableEq σ] {n : ℕ} (X : Fin n → Finset σ)
+    (F : Finset σ → ℝ) (π : Equiv.Perm (Fin n)) :
+    F (univ.biUnion X) - F ∅ = ∑ i, (F (X i ∪ (univ.filter fun j => π j < π i).biUnion X) -
+      F ((univ.filter fun j => π j < π i).biUnion X)) := by
+  set W : ℕ → Finset σ := fun k => (univ.filter fun j => (π j : ℕ) < k).biUnion X
+  have h0 : W 0 = ∅ := by simp [W]
+  have hn : W n = univ.biUnion X := by simp [W]
+  have hs : ∀ i, W (π i + 1) = X i ∪ (univ.filter fun j => π j < π i).biUnion X := by
+    intro i
+    simp only [W]
+    rw [← biUnion_insert]
+    congr 1
+    ext j
+    simp only [mem_filter, mem_univ, true_and, mem_insert]
+    constructor
+    · intro h
+      rcases Nat.lt_succ_iff_lt_or_eq.1 h with h | h
+      · exact Or.inr h
+      · exact Or.inl (π.injective (Fin.ext h))
+    · rintro (rfl | h)
+      · omega
+      · exact Nat.lt_succ_of_lt h
+  have hl : ∀ i, W (π i) = (univ.filter fun j => π j < π i).biUnion X := by
+    intro i; simp [W]
+  rw [← h0, ← hn, ← Finset.sum_range_sub (fun k => F (W k)),
+    ← Fin.sum_univ_eq_sum_range (fun k => F (W (k + 1)) - F (W k)), ← Equiv.sum_comp π]
+  simp only [hs, hl]
+
+/-- Exactly a `1/(#N+1)` fraction of the orders put child `i` after all of `N ∌ i`. -/
+theorem step_3_16_3_count {n : ℕ} (i : Fin n) (N : Finset (Fin n)) (hi : i ∉ N) :
+    #(univ.filter fun π : Equiv.Perm (Fin n) => ∀ j ∈ N, π j < π i) * (#N + 1) = n.factorial := by
+  set S := insert i N
+  set W : Fin n → Finset (Equiv.Perm (Fin n)) :=
+    fun k => univ.filter fun π => ∀ j ∈ S, j ≠ k → π j < π k
+  have hWi : W i = univ.filter fun π : Equiv.Perm (Fin n) => ∀ j ∈ N, π j < π i := by
+    ext π
+    simp only [W, S, mem_filter, mem_univ, true_and, forall_mem_insert, ne_eq, not_true_eq_false,
+      IsEmpty.forall_iff, true_and]
+    exact ⟨fun h j hj => h j hj (fun e => hi (e ▸ hj)), fun h j hj _ => h j hj⟩
+  have hmap : ∀ k ∈ S, ∀ l ∈ S, ∀ π ∈ W k, π * Equiv.swap k l ∈ W l := by
+    intro k hk l hl π hπ
+    simp only [W, mem_filter, mem_univ, true_and, Equiv.Perm.mul_apply] at hπ ⊢
+    intro j hj hjl
+    rw [Equiv.swap_apply_right]
+    by_cases hjk : j = k
+    · subst hjk; rw [Equiv.swap_apply_left]; exact hπ l hl (Ne.symm hjl)
+    · rw [Equiv.swap_apply_of_ne_of_ne hjk hjl]; exact hπ j hj hjk
+  have hcard : ∀ k ∈ S, #(W k) = #(W i) := by
+    intro k hk
+    refine card_nbij' (· * Equiv.swap k i) (· * Equiv.swap i k)
+      (fun π hπ => hmap k hk i (mem_insert_self _ _) π hπ)
+      (fun π hπ => hmap i (mem_insert_self _ _) k hk π hπ) ?_ ?_
+    · intro π _; simp [mul_assoc, Equiv.swap_comm k i]
+    · intro π _; simp [mul_assoc, Equiv.swap_comm k i]
+  have hcover : (univ : Finset (Equiv.Perm (Fin n))) = S.biUnion W := by
+    ext π
+    simp only [mem_univ, mem_biUnion, true_iff]
+    obtain ⟨k, hk, hmax⟩ := S.exists_max_image (fun j => π j) ⟨i, mem_insert_self _ _⟩
+    refine ⟨k, hk, ?_⟩
+    simp only [W, mem_filter, mem_univ, true_and]
+    exact fun j hj hjk => lt_of_le_of_ne (hmax j hj) (fun e => hjk (π.injective e))
+  have hdisjW : (S : Set (Fin n)).PairwiseDisjoint W := by
+    intro k hk l hl hkl
+    rw [Function.onFun, Finset.disjoint_left]
+    intro π h1 h2
+    simp only [W, mem_filter, mem_univ, true_and] at h1 h2
+    exact lt_asymm (h1 l (mem_coe.1 hl) (Ne.symm hkl)) (h2 k (mem_coe.1 hk) hkl)
+  have := congrArg Finset.card hcover
+  rw [card_univ, Fintype.card_perm, Fintype.card_fin, card_biUnion hdisjW, sum_congr rfl hcard,
+    sum_const, smul_eq_mul, card_insert_of_notMem hi, hWi] at this
+  rw [this, mul_comm]
+
+/-- D3.16.3–D3.16.4. Children `X i` (pairwise disjoint), an interior set `G`, for interior `i` a
+neighbour set `Nb i ∌ i` with `#(Nb i) + 1 ≤ P` whose children cover the buffer `T i`, and the
+buffer discount `S(X i | T i) ≤ S(X i)/2 + c`. Averaging the chain rule over all orders of the
+children: `S(⋃ X) ≤ ∑ S(X i) - (1/(2P)) ∑_{i ∈ G} S(X i) + #G c`. -/
+theorem step_3_16_4 {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+    [∀ i, DecidableEq (loc i)] {U : Finset σ} (ρ : Arealaw.MState (Reg loc U) ℂ) {n : ℕ}
+    (X : Fin n → Finset σ) (hX : ∀ i, X i ⊆ U) (hdisj : Pairwise fun i j => Disjoint (X i) (X j))
+    (G : Finset (Fin n)) (Nb : Fin n → Finset (Fin n)) (T : Fin n → Finset σ)
+    (hT : ∀ i, T i ⊆ U) (P : ℕ) (hNb : ∀ i ∈ G, i ∉ Nb i ∧ #(Nb i) + 1 ≤ P)
+    (hTN : ∀ i ∈ G, T i ⊆ (Nb i).biUnion X) {c : ℝ} (hc : 0 ≤ c)
+    (hbuf : ∀ i ∈ G, ρ.regionEntropy (union_subset (hX i) (hT i)) - ρ.regionEntropy (hT i) ≤
+      ρ.regionEntropy (hX i) / 2 + c) :
+    ρ.regionEntropy (biUnion_subset.2 fun i _ => hX i : univ.biUnion X ⊆ U) ≤
+      ∑ i, ρ.regionEntropy (hX i) - 1 / (2 * P) * ∑ i ∈ G, ρ.regionEntropy (hX i) + #G * c := by
+  obtain ⟨f, hf⟩ : ∃ f : Finset σ → ℝ, ∀ A (h : A ⊆ U), ρ.regionEntropy h = f A :=
+    ⟨fun A => if h : A ⊆ U then ρ.regionEntropy h else 0, fun A h => (dif_pos h).symm⟩
+  have hfnn : ∀ A, A ⊆ U → 0 ≤ f A := fun A h => hf A h ▸ SubState.regionEntropy_nonneg _ _
+  have hf0 : f ∅ = 0 := by rw [← hf ∅ (empty_subset U)]; exact MState.regionEntropy_empty ρ
+  simp only [hf] at hbuf ⊢
+  set Y : Equiv.Perm (Fin n) → Fin n → Finset σ :=
+    fun π i => (univ.filter fun j => π j < π i).biUnion X
+  set E : Fin n → Finset (Equiv.Perm (Fin n)) :=
+    fun i => univ.filter fun π => ∀ j ∈ Nb i, π j < π i
+  have hY : ∀ π i, Y π i ⊆ U := fun π i => biUnion_subset.2 fun j _ => hX j
+  have hXY : ∀ π i, Disjoint (X i) (Y π i) := fun π i =>
+    disjoint_biUnion_right _ _ _ |>.2 fun j hj => hdisj fun e => by simp [e] at hj
+  -- D3.16.3: the chain rule along every order `π`
+  have hchain : ∀ π, f (univ.biUnion X) = ∑ i, (f (X i ∪ Y π i) - f (Y π i)) := fun π => by
+    simpa [hf0] using step_3_16_3_chain X f π
+  -- D3.16.3: each conditional term is at most `S(X i)`, and discounted when `π ∈ E i`
+  have hterm : ∀ π i, f (X i ∪ Y π i) - f (Y π i) ≤
+      f (X i) - if i ∈ G ∧ π ∈ E i then f (X i) / 2 - c else 0 := by
+    intro π i
+    split_ifs with h
+    · obtain ⟨hi, hπ⟩ := h
+      have hTY : T i ⊆ Y π i := (hTN i hi).trans (biUnion_subset_biUnion_of_subset_left _
+        fun j hj => by simp only [E, mem_filter] at hπ; simpa using hπ.2 j hj)
+      have := ρ.regionEntropy_union_sub_le ((hXY π i).mono_right hTY)
+        ((hXY π i).mono_right sdiff_subset) disjoint_sdiff (hX i) (hT i)
+        (sdiff_subset.trans (hY π i))
+      simp only [hf, union_sdiff_of_subset hTY] at this
+      linarith [hbuf i hi]
+    · have := Arealaw.regionEntropy_union_le ρ (hXY π i) (hX i) (hY π i)
+      simp only [hf] at this
+      linarith
+  -- D3.16.4: average over orders, using `#E i ≥ n!/P`
+  have hsum : ∀ i, ∑ π, (f (X i ∪ Y π i) - f (Y π i)) ≤ n.factorial * f (X i) -
+      if i ∈ G then n.factorial * (f (X i) / (2 * P) - c) else 0 := by
+    intro i
+    refine (sum_le_sum fun π _ => hterm π i).trans ?_
+    rw [sum_sub_distrib, sum_const, card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+    split_ifs with hi
+    · simp only [hi, true_and]
+      rw [sum_ite_mem, univ_inter, sum_const, nsmul_eq_mul]
+      have hcnt := step_3_16_3_count i (Nb i) (hNb i hi).1
+      have hP := (hNb i hi).2
+      have ha := hfnn (X i) (hX i)
+      have hPpos : (0 : ℝ) < P := by exact_mod_cast (show 0 < P by omega)
+      have h1 : (n.factorial : ℝ) ≤ P * #(E i) := by
+        rw [← hcnt]; push_cast; nlinarith [(show ((#(Nb i) : ℝ) + 1) ≤ P by exact_mod_cast hP)]
+      have h2 : (#(E i) : ℝ) ≤ n.factorial := by
+        rw [← hcnt]; push_cast; nlinarith
+      have h3 : (n.factorial : ℝ) * (f (X i) / (2 * P)) ≤ #(E i) * (f (X i) / 2) := by
+        rw [show (n.factorial : ℝ) * (f (X i) / (2 * P)) = n.factorial / P * (f (X i) / 2) by
+          field_simp]
+        exact mul_le_mul_of_nonneg_right ((div_le_iff₀ hPpos).2 (by linarith)) (by linarith)
+      nlinarith [mul_le_mul_of_nonneg_right h2 hc]
+    · simp [hi]
+  have htot : (n.factorial : ℝ) * f (univ.biUnion X) ≤
+      n.factorial * (∑ i, f (X i) - 1 / (2 * P) * ∑ i ∈ G, f (X i) + #G * c) := by
+    calc (n.factorial : ℝ) * f (univ.biUnion X)
+        = ∑ π : Equiv.Perm (Fin n), f (univ.biUnion X) := by simp [card_univ, Fintype.card_perm]
+      _ = ∑ i, ∑ π, (f (X i ∪ Y π i) - f (Y π i)) := by
+        rw [sum_congr rfl fun π _ => hchain π, sum_comm]
+      _ ≤ ∑ i, (n.factorial * f (X i) - if i ∈ G then n.factorial * (f (X i) / (2 * P) - c)
+          else 0) := sum_le_sum fun i _ => hsum i
+      _ = _ := by
+        rw [sum_sub_distrib, sum_ite_mem, univ_inter, ← mul_sum, ← mul_sum, sum_sub_distrib,
+          sum_const, nsmul_eq_mul, ← sum_div]
+        ring
+  exact le_of_mul_le_mul_left htot (by positivity)
+
+variable {loc : ℤ × ℤ → Type*} [∀ i, Fintype (loc i)] [∀ i, DecidableEq (loc i)]
+  {Λ A : Finset (ℤ × ℤ)} {a b : ℤ × ℤ}
+
+/-- Positions within `C` of a position: at most `2C + 1` of them on an axis of `n` chunks. -/
+theorem card_near_le (n i C : ℕ) :
+    #((univ : Finset (Fin n)).filter fun i' : Fin n => i'.val ≤ i + C ∧ i ≤ i'.val + C) ≤
+      2 * C + 1 := by
+  have h := card_le_card (show ((univ : Finset (Fin n)).filter
+      fun i' : Fin n => i'.val ≤ i + C ∧ i ≤ i'.val + C).map Fin.valEmbedding ⊆
+        Icc (i - C) (i + C) by
+    intro x hx
+    simp only [mem_map, mem_filter, mem_univ, true_and, Fin.valEmbedding_apply] at hx
+    obtain ⟨a, ha, rfl⟩ := hx
+    simp only [mem_Icc]; omega)
+  simp only [card_map, Nat.card_Icc] at h
+  omega
+
+/-- D3.16.1–D3.16.4 for one safe parent `Q = [a, b]` of size `≤ M r`: if `F` bounds `S(A ∩ Q₀)`
+for the rectangles `Q₀ ⊆ Q` of size `≤ r` and the buffer discount of Lemma 3.2 holds in `Q`,
+then `S(A ∩ Q) ≤ [(1 - p₀/2) M² + (p₀/2) B_M] F + C_buf M² r`. -/
+theorem step_3_16_3 (ρ : Arealaw.MState (Reg loc Λ) ℂ) (hA : A ⊆ Λ) (hab : a ≤ b) {M r : ℕ}
+    (hr : 1 ≤ r) (hQr : boxSize (Icc a b) ≤ M * r) {F : ℝ}
+    (hF : ∀ Q₀, IsIntRect Q₀ → Q₀ ⊆ Icc a b → boxSize Q₀ ≤ r →
+      ρ.regionEntropy (inter_subset_left.trans hA : A ∩ Q₀ ⊆ Λ) ≤ F)
+    {Cpad : ℕ} {Cbuf : ℝ} (hCbuf : 0 ≤ Cbuf)
+    (hbuf : ∀ Q₀, IsIntRect Q₀ → boxSize Q₀ ≤ r → ambientDilation Q₀ (Cpad * r) ⊆ Icc a b →
+      ρ.regionEntropy ((union_subset (inter_subset_left.trans hA)
+            (sdiff_subset.trans (inter_subset_left.trans hA))) :
+            A ∩ Q₀ ∪ (A ∩ ambientDilation Q₀ (Cpad * r)) \ (A ∩ Q₀) ⊆ Λ) -
+        ρ.regionEntropy (sdiff_subset.trans (inter_subset_left.trans hA) :
+            (A ∩ ambientDilation Q₀ (Cpad * r)) \ (A ∩ Q₀) ⊆ Λ) ≤
+      ρ.regionEntropy (inter_subset_left.trans hA : A ∩ Q₀ ⊆ Λ) / 2 + Cbuf * r) :
+    ρ.regionEntropy (inter_subset_left.trans hA : A ∩ Icc a b ⊆ Λ) ≤
+      ((1 - p₀ Cpad / 2) * M ^ 2 + p₀ Cpad / 2 * B_M Cpad M) * F + Cbuf * M ^ 2 * r := by
+  classical
+  set nx := nChunks₁ a b r
+  set ny := nChunks₂ a b r
+  obtain ⟨hnx, hny⟩ := nChunks_le hab hr hQr
+  set e : Fin nx × Fin ny ≃ Fin (nx * ny) := finProdFinEquiv
+  set ch : Fin (nx * ny) → Finset (ℤ × ℤ) := fun k => child a b r (e.symm k).1 (e.symm k).2
+  set X : Fin (nx * ny) → Finset (ℤ × ℤ) := fun k => A ∩ ch k
+  set T : Fin (nx * ny) → Finset (ℤ × ℤ) := fun k => (A ∩ ambientDilation (ch k) (Cpad * r)) \ X k
+  have hX : ∀ k, X k ⊆ Λ := fun _ => inter_subset_left.trans hA
+  have hT : ∀ k, T k ⊆ Λ := fun _ => sdiff_subset.trans (inter_subset_left.trans hA)
+  set G := (univ : Finset (Fin (nx * ny))).filter fun k =>
+    (Cpad ≤ ((e.symm k).1 : ℕ) ∧ ((e.symm k).1 : ℕ) + Cpad + 2 ≤ nx) ∧
+      (Cpad ≤ ((e.symm k).2 : ℕ) ∧ ((e.symm k).2 : ℕ) + Cpad + 2 ≤ ny)
+  set near : Fin (nx * ny) → Fin (nx * ny) → Prop := fun k k' =>
+    ((e.symm k').1 : ℕ) ≤ (e.symm k).1 + Cpad ∧ ((e.symm k).1 : ℕ) ≤ (e.symm k').1 + Cpad ∧
+      ((e.symm k').2 : ℕ) ≤ (e.symm k).2 + Cpad ∧ ((e.symm k).2 : ℕ) ≤ (e.symm k').2 + Cpad
+  set Nb : Fin (nx * ny) → Finset (Fin (nx * ny)) := fun k =>
+    univ.filter fun k' => k' ≠ k ∧ near k k'
+  -- D3.16.1: the children partition `A ∩ Q`
+  have hunion : univ.biUnion X = A ∩ Icc a b := by
+    ext x
+    simp only [mem_biUnion, mem_univ, true_and, X, ch, mem_inter]
+    refine ⟨fun ⟨k, hxA, hx⟩ => ⟨hxA, child_subset hx⟩, fun ⟨hxA, hx⟩ => ?_⟩
+    obtain ⟨i, hi, j, hj, hij⟩ := exists_mem_child hr hx
+    exact ⟨e (⟨i, hi⟩, ⟨j, hj⟩), hxA, by simpa using hij⟩
+  have hpos : ∀ {k k' : Fin (nx * ny)} {x}, x ∈ ch k → x ∈ ch k' → k = k' := fun hx hx' => by
+    obtain ⟨h1, h2⟩ := eq_of_mem_child hx hx'
+    exact e.symm.injective (Prod.ext (Fin.ext h1) (Fin.ext h2))
+  have hdisj : Pairwise fun k k' => Disjoint (X k) (X k') := fun k k' hkk =>
+    disjoint_left.2 fun x hx hx' => hkk (hpos (mem_inter.1 hx).2 (mem_inter.1 hx').2)
+  -- D3.16.3: an interior child has at most `(2 C_pad + 1)² - 1` neighbours
+  have hNb : ∀ k ∈ G, k ∉ Nb k ∧ #(Nb k) + 1 ≤ (2 * Cpad + 5) ^ 2 := by
+    refine fun k _ => ⟨by simp [Nb], ?_⟩
+    have h1 : insert k (Nb k) ⊆ univ.filter (near k) := by
+      intro k' hk'
+      rcases mem_insert.1 hk' with rfl | hk'
+      · simp [near]
+      · exact mem_filter.2 ⟨mem_univ _, (mem_filter.1 hk').2.2⟩
+    have h2 : #(univ.filter (near k)) ≤ (2 * Cpad + 1) * (2 * Cpad + 1) := by
+      rw [← card_map e.symm.toEmbedding]
+      refine (card_le_card fun ij hij => ?_).trans ((card_product _ _).le.trans
+        (Nat.mul_le_mul (card_near_le nx (e.symm k).1 Cpad) (card_near_le ny (e.symm k).2 Cpad)))
+      obtain ⟨k', hk', rfl⟩ := mem_map.1 hij
+      simp only [near, mem_filter, mem_univ, true_and] at hk'
+      simp only [Equiv.toEmbedding_apply, mem_product, mem_filter, mem_univ, true_and]
+      omega
+    have := (card_insert_of_notMem (show k ∉ Nb k by simp [Nb])).symm.trans_le
+      ((card_le_card h1).trans h2)
+    nlinarith
+  -- D3.16.3: the buffer `T_i` of an interior child lies in its neighbours
+  have hTN : ∀ k ∈ G, T k ⊆ (Nb k).biUnion X := by
+    intro k hk x hx
+    simp only [G, mem_filter, mem_univ, true_and] at hk
+    simp only [T, X, mem_sdiff, mem_inter] at hx
+    obtain ⟨⟨hxA, hxd⟩, hxk⟩ := hx
+    obtain ⟨i', hi', j', hj', hij⟩ := exists_mem_child hr
+      (ambientDilation_child_subset hr hk.1.2 hk.2.2 hk.1.1 hk.2.1 hxd)
+    have hij' : x ∈ ch (e (⟨i', hi'⟩, ⟨j', hj'⟩)) := by simpa [ch] using hij
+    refine mem_biUnion.2 ⟨e (⟨i', hi'⟩, ⟨j', hj'⟩), mem_filter.2 ⟨mem_univ _,
+      fun h => hxk ⟨hxA, h ▸ hij'⟩, ?_⟩, mem_inter.2 ⟨hxA, hij'⟩⟩
+    have := le_add_of_mem_child hij hxd
+    simp only [near, Equiv.symm_apply_apply]
+    omega
+  -- D3.16.3: Lemma 3.2 for interior children
+  have hbuf' : ∀ k ∈ G, ρ.regionEntropy (union_subset (hX k) (hT k)) - ρ.regionEntropy (hT k) ≤
+      ρ.regionEntropy (hX k) / 2 + Cbuf * r := fun k hk => by
+    simp only [G, mem_filter, mem_univ, true_and] at hk
+    exact hbuf _ (isIntRect_child hr (e.symm k).1.isLt (e.symm k).2.isLt) boxSize_child_le
+      (ambientDilation_child_subset hr hk.1.2 hk.2.2 hk.1.1 hk.2.1)
+  have key := step_3_16_4 ρ X hX hdisj G Nb T hT _ hNb hTN (by positivity) hbuf'
+  rw [ρ.toSubState.regionEntropy_congr hunion _ (inter_subset_left.trans hA)] at key
+  -- D3.16.4: noninterior children number at most `B_M`
+  have hXF : ∀ k, ρ.regionEntropy (hX k) ≤ F := fun k =>
+    hF _ (isIntRect_child hr (e.symm k).1.isLt (e.symm k).2.isLt) child_subset boxSize_child_le
+  have hF0 : 0 ≤ F := (SubState.regionEntropy_nonneg _ _).trans (hF (Icc a a) ⟨a, a, le_rfl, rfl⟩
+    (Icc_subset_Icc_right hab)
+    (by rw [boxSize_Icc le_rfl]; simpa only [add_sub_cancel_left, Int.toNat_one, max_self]))
+  have hbad : #(univ \ G) ≤ B_M Cpad M := by
+    have hsub : (univ \ G).map e.symm.toEmbedding ⊆
+        (univ.filter fun i : Fin nx => ¬(Cpad ≤ i.val ∧ i.val + Cpad + 2 ≤ nx)) ×ˢ univ ∪
+          univ ×ˢ univ.filter fun j : Fin ny => ¬(Cpad ≤ j.val ∧ j.val + Cpad + 2 ≤ ny) := by
+      intro ij hij
+      obtain ⟨k, hk, rfl⟩ := mem_map.1 hij
+      simp only [G, mem_sdiff, mem_univ, mem_filter, true_and, not_and_or] at hk
+      simp only [Equiv.toEmbedding_apply, mem_union, mem_product, mem_filter, mem_univ,
+        true_and, and_true]
+      tauto
+    rw [← card_map e.symm.toEmbedding]
+    refine (card_le_card hsub).trans ((card_union_le _ _).trans ?_)
+    rw [card_product, card_product, card_univ, card_univ, Fintype.card_fin, Fintype.card_fin, B_M]
+    have := Nat.mul_le_mul (card_not_interior_le nx Cpad) hny
+    have := Nat.mul_le_mul hnx (card_not_interior_le ny Cpad)
+    nlinarith
+  have hcard : (#G : ℝ) + #(univ \ G) ≤ M ^ 2 := by
+    have h := card_sdiff_add_card_eq_card (subset_univ G)
+    rw [card_univ, Fintype.card_fin] at h
+    have h' : #(univ \ G) + #G ≤ M ^ 2 := h.trans_le (by rw [sq]; exact Nat.mul_le_mul hnx hny)
+    have : ((#(univ \ G) + #G : ℕ) : ℝ) ≤ (M ^ 2 : ℕ) := by exact_mod_cast h'
+    push_cast at this
+    linarith
+  have hp : 0 ≤ p₀ Cpad ∧ p₀ Cpad ≤ 1 := ⟨by unfold p₀; positivity, by
+    unfold p₀; rw [div_le_one (by positivity)]; nlinarith [(Cpad.cast_nonneg : (0:ℝ) ≤ Cpad)]⟩
+  have hP : (((2 * Cpad + 5) ^ 2 : ℕ) : ℝ) = (2 * Cpad + 5 : ℝ) ^ 2 := by push_cast; ring
+  rw [← sum_sdiff (subset_univ G), hP] at key
+  have hg := sum_le_card_nsmul G _ _ fun k _ => hXF k
+  have hb := sum_le_card_nsmul (univ \ G) _ _ fun k _ => hXF k
+  rw [nsmul_eq_mul] at hg hb
+  have hbad' : (#(univ \ G) : ℝ) ≤ B_M Cpad M := by exact_mod_cast hbad
+  have h1 : (1 - p₀ Cpad / 2) * ∑ k ∈ G, ρ.regionEntropy (hX k) ≤ (1 - p₀ Cpad / 2) * (#G * F) :=
+    mul_le_mul_of_nonneg_left hg (by linarith)
+  have h2 : (#G : ℝ) * (Cbuf * r) ≤ M ^ 2 * (Cbuf * r) :=
+    mul_le_mul_of_nonneg_right (by linarith [(#(univ \ G)).cast_nonneg (α := ℝ)]) (by positivity)
+  have hc1 : (1 - p₀ Cpad / 2) * (#G + #(univ \ G)) ≤ (1 - p₀ Cpad / 2) * M ^ 2 :=
+    mul_le_mul_of_nonneg_left hcard (by linarith)
+  have hc2 : p₀ Cpad / 2 * #(univ \ G) ≤ p₀ Cpad / 2 * B_M Cpad M :=
+    mul_le_mul_of_nonneg_left hbad' (by linarith)
+  have h3 : (1 - p₀ Cpad / 2) * (#G * F) + #(univ \ G) * F ≤
+      ((1 - p₀ Cpad / 2) * M ^ 2 + p₀ Cpad / 2 * B_M Cpad M) * F := by
+    rw [show (1 - p₀ Cpad / 2) * (#G * F) + #(univ \ G) * F = ((1 - p₀ Cpad / 2) *
+      (#G + #(univ \ G)) + p₀ Cpad / 2 * #(univ \ G)) * F by ring]
+    exact mul_le_mul_of_nonneg_right (by linarith) hF0
+  have hpe : 1 / (2 * (2 * (Cpad : ℝ) + 5) ^ 2) = p₀ Cpad / 2 := by
+    unfold p₀; rw [div_div, mul_comm]
+  rw [hpe] at key
+  linarith
+
+/-- D3.16 (Proposition 3.3, prop:initial-box). There are `C < ∞` and `e₀ ∈ (0, 1)`, depending
+only on `q, R, J, Δ`, with `F_box(r) ≤ C r^{1+e₀}` (`r ≥ 1`). Stated with Lemma 3.2 (D3.4) as
+hypothesis `lemma_3_2`. -/
+theorem prop_3_3 {q R : ℕ} {J Δ : ℝ} (lemma_3_2 : BufferDiscount ℂ q R J Δ) :
+    InitialBoxEstimate ℂ q R J Δ := by
+  obtain ⟨Cpad, -, Cbuf, hbuf⟩ := lemma_3_2
+  set c := max Cbuf 0
+  set p := p₀ Cpad
+  have hp : 0 < p ∧ p ≤ 1 / 25 := ⟨by simp only [p, p₀]; positivity, by
+    simp only [p, p₀]; gcongr; nlinarith [(Cpad.cast_nonneg : (0 : ℝ) ≤ Cpad)]⟩
+  -- D3.16.4 (eq:initial-box-recursion)
+  have hrec : ∀ M r, 1 ≤ r → F_box q R J Δ (M * r) ≤
+      ((1 - p / 2) * M ^ 2 + p / 2 * B_M Cpad M) * F_box q R J Δ r + c * M ^ 2 * r := by
+    refine fun M r hr => Real.sSup_le (fun s hs => ?_) (add_nonneg (mul_nonneg (add_nonneg
+      (mul_nonneg (by linarith) (by positivity)) (mul_nonneg (by linarith) (by positivity)))
+      (F_box_nonneg r)) (by positivity))
+    obtain ⟨D₀, hD₀, Λ, Φ, hΦ, Ω, hΩ, E₀, hE, hgap, A, hA, Q, ⟨a, b, hab, rfl⟩, hs, hQr, rfl⟩ := hs
+    have hD₀' : 0 ≤ D₀ := by linarith [(by positivity : (0 : ℝ) ≤ 2 * R + 10)]
+    exact step_3_16_3 (pureState Ω hΩ) hA hab hr (hQr.trans (by rw [mul_comm]))
+      (fun Q₀ hQ₀ hsub hsz =>
+        le_F_box hD₀ hΦ hΩ hE hgap hA hQ₀ (IsSafe.subset' hs hD₀' hsub) hsz)
+      (le_max_right _ _) fun Q₀ hQ₀ hsz hdil =>
+        (hbuf D₀ hD₀ Λ Φ hΦ Ω hΩ E₀ hE hgap A hA _ ⟨a, b, hab, rfl⟩ hs r hr Q₀
+        hQ₀ hsz hdil).trans (by gcongr; exact le_max_left _ _)
+  -- D3.16.5: `M = 16(C_pad + 2)`, `λ = (1 - p₀/4) M²`, `M < λ < M²`
+  set M : ℕ := 16 * (Cpad + 2)
+  set lam : ℝ := (1 - p / 4) * M ^ 2
+  have hM : (32 : ℝ) ≤ M := by
+    simp only [M]; push_cast; linarith [(Cpad.cast_nonneg : (0 : ℝ) ≤ Cpad)]
+  have hBM : (B_M Cpad M : ℝ) ≤ M ^ 2 / 4 := by
+    simp only [B_M, M]; push_cast; nlinarith [(Cpad.cast_nonneg : (0 : ℝ) ≤ Cpad)]
+  have hMlam : (M : ℝ) < lam := by simp only [lam]; nlinarith
+  have hlamM : lam < (M : ℝ) ^ 2 := by
+    have : 0 < (M : ℝ) ^ 2 := by positivity
+    simp only [lam]; nlinarith [hp.1]
+  have hrec' : ∀ r, 1 ≤ r → F_box q R J Δ (M * r) ≤ lam * F_box q R J Δ r + c * M ^ 2 * r := by
+    refine fun r hr => (hrec M r hr).trans ?_
+    have := F_box_nonneg (q := q) (R := R) (J := J) (Δ := Δ) r
+    gcongr
+    simp only [lam]; nlinarith
+  -- D3.16.6–D3.16.8
+  obtain ⟨C, hC⟩ := step_3_16_8 F_box_mono (by omega) hMlam (by positivity) hrec'
+  -- D3.16.7: `1 + e₀ = log_M λ ∈ (1, 2)`
+  have hlogM : 0 < Real.log M := Real.log_pos (by linarith)
+  have h1 : Real.log M < Real.log lam := Real.log_lt_log (by linarith) hMlam
+  have h2 : Real.log lam < 2 * Real.log M := by
+    have := Real.log_lt_log (by linarith) hlamM
+    rwa [Real.log_pow, Nat.cast_ofNat] at this
+  refine ⟨C, Real.log lam / Real.log M - 1, by rw [sub_pos, one_lt_div hlogM]; exact h1,
+    by rw [sub_lt_iff_lt_add, div_lt_iff₀ hlogM]; linarith,
+    fun D₀ hD₀ Λ Φ hΦ Ω hΩ E₀ hE hgap A hA Q r hr hQ hs hQr => ?_⟩
+  rw [add_sub_cancel]
+  exact (le_F_box hD₀ hΦ hΩ hE hgap hA hQ hs hQr).trans (hC r hr)
+
+end D316
+
+
+/-! ## D3.5–D3.6 Nested regions and harmonic weights (Lemma 3.2, parts 1–2) -/
+
+section D36
+
+/-- D3.5. `m = ⌊(C_pad - 1) r / D⌋`. -/
+def m (Cpad r D : ℕ) : ℕ := (Cpad - 1) * r / D
+
+/-- D3.5. `d_j = r + j D`. -/
+def d (r D j : ℕ) : ℕ := r + j * D
+
+/-- D3.6. `Z_r = ∑_{j=1}^m 1/(r + d_j)`. -/
+noncomputable def Z_r (Cpad r D : ℕ) : ℝ := ∑ j ∈ Icc 1 (m Cpad r D), 1 / ((r + d r D j : ℕ) : ℝ)
+
+/-- D3.6. `a_j = 2 / (Z_r (r + d_j))`. -/
+noncomputable def a (Cpad r D j : ℕ) : ℝ := 2 / (Z_r Cpad r D * (r + d r D j : ℕ))
+
+/-- D3.6. `ℰ = ∑_j (r + d_j) a_j²`. -/
+noncomputable def ℰ (Cpad r D : ℕ) : ℝ :=
+  ∑ j ∈ Icc 1 (m Cpad r D), ((r + d r D j : ℕ) : ℝ) * a Cpad r D j ^ 2
+
+variable {Cpad r D : ℕ}
+
+/-- D3.6 (eq:initial-harmonic-weights, eq:initial-harmonic-lower). `∑_j a_j = 2`, `ℰ = 4/Z_r`,
+`ℰ = min{∑_j (r + d_j) b_j² : ∑_j b_j = 2}`, and `Z_r ≥ (1/D) log((C_pad + 1)/(2 + D))`. -/
+theorem eq_initial_harmonic_weights (hD : 0 < D) (hC : D + 1 < Cpad) (hr : 1 ≤ r) :
+    ∑ j ∈ Icc 1 (m Cpad r D), a Cpad r D j = 2 ∧ ℰ Cpad r D = 4 / Z_r Cpad r D ∧
+    (∀ b : ℕ → ℝ, ∑ j ∈ Icc 1 (m Cpad r D), b j = 2 →
+      ℰ Cpad r D ≤ ∑ j ∈ Icc 1 (m Cpad r D), ((r + d r D j : ℕ) : ℝ) * b j ^ 2) ∧
+    1 / D * Real.log ((Cpad + 1) / (2 + D)) ≤ Z_r Cpad r D := by
+  have hm : 1 ≤ m Cpad r D := (Nat.le_div_iff_mul_le hD).2 (by
+    rw [one_mul]; exact (show D ≤ Cpad - 1 by omega).trans (Nat.le_mul_of_pos_right _ hr))
+  have hc : ∀ j, (0 : ℝ) < ((r + d r D j : ℕ) : ℝ) := fun j => by unfold d; positivity
+  have hZ : 0 < Z_r Cpad r D :=
+    sum_pos (fun j _ => one_div_pos.2 (hc j)) ⟨1, mem_Icc.2 ⟨le_rfl, hm⟩⟩
+  -- D3.6.1
+  have ha : ∀ j, a Cpad r D j = 2 / Z_r Cpad r D * (1 / ((r + d r D j : ℕ) : ℝ)) := fun j => by
+    simp only [a]; field_simp
+  have hE : ∀ j, ((r + d r D j : ℕ) : ℝ) * a Cpad r D j ^ 2 =
+      4 / Z_r Cpad r D ^ 2 * (1 / ((r + d r D j : ℕ) : ℝ)) := fun j => by
+    simp only [a]; field_simp [(hc j).ne']; ring
+  have h1 : ∑ j ∈ Icc 1 (m Cpad r D), a Cpad r D j = 2 := by
+    simp only [ha, ← mul_sum]; rw [← Z_r]; field_simp
+  have h2 : ℰ Cpad r D = 4 / Z_r Cpad r D := by
+    simp only [ℰ, hE, ← mul_sum]; rw [← Z_r]; field_simp
+  refine ⟨h1, h2, fun b hb => ?_, ?_⟩
+  · -- D3.6.1: Cauchy–Schwarz, `4 = (∑ b)² ≤ (∑ (r + d_j) b_j²)(∑ 1/(r + d_j))`
+    have := sq_sum_div_le_sum_sq_div (Icc 1 (m Cpad r D)) b fun j _ => one_div_pos.2 (hc j)
+    rw [hb, ← Z_r] at this
+    simp only [div_div_eq_mul_div, div_one] at this
+    rw [h2]
+    exact (by norm_num : (4 : ℝ) = 2 ^ 2) ▸ this.trans_eq (sum_congr rfl fun _ _ => mul_comm _ _)
+  · -- D3.6.2: `1/(2r + jD) ≥ (1/D) log((2r + (j+1)D)/(2r + jD))`, telescoped
+    set f : ℕ → ℝ := fun j => Real.log (2 * r + j * D)
+    have hstep : ∀ j, f (j + 1) - f j ≤ D * (1 / ((r + d r D j : ℕ) : ℝ)) := fun j => by
+      have hp : (0 : ℝ) < 2 * r + j * D := by positivity
+      simp only [f, d]
+      rw [← Real.log_div (by positivity) hp.ne']
+      refine (Real.log_le_sub_one_of_pos (by positivity)).trans_eq ?_
+      push_cast; field_simp; ring
+    have htele : ∀ n, ∑ j ∈ Icc 1 n, (f (j + 1) - f j) = f (n + 1) - f 1 := fun n => by
+      induction n with
+      | zero => simp
+      | succ n ih => rw [sum_Icc_succ_top (by omega), ih]; ring
+    have hsum := (htele (m Cpad r D)).symm.le.trans (sum_le_sum fun j _ => hstep j)
+    rw [← mul_sum, ← Z_r] at hsum
+    have hmr : (Cpad + 1 : ℝ) * r ≤ 2 * r + (m Cpad r D + 1 : ℕ) * D := by
+      unfold m
+      have h' : (((Cpad - 1) * r : ℕ) : ℝ) < (((Cpad - 1) * r / D * D + D : ℕ) : ℝ) := by
+        exact_mod_cast Nat.lt_div_mul_add (a := (Cpad - 1) * r) hD
+      rw [Nat.cast_mul, Nat.cast_sub (by omega : 1 ≤ Cpad)] at h'
+      push_cast at h' ⊢; nlinarith
+    rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ (by positivity), mul_comm]
+    refine le_trans ?_ hsum
+    simp only [f, Nat.cast_one, one_mul]
+    rw [← Real.log_div (by positivity) (by positivity)]
+    refine Real.log_le_log (by positivity) ?_
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    have : (1 : ℝ) ≤ r := by exact_mod_cast hr
+    have h4 : (2 * r + D : ℝ) ≤ (2 + D) * r := by nlinarith
+    push_cast at hmr ⊢
+    nlinarith [mul_le_mul_of_nonneg_right hmr (by positivity : (0 : ℝ) ≤ 2 + D),
+      mul_le_mul_of_nonneg_left h4 (by positivity : (0 : ℝ) ≤ Cpad + 1)]
+
+end D36
+
+/-! ## D3.14 Conclusion of Lemma 3.2 -/
+
+section D314
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)] {U : Finset σ}
+
+/-- SSA (D2.2 item 2) for nested conditioning sets: `T ⊆ T'` gives `S(X | T') ≤ S(X | T)`. -/
+theorem condEntropy_anti (ρ : Arealaw.MState (Reg loc U) ℂ) {X T T' : Finset σ} (hX : X ⊆ U)
+    (hT' : T' ⊆ U) (hXT : Disjoint X T') (h : T ⊆ T') :
+    ρ.regionEntropy (union_subset hX hT') - ρ.regionEntropy hT' ≤
+      ρ.regionEntropy (union_subset hX (h.trans hT')) - ρ.regionEntropy (h.trans hT') := by
+  have := ρ.regionEntropy_union_sub_le (hXT.mono_right h) (hXT.mono_right sdiff_subset)
+    disjoint_sdiff hX (h.trans hT') (sdiff_subset.trans hT')
+  simp only [union_sdiff_of_subset h] at this
+  convert this using 2
+
+/-- D3.14.1–D3.14.4. From `∑_j a_j S(X_j) - E ≤ S(X) + ∑_j a_j S(T_j)` with `X_j = X ⊔ T_j`,
+`T_j ⊆ T_m ⊆ T`, `a_j > 0`, `∑_j a_j = 2`: `S(X | T) ≤ ½ S(X) + ½ E`. -/
+theorem step_3_14 (ρ : Arealaw.MState (Reg loc U) ℂ) {X T : Finset σ} {m : ℕ}
+    (Tj : ℕ → Finset σ) (hX : X ⊆ U) (hT : T ⊆ U) (hXT : Disjoint X T) (hTT : ∀ j, Tj j ⊆ T)
+    (hmono : ∀ j ∈ Icc 1 m, Tj j ⊆ Tj m) (a : ℕ → ℝ) (ha : ∀ j ∈ Icc 1 m, 0 < a j)
+    (hsum : ∑ j ∈ Icc 1 m, a j = 2) {E : ℝ}
+    (h : ∑ j ∈ Icc 1 m, a j * ρ.regionEntropy (union_subset hX ((hTT j).trans hT)) - E ≤
+      ρ.regionEntropy hX + ∑ j ∈ Icc 1 m, a j * ρ.regionEntropy ((hTT j).trans hT)) :
+    ρ.regionEntropy (union_subset hX hT) - ρ.regionEntropy hT ≤ ρ.regionEntropy hX / 2 + E / 2 := by
+  obtain ⟨f, hf⟩ : ∃ f : Finset σ → ℝ, ∀ A (h : A ⊆ U), ρ.regionEntropy h = f A :=
+    ⟨fun A => if h : A ⊆ U then ρ.regionEntropy h else 0, fun A h => (dif_pos h).symm⟩
+  -- D3.14.3–D3.14.4: `S(X|T) ≤ S(X|T_m) ≤ S(X|T_j)` (SSA)
+  have key : ∀ j ∈ Icc 1 m, a j * (f (X ∪ T) - f T) ≤ a j * f (X ∪ Tj j) - a j * f (Tj j) := by
+    intro j hj
+    have h1 := condEntropy_anti ρ hX hT hXT (hTT m)
+    have h2 := condEntropy_anti ρ hX ((hTT m).trans hT) (hXT.mono_right (hTT m)) (hmono j hj)
+    simp only [hf] at h1 h2
+    nlinarith [ha j hj]
+  -- D3.14.1–D3.14.2: `∑_j a_j S(X|T_j) ≤ S(X) + E`, and `∑_j a_j = 2`
+  have := sum_le_sum key
+  rw [← sum_mul, hsum, sum_sub_distrib] at this
+  simp only [hf] at h ⊢
+  linarith
+
+end D314
+
 end AreaLaw
