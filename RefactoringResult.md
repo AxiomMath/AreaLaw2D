@@ -34,36 +34,59 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 
 | Lean declaration removed | Mathlib/Physlib declaration | Hypothesis notes |
 |---|---|---|
+| `Arealaw.vonNeumann_strong_subadditivity`, `…_complex` (OpenAI/ConditionalEntropy.lean:284-405, §2) | Physlib `Sᵥₙ_strong_subadditivity` (through `Arealaw.MState.regionEntropy_strong_subadditivity`, AreaLawForMathlib/QuantumInfo/Region.lean:177) | ℂ only; normalized states (decision 1) |
+| D2.2 item 4 lower bound (purification) | Araki–Lieb `Arealaw.abs_regionEntropy_sub_regionEntropy_le` (Arealaw/Subadditivity.lean, from Physlib `Sᵥₙ_triangle_subaddivity`) | normalized, ℂ |
+| D2.3 binary entropy | Mathlib `Real.binEntropy` | already used by the frozen statement |
+| D2.4 Jordan parts (`exists_posSemidef_sub_eq`, OpenAI/ConditionalContinuity.lean:134) | Physlib `HermitianMat.posPart`/`negPart`, `posPart_add_negPart` (in `MState.exists_sub_eq_sub`, AreaLawForMathlib/QuantumInfo/Entropy/ClassicalQuantum.lean:248) | |
+| D2.4 mixing entropy of the coin | Physlib `ProbDistribution.coin`, `Hₛ_coin`, `Sᵥₙ_ofClassical` | |
+| D2.5 pure-state complement (`regionEntropy_pureState_sdiff`, OpenAI/RegionEntropy.lean:263 via `coeffMatrix`/`EE`) | Physlib `Sᵥₙ_pure_complement` (AreaLawForMathlib/QuantumInfo/Region.lean:226) | |
+| D2.9 path crossing the cut | Mathlib `SimpleGraph.Walk.exists_boundary_dart`, `exists_walk_of_edist_ne_top`, `Walk.edist_le` | |
 
 ## 4. Failed searches
 
 | What was needed | Queries tried | Where it ended up |
 |---|---|---|
+| concavity of `Sᵥₙ`; mixing bound `S(Σpτ) ≤ Σ pS(τ) + H(p)`; entropy of a classical–quantum (block-diagonal) state | grep Physlib `concav`, `Sᵥₙ.*mix`, `Holevo`, `cq`, `blockDiag`, `cfc_kron`; loogle `cfc, Matrix.blockDiagonal` (0 hits) | AreaLawForMathlib/QuantumInfo/Entropy/ClassicalQuantum.lean (`MState.cq`, `Sᵥₙ_cq`, `Sᵥₙ_cq_traceRight_le`, `sum_Sᵥₙ_le_Sᵥₙ_cq_traceRight`) |
+| charpoly / eigenvalues / PSD of `Matrix.blockDiagonal` | loogle `Matrix.charpoly (Matrix.blockDiagonal _)` (0 hits), `Matrix.PosSemidef (Matrix.blockDiagonal _)` (HTTP 503), grep Mathlib | ClassicalQuantum.lean:23-49 |
+| trace of the positive part, `Tr A⁺ = (‖A‖₁ + Tr A)/2` | grep Physlib `trace_posPart` (Arealaw/TraceDist.lean has a private one) | ClassicalQuantum.lean:232 |
+| trace distance contracts under partial trace | grep Physlib `TrDistance`, `traceNorm` with `traceLeft`/`traceRight`; Arealaw `D₁.*restrict` | `Arealaw.SubState.D₁_restrict_le`, AreaLawForMathlib/QuantumInfo/Region.lean:260 |
+| trace distance of two pure states | grep Physlib TraceDistance.lean `pure`, Arealaw `vecMulVec`/`traceNorm` | `Matrix.traceNorm_vecMulVec_sub_vecMulVec_div_two`, Region.lean:39 |
+| eigenvalues of a Hermitian idempotent are 0/1; a projection has zero entropy | loogle `IsIdempotentElem, Matrix.IsHermitian.eigenvalues` (0 hits); atlas "The eigenvalues of a Hermitian idempotent matrix are zero or one." | `Arealaw.SubState.entropy_eq_zero_of_isIdempotentElem`, Region.lean:295 |
+| `#{z ∈ ℤ² : \|z\|₁ ≤ r} ≤ 1 + 2r(r+1)` | grep Mathlib | `Finset.card_le_of_forall_natAbs_add_natAbs_le`, AreaLawForMathlib/Data/Int/L1Ball.lean:15 |
 
 ## 5. Route differences
 
 | Anchor | Paper route | Formal route | Reason |
 |---|---|---|---|
+| D2.12 (Lemma 2.2), steps D2.12.3–6 | H = tensor sum over all components, ground space ⊗_c ker(H_c − E₀^c), Ω = ⊗_c Ω_c | two blocks A, Λ∖A only: on the coefficient matrix N(x,z) = v(glue x z), H acts as N ↦ PN + NG; uniqueness (from the gap, its size unused) gives PM = aM, MG = (E₀−a)M, so a column of M times a row of M is again a ground vector, M has rank one, ρ_A = MMᴴ is a rank-one projection, S = 0 (`AreaLaw.exists_hamiltonian_coeff`, `regionEntropy_eq_zero_of_split`, S02_Preliminaries.lean:626, :659) | tensor sums over an arbitrary family of components are costly in Lean; the two-block version is the same mathematics |
+| D2.11.2 (R = 0) | Ω = ⊗_x ω_x through on-site ground spaces | the core lemma `regionEntropy_eq_zero_of_split`: for R = 0 every support is a singleton, which lies in A or Λ∖A | one argument serves D2.11.2 and D2.12 |
+| D2.7.2 | sphere \|z\|₁ = k has 4k points; equality | ℓ¹-ball covered by two rotated squares of (r+1)² and r² points (parity of a+b+r); proves ≤ only | the anchor needs ≤; far shorter |
+| D2.2 item 4, lower bound | purify, S(D\|E) = −S(D\|F) ≥ −S(D) | Araki–Lieb S(E) − S(D) ≤ S(DE) | Araki–Lieb already on regions; no purification |
+| D2.5.1 | eigenvalues ±λ of the rank-two difference | X³ = (1−\|⟨ξ,η⟩\|²)X, so \|X\| = c^{−1/2}X² | avoids a spectral computation |
 
 ## 6. Constants changed
 
 | Anchor | Paper | Previous Lean | Now |
 |---|---|---|---|
+| D2.4 (Lemma 2.1), second inequality | C = 2(1 + 2/e) (D2.4.4) | 4 (frozen `ConditionalContinuity`, old `winterModulus_le_sqrt`) | 2·C_h proved in `AreaLaw.step_2_4_4` (S02_Preliminaries.lean:97); weakened once to the frozen 4 at the end of `lemma_2_1` (the frozen statement may not change) |
 
 ## 7. Digest corrections
 
 | Anchor | What was wrong | Fix |
 |---|---|---|
+| §2 | none found by the §2 part agents | — |
 
 ## 8. Cuts
 
 | File or declaration | Category | Lines |
 |---|---|---|
+| §2 old code (Map.md §2 rows) | not yet deleted: later sections still import it; cut at the Step 1 gate | — |
 
 ## 9. Per-section lines
 
 | Section | Before (from Map.md) | After Step 1 | After Step 2 |
 |---|---|---|---|
+| 02 Preliminaries | 4865 | 786 (`AreaLawRefactored/S02_Preliminaries.lean`) + 607 library (`AreaLawForMathlib/QuantumInfo/Region.lean` 314, `…/Entropy/ClassicalQuantum.lean` 259, `Data/Int/L1Ball.lean` 34) = 1393 | |
 
 ## 10. Final numbers
 
