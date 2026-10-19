@@ -1,12 +1,12 @@
 # Digest of §11 — Two families of regions and the area bound
 
-Source: `paper/sections/10-geometry.tex` (lines 1–857). Label `sec:geometry`. Numbering (one shared counter): Lemma 11.1, Proposition 11.2, Lemma 11.3, Lemma 11.4, Lemma 11.5; the last subsection proves Theorem 1.1. Equation labels are quoted as in the source (`geometry:...`).
+Source: `paper/sections/10-geometry.tex` (lines 1–857). Label `sec:geometry`. One shared counter: Lemma 11.1, Proposition 11.2, Lemma 11.3, Lemma 11.4, Lemma 11.5; last subsection proves Theorem 1.1. Equation labels quoted as in source (`geometry:...`).
 
 ## Section in one paragraph
 
-The amplified collar estimate (Prop 10.2) bounds $I_\Omega(X:J)$ for a template-shaped $X=A\cap T$ and every $J$ outside the graph $2r$-neighbourhood of $S_0=A\cap T_L$. To chain it, $A$ must be cut into a small exceptional set $D$ and two ordered families of tiles $X_i$ such that the collar of $X_i$ misses $\Lambda\setminus A$ and all earlier tiles of the *same* family. Lemma 11.1 shows two such families suffice: summing the chain-rule bounds for $f=0,1$ cancels every $S(X_i)$. Prop 11.2 builds the families in the ambient plane. Dyadic distance layers $D_k$ around the cut endpoints $Z$ are grouped into primary tiles (pitch $s_k$) separated by sparse belt strips (width $t_k$); belts are filled by fans of triangles with labels chosen so that every positive-length interface joins opposite labels; the remaining same-label point contacts are removed by recursively replacing squares of halfside $d(S)\approx S^{\rho_0}$. All exceptional sites and all summands $n_i^{-100}$ are $O(b)$, $b=|\partial_\Lambda A|$. Lemma 11.5 gives separation of each new *birth* template from earlier *actual* regions, which is the form the collar estimate needs. The last subsection verifies the hypotheses of Props 9.6 and 10.2 for these templates and concludes $S_\Omega(A)\le C'b$ (Theorem 1.1).
+Prop 10.2 bounds $I_\Omega(X:J)$ for template-shaped $X=A\cap T$ and every $J$ outside the graph $2r$-neighbourhood of $S_0=A\cap T_L$. To chain it, $A$ is cut into a small exceptional set $D$ and two ordered families of tiles $X_i$ such that the collar of $X_i$ misses $\Lambda\setminus A$ and all earlier tiles of the *same* family. Lemma 11.1: two families suffice, summing the chain-rule bounds for $f=0,1$ cancels every $S(X_i)$. Prop 11.2 builds the families in the ambient plane: dyadic distance layers $D_k$ around the cut endpoints $Z$ are grouped into primary tiles (pitch $s_k$) separated by sparse belt strips (width $t_k$); belts are filled by fans of triangles labelled so that every positive-length interface joins opposite labels; remaining same-label point contacts are removed by recursively replacing squares of halfside $d(S)\approx S^{\rho_0}$. Exceptional sites and $\sum n_i^{-100}$ are $O(b)$, $b=|\partial_\Lambda A|$. Lemma 11.5 separates each new *birth* template from earlier *actual* regions, the form the collar estimate needs. Last subsection verifies the hypotheses of Props 9.6, 10.2 for these templates and concludes $S_\Omega(A)\le C'b$ (Theorem 1.1).
 
-Notation. $Z$ = set of endpoints of cut edges of $\partial_\Lambda A$, $1\le|Z|\le2b$. $\dist_\infty,\diam_\infty$: ambient sup-norm in $\mathbb Z^2$/$\mathbb R^2$. Every graph path of length $m$ has ambient displacement $\le m$; ambient closeness is only ever used as a sufficient condition for graph separation. Family labels $f\in\{0,1\}$ are unrelated to the two sides $A,\Lambda\setminus A$. $C,c$ change between occurrences (§2 convention); they depend on $q,R,J,\Delta$ and the fixed template constants, never on $\Lambda,A$.
+Notation. $Z$ = endpoints of cut edges of $\partial_\Lambda A$, $1\le|Z|\le2b$. $\dist_\infty,\diam_\infty$: ambient sup-norm in $\mathbb Z^2$/$\mathbb R^2$. A graph path of length $m$ has ambient displacement $\le m$; ambient closeness is used only as a sufficient condition for graph separation. Family labels $f\in\{0,1\}$ are unrelated to the sides $A,\Lambda\setminus A$. $C,c$ change between occurrences (§2 convention); they depend on $q,R,J,\Delta$ and the fixed template constants, never on $\Lambda,A$.
 
 ---
 
@@ -19,21 +19,21 @@ Notation. $Z$ = set of endpoints of cut edges of $\partial_\Lambda A$, $1\le|Z|\
 $$I_\psi\Bigl(X_i:B\cup\bigcup_{j\in\mathcal I_f,\,j<i}X_j\Bigr)\le\varepsilon_i\qquad(f\in\{0,1\},\ i\in\mathcal I_f),$$
 then $S_\psi(A)\le S_\psi(D)+\tfrac12\sum_i\varepsilon_i$ (sum over $\mathcal I_0\sqcup\mathcal I_1$).
 
-**Used from.** D2.1 (mutual information), D2.2 (strong subadditivity consequences, purity), D1.12 (same statement quoted in the introduction).
+**Used from.** D2.1 (mutual information), D2.2 (SSA consequences, purity), D1.12.
 
 **Proof.** $A_f=\bigcup_{i\in\mathcal I_f}X_i$, $E_f=\sum_{i\in\mathcal I_f}\varepsilon_i$.
-- D11.1.1 Chain rule adding the $X_i$, $i\in\mathcal I_f$, in order to $B$: $S(BA_f)=S(B)+\sum_iS(X_i\mid B\cup X_{<i})$, where $X_{<i}=\bigcup_{j<i,\,j\in\mathcal I_f}X_j$.
+- D11.1.1 Chain rule adding the $X_i$, $i\in\mathcal I_f$, in order to $B$: $S(BA_f)=S(B)+\sum_iS(X_i\mid B\cup X_{<i})$, $X_{<i}=\bigcup_{j<i,\,j\in\mathcal I_f}X_j$.
 - D11.1.2 $S(X_i\mid J)=S(X_i)-I(X_i:J)\ge S(X_i)-\varepsilon_i$ with $J=B\cup X_{<i}$ $\Rightarrow$ $S(BA_f)\ge S(B)+\sum_{i\in\mathcal I_f}S(X_i)-E_f$.
 - D11.1.3 Purity, $B=\Lambda\setminus A$: $S(B)=S(A)$ $\Rightarrow$ $S(BA_f)\ge S(A)+\sum_{i\in\mathcal I_f}S(X_i)-E_f$.
 - D11.1.4 Purity again: $\Lambda\setminus(B\cup A_f)=D\cup A_{1-f}$ $\Rightarrow$ $S(BA_f)=S(DA_{1-f})\le S(D)+\sum_{i\in\mathcal I_{1-f}}S(X_i)$ (subadditivity).
 - D11.1.5 Combine D11.1.3–4 for fixed $f$: $S(A)+\sum_{\mathcal I_f}S(X_i)-E_f\le S(D)+\sum_{\mathcal I_{1-f}}S(X_i)$.
 - D11.1.6 Add $f=0$ and $f=1$: $2S(A)+\sum_{\text{all }i}S(X_i)-E_0-E_1\le2S(D)+\sum_{\text{all }i}S(X_i)$. Every $S(X_i)$ cancels $\Rightarrow$ $S(A)\le S(D)+\frac12(E_0+E_1)$.
 
-**Output.** Reduces the area law to: (a) $|D|\le Cb$ ($S(D)\le|D|\log q$), (b) ordered separated families, (c) $\sum_i\varepsilon_i\le Cb$. These are the three outputs of Prop 11.2 (D11.4) plus Prop 10.2.
+**Output.** Reduces the area law to (a) $|D|\le Cb$ ($S(D)\le|D|\log q$), (b) ordered separated families, (c) $\sum_i\varepsilon_i\le Cb$: outputs of Prop 11.2 (D11.4) plus Prop 10.2.
 
-**Standard?** Chain rule, subadditivity, purity are standard (Lieb–Ruskai 1973 for SSA). Using two families to cancel the tile entropies is specific to this paper.
+**Standard?** Chain rule, subadditivity, purity standard (SSA: Lieb–Ruskai 1973). Two families cancelling the tile entropies: this paper.
 
-**Pitfall.** One family would leave $\sum_iS(X_i)$ uncancelled. The conditioning set is the whole union $B\cup X_{<i}$ at once, so the estimate on $I(X_i:J_i)$ must hold for that union, not piecewise (D11.26.4).
+**Pitfall.** One family leaves $\sum_iS(X_i)$ uncancelled. Conditioning set is the whole union $B\cup X_{<i}$, so $I(X_i:J_i)$ must be bounded for that union, not piecewise (D11.26.3–4).
 
 ---
 
@@ -54,20 +54,20 @@ $$(1+2\delta_0)\beta<\zeta<1,\qquad(1+2\delta_0)(1-\ell)<1,\qquad1-\ell<\beta<\r
 - D11.2.2 $(1+2\delta_0)(1-\ell)=1-9.6\cdot10^{-6}-4\cdot10^{-12}<1$.
 - D11.2.3 $\rho_0=1-10^{-6}$, so $1-\ell=1-10^{-5}<\beta=1-2\cdot10^{-6}<\rho_0<1$.
 
-**Output.** Roles: $\zeta>(1+2\delta_0)\beta$ gives $n^\beta=o(t_k)$ (D11.21); $\zeta<1$ gives $t_k\ll r$ and adjacent-layer mesh ratio $\le2$ (D11.8, D11.11); $(1+2\delta_0)(1-\ell)<1$ gives $L=o(r)$ (D11.21); $\beta<\rho_0$ gives `geometry:fine-clearance` (D11.24); $\rho_0<1$ gives termination and double-log depth (D11.15, D11.19); $\delta_0/2$ is the decay rate in `geometry:belt-count` (D11.9). "All gaps are fixed positive numbers", so every threshold is independent of $\Lambda,A$.
+**Output.** Roles: $\zeta>(1+2\delta_0)\beta$ gives $n^\beta=o(t_k)$ (D11.21); $\zeta<1$ gives $t_k\ll r$ and adjacent-layer mesh ratio $\le2$ (D11.8, D11.11); $(1+2\delta_0)(1-\ell)<1$ gives $L=o(r)$ (D11.21); $\beta<\rho_0$ gives `geometry:fine-clearance` (D11.24); $\rho_0<1$ gives termination and double-log depth (D11.15, D11.19); $\delta_0/2$ is the decay rate in `geometry:belt-count` (D11.9). Gaps are fixed positive numbers $\Rightarrow$ every threshold independent of $\Lambda,A$.
 
-**Standard?** Specific to this paper (tuned to the exponent $e_*=2\cdot10^{-6}$, $\varepsilon=10^{-5}$ of §9–§10).
+**Standard?** Specific to this paper (tuned to $e_*=2\cdot10^{-6}$, $\varepsilon=10^{-5}$ of §9–§10).
 
 #### D11.3 Def — Birth region, actual region, template of a tile
 *Source: 10-geometry.tex 89–96.*
 
-**Statement.** Birth region of a tile: bounded closed planar region assigned when the tile is created. Later steps only delete points. Actual region: interior of the birth region remaining after all deletions. Pieces with one tile identifier form one region; neither birth nor actual region need be connected. Ambient lattice template: $T=\text{birth region}\cap\mathbb Z^2$.
+**Statement.** Birth region of a tile: bounded closed planar region assigned at creation. Later steps only delete points. Actual region: interior of the birth region remaining after all deletions. Pieces with one tile identifier form one region; neither birth nor actual region need be connected. Ambient lattice template $T=\text{birth region}\cap\mathbb Z^2$.
 
 **Used from.** none.
 
-**Output.** $T_i$ in D11.4 is the birth template (untrimmed); $X_i=A\cap\text{(actual region)}\subseteq A\cap T_i$. Birth regions feed the collar estimate; actual regions define the partition.
+**Output.** $T_i$ in D11.4 is the untrimmed birth template; $X_i=A\cap\text{(actual region)}\subseteq A\cap T_i$. Birth regions feed the collar estimate, actual regions the partition.
 
-**Standard?** Notation specific to this paper.
+**Standard?** Notation of this paper.
 
 #### D11.4 Proposition 11.2 — Two families with separated birth templates
 *Source: 10-geometry.tex 98–141. Proof: D11.5–D11.25.*
@@ -82,11 +82,11 @@ $$(1+2\delta_0)\beta<\zeta<1,\qquad(1+2\delta_0)(1-\ell)<1,\qquad1-\ell<\beta<\r
 
 **Proof.** Staged: layers and strips (D11.5–D11.10), belt filling and marks (D11.11–D11.13), repairs (D11.14–D11.16), separation (D11.17–D11.18), counting and scales (D11.19–D11.24), assembly (D11.25).
 
-**Output.** Items 1, 4 give $|D|\log q$ and $\sum\varepsilon_i$ in D11.26. Items 2 give the hypotheses of Props 9.6/10.2. Item 3 gives $J_i\subseteq\Lambda\setminus N_{2r_i}(S_i)$.
+**Output.** Items 1, 4 give $|D|\log q$ and $\sum\varepsilon_i$ in D11.26; item 2 the hypotheses of Props 9.6/10.2; item 3 $J_i\subseteq\Lambda\setminus N_{2r_i}(S_i)$.
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** Separation (3) is for whole birth templates $T_i$ against actual earlier regions $X_j$, not birth against birth. Order of quantifiers: $n_*$ is chosen first (D11.26.2, from Props 9.6, 10.2, uniformly over templates satisfying the stated bounds); then $C=C(n_*,\dots)$ is supplied by the proposition.
+**Pitfall.** Separation (3) is birth template $T_i$ against actual earlier $X_j$, not birth against birth. Quantifiers: $n_*$ first (D11.26.2, from Props 9.6, 10.2, uniform over templates with the stated bounds), then $C=C(n_*,\dots)$.
 
 ---
 
@@ -95,13 +95,13 @@ $$(1+2\delta_0)\beta<\zeta<1,\qquad(1+2\delta_0)(1-\ell)<1,\qquad1-\ell<\beta<\r
 #### D11.5 Def — Origin and dyadic cells
 *Source: 10-geometry.tex 150–161.*
 
-**Statement.** $o=(\sqrt2,\sqrt3)$; each of $o_1,o_2,o_1+o_2,o_1-o_2$ is non-integral. For $r=2^k$: half-open cells $C_{k,z}=o+r(z+[0,1)^2)$, $z\in\mathbb Z^2$. Grids are nested ($C_{k+1,z'}$ = union of the four $C_{k,2z'+e}$, $e\in\{0,1\}^2$). Half-open cells fix indices; closures fix birth regions. Integer $C_0>100(D_0+1)$ (any $C_0$ "sufficiently large compared with $D_0$").
+**Statement.** $o=(\sqrt2,\sqrt3)$; $o_1,o_2,o_1+o_2,o_1-o_2$ non-integral. For $r=2^k$: half-open cells $C_{k,z}=o+r(z+[0,1)^2)$, $z\in\mathbb Z^2$, nested ($C_{k+1,z'}=\bigcup_{e\in\{0,1\}^2}C_{k,2z'+e}$). Half-open cells fix indices; closures fix birth regions. Integer $C_0>100(D_0+1)$ (source: "sufficiently large compared with $D_0$").
 
 **Used from.** none.
 
-**Output.** Irrational origin $\Rightarrow$ D11.16 (no lattice point on any edge). $C_0>4D_0$ used in D11.21.
+**Output.** Irrational $o$ $\Rightarrow$ D11.16 (no lattice point on any edge). $C_0>4D_0$ used in D11.21.
 
-**Standard?** Standard device (generic translate of dyadic grid); specific choice $o$ is this paper's.
+**Standard?** Generic translate of a dyadic grid is standard; choice of $o$ is this paper's.
 
 #### D11.6 Step — Neighbourhoods $N_k$, dummy tile, layers $D_k$ (`geometry:layer-distance`)
 *Source: 10-geometry.tex 163–188.*
@@ -119,11 +119,11 @@ $N_{k_0}$ is one *dummy tile*, label = parity of $k_0-1$; its points are initial
 - D11.6.2 Exhaustion. $Z\ne\varnothing$, $C_0\ge2$. For fixed $x$ and large $k$, $x$ and some $w\in Z$ lie in cells whose indices differ by $\le1$.
 - D11.6.3 Count. $N_{k+1}$ has $\le(2C_0+1)^2|Z|$ cells of side $2r$, each with four children of side $r$. $D_k\subseteq N_{k+1}$ $\Rightarrow$ $\le4(2C_0+1)^2|Z|$ cells; $|Z|\le2b$.
 - D11.6.4 Lower bound. A cell $C_{k,z}\not\subseteq N_k$ has $\dist_\infty(z,\mathcal Z_k)\ge C_0+1$, so differs from every endpoint-occupied index by $\ge C_0+1$ in some coordinate. Cells whose indices differ by $m$ in one coordinate have closures at distance $\ge(m-1)r$. So $\dist_\infty\ge C_0r$.
-- D11.6.5 Upper bound. Take the parent of the cell, of side $2r$, in $N_{k+1}$: within $C_0$ parent-indices of a cell containing some $w\in Z$. Points of the two cells differ by $\le(C_0+1)\cdot2r$ per coordinate.
+- D11.6.5 Upper bound. The parent of the cell, side $2r$, in $N_{k+1}$ is within $C_0$ parent-indices of a cell containing some $w\in Z$. Points of the two cells differ by $\le(C_0+1)\cdot2r$ per coordinate.
 
 **Output.** Layer cells count $\le Cb$ (D11.9, D11.10, D11.19). `geometry:layer-distance` gives cut clearance of primaries, belts and descendants (D11.21–D11.23, D11.25). Dummy tile excluded from the order (D11.17); its sites go to $D$ (D11.20).
 
-**Standard?** Specific bookkeeping (Whitney-type layering around $Z$).
+**Standard?** Whitney-type layering around $Z$; bookkeeping specific.
 
 #### D11.7 Step — Non-adjacent layers (`geometry:nonadjacent`)
 *Source: 10-geometry.tex 190–199.*
@@ -143,7 +143,7 @@ $N_{k_0}$ is one *dummy tile*, label = parity of $k_0-1$; its points are initial
 #### D11.8 Def — Scales $s_k,t_k$, belt cells, pitch interiors, primary tiles
 *Source: 10-geometry.tex 201–218.*
 
-**Statement.** In $D_k$: $s_k=2^{\lfloor(1+\delta_0)k\rfloor}$, $t_k=2^{\lfloor\zeta k\rfloor}$. For $k_0$ large: $t_k\mid r\mid s_k$ and $t_k\ll r\ll s_k$ uniformly. $r$ = layer-cell scale, $s_k$ = pitch of primary tiles, $t_k$ = strip width. Fine cells: side $t_k$, origin $o$. Choose two residue classes mod $s_k/t_k$ (one per coordinate). A fine cell is a *belt cell* if either index lies in its class. The other fine cells form open *pitch interiors* (squares of side $s_k-t_k$ between successive strips). All fragments of $D_k$ in one pitch interior form one *primary tile* with label $k\bmod2$.
+**Statement.** In $D_k$: $s_k=2^{\lfloor(1+\delta_0)k\rfloor}$, $t_k=2^{\lfloor\zeta k\rfloor}$. For $k_0$ large: $t_k\mid r\mid s_k$ and $t_k\ll r\ll s_k$ uniformly. $r$ = layer-cell side, $s_k$ = pitch of primaries, $t_k$ = strip width. Fine cells: side $t_k$, origin $o$. Choose two residue classes mod $s_k/t_k$ (one per coordinate). A fine cell is a *belt cell* if either index lies in its class. Remaining fine cells form open *pitch interiors* (squares of side $s_k-t_k$ between successive strips). All fragments of $D_k$ in one pitch interior form one *primary tile*, label $k\bmod2$.
 
 **Used from.** D11.2, D11.6.
 
@@ -151,7 +151,7 @@ $N_{k_0}$ is one *dummy tile*, label = parity of $k_0-1$; its points are initial
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** $\lfloor\cdot\rfloor$ makes exponents integers, so divisibility is exact. $\zeta<1$ gives $t_{k+1}/t_k\in\{1,2\}$, the "mesh ratio $\le2$" used in D11.11.
+**Pitfall.** $\lfloor\cdot\rfloor$ makes exponents integers $\Rightarrow$ divisibility exact. $\zeta<1$ $\Rightarrow$ $t_{k+1}/t_k\in\{1,2\}$ (mesh ratio $\le2$, D11.11).
 
 #### D11.9 Step — Few belt cells (`geometry:belt-count`)
 *Source: 10-geometry.tex 220–235.*
@@ -164,14 +164,12 @@ $$\#\{\text{belt cells in }D_k\}\le Cb\frac{r^2}{s_kt_k}\le Cb\,2^{-k\delta_0/2}
 **Proof.**
 - D11.9.1 $D_k$ has $\le Cb$ $r$-cells, each a union of $(r/t_k)^2$ fine cells $\Rightarrow$ $\le Cb(r/t_k)^2$ fine cells, independent of the shift.
 - D11.9.2 Pick the two classes uniformly. A fixed fine cell has index in the class with probability $t_k/s_k$ per coordinate, so is a belt cell with probability $\le2t_k/s_k$.
-- D11.9.3 Expectation of the count $\le Cb(r/t_k)^2\cdot2t_k/s_k=2Cb\,r^2/(s_kt_k)$; some shift achieves at most the mean.
+- D11.9.3 Expected count $\le Cb(r/t_k)^2\cdot2t_k/s_k=2Cb\,r^2/(s_kt_k)$; some shift achieves at most the mean.
 - D11.9.4 $s_kt_k\ge2^{-2}2^{k(1+\delta_0)}2^{k\zeta}=2^{-2}2^{k(2+\delta_0/2)}$ and $r^2=2^{2k}$ $\Rightarrow$ $r^2/(s_kt_k)\le4\cdot2^{-k\delta_0/2}$.
 
-**Output.** Geometric decay in $k$; absorbs any power of $k$, which D11.19 produces (`geometry:descendant-count`). Shift chosen per layer; shifts are multiples of fine-cell sides, so adjacent-layer meshes stay on a common dyadic origin (D11.11).
+**Output.** Geometric decay in $k$ absorbs the power of $k$ from D11.19 (`geometry:descendant-count`); rate $\delta_0/2$ is what beats the $(\log S)^C$ repair count. Shift chosen per layer, a multiple of the fine-cell side $\Rightarrow$ adjacent-layer meshes share a dyadic origin (D11.11).
 
-**Standard?** Standard averaging (probabilistic method) on a predetermined family of cells.
-
-**Pitfall.** No property of the state enters. The decay rate $\delta_0/2$ is the only reason the sparse strips beat the $(\log S)^C$ repair count.
+**Standard?** Averaging (probabilistic method) over a predetermined family of cells.
 
 #### D11.10 Step — Primary tiles: count, pieces, separation (`geometry:primary-pieces`)
 *Source: 10-geometry.tex 237–251; figure 253–291.*
@@ -189,7 +187,7 @@ $$\#\{\text{belt cells in }D_k\}\le Cb\frac{r^2}{s_kt_k}\le Cb\,2^{-k\delta_0/2}
 - D11.10.2 A square of side $s_k$ meets $\le(s_k/r+2)^2$ cells of side $r$ (at most $s_k/r+2$ per coordinate).
 - D11.10.3 Different pitch interiors are separated by a strip of width $t_k$. Labels $k\bmod2$ differ for $k,k+1$.
 
-**Output.** $N_0\le C r^{2\delta_0}$ pieces (D11.21). Primary-vs-primary part of `geometry:ordered-clearance` (D11.25). A primary can have several components (figure): the template lemma does not need convexity of the union.
+**Output.** $N_0\le Cr^{2\delta_0}$ pieces (D11.21). Primary-vs-primary part of `geometry:ordered-clearance` (D11.25). A primary may have several components (figure); the template lemma needs no convexity of the union.
 
 **Standard?** Elementary counting.
 
@@ -200,26 +198,26 @@ $$\#\{\text{belt cells in }D_k\}\le Cb\frac{r^2}{s_kt_k}\le Cb\,2^{-k\delta_0/2}
 #### D11.11 Step — Fans, labels and the point-contact property
 *Source: 10-geometry.tex 293–323.*
 
-**Statement.** Belt cells get tile identifiers and labels so that every positive-length interface between distinct identifiers joins opposite labels. Consequently a same-label contact between distinct tiles is a single point and involves a belt cell.
+**Statement.** Belt cells get tile identifiers and labels such that every positive-length interface between distinct identifiers joins opposite labels. Hence a same-label contact between distinct tiles is a single point and involves a belt cell.
 
 **Used from.** D11.8, D11.10.
 
 **Proof.**
-- D11.11.1 Meshes. Adjacent layers have fine mesh ratio 1 or 2 (D11.8) and common dyadic origin. Divide a belt-cell side at corners of opposing cells; a larger side is divided only at its midpoint. So each belt side has $\le2$ elementary segments, $\le8$ in all. Along a segment the opposing region is one primary, the dummy tile, or one elementary segment of another belt cell. Layer boundaries lie on coarser dyadic grids, so a layer boundary never falls inside a segment.
+- D11.11.1 Meshes. Adjacent layers have fine mesh ratio 1 or 2 (D11.8) and common dyadic origin. Divide a belt-cell side at corners of opposing cells; a larger side is divided only at its midpoint. So each belt side has $\le2$ elementary segments, $\le8$ in all. Along a segment the opposing region is one primary, the dummy tile, or one elementary segment of another belt cell. Layer boundaries lie on coarser dyadic grids, so never fall inside a segment.
 - D11.11.2 Fan. Join the cell centre to the endpoints of its elementary segments: $\le8$ triangles; edges have slopes $0,\infty,1,-1$ (centre to corners: diagonals; to side midpoints: axes). Each triangle has exactly one outer segment.
 - D11.11.3 Labels. Triangle facing a primary or dummy tile: opposite label. On a segment shared by two belt cells: any opposite pair on its two incident triangles, same on both sides. Consistent because each triangle has only one outer segment.
 - D11.11.4 Merge each cyclic run of consecutive equal-label triangles of a cell into one identifier; distinct runs stay distinct identifiers.
-- D11.11.5 Interfaces. Across a cell side: opposite by D11.11.3. Inside a fan: neighbours with equal labels are merged, remaining neighbours differ in label (labels in $\{0,1\}$). Primaries in one layer are separated (D11.10); adjacent-layer primaries have opposite labels; same-label primaries in different layers are separated (D11.7).
-- D11.11.6 Hence a same-label contact between distinct tiles is not along a positive-length segment; it is a point, and by the preceding sentence one of its tiles is a belt tile.
+- D11.11.5 Interfaces. Across a cell side: opposite by D11.11.3. Inside a fan: equal-label neighbours merged, remaining neighbours differ (labels in $\{0,1\}$). Primaries: same layer separated (D11.10); adjacent layers opposite labels; same label in different layers separated (D11.7).
+- D11.11.6 So a same-label contact between distinct tiles is a point, and by D11.11.5 one of its tiles is a belt tile.
 
-**Output.** The marks (D11.12) are the only places where same-label contacts remain.
+**Output.** Marks (D11.12) are the only places with same-label contacts.
 
 **Standard?** Specific to this paper.
 
 #### D11.12 Def — Initial marks
 *Source: 10-geometry.tex 325–330.*
 
-**Statement.** Mark centre, four corners and four side midpoints of every belt cell (midpoints even when the fan does not need them). Deduplicate; a mark $v$ gets scale $S_v$ = smallest side length of a belt cell that marked it. At most $9\times$(number of belt cells) initial marks.
+**Statement.** Mark centre, four corners and four side midpoints of every belt cell (midpoints even when the fan omits them). Deduplicate; mark $v$ gets scale $S_v$ = smallest side of a belt cell that marked it. At most $9\times$(number of belt cells) initial marks.
 
 **Used from.** D11.9, D11.11.
 
@@ -244,11 +242,11 @@ Active boundary = interface of distinct identifiers (merged seams are not bounda
 - D11.13.4 Choose $a_0$ small against these ratios $\Rightarrow$ both assertions near each mark. Pairs of marks outside the local neighbourhood already satisfy item 1.
 - D11.13.5 Sectors: two sectors across an active ray have opposite labels by D11.11. Coincident segments and inactive seams are counted once, so this is the actual tile pattern.
 
-**Output.** Base case of D11.15; the contact squares of D11.18 live in these stars.
+**Output.** Base case of D11.15; contact squares of D11.18 live in these stars.
 
-**Standard?** Specific to this paper (finite-pattern argument on a mesh).
+**Standard?** Finite-pattern argument on a mesh; specific to this paper.
 
-**Pitfall.** $a_0$ is independent of $k$ and the shifts because only the finite pattern on $o+(t/4)\mathbb Z^2$ matters. Both properties persist when $a_0$ is decreased, which allows D11.15 to take one common $a_0$.
+**Pitfall.** $a_0$ is independent of $k$ and the shifts because only the finite pattern on $o+(t/4)\mathbb Z^2$ matters. Both properties persist when $a_0$ is decreased, so D11.15 can take one common $a_0$.
 
 ---
 
@@ -271,11 +269,11 @@ A sector of angle $>\pi$ is a union of $\le8$ of the triangles centre–corner/m
 - D11.14.1 $x=\rho_0\log_2S$; $2^{\lfloor x\rfloor}\in(2^{x-1},2^x]$ $\Rightarrow$ $\frac12S^{\rho_0}<d(S)\le S^{\rho_0}$.
 - D11.14.2 $S^{\rho_0}\le\frac{a_0}{1000}S\iff S^{1-\rho_0}\ge1000/a_0$, true for $S\ge S_*:=(1000/a_0)^{1/(1-\rho_0)}$ and above.
 
-**Output.** The recursion analysed in D11.15; trim radius $d(S)\ge\frac12S^{\rho_0}$ feeds D11.18; $S_{j+1}=d(S_j)$ feeds D11.19.
+**Output.** Recursion analysed in D11.15; trim radius $d(S)\ge\frac12S^{\rho_0}$ feeds D11.18; $S_{j+1}=d(S_j)$ feeds D11.19.
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** Old identifiers lose $Q_v$ *before* the replacement is born (this is why Lemma 11.5 compares with actual earlier regions). $S_*$ is a fixed but astronomically large constant ($\rho_0$ is within $10^{-6}$ of 1).
+**Pitfall.** Old identifiers lose $Q_v$ *before* the replacement is born (hence Lemma 11.5 compares with actual earlier regions). $S_*$ is fixed but astronomically large ($\rho_0$ within $10^{-6}$ of 1).
 
 #### D11.15 Lemma 11.4 — Uniform repair induction (`geometry:repair-induction`)
 *Source: 10-geometry.tex 471–543.*
@@ -285,10 +283,10 @@ A sector of angle $>\pi$ is a union of $\le8$ of the triangles centre–corner/m
 **Used from.** D11.13 (base case), D11.14.
 
 **Proof.** Induction on generation; assume the claims for the current generation.
-- D11.15.1 Containment and disjointness. By `trim-margins`, $6d(S)\le\frac{6a_0}{1000}S<a_0S$: the square of radius $6d(S)$ lies in the parent star (it contains the radius-$3d(S)$ enlarged box used in D11.18). For parents $(v,S),(w,T)$: $\|v-w\|_\infty\ge a_0\max(S,T)$ and $6d(S)+d(T)\le\frac{7a_0}{1000}\max(S,T)<a_0\max(S,T)$. So each modification sees only its own parent's radial boundaries.
+- D11.15.1 Containment and disjointness. By `trim-margins`, $6d(S)\le\frac{6a_0}{1000}S<a_0S$: the square of radius $6d(S)$ lies in the parent star (it contains the radius-$3d(S)$ enlarged box of D11.18). For parents $(v,S),(w,T)$: $\|v-w\|_\infty\ge a_0\max(S,T)$ and $6d(S)+d(T)\le\frac{7a_0}{1000}\max(S,T)<a_0\max(S,T)$. So each modification sees only its own parent's radial boundaries.
 - D11.15.2 Labels. Across a new perimeter segment away from ray hits: inside label opposite to outside, by rule 3. Across an interior ray: the two inner labels are the opposites of two exterior labels that were opposite $\Rightarrow$ opposite. All other positive-length interfaces unchanged. Contacts not in the relative interior of one of these segments are at centre, corners or side midpoints of the new square: the next marks.
 - D11.15.3 Uniform isolated star. Normalise $Q_v$ to $[-1,1]^2$. After replacement the boundaries are subsets of the original eight rays plus the four lines supporting the square. The new marks are the nine points of $\{-1,0,1\}^2$. Each non-incident supporting line has fixed positive sup-distance from each mark, other endpoints are at distance $\ge1$. So a fixed small $a_0$ gives an isolated radial star at each child, on scale $d(S)$. Take $a_0$ no larger than this and than Lemma 11.3's constant (D11.13 Pitfall).
-- D11.15.4 Separation of children. Same parent: $\ge d(S)\ge a_0d(S)$. Different parents (a child lies within $d(S)$ of its parent): $\|\cdot\|_\infty\ge a_0\max(S,T)-d(S)-d(T)\ge\frac{a_0}2\max(S,T)>a_0\max(d(S),d(T))$ using $d\le\frac{a_0}{1000}S$. So the original separation invariant holds for children.
+- D11.15.4 Separation of children. Same parent: $\ge d(S)\ge a_0d(S)$. Different parents (a child lies within $d(S)$ of its parent): $\|\cdot\|_\infty\ge a_0\max(S,T)-d(S)-d(T)\ge\frac{a_0}2\max(S,T)>a_0\max(d(S),d(T))$ using $d\le\frac{a_0}{1000}S$. So the separation invariant holds for children.
 - D11.15.5 Terminal squares. Child stars lie inside the parent star, so avoid terminal squares of earlier generations. Terminal squares of other current parents are excluded by D11.15.4.
 - D11.15.6 Descendant bound. Each successive child is displaced by at most the preceding removal radius; successive radii shrink by factor $\le\varepsilon:=a_0/1000$ (apply `trim-margins` to $S'=d(S)\ge S_*$). A descendant birth region born at generation $m$ lies within $\sum_{i\le m}d_i\le d(S)\sum_{i\ge0}\varepsilon^i=d(S)/(1-\varepsilon)<2d(S)$ of $v$, where $d_0=d(S)$ and $d_{i+1}\le\varepsilon d_i$. Subtrees of distinct parents are separated by D11.15.4 even if one has terminated.
 - D11.15.7 Termination. While a branch continues, $S_{j+1}=d(S_j)\le S_j^{\rho_0}$, $\rho_0<1$; after finitely many steps $d(S_j)<S_*$ and that removal is terminal.
@@ -297,12 +295,12 @@ A sector of angle $>\pi$ is a union of $\le8$ of the triangles centre–corner/m
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** The point of the proof is that the finite line arrangement around every new square is *the same* at every generation (the nine points and the eight rays), so $a_0$ does not degrade with the number of generations.
+**Pitfall.** The finite line arrangement around every new square is *the same* at every generation (nine points, eight rays) $\Rightarrow$ $a_0$ does not degrade with the number of generations.
 
 #### D11.16 Step — Edges avoid lattice sites
 *Source: 10-geometry.tex 545–561.*
 
-**Statement.** Every supporting line of every edge has equation $x_1=o_1+m$, $x_2=o_2+m$, $x_1+x_2=o_1+o_2+m$ or $x_1-x_2=o_1-o_2+m$, $m\in\mathbb Z$. None contains a point of $\mathbb Z^2$. Open actual regions and closed birth regions need no convention for lattice sites on an interface. The final open tile regions, the unaltered part of the dummy region, and terminal-square interiors partition all lattice sites.
+**Statement.** Every supporting line of every edge has equation $x_1=o_1+m$, $x_2=o_2+m$, $x_1+x_2=o_1+o_2+m$ or $x_1-x_2=o_1-o_2+m$, $m\in\mathbb Z$. None contains a point of $\mathbb Z^2$. So open actual regions and closed birth regions need no convention for lattice sites on an interface. Final open tile regions, the unaltered part of the dummy region, and terminal-square interiors partition all lattice sites.
 
 **Used from.** D11.5 ($o$), D11.14 ($S_*$ increased once so a terminal halfside produced from $S\ge S_*$ is $\ge2$).
 
@@ -326,7 +324,7 @@ A sector of angle $>\pi$ is a union of $\le8$ of the triangles centre–corner/m
 
 **Used from.** D11.10, D11.11, D11.14.
 
-**Output.** The index order $i<j$ in D11.4(3). "Earlier or peer" in D11.18 refers to it.
+**Output.** The index order $i<j$ in D11.4(3); "earlier or peer" in D11.18 refers to it.
 
 **Standard?** Specific to this paper.
 
@@ -338,20 +336,20 @@ A sector of angle $>\pi$ is a union of $\le8$ of the triangles centre–corner/m
 **Used from.** D11.13, D11.14, D11.15, D11.17.
 
 **Proof.**
-- D11.18.1 What is compared. Belt: its closure vs the primary and belt closures at that time. Replacement: vs old remnants *after* that generation's removal squares, and vs peer replacements. Final actual regions are subsets of these compared regions. An ancestor is compared after its square was removed; its original birth region need not be disjoint from the new one.
+- D11.18.1 Compared sets. Belt: its closure vs the primary and belt closures at that time. Replacement: vs old remnants *after* that generation's removal squares, and vs peer replacements. Final actual regions are subsets of these. An ancestor is compared after its square was removed; its original birth region need not be disjoint from the new one.
 - D11.18.2 Finitely many patterns. Enlarge the tile's cell, resp. removal square, by $2u$ in each direction (box radius $3u$ for a replacement, inside the parent star by `trim-margins`); outside the box, points are $\ge2u$ from $\mathcal B$. Translate to the cell corner/removal centre and divide by $u$. Belt: active lines and endpoints lie on the quarter mesh with four slopes; in a bounded box finitely many; local closures are unions of faces of the arrangement; finitely many identifier groupings. Replacement: the box sees only the old radial layout and the new square and sectors, a fixed finite arrangement; other parents do not enter. So there is a common positive scale for the isolation neighbourhoods.
-- D11.18.3 Contacts. The two compared closures have no positive-length interface (D11.11, D11.15), so they meet only at contact marks. Belt: mark scale in $[u/2,u]$ (neighbouring belt scales differ by $\le2$). Replacement: mark scale $u$. Choose disjoint open contact squares of radius $\lambda u$ inside the isolated stars, $\lambda>0$ small, fixed.
+- D11.18.3 Contacts. The two compared closures have no positive-length interface (D11.11, D11.15), so meet only at contact marks. Belt: mark scale in $[u/2,u]$ (neighbouring belt scales differ by $\le2$). Replacement: mark scale $u$. Choose disjoint open contact squares of radius $\lambda u$ inside the isolated stars, $\lambda>0$ small, fixed.
 - D11.18.4 Away from contacts. Pairs $(x,y)$ in the two compared closures not both in the same open contact square form a closed subset of a compact set. $\|x-y\|_\infty$ has a positive minimum there: zero would give a common point $x=y$, a contact, with both points in its open square. Finitely many rescaled patterns $\Rightarrow$ uniform minimum $\ge c_2u$.
 - D11.18.5 Angular gap inside a contact star at $v$. Each closure is a union of closed radial sectors; direction sets disjoint (a common direction = common ray segment, excluded in D11.18.3). Boundary directions are multiples of $\pi/4$, so the angle $\theta$ between the direction sets is $\ge\pi/4$. For radial vectors of lengths $a\ge b$: $|x-y|_2^2=(a-b)^2+2ab(1-\cos\theta)$. If $b\le a/2$: $\ge a^2/4$. If $b>a/2$: $\ge a^2(1-\cos\frac\pi4)>a^2/4$. So $|x-y|_2\ge\frac a2$ and $\|x-y\|_\infty\ge|x-y|_2/\sqrt2$, giving (`geometry:angular-gap`)
 $$\|x-y\|_\infty\ge c_3\max\{\|x-v\|_\infty,\|y-v\|_\infty\},\qquad c_3=\tfrac1{2\sqrt2}\ \text{works}.$$
 - D11.18.6 Trim. At the immediately following trim the compared old/peer identifier loses a square about $v$ of radius $\ge c_4u^{\rho_0}$ ($d(S)\ge\frac12S^{\rho_0}$ with $S\ge u/2$; this removal occurs also if the square is terminal), and only shrinks afterwards. So $y$ in its final actual region has $\|y-v\|_\infty\ge c_4u^{\rho_0}$, and D11.18.5 gives $\|x-y\|_\infty\ge c_3c_4u^{\rho_0}$ for pairs in a contact star.
 - D11.18.7 Combine. Contact-star pairs: $c_3c_4u^{\rho_0}$. Other pairs inside the box: $c_2u\ge c_2u^{\rho_0}$ ($u\ge1$). Pairs with a point outside the box: $\ge2u\ge u^{\rho_0}$. So $c_1=\min\{c_2,c_3c_4,1\}$.
 
-**Output.** `geometry:ordered-clearance` for belts and replacements (D11.25), via `geometry:fine-clearance` (D11.24). Remark after the proof: the *entire* new birth region is compared with an older *actual* region, so later deletions from the new tile are irrelevant; this lets the collar estimate be applied to the untrimmed template and part of it discarded.
+**Output.** `geometry:ordered-clearance` for belts and replacements (D11.25), via `geometry:fine-clearance` (D11.24). Remark 663–666: the *entire* new birth region is compared with an older *actual* region, so later deletions from the new tile are irrelevant; the collar estimate applies to the untrimmed template and part of it is discarded.
 
-**Standard?** Compactness plus finite-pattern argument is standard; this application is specific to this paper.
+**Standard?** Compactness plus finite-pattern argument standard; application specific.
 
-**Pitfall.** Rate $u^{\rho_0}$, not $u$: this comes only from the trim at the contact (D11.18.6); away from contacts the distance is $\gtrsim u$. This is why the order uses *actual* earlier regions: comparing birth with birth fails at a point contact (distance $0$).
+**Pitfall.** Rate $u^{\rho_0}$, not $u$: comes only from the trim at the contact (D11.18.6); away from contacts the distance is $\gtrsim u$. Hence the order uses *actual* earlier regions: birth vs birth fails at a point contact (distance $0$).
 
 ---
 
@@ -360,20 +358,20 @@ $$\|x-y\|_\infty\ge c_3\max\{\|x-v\|_\infty,\|y-v\|_\infty\},\qquad c_3=\tfrac1{
 #### D11.19 Step — Repair counts (`geometry:descendant-count`, `geometry:total-repairs`)
 *Source: 10-geometry.tex 670–692.*
 
-**Statement.** For an initial mark of scale $S$: depth $\le C+C\log\log(e^e+S)$; at most nine children per mark; hence marks and replacements descended from it number $\le C(\log(S+2))^C$. For a mark from layer $k$, $S\asymp t_k$, $\log S\le C(k+1)$. The total number of belt tiles, marks and replacements is
+**Statement.** For an initial mark of scale $S$: depth $\le C+C\log\log(e^e+S)$; at most nine children per mark; hence marks and replacements descended from it number $\le C(\log(S+2))^C$. For a mark from layer $k$, $S\asymp t_k$, $\log S\le C(k+1)$. Total number of belt tiles, marks and replacements
 $$\le Cb\sum_{k\ge k_0}2^{-k\delta_0/2}(k+1)^C\le C'b .$$
 
 **Used from.** D11.9, D11.11, D11.12, D11.14, D11.15.
 
 **Proof.**
-- D11.19.1 Along a branch $S_{j+1}\le S_j^{\rho_0}$, so $\log S_j\le\rho_0^j\log S$. Termination once $S_j^{\rho_0}<S_*$, i.e. when $\rho_0^{j+1}\log S<\log S_*$; this holds for $j\ge\log(\log S/\log S_*)/\log(1/\rho_0)$ (a constant times $\log\log S$ plus a constant).
+- D11.19.1 Along a branch $S_{j+1}\le S_j^{\rho_0}$, so $\log S_j\le\rho_0^j\log S$. Termination once $S_j^{\rho_0}<S_*$, i.e. when $\rho_0^{j+1}\log S<\log S_*$; holds for $j\ge\log(\log S/\log S_*)/\log(1/\rho_0)$ (a constant times $\log\log S$ plus a constant).
 - D11.19.2 $\le9^{\text{depth}}=9^{C+C\log\log(e^e+S)}\le C(\log(S+2))^{C'}$.
 - D11.19.3 Per layer: belt cells $\le Cb2^{-k\delta_0/2}$ (D11.9); belt tiles $\le8$ per belt cell (one per fan run); initial marks $\le9$ per belt cell (D11.12). Each initial mark spawns $\le C(\log(S+2))^C\le C(Ck+C)^C$ marks and replacements.
-- D11.19.4 Sum over $k\ge k_0$: the series converges, so the total is $C'b$, finite even before restricting to the finite domain.
+- D11.19.4 Sum over $k\ge k_0$: series converges, total $C'b$, finite even before restricting to the finite domain.
 
-**Output.** $|D|$ bound (D11.20), and "number of other tiles $=O(b)$" for $\sum n_i^{-100}$ (D11.25).
+**Output.** $|D|$ bound (D11.20); "number of other tiles $=O(b)$" for $\sum n_i^{-100}$ (D11.25).
 
-**Standard?** Specific bookkeeping.
+**Standard?** Bookkeeping.
 
 #### D11.20 Step — Bounded exceptional set (`geometry:bad-sites`)
 *Source: 10-geometry.tex 694–707.*
@@ -389,7 +387,7 @@ $$\le Cb\sum_{k\ge k_0}2^{-k\delta_0/2}(k+1)^C\le C'b .$$
 
 **Output.** Item 1 of D11.4; $S(D)\le|D|\log q$ in D11.26.
 
-**Standard?** Specific bookkeeping.
+**Standard?** Bookkeeping.
 
 #### D11.21 Step — Scanner scales of primaries (`geometry:primary-scale`, `geometry:primary-limits`)
 *Source: 10-geometry.tex 709–731.*
@@ -405,14 +403,14 @@ $$L=\lfloor n^{1-\ell}\rfloor=o(r),\qquad n^\beta=o(t_k),\qquad n^\beta=o(r).$$
 - D11.21.3 Separation: $T\subseteq\overline{D_k}$, so $\dist_\infty(T,Z)\ge C_0r>4D_0r=4D_0s_0$ because $C_0>100(D_0+1)$.
 - D11.21.4 $n^{1-\ell}\le C r^{(1+2\delta_0)(1-\ell)}=o(r)$ since $(1+2\delta_0)(1-\ell)<1$. $n^\beta\le C r^{(1+2\delta_0)\beta}=o(2^{\lfloor\zeta k\rfloor})$ since $(1+2\delta_0)\beta<\zeta$. $\zeta<1$ gives $n^\beta=o(r)$. In particular $L\le s_0$.
 
-**Output.** Items 2 of D11.4 for primaries. $n^\beta=o(t_k)$ is the same-layer primary gap $t_k>2n^\beta$ (D11.25).
+**Output.** Item 2 of D11.4 for primaries. $n^\beta=o(t_k)$ is the same-layer primary gap $t_k>2n^\beta$ (D11.25).
 
 **Standard?** Specific to this paper.
 
 #### D11.22 Step — Scanner scales of belt tiles and replacements
 *Source: 10-geometry.tex 732–740.*
 
-**Statement.** Belt tile (side scale $u=t_k$): $s_0=u$, $n=\lceil C_Bu\rceil$; it is a union of $\le8$ closed fan triangles. Replacement with removal halfside $u$: $s_0=2u$, $n=\lceil C_Bu\rceil$; subdivision into the triangles centre–corners/midpoints uses $\le8$ pieces, also for a wide sector or a homogeneous square. $C_B$ large $\Rightarrow$ $n\ge C_{\rm tpl}N_0(s_0+1)$, $\diam_\infty T\le n$. In both cases $L=o(u)$.
+**Statement.** Belt tile (side scale $u=t_k$): $s_0=u$, $n=\lceil C_Bu\rceil$; union of $\le8$ closed fan triangles. Replacement with removal halfside $u$: $s_0=2u$, $n=\lceil C_Bu\rceil$; subdivision into the triangles centre–corners/midpoints uses $\le8$ pieces, also for a wide sector or a homogeneous square. $C_B$ large $\Rightarrow$ $n\ge C_{\rm tpl}N_0(s_0+1)$, $\diam_\infty T\le n$. In both cases $L=o(u)$.
 
 **Used from.** D11.11, D11.14, D11.15.
 
@@ -421,21 +419,21 @@ $$L=\lfloor n^{1-\ell}\rfloor=o(r),\qquad n^\beta=o(t_k),\qquad n^\beta=o(r).$$
 - D11.22.2 Belt tile lies in a cell of side $t_k$; replacement in a square of side $2u$; each $\diam_\infty\le2u\le n$ for $C_B\ge2$.
 - D11.22.3 $L=\lfloor n^{1-\ell}\rfloor\le(C_Bu+1)^{1-\ell}=o(u)$.
 
-**Output.** Items 2 of D11.4 for belts and replacements.
+**Output.** Item 2 of D11.4 for belts and replacements.
 
 **Standard?** Specific to this paper.
 
 #### D11.23 Step — Cut clearance of belt and replacement templates; hypotheses of Lemma 9.4
 *Source: 10-geometry.tex 742–758.*
 
-**Statement.** All birth templates of belt tiles and of their descendant replacements have $\dist_\infty(T,Z)\ge(C_0-1)r$, which exceeds both $4D_0s_0$ and $2n^\beta$. These checks give the exact hypotheses of Lemma 9.4 for every birth template: the dilated layers up to $L$ have the stipulated row and perimeter bounds, and the safe-box estimate gives the core and shell entropy bounds needed by Prop 9.6. The verification uses the finite union of convex pieces; no claim that a primary, a sector run, or its intersection with $A$ is a rectangle is needed.
+**Statement.** All birth templates of belt tiles and of their descendant replacements have $\dist_\infty(T,Z)\ge(C_0-1)r$, exceeding both $4D_0s_0$ and $2n^\beta$. These checks give the exact hypotheses of Lemma 9.4 for every birth template: dilated layers up to $L$ have the stipulated row and perimeter bounds, and the safe-box estimate gives the core and shell entropy bounds needed by Prop 9.6. The verification uses the finite union of convex pieces; no claim that a primary, a sector run, or its intersection with $A$ is a rectangle is needed.
 
 **Used from.** D11.6, D11.15, D11.22; Lemma 9.4; Prop 9.6.
 
 **Proof.**
 - D11.23.1 A belt cell in $D_k$ has $\dist_\infty(\cdot,Z)\ge C_0r$ on its closure, so also at any mark on it.
 - D11.23.2 By D11.15, every descendant lies within $2d(S)\le2S^{\rho_0}\le2t_k^{\rho_0}=o(t_k)$ of that mark ($S\le t_k$).
-- D11.23.3 Increase $k_0$: $2t_k^{\rho_0}\le r$ $\Rightarrow$ descendant birth templates have $\dist_\infty(T,Z)\ge(C_0-1)r$. This covers replacements extending into the dummy region.
+- D11.23.3 Increase $k_0$: $2t_k^{\rho_0}\le r$ $\Rightarrow$ descendant birth templates have $\dist_\infty(T,Z)\ge(C_0-1)r$. Covers replacements extending into the dummy region.
 - D11.23.4 Side scales $s_0\le2t_k=o(r)$ so $4D_0s_0<(C_0-1)r$; $n\le C t_k$ gives $n^\beta=o(r)$ so $2n^\beta<(C_0-1)r$.
 
 **Output.** `geometry:cut-clearance` for belts and replacements (D11.25); separation of the templates from the cut (Def 9.3) for D11.26.
@@ -453,11 +451,11 @@ $$c_1u^{\rho_0}>2\lceil C_Bu\rceil^\beta\qquad(u\ge S_*);$$
 
 **Proof (fine-clearance).** $\lceil C_Bu\rceil\le2C_Bu$, so $2\lceil C_Bu\rceil^\beta\le2(2C_B)^\beta u^\beta$ and $c_1u^{\rho_0}/(2\lceil C_Bu\rceil^\beta)\ge c\,u^{\rho_0-\beta}\to\infty$ since $\rho_0>\beta$. Fix $S_*$ with this ratio $>1$ for $u\ge S_*$.
 
-**Output.** `geometry:ordered-clearance` for belts and replacements (D11.25). Order of quantifiers behind D11.4 (constants before thresholds).
+**Output.** `geometry:ordered-clearance` for belts and replacements (D11.25). Quantifier order behind D11.4 (constants before thresholds).
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** $k_0$ is chosen after $S_*$ and $n_*$; $S_*$ is chosen after $a_0,c_1$, which in turn do not depend on $k_0$ (D11.13 Pitfall, D11.18).
+**Pitfall.** $k_0$ is chosen after $S_*$ and $n_*$; $S_*$ after $a_0,c_1$, which do not depend on $k_0$ (D11.13 Pitfall, D11.18).
 
 #### D11.25 Step — Conclusion of Proposition 11.2
 *Source: 10-geometry.tex 777–799.*
@@ -481,27 +479,30 @@ $$c_1u^{\rho_0}>2\lceil C_Bu\rceil^\beta\qquad(u\ge S_*);$$
 ### 11.8 Proof of the area law
 
 #### D11.26 Theorem 1.1 — Proof of the area law
-*Source: 10-geometry.tex 801–857.*
+*Source: 10-geometry.tex 801–857. Authoritative proof; D1.4 points here.*
 
 **Statement.** For every $q,R,J,\Delta$ there is $C=C(q,R,J,\Delta)$ with $S_\Omega(A)\le C|\partial_\Lambda A|$ for every finite induced square-lattice domain $\Lambda$, every admissible $H$ with unique ground vector $\Omega$ and gap $\ge\Delta$, and every $A\subseteq\Lambda$ (D1.4).
 
-**Used from.** D1.4 (statement), D2.12 (Lemma 2.2), D11.1, D11.4, Prop 9.6 (collar), D10.4 (Prop 10.2, $M=100$), Def 9.3.
+**Used from.** D1.4 (statement), D1.6 ($Z=Z_A$), D2.11 (`01-preliminaries.tex` L118–L121: $q=1$, $R=0$), D2.12 (Lemma 2.2), D11.1, D11.4, Prop 9.6 (collar, `08-scanner.tex` L808–L944), D10.4 (Prop 10.2, `09-amplification.tex` L261–L576, $M=100$), Def 9.3.
 
 **Proof.** $b=|\partial_\Lambda A|$.
-- D11.26.1 $b=0$ (includes empty $\Lambda$, empty or full $A$): Lemma 2.2 gives $S_\Omega(A)=0$.
-- D11.26.2 $b>0$. Choose $n_*$ so that Props 9.6 and 10.2 with $M=100$ apply to all templates of Prop 11.2 uniformly in the stated template bounds, and so that for every radius $r$ supplied by Prop 10.2 at scale $n\ge n_*$, $L+2r<n^\beta$. Take $D,X_i,T_i,n_i,f_i$ from Prop 11.2. Set
+- D11.26.1 Trivial cases. $\Lambda=\varnothing$ or $A\in\{\varnothing,\Lambda\}$: $S_\Omega(A)=0$ (purity, $S_\Omega(\Lambda)=0$; tex 804). $q=1$, $R=0$: $S_\Omega(A)=0$ by D2.11. $b=0$: Lemma 2.2 gives $S_\Omega(A)=0$. Afterwards $q\ge2$, $R\ge1$, $\Lambda\ne\varnothing$, $b>0$.
+- D11.26.2 Choose $n_*$ so that Props 9.6 and 10.2 with $M=100$ apply to all templates of Prop 11.2 uniformly in the stated template bounds, and every radius $r$ supplied by Prop 10.2 at scale $n\ge n_*$ has $L+2r<n^\beta$. Take $D,X_i,T_i,n_i,f_i$ from Prop 11.2 with $Z=Z_A$; its constant $C_1$ is independent of $\Lambda,A$. Set
 $$S_i=A\cap\bigl(T_i+[-L_i,L_i]^2_{\mathbb Z}\bigr),\qquad J_i=(\Lambda\setminus A)\cup\bigcup_{j<i,\,f_j=f_i}X_j .$$
-Let $r_i$ be the radius from Prop 10.2 for $X=A\cap T_i$, using the size ($|S_i|\le Cn_i^2$), cut ($O(n_i)$ edges) and information bounds ($I_\Omega(X:\Lambda\setminus S_i)\le Cn_i^{1-\varepsilon}$, $\varepsilon=10^{-5}=\ell$) from Prop 9.6. Item 2 of Prop 11.2 gives $L_i\le s_i$ and separation from the cut as required by Prop 9.6.
-- D11.26.3 $J_i\subseteq\Lambda\setminus N^\Lambda_{2r_i}(S_i)$. A graph path of length $\le2r_i$ from $S_i$ stays within ambient distance $L_i+2r_i<n_i^\beta$ of $T_i$. By `ordered-clearance` ($>2n_i^\beta$) it reaches no earlier same-family $X_j$. It cannot reach $\Lambda\setminus A$: its first cut crossing would put an endpoint of a cut edge, i.e. a point of $Z$, within $n_i^\beta$ of $T_i$, contradicting `cut-clearance`.
-- D11.26.4 Prop 10.2 (output holds simultaneously for every $J\subseteq\Lambda\setminus N_{2r}(S_0)$, and for any subset of $X$ in place of $X$) and monotonicity under discarding part of the first system: $I_\Omega(X_i:J_i)\le I_\Omega(A\cap T_i:J_i)\le Cn_i^{-100}$. $J_i$ is treated as one set. All these estimates concern the same $\Omega$; the auxiliary construction inside each may differ.
-- D11.26.5 Lemma 11.1 with $\psi=\Omega$, $\varepsilon_i=Cn_i^{-100}$ and $S(D)\le|D|\log q$: $S_\Omega(A)\le|D|\log q+\frac C2\sum_in_i^{-100}\le C'b$ by items 1, 4 of Prop 11.2.
-- D11.26.6 All thresholds and constants depend only on $q,R,J,\Delta$; none on the size, shape, connectedness or holes of $\Lambda$, or on $A$.
+Item 2 of Prop 11.2 gives $L_i\le s_i$ and cut separation, so Prop 9.6 ($L=\lfloor n^{1-10^{-5}}\rfloor$, $X=A\cap T$, $S_0=A\cap T_L$) applies for $n_i\ge n_*$: $I_\Omega(A\cap T_i:\Lambda\setminus S_i)\le Cn_i^{1-\varepsilon}$, $\varepsilon=10^{-5}=\ell$; $|S_i|\le Cn_i^2$; the cuts of $A\cap T_i$, $S_i$, $S_i\setminus(A\cap T_i)$ have $O(n_i)$ edges. These are the hypotheses of Prop 10.2 with uniform $C_0$; with $X=A\cap T_i$, $S_0=S_i$ it gives $r_i\le C_Mn_i^{(1-\varepsilon)/\alpha}$, $L_i+2r_i=o(n_i^\beta)$, and $I_\Omega(A\cap T_i:J)\le Cn_i^{-100}$ for every $J\subseteq\Lambda\setminus N^\Lambda_{2r_i}(S_i)$.
+- D11.26.3 $J_i\subseteq\Lambda\setminus N^\Lambda_{2r_i}(S_i)$, for the whole $J_i$ at once:
+  - a graph path of length $\le2r_i$ from $S_i$ stays within ambient distance $L_i+2r_i<n_i^\beta$ of $T_i$ (start within $L_i$ of $T_i$; each graph step moves $\le1$);
+  - `ordered-clearance` $\dist_\infty(T_i,\bigcup_{j<i,f_j=f_i}X_j)>2n_i^\beta>n_i^\beta$ $\Rightarrow$ the path meets no earlier same-family $X_j$;
+  - a path reaching $\Lambda\setminus A$ contains, at its first cut crossing, an endpoint of a cut edge, a point of $Z$, within $<n_i^\beta$ of $T_i$; contradicts `cut-clearance` $\dist_\infty(T_i,Z)>2n_i^\beta$. Alternatively $2n_i^\beta>L_i+n_i^\beta$ is the cut-clearance hypothesis of Prop 10.2, which then states $N_{2r_i}(S_i)\subseteq A$.
+- D11.26.4 Prop 10.2 (holds for every such $J$, and for any subset of $X$ in place of $X$) and monotonicity under discarding part of the first system, $X_i\subseteq A\cap T_i$: $I_\Omega(X_i:J_i)\le I_\Omega(A\cap T_i:J_i)\le Cn_i^{-100}$. $J_i$ is one set. All estimates concern the same $\Omega$; the auxiliary construction inside each may differ.
+- D11.26.5 Lemma 11.1 with $\psi=\Omega$, $\varepsilon_i=Cn_i^{-100}$, $S(D)\le|D|\log q$: $S_\Omega(A)\le|D|\log q+\frac C2\sum_in_i^{-100}\le C_1b\log q+\frac C2C_1b=:C'b$ by items 1, 4 of Prop 11.2.
+- D11.26.6 All thresholds and constants depend only on $q,R,J,\Delta$ (and fixed template constants, $n_*$); none on size, shape, connectedness or holes of $\Lambda$, or on $A$. Quantifiers: $\forall(q,R,J,\Delta)\ \exists C\ \forall(\Lambda,H,A)$.
 
 **Output.** Theorem 1.1, eq. `eq:area-law`. Corollary 1.2 (D1.7) is deduced from it in §1.
 
-**Standard?** Specific to this paper (assembly). The final step is the standard entropy-decomposition argument made possible by D11.1.
+**Standard?** Assembly specific to this paper; final step is the entropy-decomposition argument enabled by D11.1.
 
-**Pitfall.** Order of choices: $n_*$ is fixed *before* the radii $r_i$ (they exist only for $n_i\ge n_*$), and $n_*$ enters Prop 11.2's constant $C$. Amplification gives $I(X:J)$ for $J$ outside $N_{2r}(S_0)$ with $S_0$ the *dilated* set, hence the margin $L_i+2r_i<n_i^\beta$.
+**Pitfall.** $n_*$ is fixed *before* the radii $r_i$ (they exist only for $n_i\ge n_*$), and $n_*$ enters Prop 11.2's constant $C_1$. Amplification gives $I(X:J)$ for $J$ outside $N_{2r}(S_0)$ with $S_0$ the *dilated* set, hence the margin $L_i+2r_i<n_i^\beta$.
 
 ---
 
@@ -539,18 +540,18 @@ Let $r_i$ be the radius from Prop 10.2 for $X=A\cap T_i$, using the size ($|S_i|
 | $c_1,c_2,c_3,c_4$ | separation constants ($c_1=\min\{c_2,c_3c_4,1\}$; $c_3=1/(2\sqrt2)$ works; $c_4=\frac14$ works) | D11.18 |
 | $C_P$ | primary scale constant, $n=\lceil C_Pr^{1+2\delta_0}\rceil$ | D11.21 |
 | $C_B$ | belt/replacement scale constant, $n=\lceil C_Bu\rceil$ | D11.22 |
-| $L_i,S_i,J_i,r_i$ | collar width, dilated set, remote set, amplification radius | D11.26.2 |
+| $L_i,S_i,J_i,r_i$ | collar width, dilated set, remote set, amplification radius ($r_i\le C_Mn_i^{(1-\varepsilon)/\alpha}$) | D11.26.2 |
 | $b$, $Z$ | $|\partial_\Lambda A|$; endpoint set ($|Z|\le2b$) | D11.4 |
-| $C$ | depends on $q,R,J,\Delta$, template constants, $n_*$; not on $\Lambda,A$ | D11.4, D11.26.6 |
+| $C$, $C_1$ | depend on $q,R,J,\Delta$, template constants, $n_*$; not on $\Lambda,A$; $C_1$ = Prop 11.2's constant | D11.4, D11.26.6 |
 
 ## Dependencies
 
 Consumed:
 - §1: Theorem 1.1 statement (D1.4); endpoint set $Z$ (D1.6); reduction note (D1.12, D1.18).
-- §2: entropy and mutual-information definitions, purity, SSA (D2.1, D2.2); Lemma 2.2 (D2.12); constants convention (D2.13).
+- §2: entropy and mutual-information definitions, purity, SSA (D2.1, D2.2); $q=1$, $R=0$ cases (`01-preliminaries.tex` L118–L121); Lemma 2.2 (D2.12); constants convention (D2.13).
 - §3: $D_0>2R+10$, "safe" (`02-initial.tex` 225).
 - §9 (scanner): Def 9.3 (template, $C_{\rm tpl}$), Lemma 9.4 (rows, coverings, shell entropy), Prop 9.6 (collar bound, $\varepsilon=\ell=10^{-5}$).
-- §10 (amplification): exponents $\beta,\varepsilon$; Prop 10.2 (decay $n^{-M}$ for $J$ outside $N_{2r}(S_0)$; $L+2r=o(n^\beta)$).
+- §10 (amplification): exponents $\beta,\varepsilon,\alpha$; Prop 10.2 (decay $n^{-M}$ for $J$ outside $N_{2r}(S_0)$; $r\le C_Mn^{(1-\varepsilon)/\alpha}$, $L+2r=o(n^\beta)$).
 - External: SSA (Lieb–Ruskai 1973); chain rule and subadditivity of von Neumann entropy.
 
 Exported:

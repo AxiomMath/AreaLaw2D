@@ -4,7 +4,7 @@ Source: `paper/sections/09-amplification.tex` (583 lines), label `sec:amplificat
 
 ## Section in one paragraph
 
-Input: the sublinear collar bound $I_\Omega(X:\Lambda\setminus S_0)\le Cn^{1-\varepsilon}$ (Proposition 9.6), $\varepsilon=10^{-5}$. Output: for every $M$, $I_\Omega(X:J)\le C_Mn^{-M}$ for all $J$ outside $N_{2r}(S_0)$, with $r\lesssim n^{(1-\varepsilon)/\alpha}=o(n^\beta)$, $\beta=1-2\cdot10^{-6}$, $\alpha=p/(p+1)>1-10^{-6}$. Order: (1) fix exponents and the exact positive system $H_F=\sum k_i$ with $k_i\Omega=0$, gap $g$ (D10.1); (2) Lemma 10.1: products of the random contractions $G_i=(I-k_i)^{1/2}$ (Poisson clocks) can be cut to a ball around $S$ in expected norm, with an $e^{vt}$ light-cone loss; proved through unital channels, Lieb–Robinson-type oscillation propagation and Gronwall (D10.2); (3) the global gap gives $\mathbb E\|D(I-P_\Omega)\zeta\|^2\le e^{-gt}\|(I-P_\Omega)\zeta\|^2$ (D10.3); (4) Proposition 10.2: typical spectral projections give a restoring operator $R_0$ of norm $\le e^{(\mathcal I+3w)/2}$ with exactly computable adjoint action and ground component $\le1$ (D10.5–D10.10); running the constraint clocks for time $t_*\sim\mathcal I+w+K\log n$ kills the excited part, localizes to $N_{2r}(S_0)$, keeps the norm $\le1+3n^{-K}$ (D10.11–D10.13); polar decomposition replaces the result by a local unitary $U'$ with $\|U'\phi-\eta\|\le Cn^{-K/2}$ (D10.14); continuity of mutual information on the reference copy $e'$ costs only $\log\dim e'\le Cn^2$ (D10.15); radii and containment in $A$ are checked (D10.16). §11 applies Proposition 10.2 repeatedly to disjoint tiles and needs exactly: the radius bound, $L+2r=o(n^\beta)$, the $n^{-M}$ bound uniform in $J\subseteq\Lambda\setminus N_{2r}(S_0)$ (also for subsets of $X$), and $N_{2r}(S_0)\subseteq A$ under clearance.
+Input: the sublinear collar bound $I_\Omega(X:\Lambda\setminus S_0)\le Cn^{1-\varepsilon}$ (Proposition 9.6), $\varepsilon=10^{-5}$. Output: for every $M$, $I_\Omega(X:J)\le C_Mn^{-M}$ for all $J$ outside $N_{2r}(S_0)$, with $r\lesssim n^{(1-\varepsilon)/\alpha}=o(n^\beta)$, $\beta=1-2\cdot10^{-6}$, $\alpha=p/(p+1)>1-10^{-6}$. Order: (1) fix exponents and the exact positive system $H_F=\sum k_i$ with $k_i\Omega=0$, gap $g$ (D10.1); (2) Lemma 10.1: products of the random contractions $G_i=(I-k_i)^{1/2}$ (Poisson clocks) can be cut to a ball around $S$ in expected norm, with an $e^{vt}$ light-cone loss; proved through unital channels, Lieb–Robinson-type oscillation propagation and Gronwall (D10.2); (3) the global gap gives $\mathbb E\|D(I-P_\Omega)\zeta\|^2\le e^{-gt}\|(I-P_\Omega)\zeta\|^2$ (D10.3); (4) Proposition 10.2: typical spectral projections give a restoring operator $R_0$ of norm $\le e^{(\mathcal I+3w)/2}$ with exactly computable adjoint action and ground component $\le1$ (D10.5–D10.10); running the constraint clocks for time $t_*\sim\mathcal I+w+K\log n$ kills the excited part, localizes to $N_{2r}(S_0)$, keeps the norm $\le1+3n^{-K}$ (D10.11–D10.13); polar decomposition replaces the result by a local unitary $U'$ with $\|U'\phi-\eta\|\le Cn^{-K/2}$ (D10.14); continuity of mutual information on the reference copy $e'$ costs only $\log\dim e'\le Cn^2$ (D10.15); radii and containment in $A$ (D10.16).
 
 Notation. $\Lambda$ finite, $d_\Lambda$ graph metric of the induced graph ($=\infty$ across components), $N_l(a)=\{y:d_\Lambda(y,a)\le l\}$, $N_r(S)=\{y:d_\Lambda(y,S)\le r\}$. $P_\Omega=|\Omega\rangle\langle\Omega|$. Spectator systems carry the identity for every physical operator. $I_\Omega(X:J)$ is the mutual information in the original ground state $\Omega$ (§2 D2.1). $\log$ natural. $C,c$ generic (§2 D2.13), independent of $|\Lambda|$ and of spectator dimensions in Lemma 10.1.
 
@@ -23,11 +23,11 @@ $g>0$ independent of $\Lambda$. The scanner's truncated Hamiltonian ($p=1$, §4 
 
 **Used from.** D4.6 (Proposition 4.3: $k_i,g,\alpha=p/(p+1)$, anchors $a_i$, tails $\|k_i-E_{i,l}k_i\|\le Ce^{-cl^\alpha}$); D4.2 ($E_{i,l}$).
 
-**Output.** $\alpha$ close to $1$ is what makes $r\sim t_*^{1/\alpha}$ satisfy $r=o(n^\beta)$ (D10.16). $k_i\Omega=0$ and $g$ feed D10.2, D10.3.
+**Output.** $\alpha\to1$ gives $r\sim t_*^{1/\alpha}=o(n^\beta)$ (D10.16). $k_i\Omega=0$, $g$: D10.2, D10.3.
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** $p\ge10^6$ is only implicit in "$\alpha>1-10^{-6}$". The constants $C,c,g$ of D4.6 depend on $p$, fixed once for the section. $p=1$ (scanner) and $p\ge10^6$ (here) are different systems.
+**Pitfall.** $p\ge10^6$ is only implicit in "$\alpha>1-10^{-6}$". $C,c,g$ of D4.6 depend on $p$, fixed once for the section.
 
 ---
 
@@ -47,23 +47,23 @@ There are constants $C,c,v>0$, independent of $|\Lambda|$ and of spectator dimen
 $$\mathbb E\|D_{\rm ret}-L\|\le Ct|S|(1+r)^2e^{-cr^\alpha}.\tag{A}$$
 $L$ is a contraction supported on $N_{2r}(S)$. If $k_i\Omega=0$ and $B$ is supported on $S\cup$ spectators, then for every unit spectator vector $\xi$,
 $$\mathbb E\|(D-D_{\rm ret})B(\Omega\otimes\xi)\|\le Ct|S|\,\|B\|\,e^{vt-cr^\alpha}.\tag{B}$$
-(A), (B) hold on the same clock space (same realization).
+(A), (B) hold on the same clock space.
 
-**Used from.** D4.2 ($E_{i,l}$: positive, unital, fixes operators on $N_l(a_i)$); D4.10 (Lemma 4.4: root tails $\|G_i-G_{i,l}\|+\|K_i-K_{i,l}\|\le Ce^{-cl^\alpha}$, $G_{i,l}^2+K_{i,l}^2=I$, channels $\mathcal E_i,\mathcal E_{i,l}$ unital CP contractive, $\|\mathcal E_i-\mathcal E_{i,l}\|_{\rm cb}\le Ce^{-cl^\alpha}$); D4.9 (Hölder-$\tfrac12$, behind the root tails); D2.7 (ball count $v_l=1+2l(l+1)\le3(1+l)^2$); D2.8 (at most $\mu_R$ labels per anchor). D4.10 is applied to abstract positive contractions $k_i$ with the tail hypothesis: its proof uses only $0\le k_i\le I$ and the tail, not the specific $k_i$ of D4.6.
+**Used from.** D4.2 ($E_{i,l}$: positive, unital, fixes operators on $N_l(a_i)$); D4.10 (Lemma 4.4); D4.9 (Hölder-$\tfrac12$, behind the root tails); D2.7 (ball count $v_l=1+2l(l+1)\le3(1+l)^2$); D2.8 (at most $\mu_R$ labels per anchor). D4.10 applies to abstract $k_i$: its proof uses only $0\le k_i\le I$ and the tail.
 
 **Proof.** Notation: $\mathcal E_i(B)=G_iBG_i+K_iBK_i$, $\mathcal E_{i,l}$ likewise with $G_{i,l},K_{i,l}$ ($K_{i,l}=(E_{i,l}k_i)^{1/2}$). Anchors per radius: $\#\{i:y\in N_l(a_i)\}\le\mu v_l\le C(1+l)^2$.
 
 - D10.2.1 *Channels on the ground vector* (tex 74–91; `eq:amplification-channel-vector` 83–85). $k_i\Omega=0\Rightarrow K_i\Omega=0$, $G_i\Omega=\Omega$ (functional calculus). Hence for every operator $C'$ and spectator $\xi$
 $$\mathcal E_i(C')(\Omega\otimes\xi)=G_iC'G_i(\Omega\otimes\xi)+K_iC'K_i(\Omega\otimes\xi)=G_iC'(\Omega\otimes\xi).$$
-Iterating along events in order, $(\mathcal E_{i_m}\circ\dots\circ\mathcal E_{i_1})(B)(\Omega\otimes\xi)=G_{i_m}\cdots G_{i_1}B(\Omega\otimes\xi)$. So channel products reproduce $D$ and $D_{\rm ret}$ on $\Omega\otimes\xi$. Write $\mathcal E_{\rm full},\mathcal E_{\rm ret}$ for the channel products.
-- D10.2.2 *Channel approximation, no dimension factor* (tex 91–99; `eq:amplification-channel-approximation`). $\|ABA-A'BA'\|\le(\|A\|+\|A'\|)\|A-A'\|\|B\|$ with $A\in\{G_i,K_i\}$, $A'\in\{G_{i,l},K_{i,l}\}$, all contractions, valid after adjoining spectators ($A\otimes I$). So $\|\mathcal E_i-\mathcal E_{i,l}\|_{\rm cb}\le2(\|G_i-G_{i,l}\|+\|K_i-K_{i,l}\|)\le Ce^{-cl^\alpha}$. (`eq:amplification-channel-approximation`, quoted from D4.10.)
+Iterating along events in order, $(\mathcal E_{i_m}\circ\dots\circ\mathcal E_{i_1})(B)(\Omega\otimes\xi)=G_{i_m}\cdots G_{i_1}B(\Omega\otimes\xi)$. Write $\mathcal E_{\rm full},\mathcal E_{\rm ret}$ for the channel products over all / retained events; on $\Omega\otimes\xi$ they give $D$, $D_{\rm ret}$.
+- D10.2.2 *Channel approximation, no dimension factor* (tex 91–99; `eq:amplification-channel-approximation`). D4.10.6: $\|\mathcal E_i-\mathcal E_{i,l}\|_{\rm cb}\le Ce^{-cl^\alpha}$, spectators included.
 - D10.2.3 *Shell differences* (tex 101–106). $\mathcal E_{i,-1}=\mathrm{id}$, $\Delta_{i,l}=\mathcal E_{i,l}-\mathcal E_{i,l-1}$. For $l\ge1$: $\|\Delta_{i,l}\|_{\rm cb}\le\|\mathcal E_{i,l}-\mathcal E_i\|_{\rm cb}+\|\mathcal E_i-\mathcal E_{i,l-1}\|_{\rm cb}\le C'e^{-cl^\alpha}$, using $l^\alpha-(l-1)^\alpha\le1$. For $l=0$: both maps are contractions, $\|\Delta_{i,0}\|_{\rm cb}\le2$. Enlarge $C$: $\|\Delta_{i,l}\|_{\rm cb}\le Ce^{-cl^\alpha}$ for all $l\ge0$ (`eq:amplification-channel-shells`). Telescoping: $\mathcal E_i-\mathrm{id}=\sum_{l\ge0}\Delta_{i,l}$ (norm-convergent) and $\mathcal E_i=\mathcal E_{i,m-1}+\sum_{l\ge m}\Delta_{i,l}$ for every $m\ge0$.
 - D10.2.4 *Component support* (tex 133–137). Let $\Gamma$ be the component of $a_i$ and $l\ge\operatorname{diam}\Gamma$. Then $N_l(a_i)=\Gamma$, so $E_{i,l}$ is the same map for all such $l$ and $\|k_i-E_{i,l}k_i\|$ is constant in $l$. It is $\le Ce^{-cl^\alpha}\to0$, hence $0$: $k_i=E_{i,l}k_i$ is supported on $\Gamma$. So $k_i,G_i,K_i,\mathcal E_i$ act in $\Gamma$ and cannot change $d_y$ for $y$ in another component.
 - D10.2.5 *Oscillation* (tex 107–113). $d_y(B)=\sup_{U_y\ \rm unitary}\|[U_y,B]\|$, $U_y$ on the on-site space at physical $y$. Facts: $d_y(C')\le2\|C'\|$; $d_y=0$ if $B$ commutes with all operators at $y$; $\|B-U_yBU_y^*\|=\|[B,U_y]\|\le d_y(B)$.
 - D10.2.6 *Shell oscillation* (tex 107–121; `eq:amplification-shell-oscillation`): $\|\Delta_{i,l}(B)\|\le Ce^{-cl^\alpha}\sum_{z\in N_l(a_i)}d_z(B)$.
   - Both $\mathcal E_{i,l}$, $\mathcal E_{i,l-1}$ fix every operator commuting with the algebra on $N_l(a_i)$ (for $B'$ in the commutant: $G B'G+KB'K=B'(G^2+K^2)=B'$; supports are inside $N_l(a_i)$; $l=0$: identity). So $\Delta_{i,l}$ vanishes on that commutant, also after tensoring with spectators.
   - Let $\mathcal T_z(B)=\int U_zBU_z^*\,dU_z$. For $Q=N_l(a_i)=\{z_1,\dots,z_m\}$ put $\widehat B=\mathcal T_{z_m}\cdots\mathcal T_{z_1}B$, which commutes with the algebra on $Q$. $\mathcal T_{z'}$, $z'\ne z$, commutes with conjugation by $U_z$, so $d_{z_j}(\mathcal T_{z_{j-1}}\cdots\mathcal T_{z_1}B)\le d_{z_j}(B)$, and $\|B-\widehat B\|\le\sum_jd_{z_j}(B)$ (telescoping, each step $\le d_{z_j}$ of the intermediate operator).
-  - $\Delta_{i,l}(B)=\Delta_{i,l}(B-\widehat B)$, so $\|\Delta_{i,l}B\|\le\|\Delta_{i,l}\|_{\rm cb}\sum_{z\in Q}d_z(B)$. Spectator factors of $B$ are untouched; this is why the cb norm is used.
+  - $\Delta_{i,l}(B)=\Delta_{i,l}(B-\widehat B)$, so $\|\Delta_{i,l}B\|\le\|\Delta_{i,l}\|_{\rm cb}\sum_{z\in Q}d_z(B)$. Spectator factors of $B$ untouched: hence cb norm.
 - D10.2.7 *Oscillation increment* (tex 123–137; `eq:amplification-oscillation-increment`): with $m=d_\Lambda(a_i,y)$,
 $$d_y(\mathcal E_iB)\le d_y(B)+C\sum_{l\ge m}e^{-cl^\alpha}\sum_{z\in N_l(a_i)}d_z(B).$$
   - $m<\infty$: $\mathcal E_i=\mathcal E_{i,m-1}+\sum_{l\ge m}\Delta_{i,l}$ (D10.2.3). $\mathcal E_{i,m-1}$ has support $N_{m-1}(a_i)\not\ni y$, so $U_y\mathcal E_{i,m-1}(B)U_y^*=\mathcal E_{i,m-1}(U_yBU_y^*)$. With contractivity: $\|[U_y,\mathcal E_{i,m-1}B]\|=\|\mathcal E_{i,m-1}(B-U_yBU_y^*)\|\le\|[U_y,B]\|$, so $d_y(\mathcal E_{i,m-1}B)\le d_y(B)$. Remainder: $d_y(\cdot)\le2\|\cdot\|$ and D10.2.6; absorb $2$ in $C$. $m=0$: $\mathcal E_{i,-1}=\mathrm{id}$.
@@ -86,18 +86,18 @@ By D10.2.3 and D10.2.6, $\|(\mathcal E_i-\mathrm{id})B_u\|\le C\sum_{l\ge0}e^{-c
   - Same clocks. Events $e_1,\dots,e_N$ in order, $F_j=\mathcal E_{e_j}$, $R_j=F_j$ if retained else $\mathrm{id}$. Then $F_N\cdots F_1-R_N\cdots R_1=\sum_jF_N\cdots F_{j+1}(F_j-R_j)R_{j-1}\cdots R_1$; only omitted $j$ contribute, with $F_j-R_j=\mathcal E_{e_j}-\mathrm{id}$.
   - Later $F$'s are contractions: term norm $\le\|(\mathcal E_{e_j}-\mathrm{id})(R_{j-1}\cdots R_1B)\|$. The retained history depends only on retained clocks, independent of the omitted clocks. Campbell's formula for the rate-one Poisson process of label $i$: $\mathbb E\sum_{\text{events of }i}f=\int_0^t\mathbb E f(B_u)\,du$.
   - So the expectation is $\le\sum_{i\ \rm omitted,\,d_i<\infty}\int_0^tC\|B\|e^{vu-c'd_i^\alpha}du\le Ct\|B\|e^{vt}\sum_{d>r}\#\{i:d_i=d\}e^{-c'd^\alpha}$ with $\#\{i:d_i=d\}\le C|S|(d+1)^2$ (anchors in $N_d(S)$, ball count, multiplicity). $\sum_{d>r}(d+1)^2e^{-c'd^\alpha}\le Ce^{-c''r^\alpha}$.
-  - This bounds the expectation of the norm, not the norm of the averaged operator.
+  - Bounds $\mathbb E\|\cdot\|$, not $\|\mathbb E\,\cdot\|$.
 - D10.2.12 *Proof of (B)* (tex 220–226). Evaluate $\mathcal E_{\rm full}(B)-\mathcal E_{\rm ret}(B)$ on $\Omega\otimes\xi$ ($\|\Omega\otimes\xi\|=1$); D10.2.1 turns it into $(D-D_{\rm ret})B(\Omega\otimes\xi)$. Rename $c''\to c$.
 - D10.2.13 *Proof of (A) and support* (tex 228–234). Retained labels: anchors in $N_r(S)$, so $\le C|S|(1+r)^2$ labels; expected number of retained events $\le Ct|S|(1+r)^2$. $D_{\rm ret}$ and $L$ have the same events: $\|\prod G_{i_j}-\prod G_{i_j,r}\|\le\sum_j\|G_{i_j}-G_{i_j,r}\|\le N\cdot Ce^{-cr^\alpha}$ (contractions, telescoping; D4.10 root tail at $l=r$). Take $\mathbb E$. Support: retained $d(a_i,S)\le r$, $G_{i,r}$ supported on $N_r(a_i)\subseteq N_{2r}(S)$; each $G_{i,r}$ is a positive contraction.
 
-**Output.** D10.12 uses (A) and (B) with $S=S_0$, $B=B_0$, $\xi=|00\rangle_{s'e'}$. $L$ (named $L'$ there) is the local operator that is polar-decomposed (D10.14). Constants $C,c,v$ are independent of $|\Lambda|$ and spectators.
+**Output.** D10.12 uses (A) and (B) with $S=S_0$, $B=B_0$, $\xi=|00\rangle_{s'e'}$. $L$ ($L'$ there) is polar-decomposed in D10.14.
 
-**Standard?** Mechanism standard: dissipative Lieb–Robinson bounds, Barthel–Kliesch, PRL 108 (2012), Theorems 1–2; channel products supported near $S$ as in Lieb–Robinson light cones. The version here (expected norm on coupled clock realizations, oscillation $d_y$, weighted Gronwall with stretched-exponential kernel, spectator-independent cb bounds) is specific to this paper.
+**Standard?** Mechanism: dissipative Lieb–Robinson, Barthel–Kliesch, PRL 108 (2012), Theorems 1–2. Specific here: expected norm on coupled clock realizations, oscillation $d_y$, weighted Gronwall with stretched-exponential kernel, spectator-independent cb bounds.
 
 **Pitfall.**
 - Unitality of $\mathcal E_i$ is essential: $C'\mapsto G_iC'G_i$ alone need not fix operators on a disjoint system (D10.2.6). Vector identity D10.2.1 recovers the non-unital products only on $\Omega\otimes\xi$.
-- (B) loses $e^{vt}$: the light-cone speed. $r$ must satisfy $cr^\alpha\gtrsim vt$, i.e. $r\gtrsim t^{1/\alpha}$.
-- (A) has no $e^{vt}$: it only compares two products by telescoping; no propagation needed.
+- (B) loses $e^{vt}$ (light cone): need $cr^\alpha\gtrsim vt$, $r\gtrsim t^{1/\alpha}$.
+- (A) has no $e^{vt}$: telescoping only, no propagation.
 - $\mathcal E_{i,l}$ does not preserve $k_i\Omega=0$; only exact $G_i,K_i$ enter (B).
 
 #### D10.3 Step — Excited-state decay $\mathbb E\|D(I-P_\Omega)\zeta\|^2\le e^{-gt}\|(I-P_\Omega)\zeta\|^2$
@@ -115,7 +115,7 @@ $$\mathbb E\|D(I-P_\Omega)\zeta\|^2\le e^{-gt}\|(I-P_\Omega)\zeta\|^2.$$
 
 **Output.** D10.12: with $\zeta=R_0\phi$, $\mathbb E\|D(I-P_\Omega)\zeta\|^2\le M_0^2e^{-gt_*}$.
 
-**Standard?** Mechanism: ground-state-preserving products suppress excited states as in detectability-lemma constructions (Anshu–Arad–Vidick 2016, §III). The random-contraction version with the global gap $H_F\ge g(I-P_\Omega)$ is specific to this paper.
+**Standard?** Mechanism: detectability-lemma products (Anshu–Arad–Vidick 2016, §III). Random-contraction version with global gap $H_F\ge g(I-P_\Omega)$: specific to this paper.
 
 **Pitfall.** All labels (full $D$, not $D_{\rm ret}$) are used; the gap is global, locality comes only from D10.2. $\|\cdot\|^2$ decays, so Markov applies to the squared norm (D10.12).
 
@@ -136,7 +136,7 @@ and, simultaneously for every physical $J\subseteq\Lambda\setminus N_{2r}(S_0)$,
 $$I_\Omega(X:J)\le C_Mn^{-M}.$$
 Same for any subset of $X$ in place of $X$. Constants and threshold depend on $C_0,M$ (and the standing data of D2.13, $p$), not on $\Lambda,A,T$. If in addition $\operatorname{dist}_\infty(T,Z)>L+n^\beta$, $Z$ the endpoint set of the original cut, then $N_{2r}(S_0)\subseteq A$; so $J$ may contain all of $\Lambda\setminus A$.
 
-**Used from.** D10.1; D10.2 (Lemma 10.1); D10.3; D3.1 (Lemma 3.1, `lem:tail`: surprisal concentration of a marginal, $\mathcal B=1+\sum_{i\ \rm crossing}\log^2(ed_i)$); D2.4 (Lemma 2.1 continuity); D2.5 (pure-state trace distance); D2.2 (SSA consequences, purity); D2.9 (crossing count $\le2v_R\mu_R|\partial_\Lambda D|$); input hypotheses come from Proposition 9.6 (collar, $\mathcal I\le Cn^{1-\varepsilon}$, $O(n)$-edge cuts, $|S_0|=O(n^2)$).
+**Used from.** D10.1; D10.2 (Lemma 10.1); D10.3; D3.1 (Lemma 3.1, `lem:tail`; $\mathcal B$ as in D3.1); D2.4 (Lemma 2.1 continuity); D2.5 (pure-state trace distance); D2.2 (SSA consequences, purity); D2.9 (crossing count $\le2v_R\mu_R|\partial_\Lambda D|$); hypotheses from Proposition 9.6 (`prop:collar`).
 
 **Proof (skeleton; details in the Steps below).**
 - D10.4.1 $X=\varnothing$: $I_\Omega(\varnothing:J)=0$, take $r=1$. Assume $X\ne\varnothing$ below. Constructions keep the physical system fixed; all estimates are uniform in $|\Lambda|$.
@@ -150,7 +150,7 @@ Same for any subset of $X$ in place of $X$. Constants and threshold depend on $C
 - D10.4.9 Continuity on $e'$: $I_\Omega(X:J)\le Cn^{2-K/4}$; $K\ge4(M+3)$ (D10.15).
 - D10.4.10 Radius bounds and $N_{2r}(S_0)\subseteq A$ (D10.16).
 
-**Output.** §11 (`10-geometry.tex` 71, 809–837): radius $r_i$ per tile from $|S_0|$, cut and $\mathcal I$ bounds; $I_\Omega(X:J)\le C_Mn^{-M}$ uniformly in $J$; monotonicity for subsets of $X$; $L+2r=o(n^\beta)$ so enlarged neighborhoods stay inside $n^\beta$-clearance.
+**Output.** §11 (`10-geometry.tex` 71, 809–837): radius $r_i$ per tile; $n^{-M}$ bound uniform in $J$ and for subsets of $X$; $L+2r=o(n^\beta)$ keeps enlarged neighborhoods inside $n^\beta$-clearance.
 
 **Standard?** Specific to this paper (typical-subspace restoring operator, constraint-product suppression, polar replacement by a local unitary on a reference copy). Ingredients standard: Schmidt decomposition, spectral concentration of surprisal, polar decomposition, continuity of conditional entropy.
 
@@ -165,7 +165,7 @@ Same for any subset of $X$ in place of $X$. Constants and threshold depend on $C
 $$\|(I-P_X)\Omega\|^2,\ \|(I-T_Y)\Omega\|^2,\ \|(I-Q_{S_0})\Omega\|^2\le\delta,$$
 so each is $\le\sqrt\delta=n^{-K}$ in norm. A trivial subsystem has projection $I$. Inverse eigenvalues below are on the selected spectrum only.
 
-**Used from.** D3.1 (Lemma 3.1, `eq:initial-tail-probability`) applied to $H$ ($c_0=J$, $g_0=\Delta$, $\vartheta=J/\Delta$); D2.9; D2.8 and D1.2 (support dimensions $d_i\le q^{v_R}$).
+**Used from.** D3.1 (Lemma 3.1, `eq:initial-tail-probability`) applied to $H$ ($c_0=J$, $g_0=\Delta$, $\vartheta=J/\Delta$; D3.2); D2.9; D2.8 and D1.2 (support dimensions $d_i\le q^{v_R}$; D3.2).
 
 **Proof.**
 - D10.5.1 Crossing terms: $\le2v_R\mu_R\cdot C_0n=Cn$ (D2.9) each cut; $\log^2(ed_i)\le\log^2(eq^{v_R})$. So $\mathcal B\le1+Cn\le Cn$.
@@ -175,9 +175,9 @@ so each is $\le\sqrt\delta=n^{-K}$ in norm. A trivial subsystem has projection $
 
 **Output.** D10.8 (spectral inequalities $p_x^{-1}\le e^{S(X)+w}$, $Q\le e^{S(S_0)+w}\rho_{S_0}$, $T_0\rho_YT_0\le e^{-S(Y)+w}T_0$); D10.9 (the $3\sqrt\delta$); D10.10 is independent of $w$.
 
-**Standard?** Concentration of surprisal: specific to this paper (Lemma 3.1). Projection-onto-typical-spectrum is standard.
+**Standard?** Lemma 3.1 (surprisal concentration): specific to this paper. Typical-spectrum projection: standard.
 
-**Pitfall.** The projections are of the original $\rho$'s in the original ground state, not of $H_F$. $w=n^{3/5}$ must exceed $\sqrt{\mathcal B}=O(n^{1/2})$ polynomially for the $n^{1/10}$ exponent; $w$ also enters $M_0$ and $t_*$; $w<n^{1-\varepsilon}$, the same scale bound as $\mathcal I\le C_0n^{1-\varepsilon}$.
+**Pitfall.** Projections are of the original $\rho$'s in $\Omega$, not of $H_F$. $w=n^{3/5}$ exceeds $\sqrt{\mathcal B}=O(n^{1/2})$ polynomially (gives $n^{1/10}$); $w$ enters $M_0$, $t_*$; $w<n^{1-\varepsilon}$, the scale of $\mathcal I$.
 
 #### D10.6 Def — The vectors $\phi$, $\eta$ and the relabeling isometry $\mathcal R_X$
 *Source: 09-amplification.tex 324–346, 399–402; `eq:amplification-swapped-state` (337), `eq:amplification-restored-state` (338–340).*
@@ -191,7 +191,7 @@ $\mathcal R_X$: isometry relabeling $X$ as $e'$ and inserting blanks on $X,s'$; 
 **Proof (properties used later).**
 - D10.6.1 $\phi=\mathcal R_X\Omega$, so for every physical $J\subseteq\Lambda\setminus X$ the $(e',J)$-reduction of $\phi$ equals the $(X,J)$-reduction of $\Omega$ with $X\to e'$.
 - D10.6.2 In $\eta$, $e'$ is purified by $s'$ and $\Omega$ is a tensor factor: $\rho^\eta_{e'J}=\rho^\eta_{e'}\otimes\rho^\eta_J$, $I(e':J)_\eta=0$.
-- D10.6.3 The unitary constructed later acts on $s'$ and a neighborhood of $S_0$ only; it leaves $e'$ untouched.
+- D10.6.3 $U'$ (D10.14) acts on $s'\cup N_{2r}(S_0)$; $e'$ untouched.
 
 **Output.** D10.7 ($R_0\phi$), D10.9 ($\mathcal R_X$), D10.15.
 
@@ -213,7 +213,7 @@ Then $R_0\phi=B_0\bigl(\Omega\otimes|00\rangle_{s'e'}\bigr)$.
 - D10.7.1 $\langle y|_X\Omega=\sqrt{p_y}|\omega_y\rangle$ for $p_y>0$ and $0$ for $p_y=0$. So $(|x\rangle\langle y|_X\otimes T_0)\Omega=\sqrt{p_y}\,|x\rangle_XT_0|\omega_y\rangle$ ($0$ if $p_y=0$).
 - D10.7.2 $B_0(\Omega\otimes|00\rangle)=\sum_{x,y}p_x^{-1/2}\sqrt{p_y}|x\rangle_{s'}|y\rangle_{e'}Q(|x\rangle_XT_0|\omega_y\rangle)$. Zero-probability $y$ vanish. This equals $R_0\phi$: apply $R_0$ to $|0\rangle_X|0\rangle_{s'}\sum_y\sqrt{p_y}|y\rangle_{e'}|\omega_y\rangle$.
 
-**Output.** The localization lemma applies to vectors $B(\Omega\otimes\xi)$ with $B$ local, not to $R_0\phi$ ($X$ blank in $\phi$); $B_0$ supplies this form (D10.12).
+**Output.** D10.2 (B) needs $B(\Omega\otimes\xi)$, $B$ local; $R_0\phi$ is not of this form ($X$ blank in $\phi$); $B_0$ supplies it (D10.12).
 
 **Standard?** Specific to this paper.
 
@@ -235,9 +235,9 @@ $$\|R_0\|,\|B_0\|\le M_0:=\exp\bigl((\mathcal I+3w)/2\bigr)\quad(\ge1).$$
 - D10.8.4 Purity of $\Omega$ on $XYZ'$: $S(S_0)=S(Z')$, $S(Y)=S(XZ')$, so $S(X)+S(S_0)-S(Y)=S(X)+S(Z')-S(XZ')=\mathcal I$.
 - D10.8.5 $\|R_0\|^2=\|R_0^\dagger R_0\|=\|B_Y\|\le e^{\mathcal I+3w}$; same for $B_0$.
 
-**Output.** $\|\zeta\|\le M_0$, $\|B_0\|\le M_0$ in D10.12; $\log M_0\le Ct_*$ in D10.12; $M_0\ge1$ in D10.13.
+**Output.** $\|\zeta\|,\|B_0\|\le M_0$ in D10.12; $\log M_0\le Ct_*$ in D10.11; $M_0\ge1$ in D10.13.
 
-**Standard?** Specific to this paper (typical-spectrum bound on a Petz-type recovery map; the entropy combination is the identity in D10.8.4).
+**Standard?** Specific to this paper (typical-spectrum bound on a Petz-type recovery map; entropy identity D10.8.4).
 
 **Pitfall.** Only $\log M_0=O(\mathcal I+w)$ is available: $R_0$ is exponentially large in $\mathcal I$, which is why $t_*$ and $r$ must scale with $\mathcal I$ (D10.11).
 
@@ -259,7 +259,7 @@ $$\|R_0^\dagger(L')^\dagger\eta-\phi\|\le3\sqrt\delta+\|(L')^\dagger\Omega-\Omeg
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** The $\sqrt{p_x}$ of $\eta$ cancels $p_x^{-1/2}$ of $R_0$ exactly, so the adjoint is accurate with no $M_0$; the large norm sits only in the direct image $R_0\phi$.
+**Pitfall.** $\sqrt{p_x}$ of $\eta$ cancels $p_x^{-1/2}$ of $R_0$ exactly: adjoint accurate with no $M_0$; the large norm sits only in $R_0\phi$.
 
 #### D10.10 Step — Ground component of $R_0\phi$ is at most 1
 *Source: 09-amplification.tex 417–447; `eq:amplification-ground-component` (443–447).*
@@ -278,7 +278,7 @@ $$\|R_0^\dagger(L')^\dagger\eta-\phi\|\le3\sqrt\delta+\|(L')^\dagger\Omega-\Omeg
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** $R_0\phi$ may have norm $\sim M_0$; only the ground component is controlled. Excited part is killed in D10.12.
+**Pitfall.** $\|R_0\phi\|$ may be $\sim M_0$; only the ground component is controlled; excited part killed in D10.12.
 
 #### D10.11 Def — Clock time $t_*$ and radius $r$
 *Source: 09-amplification.tex 449–463; `eq:amplification-time-choice` (457–459). Scale discussion 482–489.*
@@ -301,7 +301,7 @@ with $\mathrm{poly}$ the prefactor $Ct_*|S_0|(1+r)^2$ of D10.2 (B) and (A), so $
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** $r=\lceil(\cdot)^{1/\alpha}\rceil$ is a power $1/\alpha>1$ of $t_*$: the price of the stretched exponential $e^{-cl^\alpha}$. $\alpha$ close to $1$ (D10.1) keeps $r=o(n^\beta)$. $C$ must be fixed before $C'$ (the $C'$-condition contains $t_*$).
+**Pitfall.** $r=\lceil(\cdot)^{1/\alpha}\rceil$ is a power $1/\alpha>1$ of $t_*$: price of the stretched exponential $e^{-cl^\alpha}$. $C$ must be fixed before $C'$ (the $C'$-condition contains $t_*$).
 
 #### D10.12 Step — Good trajectory
 *Source: 09-amplification.tex 464–499; `eq:amplification-good-trajectory` (493–497).*
@@ -321,7 +321,7 @@ $$\|D(I-P_\Omega)\zeta\|\le n^{-K},\quad\|(D-D_{\rm ret})\zeta\|\le n^{-K},\quad
 
 **Standard?** Specific to this paper (first-moment/Markov selection of one realization of the random product).
 
-**Pitfall.** First estimate is for the squared norm (hence $n^{-6K}\to n^{-4K}$); the other two are first moments ($n^{-3K}\to n^{-2K}$). The realization is fixed deterministically afterwards; $D,D_{\rm ret},L'$ are then ordinary operators.
+**Pitfall.** First estimate is for the squared norm ($n^{-6K}\to n^{-4K}$); the other two are first moments ($n^{-3K}\to n^{-2K}$). Realization fixed afterwards; $D,D_{\rm ret},L'$ then ordinary operators.
 
 #### D10.13 Step — Estimates before polar decomposition; direct error
 *Source: 09-amplification.tex 501–522; `eq:amplification-before-polar` (506–509), `eq:amplification-direct-error` (520–522).*
@@ -341,9 +341,9 @@ $$\|L'R_0\phi\|\le1+3n^{-K},\quad\|(L')^\dagger\Omega-\Omega\|\le n^{-K},\quad\|
 
 **Output.** D10.14.
 
-**Standard?** Specific to this paper (the two-sided estimate "norm $\le1+\epsilon$ and overlap $\ge1-\epsilon$" gives a $\sqrt\epsilon$ direct error).
+**Standard?** Specific to this paper (norm $\le1+\epsilon$ and overlap $\ge1-\epsilon$ give direct error $\sqrt\epsilon$).
 
-**Pitfall.** Loss $n^{-K}\to n^{-K/2}$ comes from squaring in D10.13.6; this is the origin of $K/4$ in D10.15.
+**Pitfall.** Loss $n^{-K}\to n^{-K/2}$ from squaring in D10.13.6; origin of $K/4$ in D10.15.
 
 #### D10.14 Step — Local unitary $U'$ via polar decomposition
 *Source: 09-amplification.tex 524–545; `eq:amplification-unitary-error` (542–544).*
@@ -362,9 +362,9 @@ $$\|U'\phi-\eta\|\le Cn^{-K/2}.$$
 
 **Output.** D10.15.
 
-**Standard?** Polar decomposition and unitary extension of a partial isometry: standard. The use of $(I+H_+)^{-1}$ to avoid any bound on $\|H_+\|$ is specific to this paper.
+**Standard?** Polar decomposition, unitary extension of a partial isometry: standard. $(I+H_+)^{-1}$ avoiding any bound on $\|H_+\|$: specific to this paper.
 
-**Pitfall.** $\|H_+\|$ may be as large as $M_0$ (exponential in $\mathcal I$); no bound on it is needed. $U'$ is a unitary on the *local* space; its support is exactly why $J$ must avoid $N_{2r}(S_0)$ and why $e'$ is untouched.
+**Pitfall.** $\|H_+\|$ may be $\sim M_0$; no bound on it needed. $U'$ is unitary on the local space: its support is why $J$ must avoid $N_{2r}(S_0)$ and why $e'$ is untouched.
 
 #### D10.15 Step — Mutual information bound
 *Source: 09-amplification.tex 547–561; `eq:amplification-output`.*
@@ -377,16 +377,16 @@ $$\|U'\phi-\eta\|\le Cn^{-K/2}.$$
 - D10.15.1 $U'$ acts on $s'\cup N_{2r}(S_0)$, disjoint from $e'$ and $J$. So $\rho^{U'\phi}_{e'J}=\rho^\phi_{e'J}$, which is the $XJ$-reduction of $\Omega$ with $X\to e'$ (D10.6.1): $I(e':J)_{U'\phi}=I_\Omega(X:J)$.
 - D10.15.2 $\rho^\eta_{e'J}$ is a product (D10.6.2): $I(e':J)_\eta=0$.
 - D10.15.3 Trace distance of the $e'J$-reductions $\le\frac12\||U'\phi\rangle\langle U'\phi|-|\eta\rangle\langle\eta|\|_1\le\|U'\phi-\eta\|\le Cn^{-K/2}=:\delta'$ (D2.5).
-- D10.15.4 Lemma 2.1 with $D=e'$, $E=J$ and $I(D:E)=S(D)-S(D|E)$: $|I(e':J)_{U'\phi}-I(e':J)_\eta|\le2C\sqrt{\delta'}\log(e\,d_{e'})$. Only $d_{e'}=\dim e'$ enters; $\dim J$ is irrelevant.
+- D10.15.4 Lemma 2.1 with $D=e'$, $E=J$ and $I(D:E)=S(D)-S(D|E)$: $|I(e':J)_{U'\phi}-I(e':J)_\eta|\le2C\sqrt{\delta'}\log(e\,d_{e'})$, $d_{e'}=\dim e'$.
 - D10.15.5 $\log\dim e'=|X|\log q\le|S_0|\log q\le C_0n^2\log q$. So $I_\Omega(X:J)\le Cn^{-K/4}\cdot Cn^2=Cn^{2-K/4}$.
 - D10.15.6 $K\ge4(M+3)$: $n^{2-K/4}\le n^{-M-1}$, so $\le C_Mn^{-M}$ for large $n$. Uniform in $J$ because $C,K,n_0$ do not depend on $J$.
 - D10.15.7 Subsets $X'\subseteq X$: $I_\Omega(X':J)\le I_\Omega(X:J)$ (discarding systems, D2.2 item 3).
 
 **Output.** `eq:amplification-output`; §11 uses the uniformity in $J$ and the subset form.
 
-**Standard?** Continuity step standard (Alicki–Fannes–Winter; D2.4). Reference-copy trick specific to this paper.
+**Standard?** Continuity: standard (Alicki–Fannes–Winter; D2.4). Reference-copy trick: specific to this paper.
 
-**Pitfall.** Lemma 2.1 is applied with first argument $e'$, so $\log\dim e'\le Cn^2$ enters and $\dim J$ does not.
+**Pitfall.** Lemma 2.1 applied with first argument $e'$: $\log\dim e'\le Cn^2$ enters, $\dim J$ does not.
 
 #### D10.16 Step — Radius bounds and containment in $A$
 *Source: 09-amplification.tex 563–575; `eq:amplification-radius`, `eq:amplification-cut-clearance`.*
@@ -400,16 +400,16 @@ $$\|U'\phi-\eta\|\le Cn^{-K/2}.$$
 - D10.16.2 *Exponents.* $\alpha>1-10^{-6}$ and $\beta=1-2\cdot10^{-6}$: $\beta\alpha>(1-2\cdot10^{-6})(1-10^{-6})=1-3\cdot10^{-6}+2\cdot10^{-12}>1-10^{-5}=1-\varepsilon$. So $(1-\varepsilon)/\alpha<\beta$. Also $1-\varepsilon<\beta$. Hence $r=O(n^{(1-\varepsilon)/\alpha})=o(n^\beta)$ and $L\le n^{1-\varepsilon}=o(n^\beta)$: $L+2r=o(n^\beta)$.
 - D10.16.3 *Containment.* $S_0\subseteq A$. Suppose a graph path of length $\le2r$ from $s\in S_0$ reaches $\Lambda\setminus A$. It then contains an edge with one endpoint in $A$, one outside, hence an endpoint of the original cut ($\in Z$). $s\in T_L$: $\operatorname{dist}_\infty(s,T)\le L$. Each graph step changes ambient $\ell_\infty$ position by $\le1$. So that endpoint satisfies $\operatorname{dist}_\infty(T,Z)\le L+2r<L+n^\beta$ for large $n$ (D10.16.2), contradicting the clearance hypothesis. So no such path.
 
-**Output.** Allows $J\supseteq\Lambda\setminus A$ in D10.4; $L+2r=o(n^\beta)$ is the margin §11 needs for placing disjoint tiles.
+**Output.** $J\supseteq\Lambda\setminus A$ allowed in D10.4; $L+2r=o(n^\beta)$ is the margin §11 needs for disjoint tiles.
 
 **Standard?** Specific to this paper (parameter arithmetic).
 
-**Pitfall.** The numerical gaps are tiny ($\beta-(1-\varepsilon)/\alpha>0$ by about $7\cdot10^{-6}$ at $p=10^6$); they are why $\alpha\to1$ and $\varepsilon,\beta$ were fixed numerically. $X=\varnothing$ ($r=1$) satisfies (ii) the same way.
+**Pitfall.** Gaps are tiny ($\beta-(1-\varepsilon)/\alpha\approx7\cdot10^{-6}$ at $p=10^6$): why $\alpha\to1$ and $\varepsilon,\beta$ are fixed numerically. $X=\varnothing$ ($r=1$) satisfies (ii) the same way.
 
 #### D10.17 Step — Closing remark
 *Source: 09-amplification.tex 578–583.*
 
-**Statement.** The global gap enters three times: the marginal-tail estimate (D10.5, Lemma 3.1), the construction of positive constraints (D10.1), the excited-state decay (D10.3). The entropy comparison is confined to the target dimension ($\log\dim e'\le Cn^2$, D10.15). §11 builds tiles whose enlarged graph neighborhoods avoid all previously used tiles of the same family so that Proposition 10.2 applies repeatedly.
+**Statement.** Global gap enters three times: marginal tail (D10.5, Lemma 3.1), positive constraints (D10.1), excited-state decay (D10.3). Entropy comparison confined to $\log\dim e'\le Cn^2$ (D10.15). §11 builds tiles whose enlarged graph neighborhoods avoid earlier tiles of the same family, so Proposition 10.2 applies repeatedly.
 
 **Used from.** D10.3, D10.5, D10.15.
 

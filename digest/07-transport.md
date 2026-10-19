@@ -4,9 +4,9 @@ Source: `paper/sections/06-transport.tex` (779 lines), label `sec:transport`. Nu
 
 ## Section in one paragraph
 
-Lemma 6.3 gives the entropy gain of one change of partition as a rank-one lower bound on one relative metric. §7 combines many such changes through a finite tree of weighted geometric means $A\#_pB$ and proves two estimates for the filtered vector $v(p)=\mathcal M(p)^{-1/4}\mathrm{pre}/N(p)$. (i) $-\partial_p\log N^2$ is exactly an average of $\operatorname{Tr}(\sigma\log C_h)$ against positive trace-one states $\sigma_{h,u}$, and is bounded below by $ka\sum\int\eta\,d\mu_{\sigma_{h,u}}$ minus $(CkaKa^{1/4}\ell^C+\beta_k)$. (ii) If $\bar H\mathrm{pre}=E_0\mathrm{pre}$, then $\langle v,\bar Hv\rangle\le2E_0+Ca^2\ell^C\sum_iW_i\sum_j\pi_j\int\!\!\int\eta^{1/8}+o_k(1)$ against the same states. Order: mean trees (D7.1–D7.3) → normalized derivative maps, unital CP (D7.4–D7.5) → two Fourier multipliers (D7.6–D7.7) → data of a round (D7.8–D7.13) → Proposition 7.4 (D7.14): derivative states and exact formula (D7.15–D7.16), entropy gain (D7.17–D7.20), auxiliary block metric and Fourier transport of its commutator (D7.21–D7.23), symbol cost and energy (D7.24–D7.25), endpoints (D7.26). §9 (scanner) uses both estimates at a common $p$; §8 uses vector Jensen; §9 uses projection transfer for the initial floor. The old-leaf state is the same in both estimates; only the scalar weight differs ($w_h$ vs $(1-p)w_h$), which lets §9 select one $p$ for all terms.
+Lemma 6.3 gives the entropy gain of one change of partition as a rank-one lower bound on one relative metric. §7 combines many such changes through a finite tree of weighted geometric means $A\#_pB$ and proves two estimates for $v(p)=\mathcal M(p)^{-1/4}\mathrm{pre}/N(p)$. (i) $-\partial_p\log N^2$ is an average of $\operatorname{Tr}(\sigma\log C_h)$ against trace-one states $\sigma_{h,u}$, bounded below by $ka\sum\int\eta\,d\mu_{\sigma_{h,u}}-(CkaKa^{1/4}\ell^C+\beta_k)$. (ii) If $\bar H\mathrm{pre}=E_0\mathrm{pre}$: $\langle v,\bar Hv\rangle\le2E_0+Ca^2\ell^C\sum_iW_i\sum_j\pi_j\int\!\!\int\eta^{1/8}+o_k(1)$ against the same states. Order: mean trees (D7.1–D7.3) → normalized derivative maps, unital CP (D7.4–D7.5) → Fourier multipliers (D7.6–D7.7) → data of a round (D7.8–D7.13) → Proposition 7.4 (D7.14): derivative states, exact formula (D7.15–D7.16), entropy gain (D7.17–D7.20), block metric, Fourier transport of its commutator (D7.21–D7.23), symbol cost, energy (D7.24–D7.25), endpoints (D7.26), shared state (D7.27). §9 uses both estimates at a common $p$ and projection transfer for the initial floor; §8 uses vector Jensen.
 
-Notation. $\mathcal V$ finite one-copy space (tensor product of physical and auxiliary factors), $\mathcal S_k=\operatorname{Sym}^k\mathcal V$, $D_k=\dim\mathcal S_k$. $t<1/4$, $a=2t$. $W_{Q,k}$ metric of §6 (`replicas:w-definition`), suppressed $k$. $P_{\theta,k}=|\theta^{\otimes k}\rangle\langle\theta^{\otimes k}|$. $\operatorname{ad}_Q(Z)=QZ-ZQ$. $|O|=(O^*O)^{1/2}$.
+Notation. $\mathcal V$ finite one-copy space, $\mathcal S_k=\operatorname{Sym}^k\mathcal V$, $D_k=\dim\mathcal S_k$. $t<1/4$, $a=2t$. $W_{Q,k}$ metric of §6 (`replicas:w-definition`), suppressed $k$. $P_{\theta,k}=|\theta^{\otimes k}\rangle\langle\theta^{\otimes k}|$. $\operatorname{ad}_Q(Z)=QZ-ZQ$. $|O|=(O^*O)^{1/2}$.
 
 ---
 
@@ -23,7 +23,7 @@ $p=0$ gives $A$, $p=1$ gives $B$.
 
 **Output.** Vertex operation of every tree in §7–§9.
 
-**Standard?** Standard: weighted geometric mean of Kubo–Ando (1980); form version Pusz–Woronowicz (1975). Properties are re-proved in D7.3 to fit the tree setting.
+**Standard?** Kubo–Ando (1980); form version Pusz–Woronowicz (1975). Properties re-proved in D7.3.
 
 #### D7.2 Def — Weighted binary tree and its root
 *Source: 06-transport.tex 28–38.*
@@ -49,7 +49,7 @@ $p=0$ gives $A$, $p=1$ gives $B$.
 
 **Used from.** D7.1, D7.2.
 
-**Proof.** One vertex first, then induction over the tree.
+**Proof.**
 - D7.3.1 Congruence at a vertex. $\widehat A=S^*AS$, $U=A^{1/2}S\widehat A^{-1/2}$. $U^*U=\widehat A^{-1/2}S^*AS\widehat A^{-1/2}=I$ $\Rightarrow$ $U$ unitary (finite dimension). $\widehat A^{-1/2}S^*BS\widehat A^{-1/2}=U^*CU$ with $C=A^{-1/2}BA^{-1/2}$. Then $\widehat A^{1/2}(U^*CU)^p\widehat A^{1/2}=\widehat A^{1/2}U^*C^pU\widehat A^{1/2}=S^*A^{1/2}C^pA^{1/2}S$, using $U\widehat A^{1/2}=A^{1/2}S$. So $(S^*AS)\#_p(S^*BS)=S^*(A\#_pB)S$.
 - D7.3.2 Symmetry $A\#_pB=B\#_{1-p}A$. By D7.3.1 with $S=A^{-1/2}$ reduce to $A=I$, $B=C$: claim $C^p=C^{1/2}(C^{-1})^{1-p}C^{1/2}$. True by functional calculus: exponent $\tfrac12+(p-1)+\tfrac12=p$.
 - D7.3.3 Integral formula (`transport:power-integral`), $0<p<1$, $x>0$: $x^p=\frac{\sin\pi p}{\pi}\int_0^\infty\lambda^{p-1}\frac{x}{x+\lambda}d\lambda$. Substituting $\lambda=xt$: integral $=x^p\int_0^\infty\frac{t^{p-1}}{1+t}dt=x^p\,\frac{\pi}{\sin\pi p}$ (beta integral).
@@ -64,7 +64,7 @@ $p=0$ gives $A$, $p=1$ gives $B$.
 
 **Output.** Item 1: reduction to $A=I$, relative metrics $C_{h,g}$ (D7.17). Item 3: derivative unitality (D7.5), constant-weight products in D7.18. Item 4: used in §8 for $\langle\varphi,\widetilde{\mathcal M}\varphi\rangle$. Item 5: D7.18 and §9 initial floor. Item 6: D7.17, D7.24.
 
-**Standard?** Items 1–4: standard for Kubo–Ando means (monotonicity, congruence invariance, homogeneity, Jensen). Item 5 (via $\varepsilon$, $\delta$) and item 6 are specific to this paper; the point of D7.3.9 is to avoid extending the mean to singular inputs.
+**Standard?** Items 1–4: standard for Kubo–Ando means. Items 5, 6: specific to this paper.
 
 **Pitfall.** $0<p<1$ needed for D7.3.3–D7.3.4; endpoints separately. In item 6 the hypothesis includes commutation between factors at *different leaves* (not only within one leaf).
 
@@ -100,11 +100,11 @@ $$D(C^p)[H]=\frac{\sin\pi p}{\pi}\int_0^\infty\lambda^p(C+\lambda)^{-1}H(C+\lamb
 - D7.5.6 Chain rule along the path $D_1\to M_1\to M_2\to\dots\to M_m=M$ with edge weights $w_1,\dots,w_m$: the square-root normalizations cancel at successive vertices ($M_i^{1/2}$ produced by $\Phi_{i}$ is exactly what $\partial_{M_i}M_{i+1}[M_i^{1/2}\,\cdot\,M_i^{1/2}]$ consumes). So $M^{-1/2}\partial_{A_j}M[A_j^{1/2}ZA_j^{1/2}]M^{-1/2}=\bigl(\prod_iw_i\bigr)\Phi_{M_{m-1}}\circ\dots\circ\Phi_{D_1}(Z)$, and $\prod_iw_i=w_j$. Compositions of unital CP maps are unital CP. Empty path: identity.
 - D7.5.7 Blocks: block-diagonal inputs $\Rightarrow$ $C$, $(C+\lambda)^{-1}$, congruence factors block diagonal; a sandwich by a block-diagonal $X$ acts blockwise, $(XHX^*)_{ab}=X_aH_{ab}X_b^*$, and its first block uses only first blocks of the inputs. Same after exchanging children and after composing.
 
-**Output.** $\Phi_j$ define the states $\sigma_{j,u}$ (D7.14). Unitality gives $\operatorname{Tr}\sigma=1$ and uniform endpoint bounds (D7.26). Block statement used in D7.22 with $\widehat\Phi_{i,j}$. Schwarz inequality (D7.23) needs unital CP.
+**Output.** $\sigma_{j,u}$ (D7.14); $\operatorname{Tr}\sigma=1$, endpoint bounds (D7.26); blocks: $\widehat\Phi_{i,j}$ (D7.22); unital CP for Schwarz (D7.23).
 
-**Standard?** The derivative formula $D(C^p)$ is the classical Daleckii–Krein/integral representation; CP of the normalized derivative along a mean tree and the block-restriction statement are specific to this paper.
+**Standard?** $D(C^p)$: Daleckii–Krein. CP along a mean tree, block restriction: specific to this paper.
 
-**Pitfall.** Normalization divides by the *edge* weight $w$, and $\Phi_j$ carries $w_j=\prod w_i$ outside (`transport:leaf-map`). At an interpolating vertex the old-child weight is $1-p$ but the history-path weight is $w_h$: the same $\Phi_{(h,\mathrm{old})}$ appears with $(1-p)w_h$ in leaf maps and $w_h$ in $\partial_p$ (D7.15).
+**Pitfall.** Normalization divides by the *edge* weight $w$; $\Phi_j$ carries $w_j=\prod w_i$ outside (`transport:leaf-map`). Same $\Phi_{(h,\mathrm{old})}$ appears with $(1-p)w_h$ in leaf maps, $w_h$ in $\partial_p$ (D7.15).
 
 ---
 
@@ -120,7 +120,7 @@ $$g_s(z)=\frac{\sinh(sz)}{\sinh(z/2)},\quad g_s(0)=2s;\qquad m_s(u)=\frac{\sin(2
 
 **Output.** $s=1/4$ in Proposition 7.4: $m_{1/4}(u)=1/\cosh(2\pi u)$, $\int m_{1/4}=1/2$.
 
-**Standard?** $g_s$ is a rescaling of the hyperbolic-sine kernel of Bhatia–Parthasarathy (2000, Thm 3.2); normalization and the shifted-density comparison are done here.
+**Standard?** $g_s$: rescaled kernel of Bhatia–Parthasarathy (2000, Thm 3.2). Shifted-density comparison: this paper.
 
 #### D7.7 Lemma 7.3 — The two Fourier multipliers
 *Source: 06-transport.tex 194–243; `transport:g-fourier`, `transport:h-def`, `transport:q-density`.*
@@ -143,11 +143,11 @@ $$|q_\pm(u)|\le\tfrac1{\sqrt2}\,m_s(u).$$
 - D7.7.6 Densities. $e^{\pm sz/2}e^{iuz}=e^{i(u\mp is/2)z}$. Substituting $u'=u\mp is/2$ moves the line of integration to $\mathbb R\mp is/2$ and the density to $m_{s/2}(u'\pm is/2)$. The nearest poles of $m_{s/2}$ have $|\Im|=\tfrac12-\tfrac s2>\tfrac s2$ ($s<1/2$), so shifting back to $\mathbb R$ crosses no pole. Gives $q_\pm$.
 - D7.7.7 Bound at $s=1/4$ (so $s/2=1/8$). Put $c=\cosh2\pi u$. $m_s=1/c$ ($\sin\frac\pi2=1$, $\cos\frac\pi2=0$). $\cosh(2\pi u\pm i\tfrac\pi4)=\tfrac1{\sqrt2}(c\pm i\sinh2\pi u)$, so $m_{1/8}(u\pm\tfrac i8)=\dfrac{1/\sqrt2}{\tfrac1{\sqrt2}(c\pm i\sinh2\pi u)+\tfrac1{\sqrt2}}=\dfrac1{c+1\pm i\sinh2\pi u}$. $|c+1\pm i\sinh|^2=(c+1)^2+c^2-1=2c(c+1)$. Ratio to $m_s$: $\dfrac{c}{\sqrt{2c(c+1)}}=\sqrt{\dfrac{c}{2(c+1)}}\le\dfrac1{\sqrt2}$.
 
-**Output.** $g_s$ converts $-\partial_p\log N^2$ to an $\int m_s\langle\cdot\rangle du$ (D7.16). $h_\pm$ converts the block commutator into $E_{i,\pm}$ (D7.23). Consequences used: $\int m_s=\tfrac12$ and $\int|q_\pm|\le\tfrac1{\sqrt2}\cdot\tfrac12$ at $s=1/4$.
+**Output.** Item 1 in D7.16; item 2 in D7.23. At $s=1/4$: $\int m_s=\tfrac12$, $\int|q_\pm|\le\tfrac1{2\sqrt2}$.
 
-**Standard?** Item 1: classical (Fourier transform of $\sinh(sz)/\sinh(z/2)$, Bhatia–Parthasarathy). Item 2 and the exact constant $1/\sqrt2$: specific to this paper.
+**Standard?** Item 1: classical (Bhatia–Parthasarathy). Item 2, constant $1/\sqrt2$: specific to this paper.
 
-**Pitfall.** The bound $|q_\pm|\le m_s/\sqrt2$ is checked only at $s=1/4$ and with $m_s$ at the *same* $s$ (not $m_{s/2}$). The constant is not lost to a crude estimate: it feeds the exact factor $\tfrac14$ in D7.23.
+**Pitfall.** $|q_\pm|\le m_s/\sqrt2$ checked only at $s=1/4$, against $m_s$ (not $m_{s/2}$); feeds the exact $\tfrac14$ in D7.23.
 
 ---
 
@@ -160,7 +160,7 @@ $$|q_\pm(u)|\le\tfrac1{\sqrt2}\,m_s(u).$$
 $$A(P,Y,F)=(W_P^{-1}W_F^{-1}W_Y)^2\quad\text{on }\mathcal S_k.$$
 The three factors commute and are positive definite.
 
-**Used from.** D6.5 (`replicas:w-definition`), D6.6 (Lemma 6.2: positivity, centrality), D6.8 (`replicas:leaf-metric`: same operator, written $A_k(P,Y,F)$; the three factors commute).
+**Used from.** D6.5 (`replicas:w-definition`), D6.6 (Lemma 6.2: positivity, centrality), D6.8 (`replicas:leaf-metric`: same operator, written $A_k(P,Y,F)$).
 
 **Output.** $A_{h,g}$, $A_{h,c,g}$ of D7.9.
 
@@ -175,11 +175,11 @@ Commutation condition: every old or new metric of band $g$ commutes with every o
 
 $B_h$ = root of the choice tree with inputs $A_{h,c}$. For one common $p\in[0,1]$, replace each old input $h$ of the history tree by $M_h=A_h\#_pB_h$; call the root $\mathcal M(p)$. Terminal leaves for $0<p<1$:
 $$j=(h,\mathrm{old}):\ \pi_j=(1-p)w_h,\ \text{metric }A_h;\qquad j=(h,c,\mathrm{new}):\ \pi_j=p\,w_hq_{c\mid h},\ \text{metric }A_{h,c}.$$
-At $p=1$ this is the history tree with choice trees attached; it is the old tree of the next round. The same $p$ is used at every history of a round.
+At $p=1$ this is the history tree with choice trees attached: the old tree of the next round.
 
 **Used from.** D7.2, D7.8.
 
-**Output.** $\mathcal M(p)$, $\pi_j$, $w_h$, $q_{c\mid h}$ used throughout D7.14–D7.26. Check: $\sum_j\pi_j=\sum_hw_h[(1-p)+p\sum_cq_{c\mid h}]=1$.
+**Output.** $\mathcal M(p)$, $\pi_j$ for D7.14–D7.27. Check: $\sum_j\pi_j=\sum_hw_h[(1-p)+p\sum_cq_{c\mid h}]=1$.
 
 **Standard?** Specific to this paper.
 
@@ -190,7 +190,7 @@ At $p=1$ this is the history tree with choice trees attached; it is the old tree
 
 **Statement.** For unit $\theta\in\mathcal V$ and a move of $x$ to $P$ with $Y=xY_0$:
 $$\eta_{h,c,g}(\theta)=S_\theta(x\mid P)+S_\theta(x\mid Y_0)=I_\theta(x:F\mid P)\ge0.$$
-Move to $F$: exchange $P,F$. No move: $\eta_{h,c,g}=0$. The equality holds by purity of $\theta$ on $PxY_0F$. Choose $\ell\ge1$ with $\log(e\dim x)\le\ell$ for every transferred subsystem. $a=2t>0$ satisfies the smallness hypotheses of Lemmas 6.3 and 5.3: $t<1/4$ and $a\ell\le c_0$, $c_0$ a sufficiently small absolute constant (Lemma 6.3 asks $a\log(e\dim x)\le c$ with $c$ of Lemma 5.1; $\ell\ge\log(e\dim x)$).
+Move to $F$: exchange $P,F$. No move: $\eta_{h,c,g}=0$. The equality holds by purity of $\theta$ on $PxY_0F$. $\ell\ge1$ with $\log(e\dim x)\le\ell$ for every transferred $x$. Smallness (Lemmas 6.3, 5.3): $t<1/4$, $a\ell\le c_0$, $c_0$ small absolute constant (Lemma 6.3 asks $a\log(e\dim x)\le c$, $c$ of Lemma 5.1).
 
 **Used from.** D2.1 (conditional entropy, mutual information), D6.10 (same $\eta_\theta$), D5.5 through $c_0$.
 
@@ -205,7 +205,7 @@ Move to $F$: exchange $P,F$. No move: $\eta_{h,c,g}=0$. The equality holds by pu
 
 **Used from.** D7.9, D7.10.
 
-**Output.** $\mathcal J_i$, $\eta_{i,j}$ in `transport:energy`; hypotheses of Lemma 6.4 in D7.24. Geometric ways to satisfy the assumptions are deferred to later sections.
+**Output.** $\mathcal J_i$, $\eta_{i,j}$ in `transport:energy`; hypotheses of Lemma 6.4 in D7.24.
 
 **Standard?** Specific to this paper.
 
@@ -250,7 +250,7 @@ $d\theta$ = Haar probability on the unit sphere of $\mathcal V$. For a density m
 $$s=\tfrac14,\quad N(p)=\|\mathcal M(p)^{-s}\mathrm{pre}\|,\quad v(p)=\frac{\mathcal M(p)^{-s}\mathrm{pre}}{N(p)}.$$
 For $0<p<1$, $\Phi_j$ = normalized map of leaf $j$ to $\mathcal M(p)$ (Lemma 7.2), and for $u\in\mathbb R$
 $$\sigma_{j,u}=\Phi_j^*\bigl(|\mathcal M(p)^{-iu}v(p)\rangle\langle\mathcal M(p)^{-iu}v(p)|\bigr),$$
-adjoint for the trace pairing, $\operatorname{Tr}(\Phi_j^*(\sigma)Z)=\operatorname{Tr}(\sigma\Phi_j(Z))$. $\sigma_{h,u}$ := state at $j=(h,\mathrm{old})$, $C_h=A_h^{-1/2}B_hA_h^{-1/2}$.
+$\operatorname{Tr}(\Phi_j^*(\sigma)Z)=\operatorname{Tr}(\sigma\Phi_j(Z))$. $\sigma_{h,u}$ := state at $j=(h,\mathrm{old})$, $C_h=A_h^{-1/2}B_hA_h^{-1/2}$.
 
 (a) Exact derivative:
 $$-\partial_p\log N(p)^2=\sum_hw_h\int_{\mathbb R}m_s(u)\operatorname{Tr}(\sigma_{h,u}\log C_h)\,du.$$
@@ -262,11 +262,11 @@ The $o_k(1)$ is uniform in $p\in(0,1)$, in nonzero $\mathrm{pre}$ with the eigen
 
 **Used from.** D7.3 (items 1, 3, 5, 6), D7.5, D7.6, D7.7, D7.8–D7.13; D6.10 (Lemma 6.3); D6.12 (Lemma 6.4), inside it D5.15 (Lemma 5.3).
 
-**Proof.** Split into D7.15 (vertex derivative), D7.16 (part (a)), D7.17–D7.20 (part (b)), D7.21–D7.25 (part (c)), D7.26 (endpoints and uniformity).
+**Proof.** D7.15–D7.16: (a); D7.17–D7.20: (b); D7.21–D7.25: (c); D7.26: endpoints, uniformity.
 
-**Output.** (a)–(b): §9 charge-round inequality `scanner:charge-gain`, telescoped over rounds. (c): §9 energy estimate at the same $p$. $\sigma_{h,u}$ is the same state in (a) and in (c); weights differ ($w_h$ vs $(1-p)w_h$), see D7.27.
+**Output.** (a)–(b): §9 `scanner:charge-gain`, telescoped over rounds. (c): §9 at the same $p$. Shared state: D7.27.
 
-**Standard?** Specific to this paper (the matrix means are standard, the identification of derivative states and the double use of the split probability are not).
+**Standard?** Specific to this paper; matrix means standard.
 
 **Pitfall.** (c) contains $W_i(p)\cdot\sum_{j\in\mathcal J_i}\pi_j$: the split weight appears twice (D7.23). $\ell$ bounds $\log(e\dim D_i)$ only for split terms.
 
@@ -310,9 +310,9 @@ $\sigma_{j,u}$ is a density matrix for all $j,u$.
 - D7.16.6 Insert $\mathsf H$ (D7.15). $\langle\psi,\Phi(Z)\psi\rangle=\operatorname{Tr}(\Phi^*(|\psi\rangle\langle\psi|)Z)$. With $\psi=\mathcal M^{-iu}v$ this is $\operatorname{Tr}(\sigma_{h,u}Z)$.
 - D7.16.7 $\sigma_{j,u}\ge0$ ($\Phi_j$ CP), $\operatorname{Tr}\sigma_{j,u}=\langle\psi,\Phi_j(I)\psi\rangle=\|\psi\|^2=1$ ($\Phi_j$ unital, $\mathcal M^{-iu}$ unitary).
 
-**Output.** States $\sigma_{j,u}$ used in all of D7.20, D7.23–D7.25 and §9 (`scanner:Q-definition`).
+**Output.** $\sigma_{j,u}$ in D7.20, D7.23–D7.25, §9 (`scanner:Q-definition`).
 
-**Standard?** Specific to this paper. The divided-difference identity D7.16.3 is elementary algebra.
+**Standard?** Specific to this paper.
 
 #### D7.17 Step — Factorization of the relative metric over bands (`transport:relative-factorization`)
 *Source: 06-transport.tex 487–500.*
@@ -356,7 +356,7 @@ $$C_{h,g}\ge b_k\exp\Bigl(ka\Bigl[\sum_cq_{c\mid h}\eta_{h,c,g}(\theta)-Ca^{1/4}
 $$\mathcal Q_k(f)^{-1}\le\mathcal Q_k(f^{-1}),\qquad\log\mathcal Q_k(f)\ge\mathcal Q_k(\log f).$$
 The logarithm is operator monotone on positive definite operators.
 
-**Used from.** D7.13, D6.11 (`replicas:resolution`; $D_k\int P_{\theta,k}d\theta=I$; invariance of Haar measure and irreducibility of $\operatorname{Sym}^k\mathcal V$ under the full unitary group, the trace fixes the scalar).
+**Used from.** D7.13, D6.11 (`replicas:resolution`: $D_k\int P_{\theta,k}d\theta=I$).
 
 **Proof.**
 - D7.19.1 $\mathcal Q_k(1)=I$. Positivity: $f\ge0\Rightarrow\mathcal Q_k(f)\ge0$.
@@ -367,7 +367,7 @@ The logarithm is operator monotone on positive definite operators.
 
 **Output.** Converts D7.18 into an operator inequality for $\log C_{h,g}$ (D7.20).
 
-**Standard?** Operator Jensen for unital positive maps (Choi, Davis; Hansen–Pedersen) is standard; this elementary proof for $\mathcal Q_k$ is included.
+**Standard?** Operator Jensen for unital positive maps (Choi, Davis; Hansen–Pedersen); elementary proof given.
 
 #### D7.20 Step — Entropy gain (part (b), `transport:log-relative`, `transport:entropy-gain`)
 *Source: 06-transport.tex 549–572.*
@@ -411,9 +411,9 @@ $$B_{i,j}=(S_jS_j^*)^{-1}S_jQ_jS_j^*(S_jS_j^*)^{-1}.$$
 
 **Output.** $B_{i,j}$ (blocks of $M_{i,j}$ in D7.22), $\mathsf D_{i,j}$ (D7.23–D7.24).
 
-**Standard?** Specific to this paper (the singular-$\bar h_i$-safe construction).
+**Standard?** Specific to this paper.
 
-**Pitfall.** For a split leaf, other bands drop out: $O_{i,j}=A_{j,g_0}^{-1/2}\bar h_iA_{j,g_0}^{1/2}$ with $g_0$ the exceptional band (D7.24).
+**Pitfall.** At a split leaf $O_{i,j}=A_{j,g_0}^{-1/2}\bar h_iA_{j,g_0}^{1/2}$, $g_0$ the exceptional band (D7.24.1).
 
 #### D7.22 Step — Transport of the commutator through the tree (`transport:block-rotation`)
 *Source: 06-transport.tex 645–672.*
@@ -443,7 +443,7 @@ $K_{i,j}$ has lower-left block $Y_{i,j}-Z_{i,j}$, upper-right block $-(Y_{i,j}-Z
 $$\|E_{i,\pm}v\|^2\le\tfrac14\,W_i\sum_{j\in\mathcal J_i}\pi_j\int_{\mathbb R}m_s(u)\operatorname{Tr}(\sigma_{j,u}\mathsf D_{i,j})\,du.$$
 For unital CP $\Psi$: $\Psi(K)^*\Psi(K)\le\Psi(K^*K)$.
 
-**Used from.** D7.7 (item 2: $h_\pm$, $q_\pm$, $|q_\pm|\le m_s/\sqrt2$, $\int m_s=\tfrac12$), D7.5, D7.22; D7.14, D7.16.7 (states $\sigma_{j,u}$).
+**Used from.** D7.7 (item 2), D7.5, D7.22, D7.16.7.
 
 **Proof.**
 - D7.23.1 Apply $h_\pm(\operatorname{ad}_{\log\mathbb M_i})$ to D7.22. $h_\pm(z)\cdot2\sinh(z/2)=e^{\pm sz}-1$, so the left side is $\mathbb M^{\pm s}L\mathbb M^{\mp s}-L$; its action on $(v,0)$ is $(0,E_{i,\pm}v)$ (lower-left block $\mathcal B^{\pm s}T\mathcal M^{\mp s}-T$).
@@ -457,9 +457,9 @@ $$\|E_{i,\pm}v\|^2\le W_i\Bigl(\int|q_\pm|\Bigr)\sum_{j\in\mathcal J_i}\pi_j\int
 
 **Output.** Input for D7.25.
 
-**Standard?** Schwarz inequality for unital CP maps (Choi): standard. The rest is specific to this paper.
+**Standard?** Schwarz for unital CP (Choi): standard. Rest specific to this paper.
 
-**Pitfall.** $W_i$ appears once from Cauchy–Schwarz and once inside $\sum_{j\in\mathcal J_i}\pi_j$: a uniform bound $\tau$ on the trace integrals gives $\propto W_i^2\tau$, not $W_i\tau$. This second power of the split probability is essential (cf. §9, where split weights are $O(D/m)$).
+**Pitfall.** $W_i$ appears once from Cauchy–Schwarz, once inside $\sum_{j\in\mathcal J_i}\pi_j$: uniform bound $\tau$ on the trace integrals gives $W_i^2\tau$, not $W_i\tau$. §9 needs this square (split weights $O(D/m)$).
 
 #### D7.24 Step — Symbol cost of a split (`transport:symbol-cost`)
 *Source: 06-transport.tex 715–735.*
@@ -499,12 +499,12 @@ Hence $\langle v,\bar Hv\rangle\le2E_0+3\sum_{i,\pm}\|E_{i,\pm}v\|^2$, and Propo
 
 **Standard?** Specific to this paper.
 
-**Pitfall.** The $\tfrac12,\tfrac32$ constants are used once; the eigenvector hypothesis is only used in D7.25.3.
+**Pitfall.** Eigenvector hypothesis used only in D7.25.3.
 
 #### D7.26 Step — Endpoints, uniformity, finite sequences of rounds
 *Source: 06-transport.tex 762–771.*
 
-**Statement.** For fixed $k$, $\mathcal M(p)$ and $N(p)$ are smooth on $[0,1]$ (all inputs positive definite). Normalized maps are used only where branch weights are positive; unitality gives bounds uniform as $p\to0,1$. Entropies are bounded in the fixed one-copy space; weights sum to $1$. Hence the entropy integrand and its error are uniformly bounded, (b) can be integrated over closed subintervals of $[0,1]$ with the endpoint values of $N$. A finite sequence of rounds is handled by taking maxima of the polynomial losses and remainders.
+**Statement.** For fixed $k$, $\mathcal M(p)$, $N(p)$ smooth on $[0,1]$. Entropy integrand and error of (b) bounded uniformly in $p\in(0,1)$; (b) integrates over closed subintervals of $[0,1]$ with endpoint values of $N$. Finite sequence of rounds: maxima of polynomial losses and remainders.
 
 **Used from.** D7.5, D7.14, D7.20.
 
@@ -520,11 +520,11 @@ Hence $\langle v,\bar Hv\rangle\le2E_0+3\sum_{i,\pm}\|E_{i,\pm}v\|^2$, and Propo
 #### D7.27 Step — The shared-state remark
 *Source: 06-transport.tex 773–779.*
 
-**Statement.** The old-leaf state $\sigma_{h,u}$ in (a) is the state used for the leaf $(h,\mathrm{old})$ in D7.23. The scalar weights differ: $w_h$ in the derivative, $(1-p)w_h$ in the energy estimate.
+**Statement.** $\sigma_{h,u}$ in (a) is the state of leaf $(h,\mathrm{old})$ in D7.23. Weights differ: $w_h$ in (a), $(1-p)w_h$ in (c).
 
 **Used from.** D7.14, D7.15, D7.23.
 
-**Output.** §9 averages over $p$ the entropy gain and selects one $p$, one round, at which $\mathcal Q(p)$ is small; the energy bound at the same $p$ then needs no new states, only $1-p\le1$.
+**Output.** §9 selects one $p$, one round, with $\mathcal Q(p)$ small; energy bound at that $p$ reuses the states, with $1-p\le1$.
 
 **Standard?** Specific to this paper.
 

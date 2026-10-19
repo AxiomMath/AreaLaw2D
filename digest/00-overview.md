@@ -1,6 +1,6 @@
 # Overview — "A two-dimensional area law from a global spectral gap"
 
-Digest files: `01-introduction.md` (§1) … `11-geometry.md` (§11). Anchors `D<sec>.<n>` are sequential in digest-file order, not paper numbers. Paper result -> anchor:
+Digest files `01-introduction.md` (§1) … `11-geometry.md` (§11). Anchors `D<sec>.<n>` sequential per file, not paper numbering. Paper result -> anchor:
 
 - §1: Thm 1.1 = D1.4 (statement) / D11.26 (proof); Cor 1.2 = D1.7; Lemma 11.1 also quoted as D1.12.
 - §2: Lemma 2.1 = D2.4; Lemma 2.2 = D2.12.
@@ -28,12 +28,12 @@ Digest files: `01-introduction.md` (§1) … `11-geometry.md` (§11). Anchors `D
 $$H-E_0\,\mathrm{id}\ \ge\ \Delta\,(\mathrm{id}-|\Omega\rangle\langle\Omega|),$$
 and every $A\subseteq\Lambda$:
 $$S_\Omega(A)\le C\,|\partial_\Lambda A|.\qquad\text{(eq:area-law)}$$
-Quantifiers: $\forall(q,R,J,\Delta)\ \exists C\ \forall(\Lambda,H,A)$. $C$ is uniform in the domain, its shape, holes, connectedness, $H$. The gap is the gap of the whole $H$; no gap for restrictions.
+Quantifiers: $\forall(q,R,J,\Delta)\ \exists C\ \forall(\Lambda,H,A)$. Gap hypothesis on whole $H$ only; none on restrictions.
 
 **Corollary 1.2** (`00-introduction.tex` L69–L86 = D1.7).
 - (a) Thm 1.1 holds for every subset of a finite rectangle $\{1..L_1\}\times\{1..L_2\}$ with bounded on-site and nearest-neighbour terms, unique ground state, fixed global gap ($R=1$ after merging terms on equal supports).
 - (b) With $C$ the constant of Thm 1.1: $S_\Omega(A)\le4C\,|\partial_{\rm in}A|$ and $S_\Omega(A)\le2C\,|Z_A|$.
-- Proof: $|\partial_{\rm in}A|\le|\partial_\Lambda A|\le4|\partial_{\rm in}A|$ (degree $\le4$); $|Z_A|\le2|\partial_\Lambda A|\le4|Z_A|$ (double count $\sum_{v\in Z_A}c(v)=2|\partial_\Lambda A|$, $1\le c(v)\le4$). Not used by §2–§11.
+- Proof: $|\partial_{\rm in}A|\le|\partial_\Lambda A|\le4|\partial_{\rm in}A|$ (degree $\le4$); $|Z_A|\le2|\partial_\Lambda A|\le4|Z_A|$ (double count $\sum_{v\in Z_A}c(v)=2|\partial_\Lambda A|$, $1\le c(v)\le4$).
 
 ---
 
@@ -41,7 +41,7 @@ Quantifiers: $\forall(q,R,J,\Delta)\ \exists C\ \forall(\Lambda,H,A)$. $C$ is un
 
 ### 2.1 Dependency DAG
 
-Edge `X <- Y, Z` = proof of X consumes Y, Z. Anchors of the same lemma are grouped on following lines (`internal`). External facts omitted here (see §6).
+`X <- Y, Z`: proof of X consumes Y, Z. `internal`: steps of the preceding lemma. External facts: §6.
 
 ```
 # top
@@ -164,12 +164,12 @@ D11.2 <- D10.1 (beta), D9.25 (L, eps=ell)
 Critical path (longest chain of numbered results):
 `D11.26 <- D10.4 <- D9.25 <- D9.19 <- D9.9 <- D7.14 <- D6.10, D6.12 <- D5.5, D5.15 <- D2.4`, with side inputs D3.16 -> D9.19; D4.11 -> D9.3/D9.9; D8.8 -> D9.9/D9.19/D9.25; D4.6/D4.10 -> D10.2 -> D10.4; D3.1 -> D3.4, D8.5, D9.9, D10.5.
 
-Three Hamiltonian-like objects, never mixed (Pitfall for any refactor):
+Three Hamiltonians, never mixed:
 - $H$ original: §3 (Lemma 3.1/3.2 energy), D10.5 (typical projections), the gap hypothesis.
 - $\widetilde H=\sum k_{i,r_i}$, truncated, $p=1$, depends on $S_0=A\cap T_L$: §8 (as $\widetilde H$), §9. Entropies of $\widetilde\Omega$ are transferred to $\Omega$ by D2.4 + D4.13 at cost $O(n^{-248})$ (D9.30).
 - $H_F=\sum k_i$, exact, $p\ge10^6$, $\alpha>1-10^{-6}$: §10 only.
 
-### 2.2 Milestone statements (one line each, constants as in the paper)
+### 2.2 Milestone statements
 
 - **D2.4 Lemma 2.1.** $|S(D|E)_\rho-S(D|E)_\sigma|\le2\delta\log d_D+(1+\delta)h(\tfrac\delta{1+\delta})\le C\sqrt\delta\log(ed_D)$, $\delta=\tfrac12\|\rho-\sigma\|_1$; no $\dim E$.
 - **D3.1 Lemma 3.1.** $\log\mathbb Ee^{uK}\le uS+512e\,\vartheta\mathcal B u^2$ for $|u|\le[32\sqrt{(1+\vartheta)\mathcal B}]^{-1}$; $\Pr\{|K-S|>w\}\le2e^{e/2}\exp(-w/(32\sqrt{(1+\vartheta)\mathcal B}))$; $\mathcal B=1+\sum_{\rm crossing}\log^2(ed_i)$, $\vartheta=c_0/g_0$.
@@ -192,25 +192,25 @@ Three Hamiltonian-like objects, never mixed (Pitfall for any refactor):
 
 ### 2.3 Induction / bootstrapping logic (ordered)
 
-Top-down reduction, then bottom-up supply. A 1-to-1 formalization must reproduce the order of choices.
+Top-down reduction (1–6), then bottom-up supply (7–10); constants order in 11.
 
-1. **Reduction (D11.26, D1.4.1–D1.4.7).** Trivial cases ($q=1$, $\Lambda=\varnothing$, $A\in\{\varnothing,\Lambda\}$, $R=0$: D2.11) and $b=|\partial_\Lambda A|=0$ (D2.12) give $S_\Omega(A)=0$. For $b>0$: $S_\Omega(A)\le|D|\log q+\tfrac12\sum_i\varepsilon_i$ (D11.1) with $\varepsilon_i=Cn_i^{-100}$. Needs $I_\Omega(X_i:J_i)\le Cn_i^{-100}$ for the **whole** set $J_i=(\Lambda\setminus A)\cup\bigcup_{j<i,f_j=f_i}X_j$.
+1. **Reduction (D11.26).** Trivial cases ($q=1$, $\Lambda=\varnothing$, $A\in\{\varnothing,\Lambda\}$, $R=0$: D2.11) and $b=|\partial_\Lambda A|=0$ (D2.12) give $S_\Omega(A)=0$. For $b>0$: $S_\Omega(A)\le|D|\log q+\tfrac12\sum_i\varepsilon_i$ (D11.1) with $\varepsilon_i=Cn_i^{-100}$. Needs $I_\Omega(X_i:J_i)\le Cn_i^{-100}$ for the **whole** set $J_i=(\Lambda\setminus A)\cup\bigcup_{j<i,f_j=f_i}X_j$.
 2. **Two-family cancellation (D11.1).** Chain rule for each family $f$, purity of $\Omega$, subadditivity. Summing $f=0,1$ cancels every $S(X_i)$. Only same-family earlier tiles and $B=\Lambda\setminus A$ enter the conditioning set.
-3. **Geometry supplies tiles (D11.4).** Pure plane geometry: dyadic layers around $Z$, primary tiles of pitch $s_k=2^{\lfloor(1+\delta_0)k\rfloor}$, belt strips of width $t_k=2^{\lfloor\zeta k\rfloor}$, fans with opposite labels, recursive repair of same-label point contacts at scale $d(S)\approx S^{\rho_0}$; $|D|\le Cb$, $\sum n_i^{-100}\le Cb$. Each tile is a template (D9.14) with scanner scale $n_i$; clearance $>2n_i^\beta$ is what makes $J_i\subseteq\Lambda\setminus N_{2r_i}(S_i)$ (D11.26.3).
-4. **Amplification (D10.4).** From $I_\Omega(X:\Lambda\setminus S_0)\le C_0n^{1-\varepsilon}$ to $n^{-M}$ ($M=100$) outside $N_{2r}(S_0)$. Mechanism: typical projections of width $w=n^{3/5}$ (D10.5) give restoring operator $R_0$ with $\|R_0\|\le e^{(\mathcal I+3w)/2}$ (D10.8); run constraint clocks for $t_*=C(\mathcal I+w+K\log n)$ with $K\ge4(M+3)$ (D10.11): gap $g$ kills the excited part (D10.3), light cone localizes to $N_{2r}(S_0)$ (D10.2), $r=\lceil(C'(t_*+K\log n))^{1/\alpha}\rceil\le C_Mn^{(1-\varepsilon)/\alpha}$; polar decomposition gives local unitary (D10.14); continuity (D2.4) costs only $\log\dim e'\le Cn^2$ (D10.15). Scale match: $(1-10^{-5})/\alpha<1-2\cdot10^{-6}=\beta$; paper takes $\alpha>1-10^{-6}$, i.e. $p\ge10^6$ (D10.1), which suffices. This is why §10 uses the exact $H_F$ with large $p$.
-5. **Sublinear collar bound (D9.25).** MI sublinear in the perimeter: $I_\Omega(X:\Lambda\setminus S_0)\le Cn^{1-10^{-5}}$ while $|\partial X|\sim n$. Mechanism: norm $N=\|\mathcal M^{-1/4}\mathrm{pre}_k\|$ of the filtered replica vector bounded above (pin to Bell pair on typical Schmidt set of $X$; D8.20–22) and below (gap forces most copies into ground state; D8.23–35). Sharp lower minus sharp upper, together with the exact identity $2S_X+g^{\rm pre}-g^{\rm post}=I(X{:}V)+I(X{:}YV)\ge I(X:\Lambda\setminus S_0)$ (D8.36, D9.28), gives the MI bound (D9.27, D9.29). Error table: worst power $n^{0.999952}<n^{0.99999}$ (D9.29).
-6. **Scanner (D9.9, D9.8).** $K=\lfloor L/(8m)\rfloor$ bands, random offsets in $\{0..m-1\}$, $2nm$ fill/charge rounds move a near and a far partition through the collar of depth $L$. Per term the split probability is $\le CD/m$ (offsets), selection probability at a charge is $\ge c/(nD)$ (D9.8). Entropy production per round is $\ge$ (gain of D7.14b) $-$ error; integrated over all rounds it is bounded by the rough upper comparison (D9.12). So some (round, $p_k\in[\epsilon/2,\epsilon]$) has small split-entropy density $\delta_n$. At that point the energy defect is small via cost $\eta^{1/8}$ (D7.14c, D9.13). Small $E_{\rm def}$ is the hypothesis that makes the lower comparison of D8.8 non-vacuous.
-7. **Gain vs cost (§5–§7).** A subsystem $x$ moving between parts of a partition: gain $\eta=I(x:F|U)$ as exponent in $\exp(ka\eta)$ (D5.5 -> D6.10 -> D7.14b); cost $\eta^{1/8}$ in energy (D5.15 -> D6.12 -> D7.14c). Both tested against the same states $\sigma_{h,u}$ (D7.27), uniformly in $\sigma$; this lets §9 choose one $p$ for all terms. Constants depend on $\dim x$ (resp. $d_h$) only, never on $\dim P,U,F$ (Lemma 2.1 usage rule D2.5).
-8. **Input to the scanner: exponent bootstrap (D9.19).** Prop 9.2 (D9.9) and Prop 9.6 (D9.25) need $S_\Omega(X)\le C_en^{1+e}$, $S_\Omega(Q_j)\le C_e(nL^e+n)$, i.e. $F_{\rm box}(r)\le C_er^{1+e}$ with $e<1$ and in fact $e\le e_*$ for the sharp margins. Start: $e_0\in(0,1)$ from Prop 3.3. **Iterated:** $e\mapsto(1-\ell)e$ (D9.24): given $F_{\rm box}\le C_er^{1+e}$, Lemma 9.4 bounds core/shell entropies ($S(X)\le Cns_0^e$, $S(Q_j)\le CnL^e$), Prop 9.2 gives small $E_{\rm def}$, rough comparisons give $S_X\le C(nL^e+nD+w+h(\tau)/a+1)=O(n^{1+(1-\ell)e})$ because $L=n^{1-\ell}<s_0\asymp n$ (D9.23). Number of steps depends only on $e_0,\ell$ with $\ell=g_0/10^5$, $g_0=(1-e_0)/2$; ends at $e_*=2\cdot10^{-6}$. All scales ($\mu=1-g_0,\nu=g_0/1000,\kappa=\min(\nu/100,e_*/4),W=4$) depend on $e_0$ only (D9.20).
+3. **Geometry supplies tiles (D11.4).** Pure plane geometry: dyadic layers around $Z$, primary tiles of pitch $s_k=2^{\lfloor(1+\delta_0)k\rfloor}$, belt strips of width $t_k=2^{\lfloor\zeta k\rfloor}$, fans with opposite labels, recursive repair of same-label point contacts at scale $d(S)\approx S^{\rho_0}$; $|D|\le Cb$, $\sum n_i^{-100}\le Cb$. Each tile is a template (D9.14) with scanner scale $n_i$; clearance $>2n_i^\beta$ => $J_i\subseteq\Lambda\setminus N_{2r_i}(S_i)$ (D11.26.3).
+4. **Amplification (D10.4).** From $I_\Omega(X:\Lambda\setminus S_0)\le C_0n^{1-\varepsilon}$ to $n^{-M}$ ($M=100$) outside $N_{2r}(S_0)$. Mechanism: typical projections of width $w=n^{3/5}$ (D10.5) give restoring operator $R_0$ with $\|R_0\|\le e^{(\mathcal I+3w)/2}$ (D10.8); run constraint clocks for $t_*=C(\mathcal I+w+K\log n)$ with $K\ge4(M+3)$ (D10.11): gap $g$ kills the excited part (D10.3), light cone localizes to $N_{2r}(S_0)$ (D10.2), $r=\lceil(C'(t_*+K\log n))^{1/\alpha}\rceil\le C_Mn^{(1-\varepsilon)/\alpha}$; polar decomposition gives local unitary (D10.14); continuity (D2.4) costs only $\log\dim e'\le Cn^2$ (D10.15). Scale match $(1-10^{-5})/\alpha<1-2\cdot10^{-6}=\beta$ holds for $\alpha>1-10^{-6}$, i.e. $p\ge10^6$ (D10.1).
+5. **Sublinear collar bound (D9.25).** $I_\Omega(X:\Lambda\setminus S_0)\le Cn^{1-10^{-5}}$ while $|\partial X|\sim n$. Mechanism: norm $N=\|\mathcal M^{-1/4}\mathrm{pre}_k\|$ of the filtered replica vector bounded above (pin to Bell pair on typical Schmidt set of $X$; D8.20–22) and below (gap forces most copies into ground state; D8.23–35). Sharp lower minus sharp upper + identity $2S_X+g^{\rm pre}-g^{\rm post}=I(X{:}V)+I(X{:}YV)\ge I(X:\Lambda\setminus S_0)$ (D8.36, D9.28) => MI bound (D9.27, D9.29). Worst error power $n^{0.999952}<n^{0.99999}$ (D9.29).
+6. **Scanner (D9.9, D9.8).** $K=\lfloor L/(8m)\rfloor$ bands, random offsets in $\{0..m-1\}$, $2nm$ fill/charge rounds move a near and a far partition through the collar of depth $L$. Per term the split probability is $\le CD/m$ (offsets), selection probability at a charge is $\ge c/(nD)$ (D9.8). Entropy production per round $\ge$ gain (D7.14b) $-$ error; sum over rounds $\le$ rough upper comparison (D9.12) => some (round, $p_k\in[\epsilon/2,\epsilon]$) has split-entropy density $\le\delta_n$ => $E_{\rm def}$ small via cost $\eta^{1/8}$ (D7.14c, D9.13). Small $E_{\rm def}$ is the hypothesis of the lower comparison in D8.8.
+7. **Gain vs cost (§5–§7).** A subsystem $x$ moving between parts of a partition: gain $\eta=I(x:F|U)$ as exponent in $\exp(ka\eta)$ (D5.5 -> D6.10 -> D7.14b); cost $\eta^{1/8}$ in energy (D5.15 -> D6.12 -> D7.14c). Both on the same states $\sigma_{h,u}$ (D7.27), uniformly in $\sigma$ => §9 picks one $p$ for all terms. Constants depend on $\dim x$ (resp. $d_h$) only, never on $\dim P,U,F$ (Lemma 2.1 usage rule D2.5).
+8. **Input to the scanner: exponent bootstrap (D9.19).** Prop 9.2 (D9.9) and Prop 9.6 (D9.25) need $S_\Omega(X)\le C_en^{1+e}$, $S_\Omega(Q_j)\le C_e(nL^e+n)$, i.e. $F_{\rm box}(r)\le C_er^{1+e}$ with $e<1$, and $e\le e_*$ for the sharp margins. Start: $e_0\in(0,1)$ from Prop 3.3. **Iterated:** $e\mapsto(1-\ell)e$ (D9.24): given $F_{\rm box}\le C_er^{1+e}$, Lemma 9.4 bounds core/shell entropies ($S(X)\le Cns_0^e$, $S(Q_j)\le CnL^e$), Prop 9.2 gives small $E_{\rm def}$, rough comparisons give $S_X\le C(nL^e+nD+w+h(\tau)/a+1)=O(n^{1+(1-\ell)e})$ because $L=n^{1-\ell}<s_0\asymp n$ (D9.23). Number of steps depends only on $e_0,\ell$ with $\ell=g_0/10^5$, $g_0=(1-e_0)/2$; ends at $e_*=2\cdot10^{-6}$. All scales ($\mu=1-g_0,\nu=g_0/1000,\kappa=\min(\nu/100,e_*/4),W=4$) depend on $e_0$ only (D9.20).
 9. **Initial exponent (D3.16).** Recursion on box size: $F_{\rm box}(Mr)\le\lambda F_{\rm box}(r)+CM^2r$, $\lambda=(1-p_0/4)M^2<M^2$, $p_0=(2C_{\rm pad}+5)^{-2}$, $M\ge\max\{2,16(C_{\rm pad}+2)\}$ (D3.16.5). Each child of a random order gains $\tfrac12S(X_i)$ with probability $\ge p_0$ (D3.4: $S(X|T)\le\tfrac12S(X)+C_{\rm buf}r$) except $O(M)$ noninterior ones. $1+e_0=\log_M\lambda$. Lemma 3.2 itself: nested filters $L_j$ on $X_j=A\cap Q_0^{+r+jD}$, harmonic weights $a_j\propto1/(r+d_j)$, $\sum a_j=2$ (factor $\tfrac12$), lower bound on $-2\log N$ from D3.1 and gap, upper bound by Schmidt pinning (D3.12–D3.13), SSA (D3.14).
 10. **Positive constraints (D4.6, D4.11).** Gap of full $H$ is converted into positive $k_i$ with $k_i\Omega=0$ and stretched-exponential tails (filter $f$ with $\hat f$ supported in $[-\Delta/2,\Delta/2]$, Gevrey bump D4.5, Lieb–Robinson D4.4, absolute value D4.6). For the scanner the system is truncated near $S_0$ (variable radius $r_i$, volume-free error $n^{-1000}$ summed over $\le3\mu_R|S_0|(d+1)^2$ labels at distance $d$; D4.12), keeping gap $\ge g/2$ and $\mathcal B_X\le CnD(\log n)^{12}$ (D4.14), so Lemma 3.1 (D3.1) applies with $\mathcal B$ nearly linear in perimeter.
-11. **Order of choice of constants** (any formalization must fix in this order): $q,R,J,\Delta$ -> $D_0$ ($>2R+10$), $C_{\rm tpl}$ -> $C_{\rm pad}$ -> $M$, $p_0$, $e_0$ (D3.16) -> $p\ge10^6$, $c_*,g$ (D10.1) -> exponents $\varepsilon,\beta,\delta_0,\zeta,\rho_0,\ell$ (D10.1, D11.2) -> $C_0$ -> $C_1$ of D4.11 (depends on $C_0,g$) -> $n_*$ (D11.26.2: large enough for Prop 9.6, Prop 10.2 at $M=100$, $L+2r<n^\beta$) -> $S_*,k_0$ of D11.24 -> $C$ of Prop 11.2 (depends on $n_*$). Then, inside each application, $k\to\infty$ strictly after the finite system, schedule, $n$, $a$, $\tau$ are fixed (D6 conventions; D8.8 quantifiers).
+11. **Order of choice of constants.** $q,R,J,\Delta$ -> $D_0$ ($>2R+10$), $C_{\rm tpl}$ -> $C_{\rm pad}$ -> $M$, $p_0$, $e_0$ (D3.16) -> $p\ge10^6$, $c_*,g$ (D10.1) -> exponents $\varepsilon,\beta,\delta_0,\zeta,\rho_0,\ell$ (D10.1, D11.2) -> $C_0$ -> $C_1$ of D4.11 (depends on $C_0,g$) -> $n_*$ (D11.26.2: large enough for Prop 9.6, Prop 10.2 at $M=100$, $L+2r<n^\beta$) -> $S_*,k_0$ of D11.24 -> $C$ of Prop 11.2 (depends on $n_*$). Then, inside each application, $k\to\infty$ strictly after the finite system, schedule, $n$, $a$, $\tau$ are fixed (D6 conventions; D8.8 quantifiers).
 
 ---
 
 ## 3. Notation
 
-Paper symbol | meaning | section introduced. Same letter, different object is flagged `[clash]`.
+`[clash]`: same letter, different objects.
 
 | Symbol | Meaning | § |
 |---|---|---|
@@ -279,7 +279,7 @@ Paper symbol | meaning | section introduced. Same letter, different object is fl
 
 ## 4. Constants and scales
 
-Order of fixing top to bottom. "(U)" = universal numeric; "(Ham)" = depends on $q,R,J,\Delta$ only.
+Order of choice: §2.3 item 11. "(Ham)" = depends on $q,R,J,\Delta$ only.
 
 | Quantity | Value | Where fixed | Role |
 |---|---|---|---|
@@ -317,16 +317,13 @@ Order of fixing top to bottom. "(U)" = universal numeric; "(Ham)" = depends on $
 | belt / replacement scale | $n=\lceil C_Bu\rceil$, $s_0=u$ resp. $2u$ | §11 D11.22 | $L=o(u)$ |
 | $d(S)$, $a_0$, $S_*$ | $2^{\lfloor\rho_0\log_2S\rfloor}$, $\le\tfrac{a_0}{1000}S$; absolute isolation const.; stopping scale | §11 D11.14, D11.24 | repair |
 | $n_*$ | large for P9.6, P10.2 ($M=100$), $L+2r<n^\beta$ | §11 D11.26.2 | threshold; enters $C$ of P11.2 |
-| Thm 1.1 constant | $C'=C_1\log q+\tfrac C2C_1$ ($S_\Omega(A)\le C'b$) | §1 D1.4.7 | final |
+| Thm 1.1 constant | $C'=C_1\log q+\tfrac C2C_1$ ($S_\Omega(A)\le C'b$) | D11.26.5 | final |
 
-**Pitfall (global).** The margins between $10^{-5},2\cdot10^{-6},10^{-6},2\cdot10^{-7}$ are tight and interlocked ($\varepsilon$ vs $\beta$ vs $\alpha$ vs $\delta_0$). Any change of one exponent in a formalization needs re-checking D9.29, D10.16, D11.2, D11.21, D11.24.
+**Pitfall (global).** Margins between $10^{-5},2\cdot10^{-6},10^{-6},2\cdot10^{-7}$ ($\varepsilon,\beta,\alpha,\delta_0$) are tight and interlocked. Changing one exponent => re-check D9.29, D10.16, D11.2, D11.21, D11.24.
 
 ---
 
 ## 5. Anchor index
-
-Generated from `grep -n '^#### D'` of each digest file. Format: anchor, kind, paper number, name, `file:line`.
-
 
 ### §1 Introduction  (`01-introduction.md`)
 
@@ -603,7 +600,7 @@ Generated from `grep -n '^#### D'` of each digest file. Format: anchor, kind, pa
 
 ## 6. Standard vs new
 
-**Textbook / literature (formalize via Mathlib or cite as axiom-level inputs).**
+**Standard.**
 
 | Anchor | Fact | Reference |
 |---|---|---|
@@ -631,7 +628,7 @@ Generated from `grep -n '^#### D'` of each digest file. Format: anchor, kind, pa
 | D11.1 (ingredients) | chain rule, subadditivity, purity | as D2.2 |
 | D11.18 (compactness step) | compactness + finite-pattern argument | standard |
 
-**Specific to this paper (the mathematical content to be formalized from scratch).**
+**New.**
 
 - §3: D3.1 (tilting $\rho^{-u/2}$ + analytic interpolation of crossing terms -> MGF/tail, $512e\,\vartheta\mathcal Bu^2$); D3.2; D3.4–D3.14 (nested positive filters with harmonic weights, optimizer commutes with marginal D3.7, clipping D3.8, $\cosh$ bound D3.9, prefix telescoping D3.11, Schmidt pinning D3.12); D3.16 (random-order chain-rule recursion).
 - §4: D4.6 (absolute-value positive replacement with gap kept); D4.8; D4.10 (square-root channels); D4.11–D4.14 (variable-radius truncation with volume-free error).
@@ -646,4 +643,4 @@ Generated from `grep -n '^#### D'` of each digest file. Format: anchor, kind, pa
 
 **Not in the DAG.** D1.7 (Cor 1.2, leaf), D1.8 (history), D1.9–D1.10 (PEPS corollary of a companion paper), D1.14–D1.18 (outline; each is a pointer to D3.16, D4.6/D7.14, D9.25, D10.4, D11.4).
 
-**Borderline (readable as standard, proof is the paper's own).** D5.2 + D5.3 (sub-exponential tail), D5.8, D8.5 (assumed MGF shape of D3.1), D9.15 (dyadic cover), D4.4 (adapted to $d_\Lambda$ and anchors).
+**Borderline (standard shape, paper's own proof).** D5.2 + D5.3 (sub-exponential tail), D5.8, D8.5 (assumed MGF shape of D3.1), D9.15 (dyadic cover), D4.4 (adapted to $d_\Lambda$ and anchors).
