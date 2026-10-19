@@ -41,6 +41,9 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | D2.4 mixing entropy of the coin | Physlib `ProbDistribution.coin`, `Hₛ_coin`, `Sᵥₙ_ofClassical` | |
 | D2.5 pure-state complement (`regionEntropy_pureState_sdiff`, OpenAI/RegionEntropy.lean:263 via `coeffMatrix`/`EE`) | Physlib `Sᵥₙ_pure_complement` (AreaLawForMathlib/QuantumInfo/Region.lean:226) | |
 | D2.9 path crossing the cut | Mathlib `SimpleGraph.Walk.exists_boundary_dart`, `exists_walk_of_edist_ne_top`, `Walk.edist_le` | |
+| `OpenAI.harmonic_cost_le` (OpenAI/HarmonicWeights.lean:93, D3.6.1 minimality) | Mathlib `Finset.sq_sum_div_le_sum_sq_div` (Sedrakyan form of Cauchy–Schwarz), in `AreaLaw.eq_initial_harmonic_weights` (AreaLawRefactored/S03_InitialBox.lean:124) | weights `1/(r+d_j) > 0` |
+| `OpenAI.log_add_sub_log_le_div` (OpenAI/HarmonicWeights.lean:113, D3.6.2) | Mathlib `Real.log_le_sub_one_of_pos` | ratio of consecutive terms |
+| `OpenAI.card_filter_not_interior_le` / colour machinery (OpenAI/ChildColoring.lean) | none needed: paper route of D3.16 (random order) counts orders with `Fintype.card_perm`, `Finset.card_nbij'`, `Finset.exists_max_image` (`AreaLaw.step_3_16_3_count`) | |
 
 ## 4. Failed searches
 
@@ -63,30 +66,39 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | D2.7.2 | sphere \|z\|₁ = k has 4k points; equality | ℓ¹-ball covered by two rotated squares of (r+1)² and r² points (parity of a+b+r); proves ≤ only | the anchor needs ≤; far shorter |
 | D2.2 item 4, lower bound | purify, S(D\|E) = −S(D\|F) ≥ −S(D) | Araki–Lieb S(E) − S(D) ≤ S(DE) | Araki–Lieb already on regions; no purification |
 | D2.5.1 | eigenvalues ±λ of the rank-two difference | X³ = (1−\|⟨ξ,η⟩\|²)X, so \|X\| = c^{−1/2}X² | avoids a spectral computation |
+| D3.6.2 | integral comparison `1/(2r+jD) ≥ ∫_j^{j+1} dx/(2r+Dx)` | `log((2r+(j+1)D)/(2r+jD)) ≤ D/(2r+jD)` from `log x ≤ x − 1`, telescoped (`eq_initial_harmonic_weights`) | same inequality, no integrals |
+| D3.15 | sup over instances at a fixed `D₀ > 2R+10` | sup also over `D₀ > 2R+10` (`AreaLaw.F_box`, S03_InitialBox.lean:682) | the frozen `InitialBoxEstimate` puts `∃ C e₀` before `∀ D₀`, and `D₀` is real |
+| D3.16 (old code, now fixed) | uniform random order of the children | (Step 1) the paper route, `AreaLaw.step_3_16_4` (S03_InitialBox.lean:868); the old deterministic colour rotations (OpenAI/RotatedChainRule.lean, ChildColoring.lean) are not used | old route was drift |
 
 ## 6. Constants changed
 
 | Anchor | Paper | Previous Lean | Now |
 |---|---|---|---|
 | D2.4 (Lemma 2.1), second inequality | C = 2(1 + 2/e) (D2.4.4) | 4 (frozen `ConditionalContinuity`, old `winterModulus_le_sqrt`) | 2·C_h proved in `AreaLaw.step_2_4_4` (S02_Preliminaries.lean:97); weakened once to the frozen 4 at the end of `lemma_2_1` (the frozen statement may not change) |
+| D3.16 (Prop 3.3) | p₀ = (2C_pad+5)⁻², B_M = 4(C_pad+2)M, M ≥ max{2, 16(C_pad+2)}, λ = (1−p₀/4)M² | old `initial_box_estimate_of_bufferDiscount` (OpenAI/InitialBoxEstimate.lean:294): p = 1/(2(2C_pad+1)²), M = 8(C_pad+1), λ = (1−p/2)M², noninterior ≤ 2(2C_pad+1)M | paper's: `AreaLaw.p₀` = (2C_pad+5)⁻², `B_M` = 4(C_pad+2)M, M = 16(C_pad+2), λ = (1−p₀/4)M² (`prop_3_3`, S03_InitialBox.lean:1109) |
+| D3.5(e) | `C(r+d_j)`, `C = C(q,R)` | — | `16 v_R μ_R (r+d_j)` for the count, `C₂ = 1 + 16 v_R μ_R (1+v_R log q)²` for `𝓑_j` (`step_3_5_5`) |
+| D3.2.3 | `C₁ = max{1, 2v_Rμ_R(1+v_R log q)²}` | `cutLogBudget_le_card_diamond` (OpenAI/TailParameter.lean) | paper's `AreaLaw.C₁` (S03_InitialBox.lean:16) |
 
 ## 7. Digest corrections
 
 | Anchor | What was wrong | Fix |
 |---|---|---|
 | §2 | none found by the §2 part agents | — |
+| §3 | none found by the §3 worker | — |
 
 ## 8. Cuts
 
 | File or declaration | Category | Lines |
 |---|---|---|
 | §2 old code (Map.md §2 rows) | not yet deleted: later sections still import it; cut at the Step 1 gate | — |
+| §3 old code (Map.md §3 rows) | not yet deleted (instruction: keep OpenAI/ until the Step 1 gate) | — |
 
 ## 9. Per-section lines
 
 | Section | Before (from Map.md) | After Step 1 | After Step 2 |
 |---|---|---|---|
 | 02 Preliminaries | 4865 | 786 (`AreaLawRefactored/S02_Preliminaries.lean`) + 607 library (`AreaLawForMathlib/QuantumInfo/Region.lean` 314, `…/Entropy/ClassicalQuantum.lean` 259, `Data/Int/L1Ball.lean` 34) = 1393 | |
+| 03 InitialBox | 10096 | 1162 (`AreaLawRefactored/S03_InitialBox.lean`), PARTIAL: D3.1 (Lemma 3.1), D3.2.4, D3.4 (Lemma 3.2), D3.7–D3.13, D3.14.5 open; `prop_3_3` takes Lemma 3.2 as hypothesis | |
 
 ## 10. Final numbers
 
