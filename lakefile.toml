@@ -40,3 +40,9 @@ name = "Challenge"
 
 [[lean_lib]]
 name = "Solution"
+
+[[lean_lib]]
+name = "AreaLawRefactored"
+
+[[lean_lib]]
+name = "AreaLawForMathlib"
