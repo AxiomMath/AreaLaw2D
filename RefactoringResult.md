@@ -1,0 +1,71 @@
+# RefactoringResult.md
+
+Log of the refactor fixed by `RefactoringPlan.md`. Sections in the plan's order.
+
+## 1. Starting point
+
+Recomputed at commit `a0b7d58` (branch `refactoring-plan`). Audit scripts `OpenAI/Audit*.lean` (3 files, 6 245 lines) and `Arealaw/Audit.lean` (358 lines, also a `#print axioms` script) are excluded from every count except where the row says otherwise. Line counts are `wc -l`.
+
+| Quantity | Plan | Recomputed | Note |
+|---|---|---|---|
+| Paper | 7 069 LaTeX lines; 1 theorem, 1 corollary, 10 propositions, 24 lemmas; 238 digest anchors | 7 069 LaTeX lines (6 993 in `paper/sections/*.tex` + 76 in `paper/main.tex`); 1 theorem, 1 corollary, 10 propositions, 24 lemmas (`\begin{…}` counts); 238 anchors (`#### D<s>.<n>` headings in `digest/01`–`11`) | agrees |
+| `OpenAI/` | 916 files, 181 500 lines | 916 files, 182 511 lines | line count differs by 1 011 |
+| `Arealaw/` | 35 files, 5 700 lines | 35 files, 5 685 lines (5 327 without `Arealaw/Audit.lean`) | |
+| Declarations in `OpenAI/` | 7 784, of which 1 083 `def`, 6 423 `theorem`/`lemma` | 7 806, of which 1 083 `def`, 6 592 `theorem`/`lemma` (6 433 + 159); also 50 `abbrev`, 43 `instance`, 32 `structure`, 5 `inductive`, 1 `class` | counted by a line regex on declaration keywords at column 0 (after attributes and modifiers) |
+| Declarations whose name occurs nowhere else | 1 398; exactly once elsewhere: 2 543 | 435; exactly once elsewhere: 2 461 | the plan's counting rule is not stated and was not reproduced. Rule used: occurrences of the declaration's last name component as an identifier or dotted component in `OpenAI/`, `Arealaw/`, `Solution/`, `Challenge/` (comments stripped, audit files excluded), minus the declaration itself. Counting only whole-identifier matches of the short or full name gives 1 103 / 2 383 |
+| Files under 80 lines | 136 | 135 in `OpenAI/` (+ 14 in `Arealaw/`) | |
+| Files in `OpenAI/` with no subdirectory | 575, of which 94 named `Replica*` | 572 (575 with the 3 audit files), of which 94 `Replica*` | agrees |
+| Files outside the import closure of `OpenAI.AreaLaw` | 46 (6 342 lines) | `OpenAI/`: 45 non-audit files (6 309 lines) + `AuditAmplification.lean` (33) = 46 (6 342); `Arealaw/`: 20 files (incl. `Audit.lean`) | 2 of the 45 are NOT dead: `OpenAI/PositiveReplacement.lean` (`OpenAI.positive_replacement`, line 16) and `OpenAI/ComplexWitnessTransfer.lean` (`OpenAI.positiveReplacement_of_complex`, line 215) prove the frozen `PositiveReplacement`, which `OpenAI.AreaLaw` does not import |
+| Lean lines per paper line | 26 | 26.6 (187 838 / 7 069, audit files excluded) | |
+
+Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3, overbuilt 5, none 19. Lines attributed to rows: 170 657; `## Unmapped`: 17 181 lines (1 005 declarations: standard 322, scaffold 93, dead 269, foreign 321). Inside rows, 729 declarations (14 360 lines) are unreachable from the frozen proofs by name search.
+
+## 2. Decisions
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Scalar field | Develop over `ℂ`. One transfer file at the top proves each `[RCLike 𝕜]` frozen statement (`AreaLaw`, `AreaLawCorollary`, `PositiveReplacement`, `CollarBound`, `Amplification`, `BufferDiscount`, `InitialBoxEstimate`, `TwoFamilyCancellation`, `ConditionalContinuity`, `MarginalTails`) from its `ℂ` instance with two tools: the entrywise star-embedding `𝕜 →⋆ ℂ` (today `OpenAI.toComplex`, `OpenAI/Embedding.lean`), which preserves hermiticity, spectrum and gap, partial traces and entropies, for the hypotheses; and the real part of a `ℂ` witness for the existential operator outputs (`k_X` of `PositiveReplacement`, as `OpenAI/ComplexWitnessTransfer.lean:215` does now), since every constraint on them is convex/linear and invariant under entrywise conjugation when `H`, `Ω` are real. All piecewise transfers go: `OpenAI.bufferDiscount_of_complex` (OpenAI/BufferDiscount.lean:456), the reindex-and-transfer inside `OpenAI.marginal_tails` (OpenAI/MarginalTails.lean:135), `OpenAI.positiveReplacement_of_complex` (OpenAI/ComplexWitnessTransfer.lean:215), the `toComplex` step of `OpenAI.amplification` (OpenAI/Amplification.lean:54), the ℂ→𝕜 step of `collarInformationBound` (OpenAI/CollarInformation.lean:439), `regionEntropy_pureState_toComplex` (OpenAI/BufferDiscount.lean:445), and the use of `OpenAI/Embedding.lean` (505 lines) to carry Physlib's ℂ-only SSA/subadditivity/Araki–Lieb to `𝕜` | The paper works over `ℂ`; the only other `RCLike` field is `ℝ`, which embeds. No anchor needs `𝕜`: the analytic cores of §4–§10 are already ℂ-only (Map.md rows), and the 𝕜-generic pieces (D2.4, D3.15–D3.16, D8.36/D9.28, D10.4, D11.1, D11.26) exist only to feed the frozen statements. No anchor makes the transfer impossible: the one existential-witness statement (`PositiveReplacement`) already has a working real-part transfer. Physlib's entropy inequalities are ℂ-only, so `ℂ` also removes the SSA transfer |
+| Encoding of regions, partial traces, entropy | The statement encoding: `Arealaw.Reg`, `pureState`, `SubState.regionEntropy`, `mutualInfo` (Arealaw/), used everywhere. Second encodings re-proved in it, bridges cut (`scaffold`): `FiniteProduct.entropy` / `mutualInformation` / `reducedPure` / `conditionalMutualInformation` over `EuclideanSpace ℂ ((v : V) → β v)` (OpenAI/FiniteProductEntropy.lean:63, :158; FiniteProductChannel.lean:219; FiniteProductConditional.lean:30; `namespace FiniteProduct` opened in 34 files; `FiniteProduct.` or `QuantumSSA.` names occur in 92 files) with bridge `mutualInfo_pureState_eq_finiteProduct` (OpenAI/AmplificationProof.lean:87); `ConditionalMovement.QuantumSSA` (coefficient-matrix partial traces, SSA, conditional entropy; OpenAI/ConditionalMovement/PartialTrace.lean:38, EntropyBounds.lean:38, and a second Lemma 2.1 `QuantumSSA.conditional_continuity`, EntropyContinuity.lean:95); `Entropy.MarginalPhase.condMutualInfo` (OpenAI/MarginalPhaseQuadratic.lean:31); `Entropy.SiteConfig` / `FourPartition` (OpenAI/ConditionalMovementRegional.lean:41) with bridge OpenAI/ReplicaRegionUnion.lean; the §10 ancilla copies `AncillaSites`; the bipartite `PureState`/`rhoA`/`EE` of §2 | Plan, decision 2. The frozen statements are written in Arealaw's encoding, so it is the one that must stay; every other encoding needs a bridge to reach a frozen statement, and Map.md shows the same anchor (Lemma 2.1, SSA, the pure-θ marginals of §5) proved once per encoding |
+| Line attribution in Map.md | Each declaration owns its lines up to the next declaration; file headers go to the first declaration; each declaration counted once (individually-named claim over whole-file claim, anchor row over section infra, else earlier section) | Makes the per-section "before" column of §9 sum to the 187 838 lines of `OpenAI/` + `Arealaw/` |
+| Dead | Reachability by short-name search from the 20 theorems whose statements mention a frozen `def … : Prop`, through imported files only | Plan: "confirm by name search, not by import alone"; this search found the 2 frozen-statement proofs outside the `OpenAI.AreaLaw` closure |
+| Unmapped helpers | 99 proof helpers no mapper claimed (and the 9 helper defs of `OpenAI/Statements.lean`) go into a `(section infra, reverse pass)` row of their section, not into `## Unmapped` | They serve an anchor's proof and fit none of standard/scaffold/dead/foreign |
+
+## 3. Replacements
+
+| Lean declaration removed | Mathlib/Physlib declaration | Hypothesis notes |
+|---|---|---|
+
+## 4. Failed searches
+
+| What was needed | Queries tried | Where it ended up |
+|---|---|---|
+
+## 5. Route differences
+
+| Anchor | Paper route | Formal route | Reason |
+|---|---|---|---|
+
+## 6. Constants changed
+
+| Anchor | Paper | Previous Lean | Now |
+|---|---|---|---|
+
+## 7. Digest corrections
+
+| Anchor | What was wrong | Fix |
+|---|---|---|
+
+## 8. Cuts
+
+| File or declaration | Category | Lines |
+|---|---|---|
+
+## 9. Per-section lines
+
+| Section | Before (from Map.md) | After Step 1 | After Step 2 |
+|---|---|---|---|
+
+## 10. Final numbers
+
+| Quantity | Value |
+|---|---|
