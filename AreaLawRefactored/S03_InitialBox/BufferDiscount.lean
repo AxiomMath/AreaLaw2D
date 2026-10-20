@@ -374,7 +374,7 @@ theorem step_3_5_4 (hab : a ≤ b) (hD : 2 * R + 2 < D) (hC : D + 1 < Cpad)
     exact ⟨hXA hs, by omega⟩
 
 /-- D3.5.5. `C₂ = 1 + 16 v_R μ_R (1 + v_R log q)²`. -/
-noncomputable def C₂ (q R : ℕ) : ℝ := 1 + 16 * v R * μ R * (1 + v R * Real.log q) ^ 2
+noncomputable def C₂ (q R : ℕ) : ℝ := 1 + 16 * v 2 R * μ (v 2) R * (1 + v 2 R * Real.log q) ^ 2
 
 /-- D3.5.5 (e). For `1 ≤ j ≤ m`: `#{split by X_j} ≤ 16 v_R μ_R (r + d_j)` and
 `𝓑_j ≤ C₂ (r + d_j)`. -/
@@ -384,7 +384,7 @@ theorem step_3_5_5 {q : ℕ} (hq : 1 ≤ q) (hab : a ≤ b) (hr : 1 ≤ r)
     (hRD₀ : (R : ℝ) < D₀) :
     ∀ j, 1 ≤ j → j ≤ m Cpad r D →
       (#{X ∈ supports Λ R | (X ∩ X_j A (Icc a b) r D j).Nonempty ∧
-          (X \ X_j A (Icc a b) r D j).Nonempty} : ℝ) ≤ 16 * v R * μ R * (r + d r D j) ∧
+          (X \ X_j A (Icc a b) r D j).Nonempty} : ℝ) ≤ 16 * v 2 R * μ (v 2) R * (r + d r D j) ∧
         1 + ∑ X ∈ supports Λ R with (X ∩ X_j A (Icc a b) r D j).Nonempty ∧
           (X \ X_j A (Icc a b) r D j).Nonempty,
           Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2 ≤
@@ -398,12 +398,12 @@ theorem step_3_5_5 {q : ℕ} (hq : 1 ≤ q) (hab : a ≤ b) (hr : 1 ≤ r)
   refine ⟨?_, ?_⟩
   · have h1 : (#{X ∈ supports Λ R | (X ∩ X_j A (Icc a b) r D j).Nonempty ∧
         (X \ X_j A (Icc a b) r D j).Nonempty} : ℝ) ≤
-        2 * v R * μ R * #(edgeBoundary Λ (X_j A (Icc a b) r D j)) := by
-      exact_mod_cast eq_crossing_count Λ _ R
-    have hK : (0 : ℝ) ≤ v R * μ R := by positivity
+        2 * v 2 R * μ (v 2) R * #(edgeBoundary Λ (X_j A (Icc a b) r D j)) := by
+      exact_mod_cast eq_crossing_count squareLattice (v 2) eq_ball_count_two Λ _ R
+    have hK : (0 : ℝ) ≤ v 2 R * μ (v 2) R := by positivity
     nlinarith
   · have h1 := step_3_2_3' Λ (X_j A (Icc a b) r D j) R q hq
-    have hK : (0 : ℝ) ≤ 2 * v R * μ R * (1 + v R * Real.log q) ^ 2 := by positivity
+    have hK : (0 : ℝ) ≤ 2 * v 2 R * μ (v 2) R * (1 + v 2 R * Real.log q) ^ 2 := by positivity
     unfold C₂
     nlinarith [mul_le_mul_of_nonneg_left hcR hK, mul_nonneg hK hd0]
 
@@ -432,7 +432,7 @@ theorem step_3_5 {q R : ℕ} {D₀ : ℝ} {Λ A Q Q₀ : Finset (ℤ × ℤ)} {r
         ∀ i, j < i → i ≤ m Cpad r D → X ⊆ X_j A Q₀ r D i) ∧
     ∀ j, 1 ≤ j → j ≤ m Cpad r D →
       (#{X ∈ supports Λ R | (X ∩ X_j A Q₀ r D j).Nonempty ∧ (X \ X_j A Q₀ r D j).Nonempty} : ℝ)
-          ≤ 16 * v R * μ R * (r + d r D j) ∧
+          ≤ 16 * v 2 R * μ (v 2) R * (r + d r D j) ∧
         1 + ∑ X ∈ supports Λ R with (X ∩ X_j A Q₀ r D j).Nonempty ∧
           (X \ X_j A Q₀ r D j).Nonempty,
           Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2 ≤
@@ -606,7 +606,7 @@ theorem eq_initial_weight_range (q R D : ℕ) (hD : 0 < D) {C J Δ : ℝ} (hΔ :
   set K := (1 + J / Δ) * C₂ q R
   have hC₂ : 1 ≤ C₂ q R := by
     unfold C₂
-    have : (0 : ℝ) ≤ 16 * v R * μ R * (1 + v R * Real.log q) ^ 2 := by positivity
+    have : (0 : ℝ) ≤ 16 * v 2 R * μ (v 2) R * (1 + v 2 R * Real.log q) ^ 2 := by positivity
     linarith
   have hK : 0 < K := mul_pos (by positivity) (by linarith)
   set L₀ := max 4 (max (16 * C * D / Δ) (128 * D * √K))

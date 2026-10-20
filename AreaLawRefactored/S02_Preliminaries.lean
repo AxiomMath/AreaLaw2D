@@ -304,156 +304,278 @@ theorem step_2_5 (ξ η : Reg loc U → ℂ) (hξ : star ξ ⬝ᵥ ξ = 1) (hη 
 
 end D25
 
-/-! ## D2.6 Balls, graph neighborhoods, ambient dilations -/
+end AreaLaw
 
-/-- D2.6. `B_Λ(x,r) = {y ∈ Λ : d_Λ(x,y) ≤ r}`.  The neighbourhood `N^Λ_r(D)` is
-`OpenAI.graphNbhd Λ D r` and the ambient dilation `T_j` is `OpenAI.ambientDilation T j`. -/
-noncomputable abbrev ball (Λ : Finset (ℤ × ℤ)) (x : ℤ × ℤ) (r : ℕ) : Finset (ℤ × ℤ) :=
-  graphNbhd Λ {x} r
+/-! ## D2.6 Balls, graph neighborhoods, ambient dilations
 
-/-- D2.7. `v_r = 1 + 2r(r+1)`. -/
-def v (r : ℕ) : ℕ := 1 + 2 * r * (r + 1)
+The geometry of §2 is graph-level (`Map.md`, Dimension): a simple graph `G` on a site type `σ`, a
+finite domain `Λ`, and the distance `d_Λ` of the graph induced on `Λ`; ball counts enter through a
+growth function `V` with `|B_Λ(x, r)| ≤ V r`. The lattice `ℤ^d` is `SimpleGraph.l1Lattice d`
+with `V = v d` (D2.7). The frozen statements are the case `G = squareLattice = hasse ℤ □ hasse ℤ`,
+`V = v 2`, by `rfl` (section "The square lattice" at the end of this file). -/
 
-/-- D2.8. `μ_R = 2^(v_R - 1)`. -/
-def μ (R : ℕ) : ℕ := 2 ^ (v R - 1)
+namespace AreaLaw
+
+open Arealaw
+open OpenAI (HasGlobalGap pureState)
+open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
+
+namespace GraphDomain
+
+variable {σ : Type*} [DecidableEq σ] (G : SimpleGraph σ)
+
+/-- D2.6. The distance `d_Λ` of the graph `G` induced on `Λ`: `⊤` between different components
+of `Λ`, and when either point lies outside `Λ`. -/
+noncomputable def domainEDist (Λ : Finset σ) (x y : σ) : ℕ∞ :=
+  if h : x ∈ Λ ∧ y ∈ Λ then (G.induce (Λ : Set σ)).edist ⟨x, h.1⟩ ⟨y, h.2⟩ else ⊤
+
+/-- D2.6. The diameter `diam_{d_Λ} X`. -/
+noncomputable def domainEDiam (Λ X : Finset σ) : ℕ∞ :=
+  ⨆ x ∈ X, ⨆ y ∈ X, domainEDist G Λ x y
+
+/-- D2.6. The neighbourhood `N^Λ_r(S) = {x ∈ Λ : d_Λ(x, S) ≤ r}`. -/
+noncomputable def graphNbhd (Λ S : Finset σ) (r : ℕ) : Finset σ :=
+  Λ.filter fun x => (⨅ y ∈ S, domainEDist G Λ x y) ≤ r
+
+/-- D2.6. `B_Λ(x, r) = {y ∈ Λ : d_Λ(x, y) ≤ r}`. -/
+noncomputable abbrev ball (Λ : Finset σ) (x : σ) (r : ℕ) : Finset σ :=
+  graphNbhd G Λ {x} r
+
+/-- The admissible supports of eq. (1.1): nonempty `X ⊆ Λ` with `diam_{d_Λ} X ≤ R`. -/
+noncomputable def supports (Λ : Finset σ) (R : ℕ) : Finset (Finset σ) :=
+  Λ.powerset.filter fun X => X.Nonempty ∧ domainEDiam G Λ X ≤ R
+
+/-- An admissible interaction of range `R` and strength `J` (eq. (1.1)): every term is
+Hermitian with operator norm at most `J`, and vanishes unless its support is admissible. -/
+def IsAdmissible {loc : σ → Type*} [∀ i, Fintype (loc i)]
+    [∀ i, DecidableEq (loc i)] (Λ : Finset σ) (R : ℕ) (J : ℝ)
+    (Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ) : Prop :=
+  ∀ X ⊆ Λ, (Φ X).IsHermitian ∧ ‖Φ X‖ ≤ J ∧ (X ∉ supports G Λ R → Φ X = 0)
+
+/-- The Hamiltonian `H = ∑_X h_X` of eq. (1.1), each term extended by the identity. -/
+noncomputable def hamiltonian {loc : σ → Type*} [∀ i, Fintype (loc i)]
+    [∀ i, DecidableEq (loc i)]
+    (Λ : Finset σ) (Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ) :
+    Matrix (Reg loc Λ) (Reg loc Λ) ℂ :=
+  ∑ X ∈ Λ.powerset.attach, extendId (Finset.mem_powerset.1 X.2) (Φ X.1)
+
+variable [DecidableRel G.Adj]
+
+/-- The edge boundary `∂_Λ A`: pairs `(x, y)` of neighbours with `x ∈ A`, `y ∈ Λ \ A`. -/
+noncomputable def edgeBoundary (Λ A : Finset σ) : Finset (σ × σ) :=
+  G.interedges A (Λ \ A)
+
+/-- The crossing-edge endpoints `Z_A = ⋃_{e ∈ ∂_Λ A} e`. -/
+noncomputable def cutEndpoints (Λ A : Finset σ) : Finset σ :=
+  (edgeBoundary G Λ A).image Prod.fst ∪ (edgeBoundary G Λ A).image Prod.snd
+
+end GraphDomain
+
+/-- The square lattice `ℤ²` of the frozen statements. -/
+noncomputable abbrev squareLattice : SimpleGraph (ℤ × ℤ) :=
+  SimpleGraph.hasse ℤ □ SimpleGraph.hasse ℤ
+
+/-- D2.7. `v_r`, the number of points of `ℤ^d` in an `ℓ¹`-ball of radius `r`;
+`v 2 r = 1 + 2r(r+1)` (`v_two`). -/
+def v (d r : ℕ) : ℕ := Int.l1BallCard d r
+
+theorem v_two (r : ℕ) : v 2 r = 1 + 2 * r * (r + 1) := Int.l1BallCard_two r
+
+/-- D2.8. `μ_R = 2^(V_R - 1)` for a ball-growth function `V`; on `ℤ^d`, `V = v d`. -/
+def μ (V : ℕ → ℕ) (R : ℕ) : ℕ := 2 ^ (V R - 1)
 
 section Counting
 
-open Finset Matrix SimpleGraph
-open scoped Matrix.Norms.L2Operator Kronecker
+open Finset Matrix GraphDomain
+open SimpleGraph hiding ball mem_ball
+open scoped Kronecker
+
+variable {σ : Type*} [DecidableEq σ] (G : SimpleGraph σ)
 
 /-! ## D2.7 Ball cardinality -/
 
-/-- The square-lattice graph induced on `Λ`, whose distance is `d_Λ`. -/
-local notation "𝔾" Λ =>
-  SimpleGraph.induce ((Λ : Finset (ℤ × ℤ)) : Set (ℤ × ℤ)) (SimpleGraph.boxProd (hasse ℤ) (hasse ℤ))
+namespace GraphDomain
 
-theorem mem_ball {Λ : Finset (ℤ × ℤ)} {x y : ℤ × ℤ} {r : ℕ} :
-    y ∈ ball Λ x r ↔ y ∈ Λ ∧ domainEDist Λ y x ≤ r := by
+theorem mem_ball {Λ : Finset σ} {x y : σ} {r : ℕ} :
+    y ∈ ball G Λ x r ↔ y ∈ Λ ∧ domainEDist G Λ y x ≤ r := by
   simp [graphNbhd]
 
-theorem mem_supports {Λ X : Finset (ℤ × ℤ)} {R : ℕ} :
-    X ∈ supports Λ R ↔ X ⊆ Λ ∧ X.Nonempty ∧ domainEDiam Λ X ≤ R := by
+theorem mem_supports {Λ X : Finset σ} {R : ℕ} :
+    X ∈ supports G Λ R ↔ X ⊆ Λ ∧ X.Nonempty ∧ domainEDiam G Λ X ≤ R := by
   simp [supports]
 
-theorem domainEDist_eq {Λ : Finset (ℤ × ℤ)} (x y : Λ) :
-    domainEDist Λ x y = (𝔾 Λ).edist x y := by
+theorem domainEDist_eq {Λ : Finset σ} (x y : Λ) :
+    domainEDist G Λ x y = (G.induce (Λ : Set σ)).edist x y := by
   rw [domainEDist, dif_pos ⟨x.2, y.2⟩]
   rfl
 
-/-- D2.7.1. A path of the induced graph changes `|·|₁` by at most one per edge. -/
-theorem natAbs_add_natAbs_le_length {Λ : Finset (ℤ × ℤ)} {y x : Λ} (p : (𝔾 Λ).Walk y x) :
+/-- Two sites of an admissible support are at `d_Λ`-distance at most `R`. -/
+theorem domainEDist_le_of_mem_supports {Λ X : Finset σ} {R : ℕ} {x y : σ}
+    (hX : X ∈ supports G Λ R) (hx : x ∈ X) (hy : y ∈ X) : domainEDist G Λ x y ≤ R :=
+  ((le_iSup₂ (f := fun y (_ : y ∈ X) => domainEDist G Λ x y) y hy).trans
+    (le_iSup₂ (f := fun x (_ : x ∈ X) => ⨆ y ∈ X, domainEDist G Λ x y) x hx)).trans
+    (Finset.mem_filter.1 hX).2.2
+
+/-- D2.8.1. A support through `x` lies in `B_Λ(x,R)`. -/
+theorem subset_ball_of_mem_supports {Λ X : Finset σ} {R : ℕ} {x : σ}
+    (hX : X ∈ supports G Λ R) (hx : x ∈ X) : X ⊆ ball G Λ x R :=
+  fun _ hy => (mem_ball G).2 ⟨(mem_supports G).1 hX |>.1 hy,
+    domainEDist_le_of_mem_supports G hX hy hx⟩
+
+end GraphDomain
+
+/-- D2.7.1. A path of the induced graph of `ℤ^d` changes `|·|₁` by at most one per edge. -/
+theorem sum_natAbs_le_length {d : ℕ} {Λ : Finset (Fin d → ℤ)} {y x : Λ}
+    (p : ((l1Lattice d).induce (Λ : Set (Fin d → ℤ))).Walk y x) :
+    ∑ i, ((y : Fin d → ℤ) i - (x : Fin d → ℤ) i).natAbs ≤ p.length := by
+  induction p with
+  | nil => simp
+  | @cons u v w h p ih =>
+    have h : ∑ i, ((u : Fin d → ℤ) i - (v : Fin d → ℤ) i).natAbs = 1 := h
+    rw [Walk.length_cons]
+    calc ∑ i, ((u : Fin d → ℤ) i - (w : Fin d → ℤ) i).natAbs
+        ≤ ∑ i, (((u : Fin d → ℤ) i - (v : Fin d → ℤ) i).natAbs +
+            ((v : Fin d → ℤ) i - (w : Fin d → ℤ) i).natAbs) :=
+          Finset.sum_le_sum fun i _ => by omega
+      _ ≤ p.length + 1 := by rw [Finset.sum_add_distrib, h]; omega
+
+/-- D2.7 (eq:ball-count). For every site `x` of `ℤ^d` and integer `r ≥ 0`:
+`|B_Λ(x,r)| ≤ v_r`. -/
+theorem eq_ball_count {d : ℕ} (Λ : Finset (Fin d → ℤ)) (x : Fin d → ℤ) (r : ℕ) :
+    #(ball (l1Lattice d) Λ x r) ≤ v d r := by
+  -- D2.7.1
+  have h1 : ∀ y ∈ ball (l1Lattice d) Λ x r, ∑ i, (y i - x i).natAbs ≤ r := by
+    intro y hy
+    obtain ⟨hy, hd⟩ := (GraphDomain.mem_ball _).1 hy
+    have hx : x ∈ Λ := by
+      by_contra hx
+      simp [GraphDomain.domainEDist, hx] at hd
+    rw [GraphDomain.domainEDist_eq _ ⟨y, hy⟩ ⟨x, hx⟩] at hd
+    obtain ⟨p, hp⟩ := exists_walk_of_edist_ne_top (hd.trans_lt (ENat.natCast_lt_top r)).ne
+    exact (sum_natAbs_le_length p).trans (ENat.natCast_le_natCast.1 (hp ▸ hd))
+  -- D2.7.2
+  exact card_le_l1BallCard x r h1
+
+/-- D2.7.1 on `ℤ × ℤ`. -/
+theorem natAbs_add_natAbs_le_length {Λ : Finset (ℤ × ℤ)} {y x : Λ}
+    (p : (squareLattice.induce (Λ : Set (ℤ × ℤ))).Walk y x) :
     ((y : ℤ × ℤ).1 - (x : ℤ × ℤ).1).natAbs + ((y : ℤ × ℤ).2 - (x : ℤ × ℤ).2).natAbs
       ≤ p.length := by
   induction p with
   | nil => simp
   | cons h p ih =>
-    simp only [comap_adj, Function.Embedding.subtype_apply, boxProd_adj, hasse_adj,
+    simp only [squareLattice, comap_adj, Function.Embedding.subtype_apply, boxProd_adj, hasse_adj,
       Order.covBy_iff_add_one_eq] at h
     rw [Walk.length_cons]
     omega
 
-/-- D2.7 (eq:ball-count). For every site `x` and integer `r ≥ 0`:
-`|B_Λ(x,r)| ≤ v_r := 1 + 2r(r+1)`. -/
-theorem eq_ball_count (Λ : Finset (ℤ × ℤ)) (x : ℤ × ℤ) (r : ℕ) : #(ball Λ x r) ≤ v r := by
-  -- D2.7.1
-  have h1 : ∀ y ∈ ball Λ x r, (y.1 - x.1).natAbs + (y.2 - x.2).natAbs ≤ r := by
+/-- D2.7 (eq:ball-count) on the square lattice `ℤ × ℤ` of the frozen statements:
+`|B_Λ(x,r)| ≤ v_r = 1 + 2r(r+1)`. -/
+theorem eq_ball_count_two (Λ : Finset (ℤ × ℤ)) (x : ℤ × ℤ) (r : ℕ) :
+    #(ball squareLattice Λ x r) ≤ v 2 r := by
+  have h1 : ∀ y ∈ ball squareLattice Λ x r, (y.1 - x.1).natAbs + (y.2 - x.2).natAbs ≤ r := by
     intro y hy
-    obtain ⟨hy, hd⟩ := mem_ball.1 hy
+    obtain ⟨hy, hd⟩ := (GraphDomain.mem_ball _).1 hy
     have hx : x ∈ Λ := by
       by_contra hx
-      simp [domainEDist, hx] at hd
-    rw [domainEDist_eq ⟨y, hy⟩ ⟨x, hx⟩] at hd
+      simp [GraphDomain.domainEDist, hx] at hd
+    rw [GraphDomain.domainEDist_eq _ ⟨y, hy⟩ ⟨x, hx⟩] at hd
     obtain ⟨p, hp⟩ := exists_walk_of_edist_ne_top (hd.trans_lt (ENat.natCast_lt_top r)).ne
     exact (natAbs_add_natAbs_le_length p).trans (ENat.natCast_le_natCast.1 (hp ▸ hd))
-  -- D2.7.2
-  exact card_le_of_forall_natAbs_add_natAbs_le x r h1
+  exact v_two r ▸ card_le_of_forall_natAbs_add_natAbs_le x r h1
 
 /-! ## D2.8 Term multiplicity and norm budget -/
 
-/-- D2.8.1. A support through `x` lies in `B_Λ(x,R)`. -/
-theorem subset_ball_of_mem_supports {Λ X : Finset (ℤ × ℤ)} {R : ℕ} {x : ℤ × ℤ}
-    (hX : X ∈ supports Λ R) (hx : x ∈ X) : X ⊆ ball Λ x R := by
-  obtain ⟨hXΛ, -, hd⟩ := mem_supports.1 hX
-  exact fun y hy => mem_ball.2 ⟨hXΛ hy, (le_iSup₂_of_le (f := fun i (_ : i ∈ X) =>
-    ⨆ j ∈ X, domainEDist Λ i j) y hy (le_iSup₂ (f := fun j (_ : j ∈ X) => domainEDist Λ y j)
-      x hx)).trans hd⟩
+variable (V : ℕ → ℕ) (hV : ∀ (Λ : Finset σ) (x : σ) (r : ℕ), #(ball G Λ x r) ≤ V r)
+include hV
 
-/-- D2.8. For an anchor map `a` (`a X ∈ X`) and `μ_R = 2^(v_R - 1)`, for every `x ∈ Λ`:
-`#{X ∋ x} ≤ μ_R`, `#{X anchored at x} ≤ μ_R`, `∑_{X ∋ x} ‖h_X‖ ≤ J μ_R`, and `|X| ≤ v_R` for
-every support `X`. -/
-theorem step_2_8 (Λ : Finset (ℤ × ℤ)) (R : ℕ) (x : ℤ × ℤ) :
-    #{X ∈ supports Λ R | x ∈ X} ≤ μ R ∧
-    (∀ a : Finset (ℤ × ℤ) → ℤ × ℤ, (∀ X ∈ supports Λ R, a X ∈ X) →
-      #{X ∈ supports Λ R | a X = x} ≤ μ R) ∧
-    (∀ {q : ℕ} (J : ℝ) (Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (Qudits q) X) (Reg (Qudits q) X) ℂ),
-      IsAdmissible Λ R J Φ → ∑ X ∈ supports Λ R with x ∈ X, ‖Φ X‖ ≤ J * μ R) ∧
-    ∀ X ∈ supports Λ R, #X ≤ v R := by
+/-- D2.8. For a graph with ball growth `|B_Λ(x,r)| ≤ V r`, an anchor map `a` (`a X ∈ X`) and
+`μ_R = 2^(V_R - 1)`, for every `x ∈ Λ`: `#{X ∋ x} ≤ μ_R`, `#{X anchored at x} ≤ μ_R`,
+`∑_{X ∋ x} ‖h_X‖ ≤ J μ_R`, and `|X| ≤ V_R` for every support `X`. -/
+theorem step_2_8 (Λ : Finset σ) (R : ℕ) (x : σ) :
+    #{X ∈ supports G Λ R | x ∈ X} ≤ μ V R ∧
+    (∀ a : Finset σ → σ, (∀ X ∈ supports G Λ R, a X ∈ X) →
+      #{X ∈ supports G Λ R | a X = x} ≤ μ V R) ∧
+    (∀ {loc : σ → Type} [∀ i, Fintype (loc i)] [∀ i, DecidableEq (loc i)] (J : ℝ)
+      (Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ),
+      IsAdmissible G Λ R J Φ → ∑ X ∈ supports G Λ R with x ∈ X, ‖Φ X‖ ≤ J * μ V R) ∧
+    ∀ X ∈ supports G Λ R, #X ≤ V R := by
+  classical
   -- D2.8.1, D2.8.2
-  have h2 : #{X ∈ supports Λ R | x ∈ X} ≤ μ R := by
+  have h2 : #{X ∈ supports G Λ R | x ∈ X} ≤ μ V R := by
     by_cases hx : x ∈ Λ
-    · have hxB : x ∈ ball Λ x R := mem_ball.2 ⟨hx, by simp [domainEDist_eq ⟨x, hx⟩ ⟨x, hx⟩]⟩
-      calc #{X ∈ supports Λ R | x ∈ X} ≤ #((ball Λ x R).erase x).powerset :=
+    · have hxB : x ∈ ball G Λ x R := (GraphDomain.mem_ball G).2 ⟨hx, by
+        simp [GraphDomain.domainEDist_eq G ⟨x, hx⟩ ⟨x, hx⟩]⟩
+      calc #{X ∈ supports G Λ R | x ∈ X} ≤ #((ball G Λ x R).erase x).powerset :=
             card_le_card_of_injOn (·.erase x)
               (fun X hX => mem_powerset.2 (erase_subset_erase x
-                (subset_ball_of_mem_supports (mem_filter.1 hX).1 (mem_filter.1 hX).2)))
+                (subset_ball_of_mem_supports G (mem_filter.1 hX).1 (mem_filter.1 hX).2)))
               fun X hX Y hY => erase_injOn' x (mem_filter.1 hX).2 (mem_filter.1 hY).2
-        _ = 2 ^ (#(ball Λ x R) - 1) := by rw [card_powerset, card_erase_of_mem hxB]
-        _ ≤ μ R := Nat.pow_le_pow_right two_pos (Nat.sub_le_sub_right (eq_ball_count Λ x R) 1)
-    · rw [card_eq_zero.2 (filter_eq_empty_iff.2 fun X hX hxX => hx ((mem_supports.1 hX).1 hxX))]
+        _ = 2 ^ (#(ball G Λ x R) - 1) := by rw [card_powerset, card_erase_of_mem hxB]
+        _ ≤ μ V R := Nat.pow_le_pow_right two_pos (Nat.sub_le_sub_right (hV Λ x R) 1)
+    · rw [card_eq_zero.2 (filter_eq_empty_iff.2 fun X hX hxX =>
+        hx (((GraphDomain.mem_supports G).1 hX).1 hxX))]
       exact Nat.zero_le _
   refine ⟨h2, ?_, ?_, ?_⟩
   -- D2.8.3
   · exact fun a ha => (card_le_card fun X hX => mem_filter.2
       ⟨(mem_filter.1 hX).1, (mem_filter.1 hX).2 ▸ ha X (mem_filter.1 hX).1⟩).trans h2
-  · intro q J Φ hΦ
+  · intro loc _ _ J Φ hΦ
     have hJ : 0 ≤ J := (norm_nonneg _).trans (hΦ ∅ (empty_subset Λ)).2.1
-    calc ∑ X ∈ supports Λ R with x ∈ X, ‖Φ X‖ ≤ #{X ∈ supports Λ R | x ∈ X} • J :=
+    calc ∑ X ∈ supports G Λ R with x ∈ X, ‖Φ X‖ ≤ #{X ∈ supports G Λ R | x ∈ X} • J :=
           sum_le_card_nsmul _ _ _ fun X hX =>
-            (hΦ X (mem_supports.1 (mem_filter.1 hX).1).1).2.1
-      _ ≤ J * μ R := by
+            (hΦ X ((GraphDomain.mem_supports G).1 (mem_filter.1 hX).1).1).2.1
+      _ ≤ J * μ V R := by
           rw [nsmul_eq_mul, mul_comm]
           exact mul_le_mul_of_nonneg_left (by exact_mod_cast h2) hJ
   -- D2.8.4
   · intro X hX
-    obtain ⟨y, hy⟩ := (mem_supports.1 hX).2.1
-    exact (card_le_card (subset_ball_of_mem_supports hX hy)).trans (eq_ball_count Λ y R)
+    obtain ⟨y, hy⟩ := ((GraphDomain.mem_supports G).1 hX).2.1
+    exact (card_le_card (GraphDomain.subset_ball_of_mem_supports G hX hy)).trans (hV Λ y R)
+
+omit hV
 
 /-! ## D2.9 Terms split by a set -/
 
+variable [DecidableRel G.Adj]
+
 /-- D2.9.2. A path of the induced graph between the two sides of `D` meets an endpoint `z` of an
 edge of `∂_Λ D`, and its initial segment up to `z` is no longer than the path. -/
-theorem exists_cutEndpoints_of_walk {Λ D : Finset (ℤ × ℤ)} {u w : Λ} (p : (𝔾 Λ).Walk u w)
-    (h : ¬((u : ℤ × ℤ) ∈ D ↔ (w : ℤ × ℤ) ∈ D)) :
-    ∃ z : Λ, (z : ℤ × ℤ) ∈ cutEndpoints Λ D ∧ ∃ p' : (𝔾 Λ).Walk u z, p'.length ≤ p.length := by
+theorem GraphDomain.exists_cutEndpoints_of_walk {Λ D : Finset σ} {u w : Λ}
+    (p : (G.induce (Λ : Set σ)).Walk u w) (h : ¬((u : σ) ∈ D ↔ (w : σ) ∈ D)) :
+    ∃ z : Λ, (z : σ) ∈ cutEndpoints G Λ D ∧
+      ∃ p' : (G.induce (Λ : Set σ)).Walk u z, p'.length ≤ p.length := by
   induction p with
   | nil => exact absurd Iff.rfl h
   | @cons u v w huv p ih =>
-    by_cases hs : (u : ℤ × ℤ) ∈ D ↔ (v : ℤ × ℤ) ∈ D
+    by_cases hs : (u : σ) ∈ D ↔ (v : σ) ∈ D
     · obtain ⟨z, hz, p', hp'⟩ := ih fun h' => h (hs.trans h')
       exact ⟨z, hz, .cons huv p', by simp only [Walk.length_cons]; omega⟩
     refine ⟨u, ?_, .nil, by simp⟩
-    have hadj : (hasse ℤ □ hasse ℤ).Adj u v := huv
-    by_cases hu : (u : ℤ × ℤ) ∈ D
-    · exact mem_union_left _ (mem_image.2 ⟨((u : ℤ × ℤ), (v : ℤ × ℤ)),
+    have hadj : G.Adj u v := huv
+    by_cases hu : (u : σ) ∈ D
+    · exact mem_union_left _ (mem_image.2 ⟨((u : σ), (v : σ)),
         (mk_mem_interedges_iff _).2 ⟨hu, mem_sdiff.2 ⟨v.2, fun hv => hs ⟨fun _ => hv, fun _ => hu⟩⟩,
           hadj⟩, rfl⟩)
-    · exact mem_union_right _ (mem_image.2 ⟨((v : ℤ × ℤ), (u : ℤ × ℤ)),
+    · exact mem_union_right _ (mem_image.2 ⟨((v : σ), (u : σ)),
         (mk_mem_interedges_iff _).2 ⟨by tauto, mem_sdiff.2 ⟨u.2, hu⟩, hadj.symm⟩, rfl⟩)
 
+include hV in
 /-- D2.9 (eq:crossing-count). A support `X` is split by `D ⊆ Λ` if `X ∩ D ≠ ∅ ≠ X \ D`. Then
-`#{terms split by D} ≤ 2 v_R μ_R |∂_Λ D|`. -/
-theorem eq_crossing_count (Λ D : Finset (ℤ × ℤ)) (R : ℕ) :
-    #{X ∈ supports Λ R | (X ∩ D).Nonempty ∧ (X \ D).Nonempty} ≤
-      2 * v R * μ R * #(edgeBoundary Λ D) := by
-  classical
-  let a : Finset (ℤ × ℤ) → ℤ × ℤ := fun X => if hX : X.Nonempty then hX.choose else 0
-  have ha : ∀ X ∈ supports Λ R, a X ∈ X := fun X hX => by
-    simp only [a, dif_pos (mem_supports.1 hX).2.1]
-    exact (mem_supports.1 hX).2.1.choose_spec
-  let Z := cutEndpoints Λ D
-  have h3 : ∀ X ∈ supports Λ R, (X ∩ D).Nonempty → (X \ D).Nonempty →
-      a X ∈ Z.biUnion (ball Λ · R) := by
+`#{terms split by D} ≤ 2 V_R μ_R |∂_Λ D|`. -/
+theorem eq_crossing_count (Λ D : Finset σ) (R : ℕ) :
+    #{X ∈ supports G Λ R | (X ∩ D).Nonempty ∧ (X \ D).Nonempty} ≤
+      2 * V R * μ V R * #(edgeBoundary G Λ D) := by
+  rcases isEmpty_or_nonempty σ with hσ | ⟨⟨x₀⟩⟩
+  · rw [card_eq_zero.2 (filter_eq_empty_iff.2 fun X _ h => isEmptyElim h.1.choose)]
+    exact Nat.zero_le _
+  let a : Finset σ → σ := fun X => if hX : X.Nonempty then hX.choose else x₀
+  have ha : ∀ X ∈ supports G Λ R, a X ∈ X := fun X hX => by
+    simp only [a, dif_pos ((GraphDomain.mem_supports G).1 hX).2.1]
+    exact ((GraphDomain.mem_supports G).1 hX).2.1.choose_spec
+  let Z := cutEndpoints G Λ D
+  have h3 : ∀ X ∈ supports G Λ R, (X ∩ D).Nonempty → (X \ D).Nonempty →
+      a X ∈ Z.biUnion (ball G Λ · R) := by
     intro X hX ⟨d, hd⟩ ⟨e, he⟩
     rw [mem_inter] at hd
     rw [mem_sdiff] at he
@@ -462,56 +584,58 @@ theorem eq_crossing_count (Λ D : Finset (ℤ × ℤ)) (R : ℕ) :
       by_cases haD : a X ∈ D
       · exact ⟨e, he.1, by tauto⟩
       · exact ⟨d, hd.1, by tauto⟩
-    obtain ⟨haΛ, hay⟩ := mem_ball.1 (subset_ball_of_mem_supports hX hyX (ha X hX))
-    have hyΛ := (mem_supports.1 hX).1 hyX
-    rw [domainEDist_eq ⟨a X, haΛ⟩ ⟨y, hyΛ⟩] at hay
+    obtain ⟨haΛ, hay⟩ := (GraphDomain.mem_ball G).1
+      (GraphDomain.subset_ball_of_mem_supports G hX hyX (ha X hX))
+    have hyΛ := ((GraphDomain.mem_supports G).1 hX).1 hyX
+    rw [GraphDomain.domainEDist_eq G ⟨a X, haΛ⟩ ⟨y, hyΛ⟩] at hay
     obtain ⟨p, hp⟩ := exists_walk_of_edist_ne_top (hay.trans_lt (ENat.natCast_lt_top R)).ne
     -- D2.9.2
-    obtain ⟨z, hz, p', hp'⟩ := exists_cutEndpoints_of_walk p hy
+    obtain ⟨z, hz, p', hp'⟩ := GraphDomain.exists_cutEndpoints_of_walk G p hy
     -- D2.9.3
-    refine mem_biUnion.2 ⟨z, hz, mem_ball.2 ⟨haΛ, ?_⟩⟩
-    rw [domainEDist_eq ⟨a X, haΛ⟩ z]
+    refine mem_biUnion.2 ⟨z, hz, (GraphDomain.mem_ball G).2 ⟨haΛ, ?_⟩⟩
+    rw [GraphDomain.domainEDist_eq G ⟨a X, haΛ⟩ z]
     exact p'.edist_le.trans ((Nat.cast_le.2 hp').trans (hp ▸ hay))
   -- D2.9.4
-  calc #{X ∈ supports Λ R | (X ∩ D).Nonempty ∧ (X \ D).Nonempty}
-      ≤ #((Z.biUnion (ball Λ · R)).biUnion fun x => {X ∈ supports Λ R | a X = x}) :=
+  calc #{X ∈ supports G Λ R | (X ∩ D).Nonempty ∧ (X \ D).Nonempty}
+      ≤ #((Z.biUnion (ball G Λ · R)).biUnion fun x => {X ∈ supports G Λ R | a X = x}) :=
         card_le_card fun X hX => by
           obtain ⟨hX, h1, h2⟩ := mem_filter.1 hX
           exact mem_biUnion.2 ⟨a X, h3 X hX h1 h2, mem_filter.2 ⟨hX, rfl⟩⟩
-    _ ≤ #(Z.biUnion (ball Λ · R)) * μ R :=
-        card_biUnion_le_card_mul _ _ _ fun x _ => (step_2_8 Λ R x).2.1 a ha
-    _ ≤ #Z * v R * μ R := by
+    _ ≤ #(Z.biUnion (ball G Λ · R)) * μ V R :=
+        card_biUnion_le_card_mul _ _ _ fun x _ => (step_2_8 G V hV Λ R x).2.1 a ha
+    _ ≤ #Z * V R * μ V R := by
         gcongr
-        exact card_biUnion_le_card_mul _ _ _ fun z _ => eq_ball_count Λ z R
-    _ ≤ 2 * #(edgeBoundary Λ D) * v R * μ R := by
+        exact card_biUnion_le_card_mul _ _ _ fun z _ => hV Λ z R
+    _ ≤ 2 * #(edgeBoundary G Λ D) * V R * μ V R := by
         gcongr
         exact (card_union_le _ _).trans (by
-          have := card_image_le (s := edgeBoundary Λ D) (f := Prod.fst)
-          have := card_image_le (s := edgeBoundary Λ D) (f := Prod.snd)
+          have := card_image_le (s := edgeBoundary G Λ D) (f := Prod.fst)
+          have := card_image_le (s := edgeBoundary G Λ D) (f := Prod.snd)
           omega)
-    _ = 2 * v R * μ R * #(edgeBoundary Λ D) := by ring
+    _ = 2 * V R * μ V R * #(edgeBoundary G Λ D) := by ring
 
 /-! ## D2.10 Product decomposition across a bipartition -/
 
 /-- D2.10.1. A configuration of `X` is a pair of configurations of `X₁ = X ∩ B` and
 `X₂ = X \ B`. -/
-def cutEquiv {q : ℕ} (X B : Finset (ℤ × ℤ)) :
-    Reg (Qudits q) (X ∩ B) × Reg (Qudits q) (X \ B) ≃ Reg (Qudits q) X :=
+def cutEquiv {q : ℕ} (X B : Finset σ) :
+    Reg (fun _ : σ => Fin q) (X ∩ B) × Reg (fun _ : σ => Fin q) (X \ B) ≃
+      Reg (fun _ : σ => Fin q) X :=
   (unionEquiv (disjoint_sdiff_inter X B).symm).symm.trans (regEquivOfEq (sup_inf_sdiff X B))
 
 /-- D2.10. For a bipartition `B | Λ \ B` and a term `h_X`, split `X = X₁ ⊔ X₂` with
 `X₁ = X ∩ B`, `X₂ = X \ B`; matrix units decompose `h_X = ∑ c_{ijkl} E_{ij} ⊗ E_{kl}`,
 `c_{ijkl} = ⟨i,k|h_X|j,l⟩`, a sum of `q^{2|X|}` products with `|c_{ijkl}| ≤ ‖h_X‖` and
 `‖E_{ij}‖ = ‖E_{kl}‖ = 1`. -/
-theorem step_2_10 {q : ℕ} (X B : Finset (ℤ × ℤ))
-    (h : Matrix (Reg (Qudits q) X) (Reg (Qudits q) X) ℂ) :
+theorem step_2_10 {q : ℕ} (X B : Finset σ)
+    (h : Matrix (Reg (fun _ : σ => Fin q) X) (Reg (fun _ : σ => Fin q) X) ℂ) :
     h = ∑ p, ∑ p', h (cutEquiv X B p) (cutEquiv X B p') •
         reindex (cutEquiv X B) (cutEquiv X B) (single p.1 p'.1 1 ⊗ₖ single p.2 p'.2 1) ∧
-    Fintype.card ((Reg (Qudits q) (X ∩ B) × Reg (Qudits q) (X \ B)) ×
-      (Reg (Qudits q) (X ∩ B) × Reg (Qudits q) (X \ B))) = q ^ (2 * #X) ∧
+    Fintype.card ((Reg (fun _ : σ => Fin q) (X ∩ B) × Reg (fun _ : σ => Fin q) (X \ B)) ×
+      (Reg (fun _ : σ => Fin q) (X ∩ B) × Reg (fun _ : σ => Fin q) (X \ B))) = q ^ (2 * #X) ∧
     (∀ p p', ‖h (cutEquiv X B p) (cutEquiv X B p')‖ ≤ ‖h‖) ∧
-    (∀ i j : Reg (Qudits q) (X ∩ B), ‖single i j (1 : ℂ)‖ = 1) ∧
-    ∀ k l : Reg (Qudits q) (X \ B), ‖single k l (1 : ℂ)‖ = 1 := by
+    (∀ i j : Reg (fun _ : σ => Fin q) (X ∩ B), ‖single i j (1 : ℂ)‖ = 1) ∧
+    ∀ k l : Reg (fun _ : σ => Fin q) (X \ B), ‖single k l (1 : ℂ)‖ = 1 := by
   refine ⟨?_, ?_, fun _ _ => norm_entry_le_l2_opNorm _ _ _, by simp, by simp⟩
   -- D2.10.1
   · simp only [reindex_apply, single_kronecker_single, mul_one, submatrix_single_equiv,
@@ -530,7 +654,8 @@ end Counting
 
 section ZeroBoundary2
 
-open Matrix SimpleGraph
+open Matrix GraphDomain
+open SimpleGraph hiding ball mem_ball
 
 /-! ## D2.12 Lemma 2.2 -/
 
@@ -592,9 +717,9 @@ end Glue
 
 section ZeroBoundary
 
-variable {q : ℕ} {Λ A : Finset (ℤ × ℤ)} {R : ℕ} {J Δ E₀ : ℝ}
-  {Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (Qudits q) X) (Reg (Qudits q) X) ℂ}
-  {Ω : Reg (Qudits q) Λ → ℂ}
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)] {Λ A : Finset σ} {R : ℕ} {J Δ E₀ : ℝ}
+  {Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ} {Ω : Reg loc Λ → ℂ}
 
 /-- Uniqueness of the ground vector: under a positive gap every eigenvector of `H` with
 eigenvalue `E₀` is a multiple of `Ω`. -/
@@ -624,9 +749,9 @@ theorem eq_smul_of_hasGlobalGap {ι : Type*} [Fintype ι] [DecidableEq ι] {H : 
 `H = H_A ⊗ 1 + 1 ⊗ H_{Λ∖A}`: on the coefficient matrix `N x z = v (glue x z)` it acts as
 `N ↦ P N + N G`. -/
 theorem exists_hamiltonian_coeff (hA : A ⊆ Λ) (hsplit : ∀ X ⊆ Λ, Φ X ≠ 0 → X ⊆ A ∨ X ⊆ Λ \ A) :
-    ∃ (P : Matrix (Reg (Qudits q) A) (Reg (Qudits q) A) ℂ)
-      (G : Matrix (Reg (Qudits q) (Λ \ A)) (Reg (Qudits q) (Λ \ A)) ℂ),
-      ∀ (v : Reg (Qudits q) Λ → ℂ) (x : Reg (Qudits q) A) (z : Reg (Qudits q) (Λ \ A)),
+    ∃ (P : Matrix (Reg loc A) (Reg loc A) ℂ)
+      (G : Matrix (Reg loc (Λ \ A)) (Reg loc (Λ \ A)) ℂ),
+      ∀ (v : Reg loc Λ → ℂ) (x : Reg loc A) (z : Reg loc (Λ \ A)),
         (hamiltonian Λ Φ *ᵥ v) (glue x z) =
           ∑ x', P x x' * v (glue x' z) + ∑ z', v (glue x z') * G z' z := by
   refine ⟨∑ X ∈ Λ.powerset.attach, if h : X.1 ⊆ A then extendId h (Φ X) else 0,
@@ -660,13 +785,13 @@ theorem regionEntropy_eq_zero_of_split (hsplit : ∀ X ⊆ Λ, Φ X ≠ 0 → X 
     (hΩ : star Ω ⬝ᵥ Ω = 1) (hE : hamiltonian Λ Φ *ᵥ Ω = (E₀ : ℂ) • Ω)
     (hgap : HasGlobalGap (hamiltonian Λ Φ) Ω E₀ Δ) (hΔ : 0 < Δ) (hA : A ⊆ Λ) :
     (pureState Ω hΩ).regionEntropy hA = 0 := by
-  set M : Matrix (Reg (Qudits q) A) (Reg (Qudits q) (Λ \ A)) ℂ := Matrix.of fun x z => Ω (glue x z)
+  set M : Matrix (Reg loc A) (Reg loc (Λ \ A)) ℂ := Matrix.of fun x z => Ω (glue x z)
   -- D2.12.3
   obtain ⟨P, G, hPG⟩ := exists_hamiltonian_coeff hA hsplit
   -- D2.12.4: the ground space, in coefficient form, is `ℂ M`
   have huniq : ∀ N, P * N + N * G = (E₀ : ℂ) • N → ∃ c : ℂ, N = c • M := by
     intro N hN
-    set v : Reg (Qudits q) Λ → ℂ := fun w => N (restr hA w) (restr Finset.sdiff_subset w)
+    set v : Reg loc Λ → ℂ := fun w => N (restr hA w) (restr Finset.sdiff_subset w)
     have hv : hamiltonian Λ Φ *ᵥ v = (E₀ : ℂ) • v := funext fun w => by
       have := congrFun (congrFun hN (restr hA w)) (restr Finset.sdiff_subset w)
       rw [← glue_restr hA w, hPG]
@@ -712,34 +837,28 @@ theorem regionEntropy_eq_zero_of_split (hsplit : ∀ X ⊆ Λ, Φ X ≠ 0 → X 
     ← trace_vecMulVec, ← hρ]
   erw [htr, one_smul]
 
-/-- Two sites of an admissible support are at `d_Λ`-distance at most `R`. -/
-theorem domainEDist_le_of_mem_supports {X : Finset (ℤ × ℤ)} {x y : ℤ × ℤ}
-    (hX : X ∈ supports Λ R) (hx : x ∈ X) (hy : y ∈ X) : domainEDist Λ x y ≤ R :=
-  ((le_iSup₂ (f := fun y (_ : y ∈ X) => domainEDist Λ x y) y hy).trans
-    (le_iSup₂ (f := fun x (_ : x ∈ X) => ⨆ y ∈ X, domainEDist Λ x y) x hx)).trans
-    (Finset.mem_filter.1 hX).2.2
-
 /-- D2.12 **Lemma 2.2.** Under the hypotheses of Theorem 1.1 ($H$ admissible, unique
 normalized ground vector $\Omega$ up to phase, gap $\Delta$), if $A\subseteq\Lambda$ and
 $\partial_\Lambda A=\varnothing$, then $S_\Omega(A)=0$. -/
-theorem lemma_2_2 (hΦ : IsAdmissible Λ R J Φ) (hΩ : star Ω ⬝ᵥ Ω = 1)
+theorem lemma_2_2 (G : SimpleGraph σ) [DecidableRel G.Adj] (hΦ : IsAdmissible G Λ R J Φ)
+    (hΩ : star Ω ⬝ᵥ Ω = 1)
     (hE : hamiltonian Λ Φ *ᵥ Ω = (E₀ : ℂ) • Ω) (hgap : HasGlobalGap (hamiltonian Λ Φ) Ω E₀ Δ)
-    (hΔ : 0 < Δ) (hA : A ⊆ Λ) (h : edgeBoundary Λ A = ∅) :
+    (hΔ : 0 < Δ) (hA : A ⊆ Λ) (h : edgeBoundary G Λ A = ∅) :
     (pureState Ω hΩ).regionEntropy hA = 0 := by
   -- D2.12.1: no edge of the induced graph joins `A` to `Λ \ A`
-  have hcut : ∀ x ∈ A, ∀ y ∈ Λ \ A, ¬ (hasse ℤ □ hasse ℤ).Adj x y := fun x hx y hy hxy => by
-    have : (x, y) ∈ edgeBoundary Λ A := (SimpleGraph.mem_interedges_iff _).2 ⟨hx, hy, hxy⟩
+  have hcut : ∀ x ∈ A, ∀ y ∈ Λ \ A, ¬ G.Adj x y := fun x hx y hy hxy => by
+    have : (x, y) ∈ edgeBoundary G Λ A := (SimpleGraph.mem_interedges_iff _).2 ⟨hx, hy, hxy⟩
     simp [h] at this
   -- D2.12.2: a support has finite `d_Λ`-diameter, so it lies in `A` or in `Λ \ A`
   have hsplit : ∀ X ⊆ Λ, Φ X ≠ 0 → X ⊆ A ∨ X ⊆ Λ \ A := by
     intro X hXΛ h0
-    have hX : X ∈ supports Λ R := by_contra fun hn => h0 ((hΦ X hXΛ).2.2 hn)
+    have hX : X ∈ supports G Λ R := by_contra fun hn => h0 ((hΦ X hXΛ).2.2 hn)
     by_contra! hc
     obtain ⟨y, hyX, hyA⟩ := Finset.not_subset.1 hc.1
     obtain ⟨x, hxX, hxB⟩ := Finset.not_subset.1 hc.2
     have hxA : x ∈ A := by_contra fun hxA => hxB (Finset.mem_sdiff.2 ⟨hXΛ hxX, hxA⟩)
-    have hd := domainEDist_le_of_mem_supports hX hxX hyX
-    rw [domainEDist, dif_pos ⟨hXΛ hxX, hXΛ hyX⟩] at hd
+    have hd := GraphDomain.domainEDist_le_of_mem_supports G hX hxX hyX
+    rw [GraphDomain.domainEDist, dif_pos ⟨hXΛ hxX, hXΛ hyX⟩] at hd
     obtain ⟨p⟩ := reachable_of_edist_ne_top (ne_top_of_le_ne_top (ENat.natCast_ne_top R) hd)
     obtain ⟨d, -, hd1, hd2⟩ := p.exists_boundary_dart {v | v.1 ∈ A} hxA hyA
     exact hcut _ hd1 _ (Finset.mem_sdiff.2 ⟨d.snd.2, hd2⟩) d.adj
@@ -750,17 +869,17 @@ theorem lemma_2_2 (hΦ : IsAdmissible Λ R J Φ) (hΩ : star Ω ⬝ᵥ Ω = 1)
 If $R=0$: $H$ is a sum of on-site operators; uniqueness of its ground state makes $\Omega$ a
 tensor product, so $S_\Omega(A)=0$ and Theorem 1.1 holds. Henceforth $q\ge2$, $R\ge1$,
 $\Lambda\ne\varnothing$. -/
-theorem step_2_11 :
-    (∀ (q : ℕ) (Λ A : Finset (ℤ × ℤ)), q = 1 ∨ Λ = ∅ →
-      ∀ (ρ : MState (Reg (Qudits q) Λ) ℂ) (hA : A ⊆ Λ), ρ.regionEntropy hA = 0) ∧
-    (∀ (q : ℕ) (Λ A : Finset (ℤ × ℤ)) (J Δ E₀ : ℝ)
-      (Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (Qudits q) X) (Reg (Qudits q) X) ℂ),
-      IsAdmissible Λ 0 J Φ → ∀ (Ω : Reg (Qudits q) Λ → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1),
+theorem step_2_11 (G : SimpleGraph σ) :
+    (∀ (q : ℕ) (Λ A : Finset σ), q = 1 ∨ Λ = ∅ →
+      ∀ (ρ : MState (Reg (fun _ : σ => Fin q) Λ) ℂ) (hA : A ⊆ Λ), ρ.regionEntropy hA = 0) ∧
+    (∀ (q : ℕ) (Λ A : Finset σ) (J Δ E₀ : ℝ)
+      (Φ : (X : Finset σ) → Matrix (Reg (fun _ : σ => Fin q) X) (Reg (fun _ : σ => Fin q) X) ℂ),
+      IsAdmissible G Λ 0 J Φ → ∀ (Ω : Reg (fun _ : σ => Fin q) Λ → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1),
       hamiltonian Λ Φ *ᵥ Ω = (E₀ : ℂ) • Ω → HasGlobalGap (hamiltonian Λ Φ) Ω E₀ Δ → 0 < Δ →
       ∀ hA : A ⊆ Λ, (pureState Ω hΩ).regionEntropy hA = 0) := by
   refine ⟨fun q Λ A hq ρ hA => ?_, fun q Λ A J Δ E₀ Φ hΦ Ω hΩ hE hgap hΔ hA => ?_⟩
   · -- D2.11.1: `𝓗_A = ℂ`, so `ρ_A` is pure
-    obtain ⟨_⟩ : Nonempty (Unique (Reg (Qudits q) A)) := by
+    obtain ⟨_⟩ : Nonempty (Unique (Reg (fun _ : σ => Fin q) A)) := by
       rcases hq with rfl | rfl
       · exact ⟨inferInstance⟩
       · have : IsEmpty A := ⟨fun i => by simpa using hA i.2⟩
@@ -769,11 +888,11 @@ theorem step_2_11 :
       trace_ptrace, ρ.tr_eq_one, Real.negMulLog_one]
   · -- D2.11.2: only singletons have `diam X ≤ 0`, and a singleton is not split by `A`
     refine regionEntropy_eq_zero_of_split (fun X hXΛ h0 => ?_) hΩ hE hgap hΔ hA
-    have hX : X ∈ supports Λ 0 := by_contra fun hn => h0 ((hΦ X hXΛ).2.2 hn)
+    have hX : X ∈ supports G Λ 0 := by_contra fun hn => h0 ((hΦ X hXΛ).2.2 hn)
     obtain ⟨x, hx⟩ := (Finset.mem_filter.1 hX).2.1
     obtain rfl : X = {x} := Finset.eq_singleton_iff_unique_mem.2 ⟨hx, fun y hy => by
-      have hd := domainEDist_le_of_mem_supports hX hy hx
-      rw [domainEDist, dif_pos ⟨hXΛ hy, hXΛ hx⟩, Nat.cast_zero, nonpos_iff_eq_zero,
+      have hd := GraphDomain.domainEDist_le_of_mem_supports G hX hy hx
+      rw [GraphDomain.domainEDist, dif_pos ⟨hXΛ hy, hXΛ hx⟩, Nat.cast_zero, nonpos_iff_eq_zero,
         edist_eq_zero_iff] at hd
       exact congrArg Subtype.val hd⟩
     by_cases hxA : x ∈ A
@@ -783,5 +902,54 @@ theorem step_2_11 :
 end ZeroBoundary
 
 end ZeroBoundary2
+
+
+/-! ## The square lattice
+
+The frozen `ℤ × ℤ` objects of `OpenAI/Statements.lean` are the `G = squareLattice` instances of
+the graph-level ones, definitionally; this is the only place where §2 meets them. -/
+
+section SquareLattice
+
+theorem domainEDist_eq_graph : OpenAI.domainEDist = GraphDomain.domainEDist squareLattice := rfl
+
+theorem domainEDiam_eq_graph : OpenAI.domainEDiam = GraphDomain.domainEDiam squareLattice := rfl
+
+theorem graphNbhd_eq_graph : OpenAI.graphNbhd = GraphDomain.graphNbhd squareLattice := rfl
+
+theorem supports_eq_graph : OpenAI.supports = GraphDomain.supports squareLattice := rfl
+
+theorem edgeBoundary_eq_graph : OpenAI.edgeBoundary = GraphDomain.edgeBoundary squareLattice := rfl
+
+theorem cutEndpoints_eq_graph : OpenAI.cutEndpoints = GraphDomain.cutEndpoints squareLattice := rfl
+
+theorem hamiltonian_eq_graph {q : ℕ} (Λ : Finset (ℤ × ℤ))
+    (Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (OpenAI.Qudits q) X) (Reg (OpenAI.Qudits q) X) ℂ) :
+    OpenAI.hamiltonian Λ Φ = GraphDomain.hamiltonian Λ Φ := rfl
+
+theorem isAdmissible_iff_graph {q : ℕ} {Λ : Finset (ℤ × ℤ)} {R : ℕ} {J : ℝ}
+    {Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (OpenAI.Qudits q) X) (Reg (OpenAI.Qudits q) X) ℂ} :
+    OpenAI.IsAdmissible Λ R J Φ ↔ GraphDomain.IsAdmissible squareLattice Λ R J Φ := Iff.rfl
+
+theorem mem_supports {Λ X : Finset (ℤ × ℤ)} {R : ℕ} :
+    X ∈ OpenAI.supports Λ R ↔ X ⊆ Λ ∧ X.Nonempty ∧ OpenAI.domainEDiam Λ X ≤ R :=
+  GraphDomain.mem_supports squareLattice
+
+theorem domainEDist_eq {Λ : Finset (ℤ × ℤ)} (x y : Λ) :
+    OpenAI.domainEDist Λ x y = (squareLattice.induce (Λ : Set (ℤ × ℤ))).edist x y :=
+  GraphDomain.domainEDist_eq squareLattice x y
+
+theorem domainEDist_le_of_mem_supports {Λ X : Finset (ℤ × ℤ)} {R : ℕ} {x y : ℤ × ℤ}
+    (hX : X ∈ OpenAI.supports Λ R) (hx : x ∈ X) (hy : y ∈ X) : OpenAI.domainEDist Λ x y ≤ R :=
+  GraphDomain.domainEDist_le_of_mem_supports squareLattice hX hx hy
+
+theorem exists_cutEndpoints_of_walk {Λ D : Finset (ℤ × ℤ)} {u w : Λ}
+    (p : (squareLattice.induce (Λ : Set (ℤ × ℤ))).Walk u w)
+    (h : ¬((u : ℤ × ℤ) ∈ D ↔ (w : ℤ × ℤ) ∈ D)) :
+    ∃ z : Λ, (z : ℤ × ℤ) ∈ OpenAI.cutEndpoints Λ D ∧
+      ∃ p' : (squareLattice.induce (Λ : Set (ℤ × ℤ))).Walk u z, p'.length ≤ p.length :=
+  GraphDomain.exists_cutEndpoints_of_walk squareLattice p h
+
+end SquareLattice
 
 end AreaLaw
