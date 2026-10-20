@@ -11,7 +11,7 @@ lines 335–573.
 namespace AreaLaw
 
 open Matrix
-open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
+open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator InnerProductSpace Kronecker
 
 /-! ## D3.7 Optimized filters commute with their marginals -/
 
@@ -140,6 +140,137 @@ theorem step_3_9_1 {H K : Matrix n n ℂ} {Ω : n → ℂ} {E₀ : ℝ} (hΩ : H
   rw [sub_mulVec, sub_mulVec, h, smul_mulVec, one_mulVec]
 
 end D39
+
+section D393
+
+variable {α β : Type*} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
+
+/-- D3.9.3 (pairing `(i,k)` with `(k,i)`). For `H_{ki} = conj H_{ik}` and `l > 0`:
+`Re ∑_{i,k} (1 - l_i/l_k) H_{ik} = -∑_{i,k} (cosh log (l_i/l_k) - 1) Re H_{ik}`. -/
+theorem re_sum_pairing {ι : Type*} [Fintype ι] {H : ι → ι → ℂ}
+    (hH : ∀ i k, H k i = star (H i k)) {l : ι → ℝ} (hl : ∀ i, 0 < l i) :
+    (∑ i, ∑ k, ((1 - l i / l k : ℝ) : ℂ) * H i k).re =
+      -∑ i, ∑ k, (Real.cosh (Real.log (l i / l k)) - 1) * (H i k).re := by
+  have hc : ∀ i k, Real.cosh (Real.log (l i / l k)) = (l i / l k + l k / l i) / 2 := by
+    intro i k
+    rw [Real.cosh_eq, Real.exp_neg, Real.exp_log (div_pos (hl i) (hl k)), inv_div]
+  have hsw : ∑ i, ∑ k, l i / l k * (H i k).re = ∑ i, ∑ k, l k / l i * (H i k).re := by
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun k _ ↦ ?_
+    rw [hH k i, Complex.star_def, Complex.conj_re]
+  simp only [Complex.re_sum, Complex.re_ofReal_mul, hc]
+  have e1 : ∑ i, ∑ k, (1 - l i / l k) * (H i k).re =
+      ∑ i, ∑ k, (H i k).re - ∑ i, ∑ k, l i / l k * (H i k).re := by
+    simp only [sub_mul, one_mul, Finset.sum_sub_distrib]
+  have e2 : ∑ i, ∑ k, ((l i / l k + l k / l i) / 2 - 1) * (H i k).re =
+      (∑ i, ∑ k, l i / l k * (H i k).re + ∑ i, ∑ k, l k / l i * (H i k).re) / 2 -
+        ∑ i, ∑ k, (H i k).re := by
+    simp only [sub_mul, one_mul, Finset.sum_sub_distrib, add_div, add_mul, div_mul_eq_mul_div,
+      Finset.sum_add_distrib, Finset.sum_div]
+  rw [e1, e2, ← hsw]; ring
+
+omit [Fintype α] [DecidableEq α] [DecidableEq β] in
+/-- `X ↦ ⟨Θ_j, X_{jk} Θ_k⟩` is additive. -/
+theorem pair_sum (Θ : EuclideanSpace ℂ (α × β)) {κ : Type*} [Fintype κ]
+    (X : κ → Matrix (α × β) (α × β) ℂ) (j k : α) :
+    pair Θ (∑ x, X x) j k = ∑ x, pair Θ (X x) j k := by
+  simp only [pair, Matrix.sum_apply, Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm (γ := κ)]
+  exact Finset.sum_congr rfl fun b _ ↦ Finset.sum_comm
+
+/-- D3.9.3. Split term in Schmidt coordinates: for `h = h*` on `X_j ∪ X_j^c` and
+`L_j = diag l` (`l > 0`) in the common eigenbasis of `L_j` and `ρ_{φ,X_j}`,
+`Re ⟨φ, (h - L_j h L_j⁻¹) φ⟩ = -∑_{i,k} (cosh log (l_i/l_k) - 1) Re H_{ik}`,
+`H_{ik} = ⟨φ_i, h_{ik} φ_k⟩ = √(p_i p_k) ∑_α (c_α)_{ik} (d_α)_{ik}`. -/
+theorem step_3_9_3 {h : Matrix (α × β) (α × β) ℂ} (hh : h.IsHermitian) {l : α → ℝ}
+    (hl : ∀ i, 0 < l i) (Θ : EuclideanSpace ℂ (α × β)) :
+    (⟪Θ, toEuclideanLin (h - diagonal (fun x ↦ (l x.1 : ℂ)) * h *
+      diagonal (fun x ↦ ((l x.1)⁻¹ : ℂ))) Θ⟫_ℂ).re =
+      -∑ i, ∑ k, (Real.cosh (Real.log (l i / l k)) - 1) * (pair Θ h i k).re := by
+  rw [← re_sum_pairing (H := pair Θ h) ?_ hl, ← rowWeight_one Θ, inner_rowWeight, rowWeight_one]
+  · congr 1
+    refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun k _ ↦ ?_
+    simp only [pair, Matrix.sub_apply, mul_diagonal, diagonal_mul, Finset.mul_sum, star_one,
+      one_mul]
+    refine Finset.sum_congr rfl fun b _ ↦ Finset.sum_congr rfl fun b' _ ↦ ?_
+    have := (hl k).ne'
+    push_cast
+    field_simp
+  · intro i k
+    simp only [pair, star_sum, star_mul', star_star]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun b _ ↦ Finset.sum_congr rfl fun b' _ ↦ ?_
+    rw [← hh.apply (k, b') (i, b)]; ring
+
+/-- D3.9.5. For `h = ∑_α c_α ⊗ d_α` Hermitian, `φ` in Schmidt form with weights `p`, and
+`L_j = diag l` with the clipping bound of D3.8 and `0 ≤ a_j ≤ ½`: the split term is at most
+`(16/e²) a_j² ∑_α ‖c_α‖ ‖d_α‖` (D3.9.3, D3.9.4, row/column sums as in D3.1.6). -/
+theorem step_3_9_5 {Θ : EuclideanSpace ℂ (α × β)} {p : α → ℝ} (hp : ∀ i, 0 ≤ p i)
+    (hsum : ∑ i, p i = 1) (hΘ : IsSchmidt Θ p) {κ : Type*} [Fintype κ]
+    (c : κ → Matrix α α ℂ) (d : κ → Matrix β β ℂ) (hh : (∑ x, c x ⊗ₖ d x).IsHermitian)
+    {l : α → ℝ} (hl : ∀ i, 0 < l i) {a : ℝ} (ha : 0 ≤ a) (ha2 : a ≤ 1 / 2)
+    (hclip : ∀ i k, 0 < p i → 0 < p k →
+      |Real.log (l i / l k)| ≤ a / 2 * |Real.log (p i / p k)|) :
+    |(⟪Θ, toEuclideanLin ((∑ x, c x ⊗ₖ d x) - diagonal (fun x ↦ (l x.1 : ℂ)) *
+      (∑ x, c x ⊗ₖ d x) * diagonal (fun x ↦ ((l x.1)⁻¹ : ℂ))) Θ⟫_ℂ).re| ≤
+      16 / Real.exp 2 * a ^ 2 * ∑ x, ‖c x‖ * ‖d x‖ := by
+  set ω := unitRow Θ p
+  set C := 8 / Real.exp 2 * a ^ 2
+  have hC : 0 ≤ C := by positivity
+  have hcosh : ∀ i k, 0 ≤ Real.cosh (Real.log (l i / l k)) - 1 := fun i k ↦
+    sub_nonneg.2 (Real.one_le_cosh _)
+  -- D3.9.4 for each pair, trivially when `p_i p_k = 0`
+  have hcoef : ∀ i k, (Real.cosh (Real.log (l i / l k)) - 1) * (√(p i) * √(p k)) ≤
+      C * (p i + p k) := by
+    intro i k
+    rcases (hp i).eq_or_lt with hi | hi
+    · calc _ = 0 := by rw [← hi]; simp
+        _ ≤ _ := mul_nonneg hC (add_nonneg (hp i) (hp k))
+    rcases (hp k).eq_or_lt with hk | hk
+    · calc _ = 0 := by rw [← hk]; simp
+        _ ≤ _ := mul_nonneg hC (add_nonneg (hp i) (hp k))
+    rw [mul_comm, ← Real.sqrt_mul hi.le]
+    exact step_3_9_4 ha ha2 hi hk (hclip i k hi hk)
+  -- the matrix elements `H_{ik} = √(p_i p_k) ∑_α (c_α)_{ik} ⟨g_i, d_α g_k⟩`
+  have hpair : ∀ i k, ‖pair Θ (∑ x, c x ⊗ₖ d x) i k‖ ≤
+      ∑ x, √(p i) * √(p k) * (‖c x i k‖ * ‖⟪ω i, toEuclideanLin (d x) (ω k)⟫_ℂ‖) := by
+    intro i k
+    rw [pair_sum]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun x _ ↦ le_of_eq ?_)
+    rw [pair_kronecker, row_eq_smul_unitRow hp hΘ i, row_eq_smul_unitRow hp hΘ k, map_smul,
+      inner_smul_left, inner_smul_right, Complex.conj_ofReal, norm_mul, norm_mul, norm_mul,
+      Complex.norm_real, Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _),
+      Real.norm_of_nonneg (Real.sqrt_nonneg _)]
+    ring
+  -- D3.9.3
+  rw [step_3_9_3 hh hl, abs_neg]
+  calc _ ≤ ∑ i, ∑ k, (Real.cosh (Real.log (l i / l k)) - 1) *
+        ‖pair Θ (∑ x, c x ⊗ₖ d x) i k‖ :=
+        (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ ↦
+          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ ↦ by
+            rw [abs_mul, abs_of_nonneg (hcosh i k)]
+            exact mul_le_mul_of_nonneg_left (Complex.abs_re_le_norm _) (hcosh i k)))
+    _ ≤ ∑ i, ∑ k, ∑ x, C * ((p i + p k) *
+        (‖c x i k‖ * ‖⟪ω i, toEuclideanLin (d x) (ω k)⟫_ℂ‖)) := by
+      refine Finset.sum_le_sum fun i _ ↦ Finset.sum_le_sum fun k _ ↦ ?_
+      refine (mul_le_mul_of_nonneg_left (hpair i k) (hcosh i k)).trans ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_le_sum fun x _ ↦ ?_
+      calc _ = (Real.cosh (Real.log (l i / l k)) - 1) * (√(p i) * √(p k)) *
+            (‖c x i k‖ * ‖⟪ω i, toEuclideanLin (d x) (ω k)⟫_ℂ‖) := by ring
+        _ ≤ C * (p i + p k) * (‖c x i k‖ * ‖⟪ω i, toEuclideanLin (d x) (ω k)⟫_ℂ‖) :=
+          mul_le_mul_of_nonneg_right (hcoef i k) (by positivity)
+        _ = _ := by ring
+    _ = ∑ x, C * ∑ i, ∑ k, (p i + p k) *
+        (‖c x i k‖ * ‖⟪ω i, toEuclideanLin (d x) (ω k)⟫_ℂ‖) := by
+      simp only [Finset.mul_sum]
+      exact (Finset.sum_congr rfl fun i _ ↦ Finset.sum_comm).trans Finset.sum_comm
+    -- D3.9.5: row/column sums
+    _ ≤ ∑ x, C * (2 * (‖c x‖ * ‖d x‖)) := Finset.sum_le_sum fun x _ ↦
+        mul_le_mul_of_nonneg_left (sum_add_mul_unitRow_le hp hsum hΘ (c x) (d x)) (by positivity)
+    _ = _ := by rw [← Finset.mul_sum, ← Finset.mul_sum]; simp only [C]; ring
+
+end D393
 
 /-! ## D3.11 First norm comparison -/
 

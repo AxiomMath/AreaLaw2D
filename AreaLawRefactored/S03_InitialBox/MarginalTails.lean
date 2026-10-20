@@ -446,6 +446,33 @@ theorem sum_norm_inner_unitRow_sq_le (hs : ∀ j, 0 ≤ s j) (hΘ : IsSchmidt Θ
         Finset.sum_subtype _ (by simp) (fun k ↦ ‖⟪unitRow Θ s k, v⟫_ℂ‖ ^ 2)
     _ ≤ ‖v‖ ^ 2 := hon.sum_inner_products_le (s := Finset.univ) v
 
+/-- D3.1.6 (row/column sums). For the Schmidt vectors `ωⱼ = unitRow Θ s j`:
+`∑ⱼₖ (sⱼ + sₖ) |cⱼₖ| |⟨ωⱼ, d ωₖ⟩| ≤ 2 ‖c‖ ‖d‖`. -/
+theorem sum_add_mul_unitRow_le (hs : ∀ j, 0 ≤ s j) (hsum : ∑ j, s j = 1) (hΘ : IsSchmidt Θ s)
+    (c : Matrix α α ℂ) (d : Matrix β β ℂ) :
+    ∑ j, ∑ k, (s j + s k) *
+      (‖c j k‖ * ‖⟪unitRow Θ s j, toEuclideanLin d (unitRow Θ s k)⟫_ℂ‖) ≤ 2 * (‖c‖ * ‖d‖) := by
+  set ω := unitRow Θ s
+  set D : α → α → ℂ := fun j k ↦ ⟪ω j, toEuclideanLin d (ω k)⟫_ℂ
+  -- rows and columns of `dⱼₖ = ⟨gⱼ, d gₖ⟩` by Bessel, of `c` by the operator norm
+  have hd (A : Matrix β β ℂ) (j : α) : ‖toEuclideanLin A (ω j)‖ ^ 2 ≤ ‖A‖ ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) ((Matrix.l2_opNorm_mulVec A _).trans
+      (mul_le_of_le_one_right (norm_nonneg _) (norm_unitRow_le hs hΘ j))) 2
+  have hcr (j : α) : ∑ k, ‖c j k‖ ^ 2 ≤ ‖c‖ ^ 2 := by
+    have h := sum_norm_apply_sq_le_l2_opNorm_sq cᴴ j
+    rw [l2_opNorm_conjTranspose] at h
+    simpa [conjTranspose_apply] using h
+  have hDr (j : α) : ∑ k, ‖D j k‖ ^ 2 ≤ ‖d‖ ^ 2 := by
+    have h := (sum_norm_inner_unitRow_sq_le hs hΘ _).trans (hd dᴴ j)
+    rw [l2_opNorm_conjTranspose] at h
+    refine le_of_eq_of_le (Finset.sum_congr rfl fun k _ ↦ ?_) h
+    simp only [D]
+    rw [toEuclideanLin_conjTranspose_eq_adjoint, LinearMap.adjoint_inner_right,
+      norm_inner_symm]
+  exact sum_add_mul_le hs hsum (norm_nonneg _) (norm_nonneg _) hcr
+    (sum_norm_apply_sq_le_l2_opNorm_sq c) hDr
+    fun k ↦ (sum_norm_inner_unitRow_sq_le hs hΘ _).trans (hd d k)
+
 /-- D3.1.6. Crude strip bound: for `X = ∑ₐ cₐ ⊗ dₐ` and `|Re z| ≤ 1/4`,
 `|f(z)| ≤ 2 ∑ₐ ‖cₐ‖ ‖dₐ‖`. -/
 theorem step_3_1_6 (hs : ∀ j, 0 ≤ s j) (hsum : ∑ j, s j = 1) (hΘ : IsSchmidt Θ s)
@@ -490,26 +517,7 @@ theorem step_3_1_6 (hs : ∀ j, 0 ≤ s j) (hsum : ∑ j, s j = 1) (hΘ : IsSchm
   calc _ ≤ ∑ j, ∑ k, (s j + s k) * (‖c a j k‖ * ‖D j k‖) :=
         (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ ↦
           (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ ↦ hterm j k))
-    _ ≤ 2 * (‖c a‖ * ‖d a‖) := by
-      -- rows and columns of `(dₐ)ⱼₖ = ⟨gⱼ, dₐ gₖ⟩` by Bessel, of `cₐ` by the operator norm
-      have hd (A : Matrix β β ℂ) (j : α) : ‖toEuclideanLin A (ω j)‖ ^ 2 ≤ ‖A‖ ^ 2 :=
-        pow_le_pow_left₀ (norm_nonneg _) ((Matrix.l2_opNorm_mulVec A _).trans
-          (mul_le_of_le_one_right (norm_nonneg _) (norm_unitRow_le hs hΘ j))) 2
-      have hcr (j : α) : ∑ k, ‖c a j k‖ ^ 2 ≤ ‖c a‖ ^ 2 := by
-        have h := sum_norm_apply_sq_le_l2_opNorm_sq (c a)ᴴ j
-        rw [l2_opNorm_conjTranspose] at h
-        simpa [conjTranspose_apply] using h
-      have hDr (j : α) : ∑ k, ‖D j k‖ ^ 2 ≤ ‖d a‖ ^ 2 := by
-        have h := (sum_norm_inner_unitRow_sq_le hs hΘ _).trans (hd (d a)ᴴ j)
-        rw [l2_opNorm_conjTranspose] at h
-        refine le_of_eq_of_le (Finset.sum_congr rfl fun k _ ↦ ?_) h
-        simp only [D]
-        rw [toEuclideanLin_conjTranspose_eq_adjoint, LinearMap.adjoint_inner_right,
-          norm_inner_symm]
-      exact sum_add_mul_le hs hsum (norm_nonneg _) (norm_nonneg _) hcr
-        (sum_norm_apply_sq_le_l2_opNorm_sq (c a)) hDr
-        fun k ↦ (sum_norm_inner_unitRow_sq_le hs hΘ _).trans (hd (d a) k)
-
+    _ ≤ 2 * (‖c a‖ * ‖d a‖) := sum_add_mul_unitRow_le hs hsum hΘ (c a) (d a)
 
 end Rows
 
