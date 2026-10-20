@@ -1,5 +1,4 @@
-import AreaLawRefactored.S04_Quasilocal.Setup
-import AreaLawForMathlib.Analysis.CStarAlgebra.SqrtHolder
+import AreaLawRefactored.S04_Quasilocal.Positive
 
 /-!
 # §4.2 Lemma 4.4: square roots and local channels
@@ -11,7 +10,8 @@ lines 336–390.
 namespace AreaLaw
 
 open Arealaw Matrix
-open OpenAI (IsSupportedOn)
+open OpenAI (IsSupportedOn HasGlobalGap)
+open scoped Finset
 open scoped Kronecker MatrixOrder ComplexOrder Matrix.Norms.L2Operator
 
 section RootChannel
@@ -66,45 +66,6 @@ theorem rootChannel_eq_self_of_commute {G K B : Matrix n n ℂ} (h : G * G + K *
   rw [rootChannel, hG.eq, hK.eq, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_add, h,
     Matrix.mul_one]
 
-omit [DecidableEq n] in
-/-- D4.10.2. If `0 ≤ Y` and `Y² v = c² v` with `c ≥ 0`, then `Y v = c v`. -/
-theorem mulVec_eq_smul_of_mul_self_mulVec {Y : Matrix n n ℂ} (hY : 0 ≤ Y) {c : ℝ}
-    (hc : 0 ≤ c) {v : n → ℂ} (h : (Y * Y) *ᵥ v = ((c ^ 2 : ℝ) : ℂ) • v) :
-    Y *ᵥ v = (c : ℂ) • v := by
-  have hYpsd : Y.PosSemidef := nonneg_iff_posSemidef.mp hY
-  set w := Y *ᵥ v - (c : ℂ) • v with hw
-  have hYw : Y *ᵥ w = -(c : ℂ) • w := by
-    rw [hw, mulVec_sub, mulVec_mulVec, h, mulVec_smul, smul_sub, neg_smul, neg_smul,
-      smul_smul]
-    push_cast
-    rw [sq]; abel
-  have hnn : 0 ≤ star w ⬝ᵥ (Y *ᵥ w) := hYpsd.dotProduct_mulVec_nonneg w
-  rw [hYw, dotProduct_smul] at hnn
-  rcases hc.lt_or_eq with hcpos | hc0
-  · have hcC : (0 : ℂ) < c := by exact_mod_cast hcpos
-    have hprod : (c : ℂ) * (star w ⬝ᵥ w) = 0 := by
-      refine le_antisymm ?_ (mul_nonneg hcC.le (dotProduct_star_self_nonneg w))
-      rwa [smul_eq_mul, neg_mul, neg_nonneg] at hnn
-    have : w = 0 :=
-      dotProduct_star_self_eq_zero.mp ((mul_eq_zero.mp hprod).resolve_left hcC.ne')
-    rwa [hw, sub_eq_zero] at this
-  · subst hc0
-    simp only [Complex.ofReal_zero, zero_smul]
-    have h0 : (Y * Y) *ᵥ v = 0 := by simpa using h
-    have : star (Y *ᵥ v) ⬝ᵥ (Y *ᵥ v) = 0 := by
-      rw [star_mulVec, ← dotProduct_mulVec, hYpsd.isHermitian.eq, mulVec_mulVec, h0,
-        dotProduct_zero]
-    exact dotProduct_star_self_eq_zero.mp this
-
-/-- D4.10.7. Square roots commute with tensoring by an identity: `√M ⊗ I = √(M ⊗ I)`. -/
-theorem sqrt_kronecker_one {κ : Type*} [Fintype κ] [DecidableEq κ] {M : Matrix n n ℂ}
-    (hM : 0 ≤ M) :
-    CFC.sqrt M ⊗ₖ (1 : Matrix κ κ ℂ) = CFC.sqrt (M ⊗ₖ (1 : Matrix κ κ ℂ)) := by
-  have hpos : ∀ X : Matrix n n ℂ, 0 ≤ X → 0 ≤ X ⊗ₖ (1 : Matrix κ κ ℂ) := fun X hX =>
-    ((nonneg_iff_posSemidef.mp hX).kronecker PosSemidef.one).nonneg
-  refine ((CFC.sqrt_eq_iff _ _ (hpos M hM) (hpos _ (CFC.sqrt_nonneg M))).mpr ?_).symm
-  rw [← mul_kronecker_mul, Matrix.mul_one, CFC.sqrt_mul_sqrt_self M hM]
-
 omit [Fintype n] [DecidableEq n] in
 /-- D4.10.6. `X ⊗ I - Y ⊗ I = (X - Y) ⊗ I`. -/
 theorem sub_kronecker_one {κ : Type*} [DecidableEq κ] (X Y : Matrix n n ℂ) :
@@ -112,12 +73,14 @@ theorem sub_kronecker_one {κ : Type*} [DecidableEq κ] (X Y : Matrix n n ℂ) :
   ext
   simp [kroneckerMap_apply, sub_mul]
 
+set_option linter.unusedDecidableInType false in
 /-- D4.10.7. An operator commuting with `M ≥ 0` commutes with `√M`. -/
 theorem commute_sqrt {M B : Matrix n n ℂ} (hM : 0 ≤ M) (hB : Commute M B) :
     Commute (CFC.sqrt M) B := by
   rw [CFC.sqrt_eq_real_sqrt M hM, cfcₙ_eq_cfc]
   exact hB.cfc_real _
 
+set_option linter.unusedDecidableInType false in
 /-- D4.10.7. An operator commuting with `M ⊗ I` (`M ≥ 0`) commutes with `√M ⊗ I`. -/
 theorem commute_sqrt_kronecker_one {κ : Type*} [Fintype κ] [DecidableEq κ]
     {M : Matrix n n ℂ} {B : Matrix (n × κ) (n × κ) ℂ} (hM : 0 ≤ M)
@@ -126,6 +89,8 @@ theorem commute_sqrt_kronecker_one {κ : Type*} [Fintype κ] [DecidableEq κ]
   rw [sqrt_kronecker_one hM]
   exact commute_sqrt ((nonneg_iff_posSemidef.mp hM).kronecker PosSemidef.one).nonneg hB
 
+set_option linter.unusedDecidableInType false in
+set_option linter.unusedFintypeInType false in
 /-- D4.10.1, D4.10.5. Tensoring by an identity preserves the root data: `√M ⊗ I` is positive,
 has norm at most `‖√M‖`, and `G ⊗ I, K ⊗ I` again satisfy `G² + K² = I`. -/
 theorem sqrt_kronecker_one_nonneg {κ : Type*} [Fintype κ] [DecidableEq κ] {M : Matrix n n ℂ}
@@ -177,53 +142,77 @@ operator-norm contractions, also after tensoring with `id` on any auxiliary matr
 `‖𝓔_i - 𝓔_{i,l}‖_cb ≤ C e^{-c l^α}`, `‖·‖_cb` = supremum of operator norms over all auxiliary
 extensions. `𝓔_{i,l}` fixes every operator commuting with the full algebra on `N_l(a_i)`,
 including operators supported outside the ball. -/
-theorem lemma_4_4 {σ : Type*} [DecidableEq σ] (G : SimpleGraph σ) {loc : σ → Type*}
-    [∀ i, Fintype (loc i)] [∀ i, DecidableEq (loc i)] (Λ : Finset σ) (a : σ)
-    (Ω : Reg loc Λ → ℂ) (k : Matrix (Reg loc Λ) (Reg loc Λ) ℂ) (C c α : ℝ)
-    (hk₀ : 0 ≤ k) (hk₁ : k ≤ 1) (hkΩ : k *ᵥ Ω = 0)
-    (hE : ∀ l, 0 ≤ E G Λ a l k ∧ E G Λ a l k ≤ 1)
-    (htail : ∀ l : ℕ, ‖k - E G Λ a l k‖ ≤ C * Real.exp (-c * (l : ℝ) ^ α)) :
-    let Gi := CFC.sqrt (1 - k)
-    let Ki := CFC.sqrt k
-    let Gil := fun l => CFC.sqrt (1 - E G Λ a l k)
-    let Kil := fun l => CFC.sqrt (E G Λ a l k)
-    ((0 ≤ Gi ∧ Gi ≤ 1) ∧ (0 ≤ Ki ∧ Ki ≤ 1) ∧
-      ∀ l, (0 ≤ Gil l ∧ Gil l ≤ 1) ∧ (0 ≤ Kil l ∧ Kil l ≤ 1)) ∧
-    (Gi *ᵥ Ω = Ω ∧ Ki *ᵥ Ω = 0) ∧
-    (∃ C' c' : ℝ, (0 < c → 0 < c') ∧
-      ∀ l : ℕ, ‖Gi - Gil l‖ + ‖Ki - Kil l‖ ≤ C' * Real.exp (-c' * (l : ℝ) ^ α)) ∧
-    (∀ l, Gil l * Gil l + Kil l * Kil l = 1) ∧
-    -- unital
-    (rootChannel Gi Ki 1 = 1 ∧ (∀ l, rootChannel (Gil l) (Kil l) 1 = 1) ∧
-      ∀ (κ : Type) [Fintype κ] [DecidableEq κ],
-        rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) 1 = 1 ∧
-        ∀ l, rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) 1 = 1) ∧
-    -- completely positive
-    ((∀ B, 0 ≤ B → 0 ≤ rootChannel Gi Ki B ∧ ∀ l, 0 ≤ rootChannel (Gil l) (Kil l) B) ∧
-      ∀ (κ : Type) [Fintype κ] [DecidableEq κ] (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
-        0 ≤ B → 0 ≤ rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) B ∧
-          ∀ l, 0 ≤ rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B) ∧
-    -- operator-norm contractions
-    ((∀ B, ‖rootChannel Gi Ki B‖ ≤ ‖B‖ ∧ ∀ l, ‖rootChannel (Gil l) (Kil l) B‖ ≤ ‖B‖) ∧
-      ∀ (κ : Type) [Fintype κ] [DecidableEq κ] (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
-        ‖rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) B‖ ≤ ‖B‖ ∧
-          ∀ l, ‖rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B‖ ≤ ‖B‖) ∧
-    -- cb-norm tail
-    (∃ C'' c'' : ℝ, (0 < c → 0 < c'') ∧
-      (∀ (l : ℕ) B, ‖rootChannel Gi Ki B - rootChannel (Gil l) (Kil l) B‖ ≤
-        C'' * Real.exp (-c'' * (l : ℝ) ^ α) * ‖B‖) ∧
-      ∀ (l : ℕ) (κ : Type) [Fintype κ] [DecidableEq κ]
-        (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
-        ‖rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) B -
-            rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B‖ ≤
-          C'' * Real.exp (-c'' * (l : ℝ) ^ α) * ‖B‖) ∧
-    -- fixed points: the commutant of the algebra on `N_l(a)`
-    (∀ l (B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ),
-      (∀ A, Commute (extendId (graphNbhd_subset G Λ {a} l) A) B) →
-        rootChannel (Gil l) (Kil l) B = B) ∧
-    ∀ l (κ : Type) [Fintype κ] [DecidableEq κ] (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
-      (∀ A, Commute (extendId (graphNbhd_subset G Λ {a} l) A ⊗ₖ (1 : Matrix κ κ ℂ)) B) →
-        rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B = B := by
+theorem lemma_4_4 {σ : Type*} [DecidableEq σ] (G : SimpleGraph σ) (V : ℕ → ℕ)
+    (hV : ∀ (Λ : Finset σ) (x : σ) (r : ℕ), #(ball G Λ x r) ≤ V r)
+    {loc : σ → Type} [∀ i, Fintype (loc i)] [∀ i, DecidableEq (loc i)] [∀ i, Nonempty (loc i)]
+    {p : ℕ} (hp : 1 ≤ p) (R : ℕ) (J Δ : ℝ) (hΔ : 0 < Δ) :
+    ∃ cstar : ℝ, 0 < cstar ∧ ∃ C c : ℝ, 0 < c ∧
+    ∀ Λ : Finset σ, ∀ Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ,
+      IsAdmissible G Λ R J Φ →
+    ∀ (Ω : Reg loc Λ → ℂ) (_ : star Ω ⬝ᵥ Ω = 1) (E₀ : ℝ),
+      hamiltonian Λ Φ *ᵥ Ω = (E₀ : ℂ) • Ω → HasGlobalGap (hamiltonian Λ Φ) Ω E₀ Δ →
+    ∀ anchor : Finset σ → σ, (∀ X ∈ supports G Λ R, anchor X ∈ X) →
+    ∃ k : Finset σ → Matrix (Reg loc Λ) (Reg loc Λ) ℂ,
+      ((∀ X ∈ supports G Λ R, 0 ≤ k X ∧ k X ≤ 1 ∧ k X *ᵥ Ω = 0) ∧
+      (cstar : ℂ)⁻¹ • (hamiltonian Λ Φ - (E₀ : ℂ) • 1) ≤ ∑ X ∈ supports G Λ R, k X ∧
+      ((Δ / cstar : ℝ) : ℂ) • (1 - vecMulVec Ω (star Ω)) ≤
+        (cstar : ℂ)⁻¹ • (hamiltonian Λ Φ - (E₀ : ℂ) • 1) ∧
+      (∀ X ∈ supports G Λ R, ∀ l : ℕ,
+        0 ≤ E G Λ (anchor X) l (k X) ∧ E G Λ (anchor X) l (k X) ≤ 1 ∧
+        ‖k X - E G Λ (anchor X) l (k X)‖ ≤ C * Real.exp (-c * (l : ℝ) ^ ((p : ℝ) / (p + 1)))) ∧
+      ∀ X ∈ supports G Λ R, IsSupportedOn (component_subset G Λ (anchor X)) (k X)) ∧
+      ∀ X ∈ supports G Λ R,
+        let Gi := CFC.sqrt (1 - k X)
+        let Ki := CFC.sqrt (k X)
+        let Gil := fun l => CFC.sqrt (1 - E G Λ (anchor X) l (k X))
+        let Kil := fun l => CFC.sqrt (E G Λ (anchor X) l (k X))
+        ((0 ≤ Gi ∧ Gi ≤ 1) ∧ (0 ≤ Ki ∧ Ki ≤ 1) ∧
+          ∀ l, (0 ≤ Gil l ∧ Gil l ≤ 1) ∧ (0 ≤ Kil l ∧ Kil l ≤ 1)) ∧
+        (Gi *ᵥ Ω = Ω ∧ Ki *ᵥ Ω = 0) ∧
+        (∀ l : ℕ, ‖Gi - Gil l‖ + ‖Ki - Kil l‖ ≤
+          2 * Real.sqrt C * Real.exp (-(c / 2) * (l : ℝ) ^ ((p : ℝ) / (p + 1)))) ∧
+        (∀ l, Gil l * Gil l + Kil l * Kil l = 1) ∧
+        -- unital
+        (rootChannel Gi Ki 1 = 1 ∧ (∀ l, rootChannel (Gil l) (Kil l) 1 = 1) ∧
+          ∀ (κ : Type) [Fintype κ] [DecidableEq κ],
+            rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) 1 = 1 ∧
+            ∀ l, rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) 1 = 1) ∧
+        -- completely positive
+        ((∀ B, 0 ≤ B → 0 ≤ rootChannel Gi Ki B ∧ ∀ l, 0 ≤ rootChannel (Gil l) (Kil l) B) ∧
+          ∀ (κ : Type) [Fintype κ] [DecidableEq κ] (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
+            0 ≤ B → 0 ≤ rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) B ∧
+              ∀ l, 0 ≤ rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B) ∧
+        -- operator-norm contractions
+        ((∀ B, ‖rootChannel Gi Ki B‖ ≤ ‖B‖ ∧ ∀ l, ‖rootChannel (Gil l) (Kil l) B‖ ≤ ‖B‖) ∧
+          ∀ (κ : Type) [Fintype κ] [DecidableEq κ] (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
+            ‖rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) B‖ ≤ ‖B‖ ∧
+              ∀ l, ‖rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B‖ ≤ ‖B‖) ∧
+        -- cb-norm tail
+        ((∀ (l : ℕ) B, ‖rootChannel Gi Ki B - rootChannel (Gil l) (Kil l) B‖ ≤
+            4 * Real.sqrt C * Real.exp (-(c / 2) * (l : ℝ) ^ ((p : ℝ) / (p + 1))) * ‖B‖) ∧
+          ∀ (l : ℕ) (κ : Type) [Fintype κ] [DecidableEq κ]
+            (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
+            ‖rootChannel (Gi ⊗ₖ (1 : Matrix κ κ ℂ)) (Ki ⊗ₖ 1) B -
+                rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B‖ ≤
+              4 * Real.sqrt C * Real.exp (-(c / 2) * (l : ℝ) ^ ((p : ℝ) / (p + 1))) * ‖B‖) ∧
+        -- fixed points: the commutant of the algebra on `N_l(a)`
+        (∀ l (B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ),
+          (∀ A, Commute (extendId (graphNbhd_subset G Λ {anchor X} l) A) B) →
+            rootChannel (Gil l) (Kil l) B = B) ∧
+        ∀ l (κ : Type) [Fintype κ] [DecidableEq κ] (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ),
+          (∀ A, Commute (extendId (graphNbhd_subset G Λ {anchor X} l) A ⊗ₖ (1 : Matrix κ κ ℂ)) B) →
+            rootChannel (Gil l ⊗ₖ (1 : Matrix κ κ ℂ)) (Kil l ⊗ₖ 1) B = B := by
+  obtain ⟨cstar, hcs, C, c, hc, hP⟩ := prop_4_3 G V hV (loc := loc) hp R J Δ hΔ
+  refine ⟨cstar, hcs, C, c, hc, fun Λ Φ hΦ Ω hΩ E₀ hHΩ hgap anchor hanchor => ?_⟩
+  obtain ⟨kf, hkf, hsum, hgapk, htailf, hsupp⟩ := hP Λ Φ hΦ Ω hΩ E₀ hHΩ hgap anchor hanchor
+  refine ⟨kf, ⟨hkf, hsum, hgapk, htailf, hsupp⟩, fun X hX => ?_⟩
+  obtain ⟨hk₀, hk₁, hkΩ⟩ := hkf X hX
+  have hE : ∀ l, 0 ≤ E G Λ (anchor X) l (kf X) ∧ E G Λ (anchor X) l (kf X) ≤ 1 :=
+    fun l => ⟨(htailf X hX l).1, (htailf X hX l).2.1⟩
+  have htail := fun l => (htailf X hX l).2.2
+  generalize anchor X = a at hE htail ⊢
+  generalize kf X = k at hk₀ hk₁ hkΩ hE htail ⊢
+  set α : ℝ := (p : ℝ) / (p + 1)
   intro Gi Ki Gil Kil
   -- D4.10.1
   have hroot : ∀ {M : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}, 0 ≤ M → M ≤ 1 →
@@ -315,16 +304,15 @@ theorem lemma_4_4 {σ : Type*} [DecidableEq σ] (G : SimpleGraph σ) {loc : σ �
     exact rootChannel_eq_self_of_commute (kronecker_one_mul_add (h1l l).2.2)
       (commute_sqrt_kronecker_one (sub_nonneg.mpr (hE l).2) h1')
       (commute_sqrt_kronecker_one (hE l).1 hk)
-  have hc2 : 0 < c → 0 < c / 2 := fun hc => half_pos hc
   refine ⟨⟨h1.1, h1.2.1, fun l => ⟨(h1l l).1, (h1l l).2.1⟩⟩, h2,
-    ⟨2 * Real.sqrt C, c / 2, hc2, fun l => (h3 l).trans_eq (by ring)⟩,
+    h3,
     fun l => (h1l l).2.2,
     ⟨h45.1, fun l => (h45l l).1, fun κ _ _ => ⟨(h45κ κ).1, fun l => (h45lκ κ l).1⟩⟩,
     ⟨fun B hB => ⟨h45.2.1 B hB, fun l => (h45l l).2.1 B hB⟩,
       fun κ _ _ B hB => ⟨(h45κ κ).2.1 B hB, fun l => (h45lκ κ l).2.1 B hB⟩⟩,
     ⟨fun B => ⟨h45.2.2 B, fun l => (h45l l).2.2 B⟩,
       fun κ _ _ B => ⟨(h45κ κ).2.2 B, fun l => (h45lκ κ l).2.2 B⟩⟩,
-    ⟨4 * Real.sqrt C, c / 2, hc2, h6, h6κ⟩, h7, h7κ⟩
+    ⟨h6, h6κ⟩, h7, h7κ⟩
 
 end Lemma44
 

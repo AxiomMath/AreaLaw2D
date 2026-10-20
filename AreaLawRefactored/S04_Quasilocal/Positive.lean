@@ -1,5 +1,5 @@
 import AreaLawRefactored.S04_Quasilocal.Locality
-import AreaLawRefactored.S04_Quasilocal.Roots
+import AreaLawForMathlib.Analysis.CStarAlgebra.SqrtHolder
 
 /-!
 # §4.2 Proposition 4.3: positive replacement of the Hamiltonian (D4.6)
@@ -13,6 +13,7 @@ namespace AreaLaw
 
 open Arealaw Matrix Finset MeasureTheory
 open OpenAI (condExpect IsSupportedOn HasGlobalGap)
+open Quasilocal (M)
 open scoped Kronecker MatrixOrder ComplexOrder Matrix.Norms.L2Operator
 
 /-! ## Absolute values -/
@@ -20,6 +21,46 @@ open scoped Kronecker MatrixOrder ComplexOrder Matrix.Norms.L2Operator
 section Abs
 
 variable {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+
+omit [DecidableEq n] in
+/-- D4.10.2. If `0 ≤ Y` and `Y² v = c² v` with `c ≥ 0`, then `Y v = c v`. -/
+theorem mulVec_eq_smul_of_mul_self_mulVec {Y : Matrix n n ℂ} (hY : 0 ≤ Y) {c : ℝ}
+    (hc : 0 ≤ c) {v : n → ℂ} (h : (Y * Y) *ᵥ v = ((c ^ 2 : ℝ) : ℂ) • v) :
+    Y *ᵥ v = (c : ℂ) • v := by
+  have hYpsd : Y.PosSemidef := nonneg_iff_posSemidef.mp hY
+  set w := Y *ᵥ v - (c : ℂ) • v with hw
+  have hYw : Y *ᵥ w = -(c : ℂ) • w := by
+    rw [hw, mulVec_sub, mulVec_mulVec, h, mulVec_smul, smul_sub, neg_smul, neg_smul,
+      smul_smul]
+    push_cast
+    rw [sq]; abel
+  have hnn : 0 ≤ star w ⬝ᵥ (Y *ᵥ w) := hYpsd.dotProduct_mulVec_nonneg w
+  rw [hYw, dotProduct_smul] at hnn
+  rcases hc.lt_or_eq with hcpos | hc0
+  · have hcC : (0 : ℂ) < c := by exact_mod_cast hcpos
+    have hprod : (c : ℂ) * (star w ⬝ᵥ w) = 0 := by
+      refine le_antisymm ?_ (mul_nonneg hcC.le (dotProduct_star_self_nonneg w))
+      rwa [smul_eq_mul, neg_mul, neg_nonneg] at hnn
+    have : w = 0 :=
+      dotProduct_star_self_eq_zero.mp ((mul_eq_zero.mp hprod).resolve_left hcC.ne')
+    rwa [hw, sub_eq_zero] at this
+  · subst hc0
+    simp only [Complex.ofReal_zero, zero_smul]
+    have h0 : (Y * Y) *ᵥ v = 0 := by simpa using h
+    have : star (Y *ᵥ v) ⬝ᵥ (Y *ᵥ v) = 0 := by
+      rw [star_mulVec, ← dotProduct_mulVec, hYpsd.isHermitian.eq, mulVec_mulVec, h0,
+        dotProduct_zero]
+    exact dotProduct_star_self_eq_zero.mp this
+
+set_option linter.unusedDecidableInType false in
+/-- D4.10.7. Square roots commute with tensoring by an identity: `√M ⊗ I = √(M ⊗ I)`. -/
+theorem sqrt_kronecker_one {κ : Type*} [Fintype κ] [DecidableEq κ] {M : Matrix n n ℂ}
+    (hM : 0 ≤ M) :
+    CFC.sqrt M ⊗ₖ (1 : Matrix κ κ ℂ) = CFC.sqrt (M ⊗ₖ (1 : Matrix κ κ ℂ)) := by
+  have hpos : ∀ X : Matrix n n ℂ, 0 ≤ X → 0 ≤ X ⊗ₖ (1 : Matrix κ κ ℂ) := fun X hX =>
+    ((nonneg_iff_posSemidef.mp hX).kronecker PosSemidef.one).nonneg
+  refine ((CFC.sqrt_eq_iff _ _ (hpos M hM) (hpos _ (CFC.sqrt_nonneg M))).mpr ?_).symm
+  rw [← mul_kronecker_mul, Matrix.mul_one, CFC.sqrt_mul_sqrt_self M hM]
 
 set_option linter.unusedDecidableInType false in
 theorem sqrt_submatrix {N : Matrix n n ℂ} (hN : 0 ≤ N) (e : m ≃ n) :

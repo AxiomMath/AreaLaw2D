@@ -1,6 +1,7 @@
 import AreaLawRefactored.S04_Quasilocal.VolumeFree
 import AreaLawRefactored.S04_Quasilocal.GroundState
 import AreaLawRefactored.S04_Quasilocal.Crossing
+import AreaLawRefactored.S04_Quasilocal.Positive
 
 /-!
 # §4.3 Proposition 4.5: truncation near a finite set
@@ -11,8 +12,8 @@ lines 405–521. Graph-level: a simple graph `G` with ball growth `V(r) ≤ K (r
 
 The input is the output of Proposition 4.3 (D4.6) at `p = 1`, `α = 1/2`: the constraints `k_i`
 with `0 ≤ k_i ≤ I`, `k_i Ω = 0`, `H_F = ∑ k_i ≥ g (I - P_Ω)`, `k_{i,l} ∈ [0, I]` and
-`‖k_i - k_{i,l}‖ ≤ C e^{-c l^{1/2}}`. Until D4.6 is formalized it enters as these hypotheses,
-with the constants `C, c, g` of D4.6 fixed before `C₁`.
+`‖k_i - k_{i,l}‖ ≤ C e^{-c l^{1/2}}`, `g = Δ / c_*`; the constants `c_*, C, c` of D4.6 are
+fixed before `C₁`.
 -/
 
 namespace AreaLaw
@@ -37,32 +38,40 @@ contractions and `‖H̃ - H_F‖ ≤ ε_n := min {n^{-1000}, g/4}`. Its ground 
 theorem prop_4_5 {σ : Type u} [DecidableEq σ] (G : SimpleGraph σ) [DecidableRel G.Adj]
     (V : ℕ → ℕ) (hV : ∀ (Λ : Finset σ) (x : σ) (r : ℕ), #(ball G Λ x r) ≤ V r) {K : ℝ}
     (hK : 0 ≤ K) (m : ℕ) (hVpoly : ∀ r : ℕ, (V r : ℝ) ≤ K * (r + 1) ^ m) {q : ℕ} (hq : 1 ≤ q)
-    (R : ℕ) {C c g C₀ s : ℝ} (hC : 0 ≤ C) (hc : 0 < c) (hg : 0 < g) (hC₀ : 0 ≤ C₀)
-    (hs : 0 ≤ s) :
-    ∃ C₁ : ℝ, 0 < C₁ ∧ ∃ Cb : ℝ, 0 ≤ Cb ∧
-    (∀ (Λ : Finset σ) (a : Finset σ → σ), (∀ X ∈ supports G Λ R, a X ∈ X) →
-      ∀ (Ω : Reg (fun _ : σ => Fin q) Λ → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1)
-        (k : Finset σ → Matrix (Reg (fun _ : σ => Fin q) Λ) (Reg (fun _ : σ => Fin q) Λ) ℂ),
-        (∀ X ∈ supports G Λ R, 0 ≤ k X ∧ k X ≤ 1 ∧ k X *ᵥ Ω = 0) →
-        (g : ℂ) • (1 - vecMulVec Ω (star Ω)) ≤ ∑ X ∈ supports G Λ R, k X →
-        (∀ X ∈ supports G Λ R, ∀ l : ℕ, 0 ≤ E G Λ (a X) l (k X) ∧ E G Λ (a X) l (k X) ≤ 1 ∧
-          ‖k X - E G Λ (a X) l (k X)‖ ≤ C * exp (-(c * (l : ℝ) ^ (1 / 2 : ℝ)))) →
+    (R : ℕ) (J : ℝ) {Δ C₀ s : ℝ} (hΔ : 0 < Δ) (hC₀ : 0 ≤ C₀) (hs : 0 ≤ s) :
+    ∃ cstar : ℝ, 0 < cstar ∧ ∃ C c : ℝ, 0 < c ∧ ∃ C₁ : ℝ, 0 < C₁ ∧ ∃ Cb : ℝ, 0 ≤ Cb ∧
+    (∀ Λ : Finset σ,
+      ∀ Φ : (X : Finset σ) → Matrix (Reg (fun _ : σ => Fin q) X) (Reg (fun _ : σ => Fin q) X) ℂ,
+        IsAdmissible G Λ R J Φ →
+      ∀ (Ω : Reg (fun _ : σ => Fin q) Λ → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1) (E₀ : ℝ),
+        hamiltonian Λ Φ *ᵥ Ω = (E₀ : ℂ) • Ω → HasGlobalGap (hamiltonian Λ Φ) Ω E₀ Δ →
+      ∀ a : Finset σ → σ, (∀ X ∈ supports G Λ R, a X ∈ X) →
+      ∃ k : Finset σ → Matrix (Reg (fun _ : σ => Fin q) Λ) (Reg (fun _ : σ => Fin q) Λ) ℂ,
+        ((∀ X ∈ supports G Λ R, 0 ≤ k X ∧ k X ≤ 1 ∧ k X *ᵥ Ω = 0) ∧
+        (cstar : ℂ)⁻¹ • (hamiltonian Λ Φ - (E₀ : ℂ) • 1) ≤ ∑ X ∈ supports G Λ R, k X ∧
+        ((Δ / cstar : ℝ) : ℂ) • (1 - vecMulVec Ω (star Ω)) ≤
+          (cstar : ℂ)⁻¹ • (hamiltonian Λ Φ - (E₀ : ℂ) • 1) ∧
+        (∀ X ∈ supports G Λ R, ∀ l : ℕ,
+          0 ≤ E G Λ (a X) l (k X) ∧ E G Λ (a X) l (k X) ≤ 1 ∧
+          ‖k X - E G Λ (a X) l (k X)‖ ≤ C * exp (-c * (l : ℝ) ^ (1 / 2 : ℝ))) ∧
+        ∀ X ∈ supports G Λ R, IsSupportedOn (component_subset G Λ (a X)) (k X)) ∧
       ∀ (n : ℝ), 2 ≤ n → ∀ S₀ : Finset σ, (#S₀ : ℝ) ≤ C₀ * n ^ s →
         (∀ X ∈ supports G Λ R, 0 ≤ truncated G Λ S₀ ⌈C₁ * log n ^ 2⌉₊ (a X) (k X) ∧
           truncated G Λ S₀ ⌈C₁ * log n ^ 2⌉₊ (a X) (k X) ≤ 1) ∧
         ‖∑ X ∈ supports G Λ R, truncated G Λ S₀ ⌈C₁ * log n ^ 2⌉₊ (a X) (k X) -
-            ∑ X ∈ supports G Λ R, k X‖ ≤ min (n ^ (-1000 : ℝ)) (g / 4) ∧
+            ∑ X ∈ supports G Λ R, k X‖ ≤ min (n ^ (-1000 : ℝ)) (Δ / cstar / 4) ∧
         (∃ (E₀ : ℝ) (Ωt : Reg (fun _ : σ => Fin q) Λ → ℂ) (hΩt : star Ωt ⬝ᵥ Ωt = 1),
           (∑ X ∈ supports G Λ R, truncated G Λ S₀ ⌈C₁ * log n ^ 2⌉₊ (a X) (k X)) *ᵥ Ωt =
-            (E₀ : ℂ) • Ωt ∧ 0 ≤ E₀ ∧ E₀ ≤ min (n ^ (-1000 : ℝ)) (g / 4) ∧
+            (E₀ : ℂ) • Ωt ∧ 0 ≤ E₀ ∧ E₀ ≤ min (n ^ (-1000 : ℝ)) (Δ / cstar / 4) ∧
           HasGlobalGap (∑ X ∈ supports G Λ R, truncated G Λ S₀ ⌈C₁ * log n ^ 2⌉₊ (a X) (k X))
-            Ωt E₀ (g / 2) ∧
+            Ωt E₀ (Δ / cstar / 2) ∧
           (∀ w, (∑ X ∈ supports G Λ R, truncated G Λ S₀ ⌈C₁ * log n ^ 2⌉₊ (a X) (k X)) *ᵥ w =
             (E₀ : ℂ) • w → ∃ z : ℂ, w = z • Ωt) ∧
           (∃ t : ℝ, 0 ≤ t ∧ star Ω ⬝ᵥ Ωt = t) ∧
-          √(star (Ωt - Ω) ⬝ᵥ (Ωt - Ω)).re ≤ 2 * √(min (n ^ (-1000 : ℝ)) (g / 4) / g) ∧
+          √(star (Ωt - Ω) ⬝ᵥ (Ωt - Ω)).re ≤
+            2 * √(min (n ^ (-1000 : ℝ)) (Δ / cstar / 4) / (Δ / cstar)) ∧
           traceDist (pureState Ωt hΩt) (pureState Ω hΩ) ≤
-            √(2 * min (n ^ (-1000 : ℝ)) (g / 4) / g)) ∧
+            √(2 * min (n ^ (-1000 : ℝ)) (Δ / cstar / 4) / (Δ / cstar))) ∧
         ∀ X ⊆ S₀,
           (∀ Y ∈ crossingLabels G Λ S₀ R ⌈C₁ * log n ^ 2⌉₊ a X,
             truncatedSupport G Λ S₀ ⌈C₁ * log n ^ 2⌉₊ (a Y) = ball G Λ (a Y) ⌈C₁ * log n ^ 2⌉₊) ∧
@@ -77,15 +86,32 @@ theorem prop_4_5 {σ : Type u} [DecidableEq σ] (G : SimpleGraph σ) [DecidableR
       (∀ Y ∈ supports G Λ R, a Y ∈ Y) → X ⊆ S₀ → 2 ≤ n → 1 ≤ D →
       (#(edgeBoundary G Λ X) : ℝ) ≤ C₂ * n * D →
       cutBudget G q Λ S₀ R ⌈C₁ * log n ^ 2⌉₊ a X ≤ CD * n * D * log n ^ (6 * m) := by
+  -- D4.6 at `p = 1`, `α = 1/2`, `g = Δ / c_*`
+  have : ∀ i, Nonempty ((fun _ : σ => Fin q) i) := fun _ => ⟨⟨0, hq⟩⟩
+  obtain ⟨cstar, hcs, C, c, hc, hP⟩ := prop_4_3 G V hV (loc := fun _ : σ => Fin q) le_rfl R J Δ hΔ
+  set g := Δ / cstar
+  have hg : 0 < g := div_pos hΔ hcs
+  have hα : ((1 : ℕ) : ℝ) / ((1 : ℕ) + 1) = 1 / 2 := by norm_num
+  simp only [hα] at hP
   -- D4.12: constants `C', c'` of the volume-free bound, fixed before `r₀` and `S₀`
-  obtain ⟨C', c', hC', hc', hvol⟩ := step_4_12 hC hc (by norm_num : (0 : ℝ) < 1 / 2) hK m
+  obtain ⟨C', c', hC', hc', hvol⟩ :=
+    step_4_12 (le_max_right C 0) hc (by norm_num : (0 : ℝ) < 1 / 2) hK m
     (μ V R)
   -- D4.12.7: the choice of `C₁`
   obtain ⟨C₁, hC₁, hC₁n⟩ := step_4_12_7 hC'.le hc' hC₀ hg hs
   -- D4.14: the crossing constant
   obtain ⟨Cb, hCb, hcross⟩ := (step_4_14 G V hV hq R).2 K m hVpoly
-  refine ⟨C₁, hC₁, Cb, hCb, ?_, fun C₂ hC₂ => step_4_14_7 G V hV hq R K m hVpoly hC₁ hC₂⟩
-  intro Λ a ha Ω hΩ k hk hgap htail n hn S₀ hS₀
+  refine ⟨cstar, hcs, C, c, hc, C₁, hC₁, Cb, hCb, ?_,
+    fun C₂ hC₂ => step_4_14_7 G V hV hq R K m hVpoly hC₁ hC₂⟩
+  intro Λ Φ hΦ Ω hΩ E₀ hHΩ hgapH a ha
+  obtain ⟨k, hk, hsum, hgk, htail₀, hsupp⟩ := hP Λ Φ hΦ Ω hΩ E₀ hHΩ hgapH a ha
+  refine ⟨k, ⟨hk, hsum, hgk, htail₀, hsupp⟩, fun n hn S₀ hS₀ => ?_⟩
+  have hgap : (g : ℂ) • (1 - vecMulVec Ω (star Ω)) ≤ ∑ X ∈ supports G Λ R, k X := hgk.trans hsum
+  have htail : ∀ X ∈ supports G Λ R, ∀ l : ℕ, 0 ≤ E G Λ (a X) l (k X) ∧
+      E G Λ (a X) l (k X) ≤ 1 ∧
+      ‖k X - E G Λ (a X) l (k X)‖ ≤ max C 0 * exp (-(c * (l : ℝ) ^ (1 / 2 : ℝ))) :=
+    fun X hX l => ⟨(htail₀ X hX l).1, (htail₀ X hX l).2.1, (htail₀ X hX l).2.2.trans
+      (by rw [neg_mul]; exact mul_le_mul_of_nonneg_right (le_max_left _ _) (exp_pos _).le)⟩
   set r₀ := ⌈C₁ * log n ^ 2⌉₊
   set εn := min (n ^ (-1000 : ℝ)) (g / 4)
   -- D4.11.1: `h̃_i ∈ [0, I]`
