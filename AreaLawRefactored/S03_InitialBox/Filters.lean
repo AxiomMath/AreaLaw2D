@@ -80,14 +80,9 @@ theorem step_3_7_3 {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fi
     (W : Matrix (Arealaw.Reg loc X) (Arealaw.Reg loc X) ℂ) :
     star φ ⬝ᵥ (Arealaw.extendId hX (L * W * L⁻¹) *ᵥ φ) =
       star φ ⬝ᵥ (Arealaw.extendId hX W *ᵥ φ) := by
-  have key (M : Matrix (Arealaw.Reg loc X) (Arealaw.Reg loc X) ℂ) :
-      star φ ⬝ᵥ (Arealaw.extendId hX M *ᵥ φ) =
-        (Arealaw.ptrace hX (vecMulVec φ (star φ)) * M).trace := by
-    rw [Arealaw.trace_ptrace_mul, vecMulVec_mul, trace_vecMulVec, dotProduct_comm φ,
-      ← dotProduct_mulVec]
-  set ρ := Arealaw.ptrace hX (vecMulVec φ (star φ))
-  rw [key, key, ← Matrix.mul_assoc, ← Matrix.mul_assoc, ← hc, trace_mul_comm,
-    ← Matrix.mul_assoc, ← Matrix.mul_assoc, nonsing_inv_mul _ hL, Matrix.one_mul]
+  rw [Arealaw.dotProduct_extendId_mulVec, Arealaw.dotProduct_extendId_mulVec, ← Matrix.mul_assoc,
+    ← Matrix.mul_assoc, ← hc, trace_mul_comm, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
+    nonsing_inv_mul _ hL, Matrix.one_mul]
 
 /-- D3.7.4. If `L > 0`, `ρ = ρ*` and `Re Tr(L⁻¹ ρ L B) = 0` for every anti-Hermitian `B`,
 then `[L, ρ] = 0`. -/
@@ -127,6 +122,25 @@ theorem step_3_7_4 {L ρ : Matrix m m ℂ} (hL : L.PosDef) (hρ : ρ.IsHermitian
 
 end D37
 
+/-! ## D3.9 The optimized vector has small excitation energy -/
+
+section D39
+
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+/-- D3.9.1. If `HΩ = E₀Ω`, `K` is invertible and `φ = c KΩ`, then `KHK⁻¹φ = E₀φ`, so
+`⟨φ, (H - E₀)φ⟩ = ⟨φ, (H - KHK⁻¹)φ⟩`. -/
+theorem step_3_9_1 {H K : Matrix n n ℂ} {Ω : n → ℂ} {E₀ : ℝ} (hΩ : H *ᵥ Ω = (E₀ : ℂ) • Ω)
+    (hK : IsUnit K.det) (c : ℂ) :
+    star (c • K *ᵥ Ω) ⬝ᵥ ((H - (E₀ : ℂ) • 1) *ᵥ (c • K *ᵥ Ω)) =
+      star (c • K *ᵥ Ω) ⬝ᵥ ((H - K * H * K⁻¹) *ᵥ (c • K *ᵥ Ω)) := by
+  have h : (K * H * K⁻¹) *ᵥ (c • K *ᵥ Ω) = (E₀ : ℂ) • (c • K *ᵥ Ω) := by
+    rw [mulVec_smul, mulVec_mulVec, Matrix.mul_assoc, nonsing_inv_mul _ hK, Matrix.mul_one,
+      ← mulVec_mulVec, hΩ, mulVec_smul, smul_comm]
+  rw [sub_mulVec, sub_mulVec, h, smul_mulVec, one_mulVec]
+
+end D39
+
 /-! ## D3.11 First norm comparison -/
 
 section D311
@@ -142,6 +156,109 @@ theorem step_3_11_3 {ρ B : Matrix m m ℂ} (hρ : ρ.PosSemidef) (hB : B.PosSem
     (Real.holderConjugate_one_div (a := 1 - a) (b := a) (by linarith) ha0 (by ring))
   rwa [hBn, Real.one_rpow, mul_one, one_div_one_div, RCLike.re_to_complex] at this
 
+
+/-- `Tr ρ^{1/(1-a)} = ∑_{p_j > 0} p_j e^{-u log p_j}` at `u = -a/(1-a)`
+(D3.11.4: `1 - u = 1/(1-a)`). -/
+theorem sum_rpow_eq_sum_exp {ι : Type*} [Fintype ι] {p : ι → ℝ} (hp : ∀ j, 0 ≤ p j) {a : ℝ}
+    (ha1 : a < 1) :
+    ∑ j, p j ^ (1 / (1 - a)) = ∑ j ∈ Finset.univ.filter (fun j ↦ 0 < p j),
+      p j * Real.exp (-(-a / (1 - a)) * Real.log (p j)) := by
+  have h1 : 0 < 1 - a := by linarith
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl fun j _ ↦ ?_
+  split_ifs with hj
+  · have hne : 1 + a / (1 - a) ≠ 0 := by
+      rw [show 1 + a / (1 - a) = 1 / (1 - a) by field_simp; ring]; positivity
+    rw [show -(-a / (1 - a)) * Real.log (p j) = Real.log (p j) * (a / (1 - a)) by ring,
+      ← Real.rpow_def_of_pos hj, ← Real.rpow_one_add' (hp j) hne]
+    congr 1; field_simp; ring
+  · rw [le_antisymm (not_lt.1 hj) (hp j), Real.zero_rpow (by positivity)]
+
+/-- D3.11.3 on a region. For a unit vector `Ω` on `U`, `X ⊆ U` and `L = L*` on `X` with
+`Tr (L²)^{1/a} = 1`: `‖L Ω‖² ≤ (Tr ρ_{Ω,X}^{1/(1-a)})^{1-a}`. -/
+theorem step_3_11_3_region {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+    [∀ i, DecidableEq (loc i)] {X U : Finset σ} (hX : X ⊆ U) (Ω : Arealaw.Reg loc U → ℂ)
+    (hΩ : star Ω ⬝ᵥ Ω = 1) {L : Matrix (Arealaw.Reg loc X) (Arealaw.Reg loc X) ℂ}
+    (hL : L.IsHermitian) (hB : (L * L).PosSemidef) {a : ℝ} (ha0 : 0 < a) (ha1 : a < 1)
+    (hBn : ∑ j, hB.1.eigenvalues j ^ (1 / a) = 1) :
+    (star (Arealaw.extendId hX L *ᵥ Ω) ⬝ᵥ (Arealaw.extendId hX L *ᵥ Ω)).re ≤
+      (∑ j, ((OpenAI.pureState Ω hΩ).toSubState.restrict hX).psd.isHermitian.eigenvalues j ^
+        (1 / (1 - a))) ^ (1 - a) := by
+  have hρ := ((OpenAI.pureState Ω hΩ).toSubState.restrict hX).psd
+  rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, ← Arealaw.extendId_conjTranspose, hL.eq,
+    ← Arealaw.extendId_mul, Arealaw.dotProduct_extendId_mulVec]
+  exact step_3_11_3 hρ hB ha0 ha1 hBn
+
+
+/-- D3.11.3–D3.11.4 on a region. With Lemma 3.1 at `u = -a/(1-a)` for the cut `X | U ∖ X`
+(hypothesis `hM`, admissible by D3.10(iii)) and `0 < a ≤ ½`:
+`log ‖L Ω‖² ≤ -a S(X) + 1024 e ϑ 𝓑 a²`. -/
+theorem step_3_11_4_region {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+    [∀ i, DecidableEq (loc i)] {X U : Finset σ} (hX : X ⊆ U) (Ω : Arealaw.Reg loc U → ℂ)
+    (hΩ : star Ω ⬝ᵥ Ω = 1) {L : Matrix (Arealaw.Reg loc X) (Arealaw.Reg loc X) ℂ}
+    (hL : L.IsHermitian) (hB : (L * L).PosSemidef) {a ϑ 𝓑 : ℝ} (ha0 : 0 < a) (ha2 : a ≤ 1 / 2)
+    (hϑ : 0 ≤ ϑ) (h𝓑 : 0 ≤ 𝓑) (hBn : ∑ j, hB.1.eigenvalues j ^ (1 / a) = 1)
+    (hpos : 0 < (star (Arealaw.extendId hX L *ᵥ Ω) ⬝ᵥ (Arealaw.extendId hX L *ᵥ Ω)).re)
+    (hM : let ρ := (OpenAI.pureState Ω hΩ).toSubState.restrict hX
+      let p := ρ.psd.isHermitian.eigenvalues
+      Real.log (∑ j ∈ Finset.univ.filter (fun j ↦ 0 < p j),
+          p j * Real.exp (-(-a / (1 - a)) * Real.log (p j))) ≤
+        -a / (1 - a) * ρ.entropy + 512 * Real.exp 1 * ϑ * 𝓑 * (-a / (1 - a)) ^ 2) :
+    Real.log (star (Arealaw.extendId hX L *ᵥ Ω) ⬝ᵥ (Arealaw.extendId hX L *ᵥ Ω)).re ≤
+      -a * ((OpenAI.pureState Ω hΩ).toSubState.restrict hX).entropy +
+        1024 * Real.exp 1 * ϑ * 𝓑 * a ^ 2 := by
+  have ha1 : a < 1 := by linarith
+  set ρ := (OpenAI.pureState Ω hΩ).toSubState.restrict hX
+  -- D3.11.3
+  have h3 := step_3_11_3_region hX Ω hΩ hL hB ha0 ha1 hBn
+  rw [sum_rpow_eq_sum_exp (fun j ↦ ρ.psd.eigenvalues_nonneg j) ha1] at h3
+  set T := ∑ j ∈ Finset.univ.filter (fun j ↦ 0 < ρ.psd.isHermitian.eigenvalues j),
+    ρ.psd.isHermitian.eigenvalues j *
+      Real.exp (-(-a / (1 - a)) * Real.log (ρ.psd.isHermitian.eigenvalues j))
+  have hT0 : 0 ≤ T := Finset.sum_nonneg fun j hj ↦
+    mul_nonneg (Finset.mem_filter.1 hj).2.le (Real.exp_pos _).le
+  have hT : 0 < T := by
+    rcases hT0.lt_or_eq with h | h
+    · exact h
+    · rw [← h, Real.zero_rpow (by linarith)] at h3; linarith
+  -- D3.11.4
+  calc _ ≤ Real.log (T ^ (1 - a)) := Real.log_le_log hpos h3
+    _ = (1 - a) * Real.log T := Real.log_rpow hT _
+    _ ≤ _ := step_3_11_4 ha0 ha2 hϑ h𝓑 hM
+
 end D311
+
+/-! ## D3.12 Zero-floor limit and the trial-norm bound -/
+
+section D312
+
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+/-- The ordered product `f (k-1) ⋯ f 0`. -/
+def prodDesc (f : ℕ → Matrix n n ℂ) : ℕ → Matrix n n ℂ
+  | 0 => 1
+  | k + 1 => f k * prodDesc f k
+
+/-- D3.12.4. Moving the unitaries `U_j = M_j^{iy}` to the left: with `V_j = U_j ⋯ U_1`,
+`(U_m M_m) ⋯ (U_1 M_1) = (U_m ⋯ U_1) (V_{m-1}^* M_m V_{m-1}) ⋯ (V_0^* M_1 V_0)`. -/
+theorem step_3_12_4 (U M : ℕ → Matrix n n ℂ) (hU : ∀ j, U j * (U j)ᴴ = 1) (k : ℕ) :
+    prodDesc (fun j ↦ U j * M j) k =
+      prodDesc U k * prodDesc (fun j ↦ (prodDesc U j)ᴴ * M j * prodDesc U j) k := by
+  have hV : ∀ j, prodDesc U j * (prodDesc U j)ᴴ = 1 := by
+    intro j
+    induction j with
+    | zero => simp [prodDesc]
+    | succ j ih =>
+      simp only [prodDesc, conjTranspose_mul]
+      rw [Matrix.mul_assoc, ← Matrix.mul_assoc (prodDesc U j), ih, Matrix.one_mul, hU]
+  induction k with
+  | zero => simp [prodDesc]
+  | succ k ih =>
+    simp only [prodDesc]
+    rw [ih]
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (prodDesc U k) (prodDesc U k)ᴴ, hV, Matrix.one_mul]
+
+end D312
 
 end AreaLaw

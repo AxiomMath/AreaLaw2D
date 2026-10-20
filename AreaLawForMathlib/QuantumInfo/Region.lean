@@ -312,4 +312,23 @@ theorem SubState.entropy_eq_zero_of_isIdempotentElem (ρ : SubState ι ℂ)
 
 end Idempotent
 
+section Lift
+
+variable {𝕜 : Type*} [RCLike 𝕜] {σ : Type*} [DecidableEq σ] {loc : σ → Type*}
+  [∀ i, Fintype (loc i)] [∀ i, DecidableEq (loc i)] {S T : Finset σ}
+
+/-- Extension by the identity is multiplicative. -/
+theorem extendId_mul (h : S ⊆ T) (A B : Matrix (Reg loc S) (Reg loc S) 𝕜) :
+    extendId h (A * B) = extendId h A * extendId h B := by
+  rw [extendId_eq_kronecker, extendId_eq_kronecker, extendId_eq_kronecker,
+    submatrix_mul_equiv, ← mul_kronecker_mul, one_mul]
+
+/-- The expectation of `A ⊗ 1` in `φ` is `Tr(ρ_{φ,S} A)`. -/
+theorem dotProduct_extendId_mulVec (h : S ⊆ T) (φ : Reg loc T → 𝕜)
+    (A : Matrix (Reg loc S) (Reg loc S) 𝕜) :
+    star φ ⬝ᵥ (extendId h A *ᵥ φ) = (ptrace h (vecMulVec φ (star φ)) * A).trace := by
+  rw [trace_ptrace_mul, vecMulVec_mul, trace_vecMulVec, dotProduct_comm φ, ← dotProduct_mulVec]
+
+end Lift
+
 end Arealaw
