@@ -709,6 +709,64 @@ theorem eq_initial_weight_range (q R D : ℕ) (hD : 0 < D) {C J Δ : ℝ} (hΔ :
 
 end D310
 
+/-! ## D3.11 First norm comparison (D3.11.4–D3.11.5, scalar part) -/
+
+section D311
+
+/-- D3.11.4 (scalar part). For `0 < a_j ≤ ½`, `u = -a_j/(1 - a_j)`, `ϑ, 𝓑_j ≥ 0`: Lemma 3.1 at
+`u`, `log Tr ρ^{1/(1-a_j)} ≤ u S + 512 e ϑ 𝓑_j u²`, gives
+`(1 - a_j) log Tr ρ^{1/(1-a_j)} ≤ -a_j S + 1024 e ϑ 𝓑_j a_j²`. -/
+theorem step_3_11_4 {a S ϑ 𝓑 M : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hϑ : 0 ≤ ϑ) (h𝓑 : 0 ≤ 𝓑)
+    (hM : M ≤ -a / (1 - a) * S + 512 * Real.exp 1 * ϑ * 𝓑 * (-a / (1 - a)) ^ 2) :
+    (1 - a) * M ≤ -a * S + 1024 * Real.exp 1 * ϑ * 𝓑 * a ^ 2 := by
+  have h1 : 0 < 1 - a := by linarith
+  have hK : 0 ≤ 512 * Real.exp 1 * ϑ * 𝓑 * a ^ 2 := by positivity
+  calc (1 - a) * M
+      ≤ (1 - a) * (-a / (1 - a) * S + 512 * Real.exp 1 * ϑ * 𝓑 * (-a / (1 - a)) ^ 2) :=
+        mul_le_mul_of_nonneg_left hM h1.le
+    _ = -a * S + 512 * Real.exp 1 * ϑ * 𝓑 * a ^ 2 / (1 - a) := by field_simp
+    _ ≤ -a * S + 512 * Real.exp 1 * ϑ * 𝓑 * a ^ 2 * 2 := by
+        gcongr; rw [div_le_iff₀ h1]; nlinarith
+    _ = _ := by ring
+
+/-- `-log (1 - v) ≤ 2 v` for `0 ≤ v ≤ ½`. -/
+theorem neg_two_mul_le_log_one_sub {v : ℝ} (hv0 : 0 ≤ v) (hv : v ≤ 1 / 2) :
+    -(2 * v) ≤ Real.log (1 - v) := by
+  have h1 := Real.log_le_sub_one_of_pos (by linarith : 0 < 1 + 2 * v)
+  have h2 : 0 ≤ Real.log ((1 - v) * (1 + 2 * v)) := Real.log_nonneg (by nlinarith)
+  rw [Real.log_mul (by linarith) (by linarith)] at h2
+  linarith
+
+/-- D3.11.5. `N_0 = 1`, `N_j > 0`, `√(1 - v) N_j ≤ x_j N_{j-1}` (D3.11.2) with `0 ≤ v ≤ ¼`,
+`x_j = ‖L_j Ω‖ > 0` and `2 log x_j ≤ -a_j S(X_j) + c_j` (D3.11.3–D3.11.4). Then
+`-2 log N_m ≥ ∑_j (a_j S(X_j) - c_j) - 2 m v`. -/
+theorem step_3_11_5 {m : ℕ} {N x a S c : ℕ → ℝ} {v : ℝ} (hv0 : 0 ≤ v) (hv : v ≤ 1 / 4)
+    (hN0 : N 0 = 1) (hN : ∀ j, 0 < N j) (hx : ∀ j ∈ Icc 1 m, 0 < x j)
+    (htel : ∀ j ∈ Icc 1 m, √(1 - v) * N j ≤ x j * N (j - 1))
+    (hlog : ∀ j ∈ Icc 1 m, 2 * Real.log (x j) ≤ -(a j * S j) + c j) :
+    ∑ j ∈ Icc 1 m, (a j * S j - c j) - 2 * m * v ≤ -2 * Real.log (N m) := by
+  have hv' := neg_two_mul_le_log_one_sub hv0 (by linarith)
+  induction m with
+  | zero => simp [hN0]
+  | succ k ih =>
+    have hk : k + 1 ∈ Icc 1 (k + 1) := mem_Icc.2 ⟨by omega, le_rfl⟩
+    have hmono : ∀ j ∈ Icc 1 k, j ∈ Icc 1 (k + 1) := fun j hj =>
+      mem_Icc.2 ⟨(mem_Icc.1 hj).1, (mem_Icc.1 hj).2.trans (Nat.le_succ k)⟩
+    have ih := ih (fun j hj => hx j (hmono j hj)) (fun j hj => htel j (hmono j hj))
+      (fun j hj => hlog j (hmono j hj))
+    -- D3.11.5: `log N_j ≤ log x_j + log N_{j-1} - ½ log(1 - v)`
+    have h1 := htel (k + 1) hk
+    simp only [Nat.add_sub_cancel] at h1
+    have hs : 0 < √(1 - v) := Real.sqrt_pos.2 (by linarith)
+    have h2 := Real.log_le_log (by have := hN (k + 1); positivity) h1
+    rw [Real.log_mul hs.ne' (hN _).ne', Real.log_mul (hx _ hk).ne' (hN _).ne',
+      Real.log_sqrt (by linarith)] at h2
+    rw [sum_Icc_succ_top (by omega)]
+    push_cast
+    nlinarith [hlog (k + 1) hk]
+
+end D311
+
 /-! ## D3.14 Conclusion of Lemma 3.2 -/
 
 section D314
