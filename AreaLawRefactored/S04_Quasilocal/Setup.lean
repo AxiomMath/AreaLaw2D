@@ -14,6 +14,11 @@ open Arealaw Matrix
 open OpenAI (condExpect IsSupportedOn)
 open scoped MatrixOrder ComplexOrder Matrix.Norms.L2Operator
 
+/-- §4 notation. The Heisenberg evolution `τ_t(B) = e^{itH} B e^{-itH}`. -/
+noncomputable def τ {ι : Type*} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι ℂ) (t : ℝ)
+    (B : Matrix ι ι ℂ) : Matrix ι ι ℂ :=
+  NormedSpace.exp ((t * Complex.I) • H) * B * NormedSpace.exp ((-(t * Complex.I)) • H)
+
 namespace GraphDomain
 
 variable {σ : Type*} [DecidableEq σ] (G : SimpleGraph σ)
