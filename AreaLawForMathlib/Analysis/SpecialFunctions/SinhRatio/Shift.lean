@@ -18,14 +18,13 @@ Fourier contour of `m_{s/2}` by `±is/2` therefore crosses no pole, and the func
 \[
   h_\pm(z) = \frac{e^{\pm sz} - 1}{2\sinh(z/2)} = \pm e^{\pm sz/2} g_{s/2}(z)
 \]
-have the Fourier densities `q_±(u) = ± m_{s/2}(u ± is/2)`.
+have the Fourier densities `q_±(u) = ± m_{s/2}(u ± is/2)`
+(`AreaLawRefactored/S07_Transport/Fourier.lean`).
 
 ## Main results
 
 * `Complex.integral_exp_mul_sinhRatioDensity_shift` — for `|σ| ≤ s/2`,
   `∫ e^{iuz} m_{s/2}(u + iσ) du = e^{σz} g_{s/2}(z)`.
-* `Complex.integral_exp_mul_qPlus`, `Complex.integral_exp_mul_qMinus` — the Fourier
-  densities of `h_+` and `h_-` (display `transport:q-density`).
 
 ## References
 
@@ -231,46 +230,5 @@ theorem integral_exp_mul_sinhRatioDensity_shift (hs : s ∈ Ioo (0 : ℝ) (1 / 2
     simp
   simp_rw [hshift]
   rw [integral_const_mul, hEq, hf₀]
-
-/-- **The Fourier density of `h_+`.** For real `z`,
-`∫ e^{iuz} q_+(u) du = e^{sz/2} g_{s/2}(z)` with `q_+(u) = m_{s/2}(u + is/2)`; for `z ≠ 0` this
-is `h_+(z) = (e^{sz} - 1) / (2 sinh(z/2))`.
-
-Area-law paper, Lemma 7.3 (`transport:fourier`), displays `transport:h-def` and
-`transport:q-density`, `06-transport.tex` lines 200--211, stated there for `s = 1/4`. -/
-theorem integral_exp_mul_qPlus (hs : s ∈ Ioo (0 : ℝ) (1 / 2)) (z : ℝ) :
-    ∫ u : ℝ, cexp (I * u * z) * sinhRatioDensity (s / 2) (u + (s / 2 : ℝ) * I) =
-      ((Real.exp (s * z / 2) * Real.sinhRatio (s / 2) z : ℝ) : ℂ) := by
-  rw [integral_exp_mul_sinhRatioDensity_shift hs z (by rw [abs_of_pos (by linarith [hs.1])])]
-  push_cast
-  ring_nf
-
-/-- **The Fourier density of `h_-`.** For real `z`,
-`∫ e^{iuz} q_-(u) du = -e^{-sz/2} g_{s/2}(z)` with `q_-(u) = -m_{s/2}(u - is/2)`; for `z ≠ 0`
-this is `h_-(z) = (e^{-sz} - 1) / (2 sinh(z/2))`.
-
-Area-law paper, Lemma 7.3 (`transport:fourier`), displays `transport:h-def` and
-`transport:q-density`, `06-transport.tex` lines 200--211, stated there for `s = 1/4`. -/
-theorem integral_exp_mul_qMinus (hs : s ∈ Ioo (0 : ℝ) (1 / 2)) (z : ℝ) :
-    ∫ u : ℝ, cexp (I * u * z) * -sinhRatioDensity (s / 2) (u + (-(s / 2) : ℝ) * I) =
-      ((-(Real.exp (-(s * z) / 2) * Real.sinhRatio (s / 2) z) : ℝ) : ℂ) := by
-  simp_rw [mul_neg]
-  rw [integral_neg, integral_exp_mul_sinhRatioDensity_shift hs z
-    (by rw [abs_neg, abs_of_pos (by linarith [hs.1])])]
-  push_cast
-  ring_nf
-
-/-- For `z ≠ 0` the Fourier density `q_+` represents `h_+(z) = (e^{sz} - 1)/(2 sinh(z/2))`. -/
-theorem integral_exp_mul_qPlus_of_ne_zero (hs : s ∈ Ioo (0 : ℝ) (1 / 2)) {z : ℝ} (hz : z ≠ 0) :
-    ∫ u : ℝ, cexp (I * u * z) * sinhRatioDensity (s / 2) (u + (s / 2 : ℝ) * I) =
-      (((Real.exp (s * z) - 1) / (2 * Real.sinh (z / 2)) : ℝ) : ℂ) := by
-  rw [integral_exp_mul_qPlus hs z, Real.exp_sub_one_div_two_sinh s hz]
-
-/-- For `z ≠ 0` the Fourier density `q_-` represents `h_-(z) = (e^{-sz} - 1)/(2 sinh(z/2))`. -/
-theorem integral_exp_mul_qMinus_of_ne_zero (hs : s ∈ Ioo (0 : ℝ) (1 / 2)) {z : ℝ}
-    (hz : z ≠ 0) :
-    ∫ u : ℝ, cexp (I * u * z) * -sinhRatioDensity (s / 2) (u + (-(s / 2) : ℝ) * I) =
-      (((Real.exp (-(s * z)) - 1) / (2 * Real.sinh (z / 2)) : ℝ) : ℂ) := by
-  rw [integral_exp_mul_qMinus hs z, Real.exp_neg_sub_one_div_two_sinh s hz]
 
 end Complex

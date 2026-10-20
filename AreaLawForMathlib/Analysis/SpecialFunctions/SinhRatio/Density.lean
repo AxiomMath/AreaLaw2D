@@ -23,9 +23,7 @@ For `0 < s < 1/2` set
 \]
 This file proves the elementary parts of the area-law Lemma 7.3: `g_s` is continuous
 (the quotient is interpreted continuously at zero), `m_s` is positive, integrable, and
-has total mass `2s`, the shifted ratios `h_±(z) = (e^{±sz} - 1) / (2 \sinh(z/2))` factor as
-`± e^{± sz/2} g_{s/2}(z)`, and at `s = 1/4` the complex-shifted densities satisfy
-`|m_{s/2}(u ± is/2)| ≤ m_s(u)/√2`.
+has total mass `2s`.
 
 The total mass is computed from the primitive
 `u ↦ arctan((e^{2πu} + cos 2πs) / sin 2πs) / π`, whose limits at `-∞` and `+∞` are
@@ -42,10 +40,6 @@ The total mass is computed from the primitive
 * `Real.continuous_sinhRatio` — `g_s` is continuous.
 * `Real.sinhRatioDensity_pos`, `Real.integrable_sinhRatioDensity`,
   `Real.integral_sinhRatioDensity` — positivity, integrability and mass `2s`.
-* `Real.exp_sub_one_div_two_sinh`, `Real.exp_neg_sub_one_div_two_sinh` — the
-  factorization of `h_±` (display `transport:h-def`).
-* `Complex.norm_sinhRatioDensity_shift_le` — `|m_{1/8}(u ± i/8)| ≤ m_{1/4}(u)/√2`
-  (display `transport:q-density`, bound).
 
 ## References
 
@@ -212,34 +206,6 @@ theorem integral_sinhRatioDensity {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) (1 / 2)) :
     (tendsto_sinhRatioDensityPrimitive_atTop hs)]
   ring
 
-/-- **The shifted ratio `h_+`**: `(e^{sz} - 1) / (2 sinh(z/2)) = e^{sz/2} g_{s/2}(z)` for
-`z ≠ 0`.
-
-Area-law paper, display `transport:h-def`, `06-transport.tex` lines 201--204. -/
-theorem exp_sub_one_div_two_sinh (s : ℝ) {z : ℝ} (hz : z ≠ 0) :
-    (exp (s * z) - 1) / (2 * sinh (z / 2)) = exp (s * z / 2) * sinhRatio (s / 2) z := by
-  rw [sinhRatio_of_ne_zero _ hz, sinh_eq, sinh_eq]
-  have h1 : exp (s * z) = exp (s * z / 2) * exp (s * z / 2) := by
-    rw [← exp_add]; ring_nf
-  have h2 : exp (-(s / 2 * z)) = (exp (s * z / 2))⁻¹ := by rw [← exp_neg]; ring_nf
-  have hne : sinh (z / 2) ≠ 0 := by rw [Ne, sinh_eq_zero]; exact div_ne_zero hz two_ne_zero
-  rw [sinh_eq] at hne
-  have hE : exp (s * z / 2) ≠ 0 := exp_ne_zero _
-  rw [h1, h2, show s / 2 * z = s * z / 2 by ring]
-  field_simp
-
-/-- **The shifted ratio `h_-`**: `(e^{-sz} - 1) / (2 sinh(z/2)) = -e^{-sz/2} g_{s/2}(z)` for
-`z ≠ 0`.
-
-Area-law paper, display `transport:h-def`, `06-transport.tex` lines 201--204. -/
-theorem exp_neg_sub_one_div_two_sinh (s : ℝ) {z : ℝ} (hz : z ≠ 0) :
-    (exp (-(s * z)) - 1) / (2 * sinh (z / 2)) = -(exp (-(s * z) / 2) * sinhRatio (s / 2) z) := by
-  have h := exp_sub_one_div_two_sinh (-s) hz
-  rw [show -s * z = -(s * z) by ring] at h
-  rw [h, sinhRatio_of_ne_zero _ hz, sinhRatio_of_ne_zero _ hz,
-    show -s / 2 * z = -(s / 2 * z) by ring, sinh_neg]
-  ring_nf
-
 end Real
 
 namespace Complex
@@ -248,47 +214,6 @@ namespace Complex
 `m_s(w) = sin(2πs) / (cosh(2πw) + cos(2πs))`. -/
 noncomputable def sinhRatioDensity (s : ℝ) (w : ℂ) : ℂ :=
   Real.sin (2 * Real.pi * s) / (cosh (2 * Real.pi * w) + Real.cos (2 * Real.pi * s))
-
-/-- **The shifted-density bound at `s = 1/4`**: for real `u` and `σ = ±1`,
-`|m_{1/8}(u + σ i/8)| ≤ m_{1/4}(u) / √2`.
-
-Area-law paper, display `transport:q-density` and lines 233--242. -/
-theorem norm_sinhRatioDensity_shift_le (u : ℝ) {σ : ℝ} (hσ : σ = 1 ∨ σ = -1) :
-    ‖sinhRatioDensity (1 / 8) (u + σ * I / 8)‖ ≤ Real.sinhRatioDensity (1 / 4) u / √2 := by
-  set c := Real.cosh (2 * Real.pi * u)
-  set sh := Real.sinh (2 * Real.pi * u)
-  have hc : 1 ≤ c := Real.one_le_cosh _
-  have hcs : sh ^ 2 = c ^ 2 - 1 := by
-    have := Real.cosh_sq (2 * Real.pi * u); simp only [c, sh]; linarith
-  have hσ2 : σ ^ 2 = 1 := by rcases hσ with rfl | rfl <;> norm_num
-  have hcosσ : Real.cos (σ * (Real.pi / 4)) = √2 / 2 := by
-    rcases hσ with rfl | rfl <;> simp [Real.cos_pi_div_four]
-  have hsinσ : Real.sin (σ * (Real.pi / 4)) = σ * (√2 / 2) := by
-    rcases hσ with rfl | rfl <;> simp [Real.sin_pi_div_four]
-  have harg : (2 * (Real.pi : ℂ) * (u + σ * I / 8)) =
-      ((2 * Real.pi * u : ℝ) : ℂ) + ((σ * (Real.pi / 4) : ℝ) : ℂ) * I := by
-    push_cast; ring
-  have hval : sinhRatioDensity (1 / 8) (u + σ * I / 8) =
-      1 / (((c + 1 : ℝ) : ℂ) + ((σ * sh : ℝ) : ℂ) * I) := by
-    rw [sinhRatioDensity, harg, Complex.cosh_add, Complex.cosh_mul_I, Complex.sinh_mul_I,
-      ← Complex.ofReal_cosh, ← Complex.ofReal_sinh, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
-      hcosσ, hsinσ, show 2 * Real.pi * (1 / 8 : ℝ) = Real.pi / 4 by ring, Real.sin_pi_div_four,
-      Real.cos_pi_div_four]
-    have h2 : (√2 : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.mpr two_pos).ne'
-    simp only [c, sh]
-    push_cast
-    field_simp
-    ring
-  have hm : Real.sinhRatioDensity (1 / 4) u = 1 / c := by
-    rw [Real.sinhRatioDensity, show 2 * Real.pi * (1 / 4 : ℝ) = Real.pi / 2 by ring,
-      Real.sin_pi_div_two, Real.cos_pi_div_two, add_zero]
-  rw [hval, hm, norm_div, norm_one, Complex.norm_add_mul_I]
-  rw [div_div, div_le_div_iff₀ (by positivity) (by positivity), one_mul, one_mul]
-  rw [show c * √2 = √(2 * c ^ 2) by
-    rw [Real.sqrt_mul (by norm_num), Real.sqrt_sq (by linarith), mul_comm]]
-  apply Real.sqrt_le_sqrt
-  rw [mul_pow, hσ2, hcs]
-  nlinarith
 
 end Complex
 
