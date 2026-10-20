@@ -451,6 +451,10 @@ theorem commute_labelProj_of_forall_commute {M : Matrix X X ℂ}
 noncomputable def labelObservable (f : IrrepLabel G → ℝ) : Matrix X X ℂ :=
   ∑ l, (f l : ℂ) • labelProj φ l
 
+/-- The label entropy `∑_λ (log d_λ) π^λ`. -/
+noncomputable def labelEntropy : Matrix X X ℂ :=
+  labelObservable φ fun l => Real.log l.dim
+
 theorem isHermitian_labelObservable (f : IrrepLabel G → ℝ) :
     (labelObservable φ f).IsHermitian := by
   rw [IsHermitian, labelObservable, conjTranspose_sum]
