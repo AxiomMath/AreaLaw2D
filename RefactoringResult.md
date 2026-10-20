@@ -41,9 +41,17 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | D2.4 mixing entropy of the coin | Physlib `ProbDistribution.coin`, `Hₛ_coin`, `Sᵥₙ_ofClassical` | |
 | D2.5 pure-state complement (`regionEntropy_pureState_sdiff`, OpenAI/RegionEntropy.lean:263 via `coeffMatrix`/`EE`) | Physlib `Sᵥₙ_pure_complement` (AreaLawForMathlib/QuantumInfo/Region.lean:226) | |
 | D2.9 path crossing the cut | Mathlib `SimpleGraph.Walk.exists_boundary_dart`, `exists_walk_of_edist_ne_top`, `Walk.edist_le` | |
-| `OpenAI.harmonic_cost_le` (OpenAI/HarmonicWeights.lean:93, D3.6.1 minimality) | Mathlib `Finset.sq_sum_div_le_sum_sq_div` (Sedrakyan form of Cauchy–Schwarz), in `AreaLaw.eq_initial_harmonic_weights` (AreaLawRefactored/S03_InitialBox.lean:124) | weights `1/(r+d_j) > 0` |
+| `OpenAI.harmonic_cost_le` (OpenAI/HarmonicWeights.lean:93, D3.6.1 minimality) | Mathlib `Finset.sq_sum_div_le_sum_sq_div` (Sedrakyan form of Cauchy–Schwarz), in `AreaLaw.eq_initial_harmonic_weights` (AreaLawRefactored/S03_InitialBox/BufferDiscount.lean:80) | weights `1/(r+d_j) > 0` |
 | `OpenAI.log_add_sub_log_le_div` (OpenAI/HarmonicWeights.lean:113, D3.6.2) | Mathlib `Real.log_le_sub_one_of_pos` | ratio of consecutive terms |
 | `OpenAI.card_filter_not_interior_le` / colour machinery (OpenAI/ChildColoring.lean) | none needed: paper route of D3.16 (random order) counts orders with `Fintype.card_perm`, `Finset.card_nbij'`, `Finset.exists_max_image` (`AreaLaw.step_3_16_3_count`) | |
+| `OpenAI.abs_re_sub_le_of_norm_le_closedBall` (OpenAI/StripQuadratic.lean, D3.1.8 Cauchy coefficient estimate via dslope + maximum modulus) | Mathlib `Complex.dist_le_mul_div_pow_of_mapsTo_ball_of_isLittleO` (higher-order Schwarz lemma, n = 1), in `AreaLaw.step_3_1_8` (AreaLawRefactored/S03_InitialBox/MarginalTails.lean:162) | applied to k(z) = f(z) + f(−z) − 2f(0) |
+| three-lines in D3.1.7 | Mathlib `Complex.HadamardThreeLines.norm_le_interp_of_mem_verticalClosedStrip'` (`step_3_1_7`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:127) | already the old route |
+| weighted AM–GM of D3.1.6 | Mathlib `Real.geom_mean_le_arith_mean2_weighted` | |
+| `OpenAI.norm_toEuclideanLin_le` | Mathlib `Matrix.l2_opNorm_mulVec` | |
+| `OpenAI.neg_log_one_sub_le` (D3.1.11) | Mathlib `Real.one_sub_inv_le_log_of_pos` | |
+| Bessel for Schmidt vectors (D3.1.6) | Mathlib `Orthonormal.sum_inner_products_le` | |
+| gap transport under reindexing/conjugation (D3.1.1) | Mathlib `Matrix.posSemidef_submatrix_equiv`, `PosSemidef.mul_mul_conjTranspose_same` (`hasGlobalGap_submatrix`, `hasGlobalGap_conj`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:796, :803) | |
+| concavity of entropy (D3.13.2, `Arealaw.sum_vonNeumann_sub_negMulLog_le`, OpenAI/RegionSSA.lean:198) | `MState.sum_Sᵥₙ_le_Sᵥₙ_cq_traceRight` (AreaLawForMathlib/QuantumInfo/Entropy/ClassicalQuantum.lean, already in the library tree) | to be used when D3.13 is written |
 
 ## 4. Failed searches
 
@@ -56,6 +64,9 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | trace distance of two pure states | grep Physlib TraceDistance.lean `pure`, Arealaw `vecMulVec`/`traceNorm` | `Matrix.traceNorm_vecMulVec_sub_vecMulVec_div_two`, Region.lean:39 |
 | eigenvalues of a Hermitian idempotent are 0/1; a projection has zero entropy | loogle `IsIdempotentElem, Matrix.IsHermitian.eigenvalues` (0 hits); atlas "The eigenvalues of a Hermitian idempotent matrix are zero or one." | `Arealaw.SubState.entropy_eq_zero_of_isIdempotentElem`, Region.lean:295 |
 | `#{z ∈ ℤ² : \|z\|₁ ≤ r} ≤ 1 + 2r(r+1)` | grep Mathlib | `Finset.card_le_of_forall_natAbs_add_natAbs_le`, AreaLawForMathlib/Data/Int/L1Ball.lean:15 |
+| Cauchy coefficient bound `|a_n| ≤ M R⁻ⁿ` for a holomorphic function bounded on a disk (D3.1.8) | atlas_search "If a holomorphic function on a disk of radius R is bounded by M, then its n-th Taylor coefficient at the center is bounded by M divided by R to the n." (only `cauchyPowerSeries` norm bounds); "If an entire function vanishes to second order at zero and is bounded by M on the closed disk of radius r, then its norm at z is at most M times norm z squared over r squared." (found the Schwarz lemma) | Schwarz-lemma route, §5 |
+| ℓ² norm of a matrix column/row ≤ its L2 operator norm; contraction conjugation does not increase the norm (D3.1.6) | atlas_search "The Euclidean norm of a row of a matrix is at most its L2 operator norm."; grep Mathlib `Analysis/CStarAlgebra/Matrix.lean`, `Analysis/Matrix/*` | AreaLawForMathlib/Analysis/CStarAlgebra/Matrix.lean (`Matrix.sum_norm_apply_sq_le_l2_opNorm_sq` :16, `Matrix.l2_opNorm_mul_mul_le_of_le_one` :25) |
+| Schatten–Hölder `Tr(ρ L²) ≤ (Tr ρ^{1/(1−a)})^{1−a} (Tr L^{2/a})^{a}` for PSD matrices (D3.11.3) | grep QuantumInfo/Physlib/Mathlib `holder`, `Holder`, `trace_mul_le`, `trace_rpow` | not yet needed: D3.11.3 open |
 
 ## 5. Route differences
 
@@ -67,17 +78,24 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | D2.2 item 4, lower bound | purify, S(D\|E) = −S(D\|F) ≥ −S(D) | Araki–Lieb S(E) − S(D) ≤ S(DE) | Araki–Lieb already on regions; no purification |
 | D2.5.1 | eigenvalues ±λ of the rank-two difference | X³ = (1−\|⟨ξ,η⟩\|²)X, so \|X\| = c^{−1/2}X² | avoids a spectral computation |
 | D3.6.2 | integral comparison `1/(2r+jD) ≥ ∫_j^{j+1} dx/(2r+Dx)` | `log((2r+(j+1)D)/(2r+jD)) ≤ D/(2r+jD)` from `log x ≤ x − 1`, telescoped (`eq_initial_harmonic_weights`) | same inequality, no integrals |
-| D3.15 | sup over instances at a fixed `D₀ > 2R+10` | sup also over `D₀ > 2R+10` (`AreaLaw.F_box`, S03_InitialBox.lean:682) | the frozen `InitialBoxEstimate` puts `∃ C e₀` before `∀ D₀`, and `D₀` is real |
-| D3.16 (old code, now fixed) | uniform random order of the children | (Step 1) the paper route, `AreaLaw.step_3_16_4` (S03_InitialBox.lean:868); the old deterministic colour rotations (OpenAI/RotatedChainRule.lean, ChildColoring.lean) are not used | old route was drift |
+| D3.15 | sup over instances at a fixed `D₀ > 2R+10` | sup also over `D₀ > 2R+10` (`AreaLaw.F_box`, S03_InitialBox.lean:165) | the frozen `InitialBoxEstimate` puts `∃ C e₀` before `∀ D₀`, and `D₀` is real |
+| D3.16 (old code, now fixed) | uniform random order of the children | (Step 1) the paper route, `AreaLaw.step_3_16_4` (S03_InitialBox.lean:351); the old deterministic colour rotations (OpenAI/RotatedChainRule.lean, ChildColoring.lean) are not used | old route was drift |
+| D3.1.8 | power series of f_i, Cauchy estimate `|a_n| ≤ e c₀ δ_i⁻ⁿ`, sum over even n ≥ 2: `≤ (4/3) e c₀ x² δ_i⁻² ≤ 2 e c₀ x² δ_i⁻²` | Mathlib's higher-order Schwarz lemma on k(z) = f_i(z) + f_i(−z) − 2f_i(0), which vanishes to second order at 0 and is bounded by 4ec₀ on the disk of radius δ_i: `|Re(f_i(x) − f_i(0))| = |Re k(x)|/2 ≤ 2 e c₀ x² δ_i⁻²` (`AreaLaw.step_3_1_8`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:162) | no Mathlib Taylor-coefficient bound; same constant 128 e c₀ ℓ_i² x² |
+| D3.1.3 | commutation of F with h_i (D_i ⊆ B^c), cyclicity and [F, σ] = 0 (D_i ⊆ B) | f_i is constant for terms A ⊗ 1 and 1 ⊗ A (`modF_kronecker_one`, `modF_one_kronecker`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:352, :360), so every term enters through the D3.1.4 identity and the one-sided ones contribute 0 | same content in the Schmidt coordinates already used for D3.1.4 |
+| D3.1.1 | basis-free Schmidt form at B ∣ B^c | explicit unitary (V* ⊗ 1) ∘ glue⁻¹, V the eigenvector unitary of ρ (`step_3_1_1`, `isSchmidt_cut`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:900, :865) | encoding only |
 
 ## 6. Constants changed
 
 | Anchor | Paper | Previous Lean | Now |
 |---|---|---|---|
 | D2.4 (Lemma 2.1), second inequality | C = 2(1 + 2/e) (D2.4.4) | 4 (frozen `ConditionalContinuity`, old `winterModulus_le_sqrt`) | 2·C_h proved in `AreaLaw.step_2_4_4` (S02_Preliminaries.lean:97); weakened once to the frozen 4 at the end of `lemma_2_1` (the frozen statement may not change) |
-| D3.16 (Prop 3.3) | p₀ = (2C_pad+5)⁻², B_M = 4(C_pad+2)M, M ≥ max{2, 16(C_pad+2)}, λ = (1−p₀/4)M² | old `initial_box_estimate_of_bufferDiscount` (OpenAI/InitialBoxEstimate.lean:294): p = 1/(2(2C_pad+1)²), M = 8(C_pad+1), λ = (1−p/2)M², noninterior ≤ 2(2C_pad+1)M | paper's: `AreaLaw.p₀` = (2C_pad+5)⁻², `B_M` = 4(C_pad+2)M, M = 16(C_pad+2), λ = (1−p₀/4)M² (`prop_3_3`, S03_InitialBox.lean:1109) |
+| D3.16 (Prop 3.3) | p₀ = (2C_pad+5)⁻², B_M = 4(C_pad+2)M, M ≥ max{2, 16(C_pad+2)}, λ = (1−p₀/4)M² | old `initial_box_estimate_of_bufferDiscount` (OpenAI/InitialBoxEstimate.lean:294): p = 1/(2(2C_pad+1)²), M = 8(C_pad+1), λ = (1−p/2)M², noninterior ≤ 2(2C_pad+1)M | paper's: `AreaLaw.p₀` = (2C_pad+5)⁻², `B_M` = 4(C_pad+2)M, M = 16(C_pad+2), λ = (1−p₀/4)M² (`prop_3_3`, S03_InitialBox.lean:592) |
 | D3.5(e) | `C(r+d_j)`, `C = C(q,R)` | — | `16 v_R μ_R (r+d_j)` for the count, `C₂ = 1 + 16 v_R μ_R (1+v_R log q)²` for `𝓑_j` (`step_3_5_5`) |
-| D3.2.3 | `C₁ = max{1, 2v_Rμ_R(1+v_R log q)²}` | `cutLogBudget_le_card_diamond` (OpenAI/TailParameter.lean) | paper's `AreaLaw.C₁` (S03_InitialBox.lean:16) |
+| D3.2.3 | `C₁ = max{1, 2v_Rμ_R(1+v_R log q)²}` | `cutLogBudget_le_card_diamond` (OpenAI/TailParameter.lean) | paper's `AreaLaw.C₁` (S03_InitialBox/MarginalTails.lean:1090) |
+| D3.2.4 | C_M = C_M(q,R,J,Δ,M) (digest expansion 32(M+2)√((1+ϑ)C₁)) | `concentrationWidth` (OpenAI/TailParameter.lean) | digest's `AreaLaw.C_M` (AreaLawRefactored/S03_InitialBox/MarginalTails.lean:1133) |
+| D3.9.4 | `C a_j²(p_i+p_k)`, sup z²cosh(z/2)/cosh z ≤ 32/e² < 4.4 | old sharper a²/2 by another route | explicit `8/e²` on the paper's route (`step_3_9_4`, AreaLawRefactored/S03_InitialBox/BufferDiscount.lean:528) |
+| D3.10 | C_pad "large enough" | packaged through Z_min (old `bufferDiscount_complex`) | C_pad = ⌈(2+D)e^{L₀}⌉ + D + 2, L₀ = max{4, 16CD/Δ, 128D√((1+J/Δ)C₂)} (`eq_initial_weight_range`, AreaLawRefactored/S03_InitialBox/BufferDiscount.lean:600) |
+| D3.14.5 | C_buf unspecified | (1024e(J/Δ)K' + C_pad)/2 | C(C_pad/D+1)·2D/log((C_pad+1)/(2+D)) (`step_3_14_5`, AreaLawRefactored/S03_InitialBox/BufferDiscount.lean:769) |
 
 ## 7. Digest corrections
 
@@ -98,7 +116,7 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | Section | Before (from Map.md) | After Step 1 | After Step 2 |
 |---|---|---|---|
 | 02 Preliminaries | 4865 | 786 (`AreaLawRefactored/S02_Preliminaries.lean`) + 607 library (`AreaLawForMathlib/QuantumInfo/Region.lean` 314, `…/Entropy/ClassicalQuantum.lean` 259, `Data/Int/L1Ball.lean` 34) = 1393 | |
-| 03 InitialBox | 10096 | 1162 (`AreaLawRefactored/S03_InitialBox.lean`), PARTIAL: D3.1 (Lemma 3.1), D3.2.4, D3.4 (Lemma 3.2), D3.7–D3.13, D3.14.5 open; `prop_3_3` takes Lemma 3.2 as hypothesis | |
+| 03 InitialBox | 10096 | 2611 (`AreaLawRefactored/S03_InitialBox/MarginalTails.lean` 1176, `AreaLawRefactored/S03_InitialBox/BufferDiscount.lean` 790, `AreaLawRefactored/S03_InitialBox.lean` 645) + 33 library (`AreaLawForMathlib/Analysis/CStarAlgebra/Matrix.lean`) = 2644, PARTIAL: Lemma 3.1 (`lemma_3_1`) and D3.2 done; Lemma 3.2 (`lemma_3_2`) open: D3.7, D3.8.1, D3.9.1–3/5/6, D3.11.1–3, D3.12, D3.13 not written; `prop_3_3` still takes Lemma 3.2 as hypothesis | |
 
 ## 10. Final numbers
 
