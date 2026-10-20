@@ -1,60 +1,15 @@
-import AreaLawRefactored.S02_Preliminaries
+import AreaLawRefactored.S03_InitialBox.MarginalTails
 
 /-!
 # §3.2 An entropy discount from a buffer
 
-Digest `digest/03-initial-box.md` (D3.2–D3.14), paper `paper/sections/02-initial.tex`,
-lines 202–586.
+Digest `digest/03-initial-box.md` (D3.3–D3.14), paper `paper/sections/02-initial.tex`,
+lines 219–586.
 -/
 
 namespace AreaLaw
 
 open Arealaw OpenAI Finset
-
-/-! ## D3.2 Lattice specialization of Lemma 3.1: the budget `𝓑` -/
-
-/-- D3.2. `C₁ = max {1, 2 v_R μ_R (1 + v_R log q)²}`. -/
-noncomputable def C₁ (q R : ℕ) : ℝ := max 1 (2 * v R * μ R * (1 + v R * Real.log q) ^ 2)
-
-/-- D3.2.2. For a support `X`: `log (e q^{|X|})² ≤ (1 + v_R log q)²`. -/
-theorem log_sq_le_of_mem_supports {Λ X : Finset (ℤ × ℤ)} {R q : ℕ} (hq : 1 ≤ q)
-    (hX : X ∈ supports Λ R) :
-    Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2 ≤ (1 + v R * Real.log q) ^ 2 := by
-  have hq' : (0 : ℝ) < q := by exact_mod_cast hq
-  have hl : 0 ≤ Real.log q := Real.log_nonneg (by exact_mod_cast hq)
-  have hc : (Fintype.card (Reg (Qudits q) X) : ℝ) = (q : ℝ) ^ #X := by
-    simp [Reg, Fintype.card_pi]
-  have hv : (#X : ℝ) ≤ v R := by exact_mod_cast (step_2_8 Λ R 0).2.2.2 X hX
-  rw [hc, Real.log_mul (Real.exp_pos 1).ne' (pow_pos hq' _).ne', Real.log_exp, Real.log_pow]
-  exact pow_le_pow_left₀ (by positivity) (by gcongr) 2
-
-/-- D3.2.1–D3.2.3. `𝓑 ≤ 1 + 2 v_R μ_R (1 + v_R log q)² |∂_Λ B|`. -/
-theorem step_3_2_3' (Λ B : Finset (ℤ × ℤ)) (R q : ℕ) (hq : 1 ≤ q) :
-    1 + ∑ X ∈ supports Λ R with (X ∩ B).Nonempty ∧ (X \ B).Nonempty,
-        Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2 ≤
-      1 + 2 * v R * μ R * (1 + v R * Real.log q) ^ 2 * #(edgeBoundary Λ B) := by
-  -- D3.2.2
-  have h1 := sum_le_card_nsmul {X ∈ supports Λ R | (X ∩ B).Nonempty ∧ (X \ B).Nonempty}
-    (fun X => Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2) _ fun X hX =>
-    log_sq_le_of_mem_supports (Λ := Λ) (R := R) hq (mem_filter.1 hX).1
-  -- D3.2.1
-  have h2 : (#{X ∈ supports Λ R | (X ∩ B).Nonempty ∧ (X \ B).Nonempty} : ℝ) ≤
-      2 * v R * μ R * #(edgeBoundary Λ B) := by exact_mod_cast eq_crossing_count Λ B R
-  rw [nsmul_eq_mul] at h1
-  nlinarith [sq_nonneg (1 + v R * Real.log q)]
-
-/-- D3.2.1–D3.2.3. `𝓑 ≤ C₁ (1 + |∂_Λ B|)`. -/
-theorem step_3_2_3 (Λ B : Finset (ℤ × ℤ)) (R q : ℕ) (hq : 1 ≤ q) :
-    1 + ∑ X ∈ supports Λ R with (X ∩ B).Nonempty ∧ (X \ B).Nonempty,
-        Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2 ≤
-      C₁ q R * (1 + #(edgeBoundary Λ B)) := by
-  have hb : (0 : ℝ) ≤ #(edgeBoundary Λ B) := Nat.cast_nonneg _
-  have h1 : (1 : ℝ) ≤ C₁ q R := le_max_left _ _
-  have h2 := le_max_right 1 (2 * v R * μ R * (1 + v R * Real.log q) ^ 2)
-  refine (step_3_2_3' Λ B R q hq).trans ?_
-  rw [mul_add, mul_one]
-  gcongr
-  exact h2
 
 /-! ## D3.3 Safe rectangles, size, buffers
 
