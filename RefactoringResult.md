@@ -51,6 +51,7 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | `OpenAI.neg_log_one_sub_le` (D3.1.11) | Mathlib `Real.one_sub_inv_le_log_of_pos` | |
 | Bessel for Schmidt vectors (D3.1.6) | Mathlib `Orthonormal.sum_inner_products_le` | |
 | gap transport under reindexing/conjugation (D3.1.1) | Mathlib `Matrix.posSemidef_submatrix_equiv`, `PosSemidef.mul_mul_conjTranspose_same` (`hasGlobalGap_submatrix`, `hasGlobalGap_conj`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:796, :803) | |
+| `OpenAI.commute_of_isHermitian_inv_mul_mul` (OpenAI/FilterStationarity.lean:111, ρL² = L²ρ ⇒ ρL = Lρ by an entrywise computation in the eigenbasis of L) | Mathlib `Commute.cfc_nnreal` with `CFC.sqrt_eq_cfc`, `CFC.sqrt_mul_self` (L = (L²)^{1/2}), in `AreaLaw.step_3_7_4` (AreaLawRefactored/S03_InitialBox/Filters.lean:89) | L ≥ 0 via `PosDef.posSemidef.nonneg` |
 | concavity of entropy (D3.13.2, `Arealaw.sum_vonNeumann_sub_negMulLog_le`, OpenAI/RegionSSA.lean:198) | `MState.sum_Sᵥₙ_le_Sᵥₙ_cq_traceRight` (AreaLawForMathlib/QuantumInfo/Entropy/ClassicalQuantum.lean, already in the library tree) | to be used when D3.13 is written |
 
 ## 4. Failed searches
@@ -66,7 +67,8 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | `#{z ∈ ℤ² : \|z\|₁ ≤ r} ≤ 1 + 2r(r+1)` | grep Mathlib | `Finset.card_le_of_forall_natAbs_add_natAbs_le`, AreaLawForMathlib/Data/Int/L1Ball.lean:15 |
 | Cauchy coefficient bound `|a_n| ≤ M R⁻ⁿ` for a holomorphic function bounded on a disk (D3.1.8) | atlas_search "If a holomorphic function on a disk of radius R is bounded by M, then its n-th Taylor coefficient at the center is bounded by M divided by R to the n." (only `cauchyPowerSeries` norm bounds); "If an entire function vanishes to second order at zero and is bounded by M on the closed disk of radius r, then its norm at z is at most M times norm z squared over r squared." (found the Schwarz lemma) | Schwarz-lemma route, §5 |
 | ℓ² norm of a matrix column/row ≤ its L2 operator norm; contraction conjugation does not increase the norm (D3.1.6) | atlas_search "The Euclidean norm of a row of a matrix is at most its L2 operator norm."; grep Mathlib `Analysis/CStarAlgebra/Matrix.lean`, `Analysis/Matrix/*` | AreaLawForMathlib/Analysis/CStarAlgebra/Matrix.lean (`Matrix.sum_norm_apply_sq_le_l2_opNorm_sq` :16, `Matrix.l2_opNorm_mul_mul_le_of_le_one` :25) |
-| Schatten–Hölder `Tr(ρ L²) ≤ (Tr ρ^{1/(1−a)})^{1−a} (Tr L^{2/a})^{a}` for PSD matrices (D3.11.3) | grep QuantumInfo/Physlib/Mathlib `holder`, `Holder`, `trace_mul_le`, `trace_rpow` | not yet needed: D3.11.3 open |
+| Schatten–Hölder `Tr(ρ L²) ≤ (Tr ρ^{1/(1−a)})^{1−a} (Tr L^{2/a})^{a}` for PSD matrices (D3.11.3); simultaneous diagonalization of commuting Hermitian matrices (D3.8, D3.9.3) | grep QuantumInfo/Physlib/Mathlib `holder`, `Holder`, `trace_mul_le`, `trace_rpow`; Physlib has `Commute.exists_unitary` (used) but no trace Hölder | AreaLawForMathlib/Analysis/Matrix/TraceHolder.lean (`Matrix.PosSemidef.re_trace_mul_le` :128, `Matrix.exists_unitary_diagonal_of_commute` :150; moved from OpenAI/TraceHolder.lean), used in `AreaLaw.step_3_11_3` (AreaLawRefactored/S03_InitialBox/Filters.lean:167) |
+| `extendId` multiplicative; `⟨φ, (A ⊗ 1) φ⟩ = Tr(ρ_{φ,S} A)` (D3.7.3, D3.11.3) | grep Arealaw/PTrace.lean (`trace_ptrace_mul` only; `extendId_mul` exists only in OpenAI/Bridges.lean:407) | AreaLawForMathlib/QuantumInfo/Region.lean (`Arealaw.extendId_mul` :321, `Arealaw.dotProduct_extendId_mulVec` :327) |
 
 ## 5. Route differences
 
@@ -116,9 +118,25 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | Section | Before (from Map.md) | After Step 1 | After Step 2 |
 |---|---|---|---|
 | 02 Preliminaries | 4865 | 786 (`AreaLawRefactored/S02_Preliminaries.lean`) + 607 library (`AreaLawForMathlib/QuantumInfo/Region.lean` 314, `…/Entropy/ClassicalQuantum.lean` 259, `Data/Int/L1Ball.lean` 34) = 1393 | |
-| 03 InitialBox | 10096 | 2611 (`AreaLawRefactored/S03_InitialBox/MarginalTails.lean` 1176, `AreaLawRefactored/S03_InitialBox/BufferDiscount.lean` 790, `AreaLawRefactored/S03_InitialBox.lean` 645) + 33 library (`AreaLawForMathlib/Analysis/CStarAlgebra/Matrix.lean`) = 2644, PARTIAL: Lemma 3.1 (`lemma_3_1`) and D3.2 done; Lemma 3.2 (`lemma_3_2`) open: D3.7, D3.8.1, D3.9.1–3/5/6, D3.11.1–3, D3.12, D3.13 not written; `prop_3_3` still takes Lemma 3.2 as hypothesis | |
+| 03 InitialBox | 10096 | 2917 (`AreaLawRefactored/S03_InitialBox/MarginalTails.lean` 1176, `AreaLawRefactored/S03_InitialBox/BufferDiscount.lean` 790, `AreaLawRefactored/S03_InitialBox/Filters.lean` 306, `AreaLawRefactored/S03_InitialBox.lean` 645) + 233 library (`AreaLawForMathlib/Analysis/CStarAlgebra/Matrix.lean` 33, `AreaLawForMathlib/Analysis/Matrix/TraceHolder.lean` 178, `AreaLawForMathlib/QuantumInfo/Region.lean` +22) = 3150, PARTIAL: Lemma 3.1 (`lemma_3_1`) and D3.2 done; Lemma 3.2 (`lemma_3_2`) open: written D3.7.2–4, D3.9.1, D3.11.2–4, D3.12.4, D3.13 (scalar averaging); not written D3.7.1 + chain assembly, D3.8.1, D3.9.2–3/5–6, D3.11.1, D3.12.1–3/5–6, D3.13.2 on regions, `lemma_3_2` itself; `prop_3_3` still takes Lemma 3.2 as hypothesis | |
 
 ## 10. Final numbers
 
 | Quantity | Value |
 |---|---|
+
+## Next steps for whoever continues
+
+State at the last commit of branch `agents/18b3b627-b93d-5732-9c67-7919d1fb0eea`: §2 done; §3 done except Lemma 3.2. `AreaLaw.prop_3_3` (AreaLawRefactored/S03_InitialBox.lean:592) proves `InitialBoxEstimate ℂ q R J Δ` from the hypothesis `lemma_3_2 : BufferDiscount ℂ q R J Δ`. Everything compiles on the hosted Axile `workspace-2` (`check_module AreaLawRefactored.S03_InitialBox`: passed); `#print axioms` of every new declaration: `[propext, Classical.choice, Quot.sound]`.
+
+What remains in §3, in paper order (old faithful proofs to translate are cited in Map.md rows D3.7–D3.13; `AreaLawRefactored/S03_InitialBox/Filters.lean` is where they go):
+
+1. D3.7.1 and the chain: a definition of the feasible filters (`L ≥ ε`, `Tr L^{2/a} = 1` on `X_j`), the product `K = (L_m ⊗ 1) ⋯ (L_1 ⊗ 1)`, compactness and existence of a maximizer with `N > 0` (old OpenAI/FilterMaximizer.lean:44–198), then the descending induction combining `step_3_7_2`, `step_3_7_3`, `step_3_7_4` (old OpenAI/FilterChain.lean:146). Note `step_3_7_4` wants `Re Tr(L⁻¹ρLB) = 0`; `step_3_7_2` gives `Re⟨K φ, K' (BL−LB) φ⟩ = 0`, and `BL − LB = (B − LBL⁻¹)L` plus `step_3_7_3` turns one into the other.
+2. D3.8.1: the diagonal variation (old OpenAI/FilterClipping.lean:164) giving the hypotheses of `step_3_8_2`/`step_3_8_3` (BufferDiscount.lean:454, :481) in the common eigenbasis `Matrix.exists_unitary_diagonal_of_commute`.
+3. D3.9.2, D3.9.3, D3.9.5, D3.9.6: split-index reduction and the Schmidt-basis identity (old OpenAI/FilterChainEnergy.lean, FilterEnergy.lean, FilterMoment.lean:281); `step_3_9_1`, `step_3_9_4`, `sum_add_mul_le` (MarginalTails.lean:369) and `gap_le` (MarginalTails.lean:625) are ready.
+4. D3.11.1: prefix problems `N_j` (old OpenAI/FilterPrefix.lean:144–305); then `step_3_11_2`, `step_3_11_4_region` (Lemma 3.1 via `lemma_3_1` gives its `hM` at `u = −a/(1−a)`, admissible by `eq_initial_weight_range` (iii)) and `step_3_11_5` assemble D3.11.
+5. D3.12.1–3, D3.12.5–6: zero-floor limit (old OpenAI/FilterZeroFloor.lean), Schmidt pinning (OpenAI/SchmidtPinning.lean:204), vector three-lines and its derivative (OpenAI/FilterPower.lean:415; Mathlib `Complex.HadamardThreeLines`), trial filters (OpenAI/BufferDiscountCore.lean:79); `step_3_12_4` is ready.
+6. D3.13.2 on regions: `∑ p_i S_{w_i}(T_j) ≤ S(T_j)` for the Schmidt decomposition at `X | X^c` (`isSchmidt_cut`, MarginalTails.lean:865; concavity `MState.sum_Sᵥₙ_le_Sᵥₙ_cq_traceRight`); then `step_3_13` gives D3.13.
+7. `lemma_3_2 (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 < Δ) : BufferDiscount ℂ q R J Δ` from D3.5, D3.6, D3.10, D3.11, D3.13 and `step_3_14`, `step_3_14_5` (BufferDiscount.lean:744, :769). The frozen statement does not carry these hypotheses; the old `OpenAI.buffer_discount` (OpenAI/BufferDiscount.lean:508) and `initial_box_estimate` (OpenAI/InitialBoxEstimate.lean:356) take the same three, so `prop_3_3` becomes `(hq) (hJ) (hΔ) : InitialBoxEstimate ℂ q R J Δ`, and the transfer to `𝕜` (decision 1) passes them on.
+
+§4 onward (S04_Quasilocal … S01_AreaLaw), Step 2, Step 3 and the final gate are untouched.
