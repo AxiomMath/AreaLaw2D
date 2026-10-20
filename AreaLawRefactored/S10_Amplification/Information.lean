@@ -218,7 +218,7 @@ theorem conjTranspose_mul_self_submatrix_kronecker {m n : Type*} [Fintype m] -- 
     Unitary.star_mul_self_of_mem (kronecker_mem_unitary hV (one_mem _)), submatrix_one_equiv]
 
 omit [∀ i, DecidableEq (loc i)] in
-theorem star_mulVec_dotProduct_mulVec {G : Type*} [Fintype G] [DecidableEq G] -- helper
+theorem star_unitary_mulVec_dotProduct_mulVec {G : Type*} [Fintype G] [DecidableEq G] -- helper
     {U : Matrix G G ℂ} (hU : Uᴴ * U = 1) (ψ : G → ℂ) : star (U *ᵥ ψ) ⬝ᵥ (U *ᵥ ψ) = star ψ ⬝ᵥ ψ := by
   rw [star_mulVec, dotProduct_mulVec, vecMul_vecMul, hU, vecMul_one]
 
@@ -582,7 +582,7 @@ theorem step_10_15 {Λ X N J : Finset σ} (hX : X ⊆ Λ) (hN : N ⊆ Λ) (hXN :
   have hU := conjTranspose_mul_self_submatrix_kronecker hV (splitN hN X)
   have hφ := (dotProduct_copyVec' hX Ω).trans hΩ
   have hη := dotProduct_restoredVec' hX Ω hΩ
-  have hUφ := (star_mulVec_dotProduct_mulVec hU (copyVec hX Ω)).trans hφ
+  have hUφ := (star_unitary_mulVec_dotProduct_mulVec hU (copyVec hX Ω)).trans hφ
   have hJX : J ⊆ Λ \ X := fun i hi =>
     mem_sdiff.2 ⟨(mem_sdiff.1 (hJ hi)).1, fun h => (mem_sdiff.1 (hJ hi)).2 (hXN h)⟩
   have hl : 0 ≤ Real.log (Real.exp 1 * Fintype.card (Reg loc X)) := by
