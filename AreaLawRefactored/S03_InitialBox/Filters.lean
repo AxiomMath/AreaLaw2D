@@ -957,6 +957,25 @@ theorem step_3_9_2_of_disjoint (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X
   step_3_9_2 hX hnest hL j k φ hc hS h fun i hi ↦
     Arealaw.commute_extendId_extendId (hX i) (hS.trans (hX (j + 1))) (hd i hi) (L i) h
 
+/-- D3.9.2, no split index. Let `h` be supported in `S_h ⊆ X_j`, let the filters `L_i`, `i < j`
+(`I_in`), act on regions disjoint from `S_h`, and let `L_j, …, L_{j+k}` (`I_out`) commute with
+their marginals in `φ` (D3.7). Then for `K = L_{j+k} ⋯ L_0`, `⟨φ, (h - KhK⁻¹) φ⟩ = 0`. -/
+theorem step_3_9_2_unsplit (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1))
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ i, IsUnit (L i).det) (j k : ℕ) (φ : Arealaw.Reg loc U → ℂ)
+    (hcj : L j * Arealaw.ptrace (hX j) (vecMulVec φ (star φ)) =
+      Arealaw.ptrace (hX j) (vecMulVec φ (star φ)) * L j)
+    (hc : ∀ i < k, L (j + 1 + i) * Arealaw.ptrace (hX (j + 1 + i)) (vecMulVec φ (star φ)) =
+      Arealaw.ptrace (hX (j + 1 + i)) (vecMulVec φ (star φ)) * L (j + 1 + i))
+    {S : Finset σ} (hS : S ⊆ X j) (h : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ)
+    (hd : ∀ i < j, Disjoint (X i) S) :
+    star φ ⬝ᵥ ((Arealaw.extendId (hS.trans (hX j)) h - filterProd hX L (j + 1 + k) *
+      Arealaw.extendId (hS.trans (hX j)) h * (filterProd hX L (j + 1 + k))⁻¹) *ᵥ φ) = 0 := by
+  -- `I_in` cancels and `K_{>j}` is peeled (D3.9.2 at `j`); `L_j` is peeled by D3.7.3
+  refine (step_3_9_2_of_disjoint hX hnest hL j k φ hc (hS.trans (hnest j)) h hd).trans ?_
+  rw [inv_extendId _ (hL j), ← extendId_extendId hS (hX j), ← Arealaw.extendId_mul,
+    ← Arealaw.extendId_mul, sub_mulVec, dotProduct_sub, step_3_7_3 (hX j) φ (hL j) hcj, sub_self]
+
 end D392
 
 /-- D3.9.6. Sum over supports: if the term of `h` is at most `C a_j²` when `h` is split by
