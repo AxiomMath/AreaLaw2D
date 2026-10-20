@@ -1,11 +1,12 @@
-import AreaLawRefactored.S03_InitialBox.Filters
+import AreaLawRefactored.S03_InitialBox.TrialNorm
 
 /-!
 # §3.2 Lemma 3.2 (D3.4, assembled per D3.14)
 
 Digest `digest/03-initial-box.md` (D3.4, D3.14), paper `paper/sections/02-initial.tex`,
-lines 219–586. The zero-floor limit (D3.12.1) and the trial-norm upper bound
-(D3.12(b),(c) with D3.13, eq:initial-norm-upper) enter `lemma_3_2_of` as hypotheses.
+lines 219–586. D3.14.1 (`step_3_14_1`) is over any site type; `lemma_3_2` assembles D3.5,
+D3.6, D3.10, D3.11, D3.12.1 (`step_3_12_1`), D3.13 (`eq_initial_norm_upper`) and D3.14 on
+`ℤ × ℤ`.
 -/
 
 namespace AreaLaw
@@ -152,33 +153,8 @@ section D314
 Hamiltonian with gapped ground vector `Ω`, every cut `A`, every safe rectangle `Q`, every
 `r ≥ 1` and every rectangle `Q₀` of size at most `r` with `Q₀^{+C_pad r} ⊆ Q`, the sets
 `X = A ∩ Q₀` and `T = (A ∩ Q₀^{+C_pad r}) \ X` satisfy `S(X | T) ≤ S(X)/2 + C_buf r`.
-Here the zero-floor limit (D3.12.1) and eq:initial-norm-upper (D3.12(b),(c), D3.13) are
-hypotheses. -/
-theorem lemma_3_2_of {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 < Δ)
-    (step_3_12_1 : ∀ {U : Finset (ℤ × ℤ)} {X : ℕ → Finset (ℤ × ℤ)} (hX : ∀ j, X j ⊆ U)
-      {a : ℕ → ℝ} (ha : ∀ j, 0 ≤ a j)
-      (hne : ∀ j, Nonempty (Arealaw.Reg (OpenAI.Qudits q) (X j)))
-      (Ω : EuclideanSpace ℂ (Arealaw.Reg (OpenAI.Qudits q) U)) (m : ℕ) {B : ℝ}
-      (hB : ∀ f : ℕ → ℝ, (∀ j, 0 < f j) →
-        (∀ j, (Fintype.card (Arealaw.Reg (OpenAI.Qudits q) (X j)) : ℝ) * f j < 1) →
-        ∀ L : (j : ℕ) → Matrix (Arealaw.Reg (OpenAI.Qudits q) (X j))
-          (Arealaw.Reg (OpenAI.Qudits q) (X j)) ℂ,
-          (∀ j, IsFilter (f j) (a j) (L j)) → ‖toEuclideanLin (filterProd hX L m) Ω‖ ≤ B)
-      {L : (j : ℕ) → Matrix (Arealaw.Reg (OpenAI.Qudits q) (X j))
-        (Arealaw.Reg (OpenAI.Qudits q) (X j)) ℂ}
-      (hL : ∀ j, IsFilter 0 (a j) (L j)),
-      ‖toEuclideanLin (filterProd hX L m) Ω‖ ≤ B)
-    (eq_initial_norm_upper : ∀ {U X : Finset (ℤ × ℤ)} (hXU : X ⊆ U) (T : ℕ → Finset (ℤ × ℤ))
-      (hTU : ∀ j, T j ⊆ U) (hT : ∀ j, T j ⊆ T (j + 1)) (hXT : ∀ j, Disjoint X (T j))
-      {a : ℕ → ℝ} (ha : ∀ j, 0 < a j) (m : ℕ) (Ω : Arealaw.Reg (OpenAI.Qudits q) U → ℂ)
-      (hΩ : star Ω ⬝ᵥ Ω = 1) {B : ℝ} (hB0 : 0 < B)
-      (hB : ∀ L : (j : ℕ) → Matrix (Arealaw.Reg (OpenAI.Qudits q) (X ∪ T j))
-          (Arealaw.Reg (OpenAI.Qudits q) (X ∪ T j)) ℂ,
-        (∀ j, IsFilter 0 (a j) (L j)) →
-        ‖toEuclideanLin (filterProd (fun j ↦ Finset.union_subset hXU (hTU j)) L m)
-          (WithLp.toLp 2 Ω)‖ ≤ B),
-      -2 * Real.log B ≤ (OpenAI.pureState Ω hΩ).regionEntropy hXU +
-        ∑ j ∈ Finset.range m, a j * (OpenAI.pureState Ω hΩ).regionEntropy (hTU j)) :
+2D only: the harmonic weights of D3.6 need the linear perimeter growth `|∂X_j| ≤ 4(r + 2d_j)`. -/
+theorem lemma_3_2 {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 < Δ) :
     OpenAI.BufferDiscount ℂ q R J Δ := by
   -- D3.14.0: the constants `D` (D3.5), `c₀`, `C'`, `C` (D3.9), `C_pad` (D3.10), `C_buf`
   -- (D3.14.5), depending only on `q, R, J, Δ`
@@ -321,18 +297,99 @@ theorem lemma_3_2_of {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ :
   have hv : 16 / Real.exp 2 * c₀ * C' * (∑ j ∈ range n, w j * a Cpad r D (j + 1) ^ 2) / Δ ≤
       1 / 4 := by
     rw [hsumE]; exact (hW r hr).1
-  -- D3.14.1: D3.11 against eq:initial-norm-upper (with D3.12.1)
+  -- D3.14.1: D3.11 against eq:initial-norm-upper (D3.13), through the zero-floor limit D3.12.1
+  have hXT : ∀ j, Disjoint (A ∩ Q₀) (Tj j) := fun j ↦ disjoint_sdiff
+  have h1 : ∀ {B : ℝ}, (∀ f : ℕ → ℝ, (∀ j, 0 < f j) →
+      (∀ j, (Fintype.card (Arealaw.Reg (OpenAI.Qudits q) (A ∩ Q₀ ∪ Tj j)) : ℝ) * f j < 1) →
+      ∀ L : (j : ℕ) → Matrix (Arealaw.Reg (OpenAI.Qudits q) (A ∩ Q₀ ∪ Tj j))
+        (Arealaw.Reg (OpenAI.Qudits q) (A ∩ Q₀ ∪ Tj j)) ℂ,
+        (∀ j, IsFilter (f j) (a Cpad r D (j + 1)) (L j)) →
+        ‖toEuclideanLin (filterProd (fun j ↦ union_subset hXU (hTU j)) L n)
+          (WithLp.toLp 2 Ω)‖ ≤ B) →
+      ∀ L : (j : ℕ) → Matrix (Arealaw.Reg (OpenAI.Qudits q) (A ∩ Q₀ ∪ Tj j))
+        (Arealaw.Reg (OpenAI.Qudits q) (A ∩ Q₀ ∪ Tj j)) ℂ,
+        (∀ j, IsFilter 0 (a Cpad r D (j + 1)) (L j)) →
+        ‖toEuclideanLin (filterProd (fun j ↦ union_subset hXU (hTU j)) L n)
+          (WithLp.toLp 2 Ω)‖ ≤ B := by
+    intro B hB L hL
+    refine step_3_12_1 (X := fun j ↦ A ∩ Q₀ ∪ Tj j) (U := Λ) (loc := OpenAI.Qudits q)
+      (fun j ↦ union_subset hXU (hTU j)) (a := fun j ↦ a Cpad r D (j + 1))
+      (fun j ↦ (ha' j).le) (fun j ↦ hne _) (WithLp.toLp 2 Ω) n (B := B) ?_ (L := L) ?_
+    · exact hB
+    · exact hL
   have key := step_3_14_1 (loc := OpenAI.Qudits q) (D := fun t : supports Λ R ↦ t.1)
     (Y := fun t ↦ Φ t.1) (𝓑 := 𝓑) (w := w) (ϑ := J / Δ) (a := fun j ↦ a Cpad r D (j + 1))
     hXU Tj hTU hTmono ha' n ha2 (fun j ↦ hne _) Ω hΩ
-    (univ : Finset (supports Λ R)) hDs hY hc₀ (fun t _ ↦ by
-      have hc : (Fintype.card (Arealaw.Reg (OpenAI.Qudits q) t.1) : ℝ) = (q : ℝ) ^ #t.1 := by
-        simp [Reg, Fintype.card_pi]
-      sorry) (E₀ := E₀) sorry hΔ sorry sorry hC'0 hw sorry sorry
-    (div_nonneg hJ.le hΔ.le) (fun j ↦ (zero_le_one.trans (h𝓑1 j))) sorry
-    sorry sorry
-  sorry
-  sorry
+    (univ : Finset (supports Λ R)) hDs hY hc₀ (fun t _ ↦ by convert hYc t (mem_univ _) using 4)
+    heig' hΔ hgap' hd hC'0 hw hcount hv
+    (div_nonneg hJ.le hΔ.le) (fun j ↦ (zero_le_one.trans (h𝓑1 j))) hM h1
+    (fun hB0 hB ↦ eq_initial_norm_upper hXU Tj hTU hTmono hXT ha' n Ω hΩ hB0 hB)
+  -- D3.14.2–D3.14.4: SSA with `T_j ⊆ T_m ⊆ T`, `∑_j a_j = 2`
+  obtain ⟨f, hf⟩ : ∃ f : Finset (ℤ × ℤ) → ℝ, ∀ S (h : S ⊆ Λ),
+      (OpenAI.pureState Ω hΩ).regionEntropy h = f S :=
+    ⟨fun S ↦ if h : S ⊆ Λ then (OpenAI.pureState Ω hΩ).regionEntropy h else 0,
+      fun S h ↦ (dif_pos h).symm⟩
+  set T := (A ∩ ambientDilation Q₀ (Cpad * r)) \ (A ∩ Q₀) with hTdef
+  have hTΛ : T ⊆ Λ := sdiff_subset.trans (inter_subset_left.trans hA)
+  set Tj' : ℕ → Finset (ℤ × ℤ) := fun j ↦ X_j A Q₀ r D (min j n) \ (A ∩ Q₀) with hTj'def
+  have hTT : ∀ j, Tj' j ⊆ T := fun j ↦ by
+    simp only [hTj'def, hTdef]
+    rcases Nat.eq_zero_or_pos (min j n) with h0 | h0
+    · rw [h0, hX0, sdiff_self]; exact empty_subset _
+    · refine sdiff_subset_sdiff ?_ le_rfl
+      simp only [X_j, if_neg h0.ne']
+      refine inter_subset_inter_left (ambientDilation_mono' ?_)
+      have h1 : d r D (min j n) ≤ d r D n := by unfold d; gcongr; exact min_le_right _ _
+      exact h1.trans (hn ▸ d_m_le hC)
+  have hmono' : ∀ j ∈ Icc 1 n, Tj' j ⊆ Tj' n := fun j hj ↦
+    sdiff_subset_sdiff (hnest _ _ (by simp only [min_self]; exact min_le_right _ _)) le_rfl
+  have hTj : ∀ j, j < n → Tj j = Tj' (j + 1) := fun j hj ↦ by
+    simp only [Tj, hTj'def, Nat.min_eq_left (show j + 1 ≤ n by omega)]
+  have hsum2 : ∑ j ∈ Icc 1 n, a Cpad r D j = 2 := hn ▸ (eq_initial_harmonic_weights hD0 hC hr).1
+  have ha1 : ∀ j ∈ Icc 1 n, 0 < a Cpad r D j := fun j hj ↦ by
+    have := ha' (j - 1); rwa [Nat.sub_add_cancel (mem_Icc.1 hj).1] at this
+  set v := 16 / Real.exp 2 * c₀ * C' * (∑ j ∈ range n, w j * a Cpad r D (j + 1) ^ 2) / Δ
+  set E := ∑ j ∈ range n, 1024 * Real.exp 1 * (J / Δ) * 𝓑 j * a Cpad r D (j + 1) ^ 2 + 2 * n * v
+  have hshift : ∀ g : Finset (ℤ × ℤ) → ℝ, ∑ j ∈ Icc 1 n, a Cpad r D j * g (Tj' j) =
+      ∑ j ∈ range n, a Cpad r D (j + 1) * g (Tj j) := fun g ↦ by
+    rw [← sum_range_succ_eq_sum_Icc]
+    exact sum_congr rfl fun j hj ↦ by rw [hTj j (mem_range.1 hj)]
+  have hshift' : ∀ g : Finset (ℤ × ℤ) → ℝ, ∑ j ∈ Icc 1 n, a Cpad r D j * g (A ∩ Q₀ ∪ Tj' j) =
+      ∑ j ∈ range n, a Cpad r D (j + 1) * g (A ∩ Q₀ ∪ Tj j) := fun g ↦ by
+    rw [← sum_range_succ_eq_sum_Icc]
+    exact sum_congr rfl fun j hj ↦ by rw [hTj j (mem_range.1 hj)]
+  have h314 := step_3_14 (OpenAI.pureState Ω hΩ) Tj' hXU hTΛ disjoint_sdiff hTT hmono'
+    (a Cpad r D) ha1 hsum2 (E := E) (by
+      simp only [hf] at key ⊢
+      rw [hshift' f, hshift f]
+      rw [sum_sub_distrib] at key
+      linarith)
+  -- D3.14.5: `E/2 ≤ C_buf r`
+  have hE : E ≤ K * (n + 1) * ℰ Cpad r D := by
+    have h1 : ∑ j ∈ range n, 1024 * Real.exp 1 * (J / Δ) * 𝓑 j * a Cpad r D (j + 1) ^ 2 ≤
+        1024 * Real.exp 1 * (J / Δ) * C₂ q R * ℰ Cpad r D := by
+      rw [← hsumE, mul_sum]
+      refine sum_le_sum fun j hj ↦ ?_
+      have h𝓑j := h𝓑 j (mem_range.1 hj)
+      calc 1024 * Real.exp 1 * (J / Δ) * 𝓑 j * a Cpad r D (j + 1) ^ 2
+          = 1024 * Real.exp 1 * (J / Δ) * (𝓑 j * a Cpad r D (j + 1) ^ 2) := by ring
+        _ ≤ 1024 * Real.exp 1 * (J / Δ) * (C₂ q R * w j * a Cpad r D (j + 1) ^ 2) := by gcongr
+        _ = _ := by ring
+    have h2 : 2 * n * v = n * (2 * (16 / Real.exp 2 * c₀ * C') / Δ) * ℰ Cpad r D := by
+      simp only [v, hsumE]; ring
+    have hE0 : 0 ≤ ℰ Cpad r D := by unfold ℰ; positivity
+    have hk1 : 0 ≤ 2 * (16 / Real.exp 2 * c₀ * C') / Δ := by positivity
+    have hk2 : 0 ≤ 1024 * Real.exp 1 * (J / Δ) * C₂ q R := by positivity
+    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    calc E ≤ 1024 * Real.exp 1 * (J / Δ) * C₂ q R * ℰ Cpad r D +
+          n * (2 * (16 / Real.exp 2 * c₀ * C') / Δ) * ℰ Cpad r D := by
+          simp only [E]; rw [h2]; linarith
+      _ ≤ _ := by rw [hKdef]; nlinarith [mul_nonneg hn0 (mul_nonneg hk2 hE0),
+          mul_nonneg hk1 hE0]
+  have h5 := step_3_14_5 hD0 hC hr hK0
+  rw [← hn] at h5
+  simp only [hf] at h314 ⊢
+  linarith
 
 end D314
 
