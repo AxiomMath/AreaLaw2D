@@ -1,4 +1,4 @@
-import AreaLawRefactored.S04_Quasilocal.Setup
+import AreaLawRefactored.S04_Quasilocal.CenteredFilter
 import AreaLawForMathlib.Analysis.ODE.LiebRobinson
 
 /-!
@@ -63,11 +63,22 @@ theorem sum_norm_meeting_le (X : κ → Finset ι) (h : κ → Matrix n n ℂ) (
     _ ≤ ∑ _x ∈ X k, b₀ := Finset.sum_le_sum fun x _ => hBudget x
     _ = #(X k) * b₀ := by rw [Finset.sum_const, nsmul_eq_mul]
 
+omit [DecidableEq ι] in
+/-- The distance `d(x, Y) = min_{y ∈ Y} d(x, y)` is `1`-Lipschitz. -/
+theorem inf_edist_le_add (Gi : SimpleGraph ι) (Y : Finset ι) (x x' : ι) :
+    Y.inf (Gi.edist x) ≤ Gi.edist x x' + Y.inf (Gi.edist x') := by
+  rcases Y.eq_empty_or_nonempty with rfl | hY
+  · simp
+  obtain ⟨y, hy, hy'⟩ := Finset.exists_mem_eq_inf Y hY (Gi.edist x')
+  rw [hy']
+  exact (Finset.inf_le hy).trans SimpleGraph.edist_triangle
+
 /-- The standing hypotheses of D4.4 on an abstract finite graph `Gi`: terms `h k` on nonempty
 supports `X k` of diameter `≤ R`, at most `vR` sites, per-site budget `b₀`, `S k` the operators
-on `X k`; `B` commutes with every operator on a support avoiding `y`. -/
+on `X k`; `B` commutes with every operator on a support avoiding the set `Y` (a site `y` in
+`eq:quasilocal-lr`, `Y = Λ \ N_l(a_i)` in `eq:quasilocal-lr-ce`). -/
 structure Standing (Gi : SimpleGraph ι) (X : κ → Finset ι) (h : κ → Matrix n n ℂ)
-    (S : κ → Submodule ℂ (Matrix n n ℂ)) (R vR : ℕ) (b₀ : ℝ) (B : Matrix n n ℂ) (y : ι) :
+    (S : κ → Submodule ℂ (Matrix n n ℂ)) (R vR : ℕ) (b₀ : ℝ) (B : Matrix n n ℂ) (Y : Finset ι) :
     Prop where
   nonempty : ∀ k, (X k).Nonempty
   herm : ∀ k, (h k).IsHermitian
@@ -76,30 +87,31 @@ structure Standing (Gi : SimpleGraph ι) (X : κ → Finset ι) (h : κ → Matr
   diam : ∀ k, ∀ x ∈ X k, ∀ z ∈ X k, Gi.edist x z ≤ R
   card : ∀ k, #(X k) ≤ vR
   budget : ∀ x, ∑ j ∈ univ.filter (fun j => x ∈ X j), ‖h j‖ ≤ b₀
-  commB : ∀ k, y ∉ X k → ∀ A ∈ S k, Commute A B
+  commB : ∀ k, Disjoint (X k) Y → ∀ A ∈ S k, Commute A B
 
 /-- D4.4.4–7 for `t ≥ 0`: the recursion `eq:quasilocal-lr-recursion`, weighted by
-`e^{-μ d(X_k, y)}` and closed by the Volterra comparison. -/
+`e^{-μ d(X_k, Y)}` and closed by the Volterra comparison. -/
 theorem commutatorNorm_le_of_nonneg {Gi : SimpleGraph ι} {X : κ → Finset ι}
     {h : κ → Matrix n n ℂ} {S : κ → Submodule ℂ (Matrix n n ℂ)} {R vR : ℕ} {b₀ : ℝ}
-    {B : Matrix n n ℂ} {y : ι} (hs : Standing Gi X h S R vR b₀ B y)
+    {B : Matrix n n ℂ} {Y : Finset ι} (hs : Standing Gi X h S R vR b₀ B Y)
     {μ : ℝ} (hμ : 0 ≤ μ) (N : ℕ) (i : κ) {a : ι} (ha : a ∈ X i)
-    (hN : (N : ℕ∞) ≤ Gi.edist a y) {t : ℝ} (ht : 0 ≤ t) :
+    (hN : ∀ y ∈ Y, (N : ℕ∞) ≤ Gi.edist a y) {t : ℝ} (ht : 0 ≤ t) :
     heisenbergCommutatorNorm (∑ k, h k) B (S i) t ≤
       2 * ‖B‖ * Real.exp (μ * R) * Real.exp (-(μ * N)) *
         Real.exp (2 * vR * b₀ * Real.exp (μ * R) * t) := by
   classical
-  have hb₀ : 0 ≤ b₀ := (Finset.sum_nonneg fun j _ => norm_nonneg (h j)).trans (hs.budget y)
-  -- D4.4.1: `near k` realises `d(X_k, y)`; `D k = min(N, d(X_k, y))`.
+  have hb₀ : 0 ≤ b₀ := (Finset.sum_nonneg fun j _ => norm_nonneg (h j)).trans
+    (hs.budget (hs.nonempty i).choose)
+  -- D4.4.1: `near k` realises `d(X_k, Y)`; `D k = min(N, d(X_k, Y))`.
+  let ρ (x : ι) : ℕ∞ := Y.inf (Gi.edist x)
+  have hρ : (N : ℕ∞) ≤ ρ a := Finset.le_inf hN
   let near (k : κ) : ι :=
-    Classical.choose (Finset.exists_min_image (X k) (fun x => Gi.edist x y) (hs.nonempty k))
+    Classical.choose (Finset.exists_min_image (X k) ρ (hs.nonempty k))
   have hnear_mem (k : κ) : near k ∈ X k :=
-    (Classical.choose_spec
-      (Finset.exists_min_image (X k) (fun x => Gi.edist x y) (hs.nonempty k))).1
-  have hnear_le (k : κ) {x : ι} (hx : x ∈ X k) : Gi.edist (near k) y ≤ Gi.edist x y :=
-    (Classical.choose_spec
-      (Finset.exists_min_image (X k) (fun x => Gi.edist x y) (hs.nonempty k))).2 x hx
-  let D (k : κ) : ℕ := (min (N : ℕ∞) (Gi.edist (near k) y)).toNat
+    (Classical.choose_spec (Finset.exists_min_image (X k) ρ (hs.nonempty k))).1
+  have hnear_le (k : κ) {x : ι} (hx : x ∈ X k) : ρ (near k) ≤ ρ x :=
+    (Classical.choose_spec (Finset.exists_min_image (X k) ρ (hs.nonempty k))).2 x hx
+  let D (k : κ) : ℕ := (min (N : ℕ∞) (ρ (near k))).toNat
   let w (k : κ) : ℝ := Real.exp (-(μ * D k))
   let f (s : ℝ) (k : κ) : ℝ := heisenbergCommutatorNorm (∑ k, h k) B (S k) s
   let coeff (k j : κ) : ℝ := if Disjoint (X k : Set ι) (X j : Set ι) then 0 else 2 * ‖h j‖
@@ -108,16 +120,16 @@ theorem commutatorNorm_le_of_nonneg {Gi : SimpleGraph ι} {X : κ → Finset ι}
   have hCoeff : ∀ k j, 0 ≤ coeff k j := fun k j => by
     dsimp only [coeff]; split_ifs <;> positivity
   have hw : ∀ k, 0 < w k := fun k => Real.exp_pos _
-  -- D4.4.6: intersecting supports have comparable distances to `y`.
+  -- D4.4.6: intersecting supports have comparable distances to `Y`.
   have hWeight : ∀ k j, ¬Disjoint (X k : Set ι) (X j : Set ι) →
       w j ≤ Real.exp (μ * R) * w k := by
     intro k j hkj
     obtain ⟨x, hxk, hxj⟩ := Set.not_disjoint_iff.mp hkj
     have hD : D k ≤ D j + R := by
       apply toNat_min_le_toNat_min_add
-      calc Gi.edist (near k) y ≤ Gi.edist x y := hnear_le k hxk
-        _ ≤ Gi.edist x (near j) + Gi.edist (near j) y := SimpleGraph.edist_triangle
-        _ ≤ R + Gi.edist (near j) y := add_le_add_left (hs.diam j _ hxj _ (hnear_mem j)) _
+      calc ρ (near k) ≤ ρ x := hnear_le k hxk
+        _ ≤ Gi.edist x (near j) + ρ (near j) := inf_edist_le_add Gi Y _ _
+        _ ≤ R + ρ (near j) := add_le_add_left (hs.diam j _ hxj _ (hnear_mem j)) _
         _ = _ := add_comm _ _
     have hD' : (D k : ℝ) ≤ D j + R := by exact_mod_cast hD
     dsimp only [w]
@@ -142,19 +154,22 @@ theorem commutatorNorm_le_of_nonneg {Gi : SimpleGraph ι} {X : κ → Finset ι}
           (by positivity)
         exact mul_le_mul_of_nonneg_right (by exact_mod_cast hs.card k) hb₀
       _ = v * w k := by dsimp only [v]; ring
-  -- D4.4.4: `f(0) ≤ 2‖B‖ 1_{y ∈ X}`.
+  -- D4.4.4: `f(0) ≤ 2‖B‖ 1_{Y ∩ X ≠ ∅}`.
   have hInit : ∀ k, f 0 k ≤ 2 * ‖B‖ * w k := by
     intro k
-    by_cases hyk : y ∈ X k
-    · have hDk : D k = 0 := by
+    by_cases hyk : ¬Disjoint (X k) Y
+    · obtain ⟨y, hyk, hyY⟩ := Finset.not_disjoint_iff.1 hyk
+      have hDk : D k = 0 := by
         have := ENat.toNat_le_of_le_natCast ((min_le_right (N : ℕ∞) _).trans
-          ((hnear_le k hyk).trans_eq (SimpleGraph.edist_self (G := Gi) (v := y))))
+          ((hnear_le k hyk).trans ((Finset.inf_le hyY).trans_eq
+            (SimpleGraph.edist_self (G := Gi) (v := y)))))
         dsimp only [D]
         exact_mod_cast Nat.le_zero.mp (by exact_mod_cast this)
       have hw1 : w k = 1 := by simp [w, hDk]
       rw [hw1, mul_one]
       exact heisenbergCommutatorNorm_zero_le _ B _
-    · rw [show f 0 k = 0 from heisenbergCommutatorNorm_zero_of_commute _ B (S k) (hs.commB k hyk)]
+    · rw [show f 0 k = 0 from heisenbergCommutatorNorm_zero_of_commute _ B (S k)
+        (hs.commB k (not_not.1 hyk))]
       exact mul_nonneg (by positivity) (hw k).le
   have hBound : ∀ s ∈ Icc 0 t, ∀ k,
       f s k ≤ 2 * ‖B‖ * w k + ∑ j, coeff k j * ∫ u in (0 : ℝ)..s, f u j := by
@@ -176,12 +191,11 @@ theorem commutatorNorm_le_of_nonneg {Gi : SimpleGraph ι} {X : κ → Finset ι}
     (fun s _ k => heisenbergCommutatorNorm_nonneg _ B _ s) hBound t ⟨ht, le_rfl⟩ i
   have hwi : w i ≤ Real.exp (μ * R) * Real.exp (-(μ * N)) := by
     have hD : N ≤ D i + R := by
-      have h1 := toNat_min_le_toNat_min_add N R (Gi.edist a y) (Gi.edist (near i) y) (by
-        calc Gi.edist a y ≤ Gi.edist a (near i) + Gi.edist (near i) y :=
-              SimpleGraph.edist_triangle
-          _ ≤ R + Gi.edist (near i) y := add_le_add_left (hs.diam i _ ha _ (hnear_mem i)) _
+      have h1 := toNat_min_le_toNat_min_add N R (ρ a) (ρ (near i)) (by
+        calc ρ a ≤ Gi.edist a (near i) + ρ (near i) := inf_edist_le_add Gi Y _ _
+          _ ≤ R + ρ (near i) := add_le_add_left (hs.diam i _ ha _ (hnear_mem i)) _
           _ = _ := add_comm _ _)
-      rwa [min_eq_left hN, ENat.toNat_natCast] at h1
+      rwa [min_eq_left hρ, ENat.toNat_natCast] at h1
     have hD' : (N : ℝ) ≤ D i + R := by exact_mod_cast hD
     rw [← Real.exp_add]
     exact Real.exp_le_exp.mpr (by nlinarith)
@@ -193,9 +207,9 @@ theorem commutatorNorm_le_of_nonneg {Gi : SimpleGraph ι} {X : κ → Finset ι}
 /-- D4.4.1–7 for every `t` (`t < 0`: replace `H → -H`), times `‖A‖` by homogeneity. -/
 theorem norm_commutator_le {Gi : SimpleGraph ι} {X : κ → Finset ι}
     {h : κ → Matrix n n ℂ} {S : κ → Submodule ℂ (Matrix n n ℂ)} {R vR : ℕ} {b₀ : ℝ}
-    {B : Matrix n n ℂ} {y : ι} (hs : Standing Gi X h S R vR b₀ B y)
+    {B : Matrix n n ℂ} {Y : Finset ι} (hs : Standing Gi X h S R vR b₀ B Y)
     {μ : ℝ} (hμ : 0 ≤ μ) (N : ℕ) (i : κ) {a : ι} (ha : a ∈ X i)
-    (hN : (N : ℕ∞) ≤ Gi.edist a y) {A : Matrix n n ℂ} (hA : A ∈ S i) (t : ℝ) :
+    (hN : ∀ y ∈ Y, (N : ℕ∞) ≤ Gi.edist a y) {A : Matrix n n ℂ} (hA : A ∈ S i) (t : ℝ) :
     ‖heisenbergEvolution (∑ k, h k) t A * B - B * heisenbergEvolution (∑ k, h k) t A‖ ≤
       2 * Real.exp (μ * R) * ‖A‖ * ‖B‖ *
         Real.exp (2 * vR * b₀ * Real.exp (μ * R) * |t| - μ * N) := by
@@ -205,7 +219,7 @@ theorem norm_commutator_le {Gi : SimpleGraph ι} {X : κ → Finset ι}
     rcases le_or_gt 0 t with ht | ht
     · rw [abs_of_nonneg ht]
       exact commutatorNorm_le_of_nonneg hs hμ N i ha hN ht
-    · have hs' : Standing Gi X (fun k => -h k) S R vR b₀ B y :=
+    · have hs' : Standing Gi X (fun k => -h k) S R vR b₀ B Y :=
         { hs with
           herm := fun k => (hs.herm k).neg
           mem := fun k => Submodule.neg_mem _ (hs.mem k)
@@ -241,12 +255,6 @@ def supportedOn {Λ X : Finset σ} (hX : X ⊆ Λ) :
   smul_mem' := by
     rintro c _ ⟨A, rfl⟩
     exact ⟨c • A, (extendId_smul hX c A).symm⟩
-
-theorem norm_extendId_le {Λ X : Finset σ} (hX : X ⊆ Λ) (A : Matrix (Reg loc X) (Reg loc X) ℂ) :
-    ‖extendId hX A‖ ≤ ‖A‖ := by
-  rw [extendId_eq_kronecker]
-  exact (l2_opNorm_submatrix_le _ (Equiv.injective _) (Equiv.injective _)).trans
-    (l2_opNorm_kronecker_one_le A)
 
 /-- `τ_t` is the Heisenberg evolution of `AreaLawForMathlib`. -/
 theorem τ_eq_heisenbergEvolution {m : Type*} [Fintype m] [DecidableEq m] (H : Matrix m m ℂ)
@@ -308,15 +316,16 @@ private theorem disjoint_of_subtype {Λ A B : Finset σ} (hA : A ⊆ Λ)
 
 open Classical in
 include hV in
-/-- D4.1–D4.3: the standing hypotheses of D4.4 on the graph induced on `Λ`. -/
+/-- D4.1–D4.3: the standing hypotheses of D4.4 on the graph induced on `Λ`, for `B`
+supported in `Yr ⊆ Λ`. -/
 theorem standing_induce (R : ℕ) (J : ℝ) {Λ : Finset σ}
     {Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ} (hΦ : IsAdmissible G Λ R J Φ)
-    {y : σ} (hy : y ∈ Λ) {B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
-    (hB : IsSupportedOn (Finset.singleton_subset_iff.2 hy) B) :
+    {Yr : Finset σ} (hY : Yr ⊆ Λ) {B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
+    (hB : IsSupportedOn hY B) :
     Standing (G.induce (Λ : Set σ)) (fun Y : supports G Λ R => Y.1.subtype (· ∈ (Λ : Set σ)))
       (fun Y => extendId ((GraphDomain.mem_supports G).1 Y.2).1 (Φ Y.1))
       (fun Y => supportedOn ((GraphDomain.mem_supports G).1 Y.2).1) R (V R) (J * μ V R) B
-      ⟨y, Finset.mem_coe.2 hy⟩ := by
+      (Yr.subtype (· ∈ (Λ : Set σ))) := by
   let Xs : supports G Λ R → Finset (Λ : Set σ) := fun Y => Y.1.subtype (· ∈ (Λ : Set σ))
   let term : supports G Λ R → Matrix (Reg loc Λ) (Reg loc Λ) ℂ :=
     fun Y => extendId ((GraphDomain.mem_supports G).1 Y.2).1 (Φ Y.1)
@@ -338,7 +347,8 @@ theorem standing_induce (R : ℕ) (J : ℝ) {Λ : Finset σ}
         rwa [GraphDomain.domainEDist_eq G ⟨x.1, x.2⟩ ⟨z.1, z.2⟩] at this
       card := fun Y => by
         rw [Finset.card_subtype, Finset.filter_true_of_mem fun x hx => Finset.mem_coe.2 (hsub Y hx)]
-        exact (step_2_8 G V hV Λ R y).2.2.2 Y.1 Y.2
+        exact (step_2_8 G V hV Λ R (((GraphDomain.mem_supports G).1 Y.2).2.1).choose).2.2.2
+          Y.1 Y.2
       budget := fun x => by
         calc ∑ j ∈ univ.filter (fun j => x ∈ Xs j), ‖term j‖
             ≤ ∑ j ∈ univ.filter (fun j : supports G Λ R => x.1 ∈ j.1), ‖Φ j.1‖ := by
@@ -351,63 +361,114 @@ theorem standing_induce (R : ℕ) (J : ℝ) {Λ : Finset σ}
       commB := by
         rintro k hyk _ ⟨A', rfl⟩
         obtain ⟨B', rfl⟩ := hB
-        refine commute_extendId_extendId (hsub k) _ (Finset.disjoint_singleton_right.2 ?_) _ _
-        exact fun h => hyk ((hmem k _).2 h) }
+        refine commute_extendId_extendId (hsub k) _ (disjoint_of_subtype (hsub k) ?_) _ _
+        exact Finset.disjoint_coe.2 hyk }
 
 include hV in
-/-- D4.4.1–7 on `Λ`: the bound of `eq:quasilocal-lr` with any `N ≤ d_Λ(a, y)` in the
-exponent. -/
+/-- D4.4.1–7 on `Λ`, for `B` supported in `Yr ⊆ Λ`: the bound of `eq:quasilocal-lr` with any
+`N ≤ d_Λ(a, Yr)` in the exponent. -/
 theorem norm_commutator_le_of_le (R : ℕ) (J : ℝ) {c : ℝ} (hc : 0 ≤ c) {Λ : Finset σ}
     {Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ} (hΦ : IsAdmissible G Λ R J Φ)
     {X : Finset σ} (hX : X ∈ supports G Λ R) {a : σ} (ha : a ∈ X)
     {A : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
     (hA : IsSupportedOn ((GraphDomain.mem_supports G).1 hX).1 A)
-    {y : σ} (hy : y ∈ Λ) {B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
-    (hB : IsSupportedOn (Finset.singleton_subset_iff.2 hy) B) (N : ℕ)
-    (hN : (N : ℕ∞) ≤ domainEDist G Λ a y) (t : ℝ) :
+    {Yr : Finset σ} (hY : Yr ⊆ Λ) {B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
+    (hB : IsSupportedOn hY B) (N : ℕ)
+    (hN : ∀ y ∈ Yr, (N : ℕ∞) ≤ domainEDist G Λ a y) (t : ℝ) :
     ‖τ (hamiltonian Λ Φ) t A * B - B * τ (hamiltonian Λ Φ) t A‖ ≤
       2 * Real.exp (c * R) * ‖A‖ * ‖B‖ *
         Real.exp (2 * (V R * J * μ V R) * Real.exp (c * R) * |t| - c * N) := by
-  have hs := standing_induce G V hV R J hΦ hy hB
+  have hs := standing_induce G V hV R J hΦ hY hB
   have haΛ : a ∈ (Λ : Set σ) := Finset.mem_coe.2 (((GraphDomain.mem_supports G).1 hX).1 ha)
-  have hN' : (N : ℕ∞) ≤ (G.induce (Λ : Set σ)).edist ⟨a, haΛ⟩ ⟨y, Finset.mem_coe.2 hy⟩ :=
-    hN.trans_eq (GraphDomain.domainEDist_eq G ⟨a, haΛ⟩ ⟨y, hy⟩)
+  have hN' : ∀ y ∈ Yr.subtype (· ∈ (Λ : Set σ)),
+      (N : ℕ∞) ≤ (G.induce (Λ : Set σ)).edist ⟨a, haΛ⟩ y := fun y hy =>
+    (hN y.1 (Finset.mem_subtype.1 hy)).trans_eq (GraphDomain.domainEDist_eq G ⟨a, haΛ⟩ ⟨y.1, y.2⟩)
   have h := norm_commutator_le hs hc N ⟨X, hX⟩ (Finset.mem_subtype.2 ha) hN' hA t
   rw [← hamiltonian_eq_sum_supports G hΦ, ← τ_eq_heisenbergEvolution] at h
   convert h using 3
   ring
 
+theorem domainEDist_comm (Λ : Finset σ) (x y : σ) :
+    domainEDist G Λ x y = domainEDist G Λ y x := by
+  unfold domainEDist
+  by_cases h : x ∈ Λ ∧ y ∈ Λ
+  · rw [dif_pos h, dif_pos h.symm, SimpleGraph.edist_comm]
+  · rw [dif_neg h, dif_neg fun h' => h h'.symm]
+
+/-- Sites outside `N_l(a)` are at distance `> l` from `a`. -/
+theorem le_domainEDist_of_mem_sdiff {Λ : Finset σ} {a y : σ} {l : ℕ}
+    (hy : y ∈ Λ \ graphNbhd G Λ {a} l) : ((l + 1 : ℕ) : ℕ∞) ≤ domainEDist G Λ a y := by
+  have hy' : ¬ domainEDist G Λ y a ≤ l := by
+    simpa [graphNbhd, (Finset.mem_sdiff.1 hy).1] using (Finset.mem_sdiff.1 hy).2
+  rw [domainEDist_comm]
+  push_cast
+  exact Order.add_one_le_of_lt (not_le.1 hy')
+
+theorem isHermitian_hamiltonian {R : ℕ} {J : ℝ} {Λ : Finset σ}
+    {Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ} (hΦ : IsAdmissible G Λ R J Φ) :
+    (hamiltonian Λ Φ).IsHermitian := by
+  rw [hamiltonian_eq_sum_supports G hΦ]
+  exact Finset.sum_induction _ IsHermitian (fun _ _ => IsHermitian.add) isHermitian_zero
+    fun Y _ => isHermitian_extendId _ (hΦ Y.1 ((GraphDomain.mem_supports G).1 Y.2).1).1
+
 include hV in
-/-- D4.4 Lemma 4.1 (eq:quasilocal-lr). For every `c > 0`, with `κ = V_R J μ_R`,
-`v = 2κe^{cR}` and `C = 2e^{cR}`: for every label `X ∈ supports` with anchor `a ∈ X`, every
-`A` supported in `X`, every site `y`, every operator `B_y` on site `y` and every `t ∈ ℝ`,
+/-- D4.4 Lemma 4.1. For every `c > 0`, with `κ = V_R J μ_R`, `v = 2κe^{cR}` and
+`C = 2e^{cR}`: for every label `X ∈ supports` with anchor `a ∈ X`, every `A` supported in `X`
+and every `t ∈ ℝ`, (eq:quasilocal-lr) for every site `y` and every operator `B_y` on site `y`,
 `‖[τ_t(A), B_y]‖ ≤ C ‖A‖ ‖B_y‖ e^{v|t| - c d_Λ(a,y)}`, and the commutator is `0` if
-`d_Λ(a,y) = ∞`; `τ_t` is the evolution under `H = ∑_X h_X` with `Φ` admissible. -/
-theorem lemma_4_1 (R : ℕ) (J : ℝ) {c : ℝ} (hc : 0 < c) {Λ : Finset σ}
+`d_Λ(a,y) = ∞`; (eq:quasilocal-lr-ce) for every integer `l ≥ 0`,
+`‖τ_t(A) - E_{i,l}(τ_t(A))‖ ≤ ‖A‖ min {2, C e^{v|t| - c l}}`. Here `τ_t` is the evolution under
+`H = ∑_X h_X` with `Φ` admissible. -/
+theorem lemma_4_1 [∀ i, Nonempty (loc i)] (R : ℕ) (J : ℝ) {c : ℝ} (hc : 0 < c) {Λ : Finset σ}
     {Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ} (hΦ : IsAdmissible G Λ R J Φ)
     {X : Finset σ} (hX : X ∈ supports G Λ R) {a : σ} (ha : a ∈ X)
     {A : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
-    (hA : IsSupportedOn ((GraphDomain.mem_supports G).1 hX).1 A)
-    {y : σ} (hy : y ∈ Λ) {B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
-    (hB : IsSupportedOn (Finset.singleton_subset_iff.2 hy) B) (t : ℝ) :
+    (hA : IsSupportedOn ((GraphDomain.mem_supports G).1 hX).1 A) (t : ℝ) :
     let κ : ℝ := V R * J * μ V R
     let v : ℝ := 2 * κ * Real.exp (c * R)
     let C : ℝ := 2 * Real.exp (c * R)
-    ‖τ (hamiltonian Λ Φ) t A * B - B * τ (hamiltonian Λ Φ) t A‖ ≤
-        C * ‖A‖ * ‖B‖ * Real.exp (v * |t| - c * (domainEDist G Λ a y).toNat) ∧
-      (domainEDist G Λ a y = ⊤ → τ (hamiltonian Λ Φ) t A * B = B * τ (hamiltonian Λ Φ) t A) := by
+    (∀ {y : σ} (hy : y ∈ Λ) {B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ},
+      IsSupportedOn (Finset.singleton_subset_iff.2 hy) B →
+      ‖τ (hamiltonian Λ Φ) t A * B - B * τ (hamiltonian Λ Φ) t A‖ ≤
+          C * ‖A‖ * ‖B‖ * Real.exp (v * |t| - c * (domainEDist G Λ a y).toNat) ∧
+        (domainEDist G Λ a y = ⊤ →
+          τ (hamiltonian Λ Φ) t A * B = B * τ (hamiltonian Λ Φ) t A)) ∧
+    ∀ l : ℕ, ‖τ (hamiltonian Λ Φ) t A - E G Λ a l (τ (hamiltonian Λ Φ) t A)‖ ≤
+      ‖A‖ * min 2 (C * Real.exp (v * |t| - c * l)) := by
   intro κ v C
-  have hN := norm_commutator_le_of_le G V hV R J hc.le hΦ hX ha hA hy hB
-  refine ⟨hN _ (ENat.natCast_toNat_le_self _) t, fun htop => ?_⟩
-  -- D4.4.8: the bound holds for every `N`, and `e^{-cN} → 0`.
-  have hlim : Filter.Tendsto (fun N : ℕ => C * ‖A‖ * ‖B‖ * Real.exp (v * |t|) *
-      Real.exp (-(c * N))) Filter.atTop (nhds 0) := by
-    simpa using (Real.tendsto_exp_neg_atTop_nhds_zero.comp
-      (tendsto_natCast_atTop_atTop.const_mul_atTop hc)).const_mul
-        (C * ‖A‖ * ‖B‖ * Real.exp (v * |t|))
-  have hle := ge_of_tendsto' hlim fun N => (hN N (htop ▸ le_top) t).trans_eq (by
-    rw [sub_eq_add_neg, Real.exp_add]; ring)
-  exact sub_eq_zero.1 (norm_le_zero_iff.1 hle)
+  refine ⟨fun {y} hy {B} hB => ?_, fun l => ?_⟩
+  · have hN := fun (N : ℕ) (hN : (N : ℕ∞) ≤ domainEDist G Λ a y) =>
+      norm_commutator_le_of_le G V hV R J hc.le hΦ hX ha hA (Finset.singleton_subset_iff.2 hy)
+        hB N (fun y' hy' => (Finset.mem_singleton.1 hy') ▸ hN)
+    refine ⟨hN _ (ENat.natCast_toNat_le_self _) t, fun htop => ?_⟩
+    -- D4.4.8: the bound holds for every `N`, and `e^{-cN} → 0`.
+    have hlim : Filter.Tendsto (fun N : ℕ => C * ‖A‖ * ‖B‖ * Real.exp (v * |t|) *
+        Real.exp (-(c * N))) Filter.atTop (nhds 0) := by
+      simpa using (Real.tendsto_exp_neg_atTop_nhds_zero.comp
+        (tendsto_natCast_atTop_atTop.const_mul_atTop hc)).const_mul
+          (C * ‖A‖ * ‖B‖ * Real.exp (v * |t|))
+    have hle := ge_of_tendsto' hlim fun N => (hN N (htop ▸ le_top) t).trans_eq (by
+      rw [sub_eq_add_neg, Real.exp_add]; ring)
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 hle)
+  · have hτ : ‖τ (hamiltonian Λ Φ) t A‖ = ‖A‖ := norm_τ (isHermitian_hamiltonian G hΦ) t A
+    rw [mul_min_of_nonneg _ _ (norm_nonneg A)]
+    refine le_min ?_ ?_
+    · -- D4.4.11
+      calc _ ≤ ‖τ (hamiltonian Λ Φ) t A‖ + ‖E G Λ a l (τ (hamiltonian Λ Φ) t A)‖ :=
+            norm_sub_le _ _
+        _ ≤ ‖A‖ + ‖A‖ := add_le_add hτ.le ((norm_E_le _ _ _ _).trans hτ.le)
+        _ = ‖A‖ * 2 := by ring
+    · -- D4.4.9–10: `B = τ_t(A)` against the contractions `U` on `Y = Λ \ N_l(a)`
+      refine norm_sub_condExpect_le (graphNbhd_subset G Λ {a} l) _ _ fun U hU hU1 => ?_
+      calc _ ≤ 2 * Real.exp (c * R) * ‖A‖ * ‖U‖ *
+            Real.exp (2 * (V R * J * μ V R) * Real.exp (c * R) * |t| - c * (l + 1 : ℕ)) :=
+            norm_commutator_le_of_le G V hV R J hc.le hΦ hX ha hA Finset.sdiff_subset hU (l + 1)
+              (fun y hy => le_domainEDist_of_mem_sdiff G hy) t
+        _ ≤ 2 * Real.exp (c * R) * ‖A‖ * 1 *
+            Real.exp (2 * (V R * J * μ V R) * Real.exp (c * R) * |t| - c * l) := by
+            gcongr
+            linarith
+        _ = ‖A‖ * (C * Real.exp (v * |t| - c * l)) := by ring
 
 end LR
 

@@ -1,4 +1,5 @@
 import AreaLawRefactored.S02_Preliminaries
+import AreaLawForMathlib.Analysis.Matrix.WeylTwirl
 
 /-!
 # §4.0 Setup: anchors, graph balls, the conditional expectation `E_{i,l}`
@@ -12,7 +13,7 @@ namespace AreaLaw
 
 open Arealaw Matrix
 open OpenAI (condExpect IsSupportedOn)
-open scoped MatrixOrder ComplexOrder Matrix.Norms.L2Operator
+open scoped MatrixOrder ComplexOrder Matrix.Norms.L2Operator Kronecker
 
 /-- §4 notation. The Heisenberg evolution `τ_t(B) = e^{itH} B e^{-itH}`. -/
 noncomputable def τ {ι : Type*} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι ℂ) (t : ℝ)
@@ -66,6 +67,13 @@ theorem isSupportedOn_E (Λ : Finset σ) (a : σ) (l : ℕ) (B : Matrix (Reg loc
   ⟨(Fintype.card (Reg loc (Λ \ graphNbhd G Λ {a} l)) : ℂ)⁻¹ •
     ptrace (graphNbhd_subset G Λ {a} l) B, (extendId_smul _ _ _).symm⟩
 
+/-- Extension by the identity does not increase the operator norm. -/
+theorem norm_extendId_le {Λ X : Finset σ} (hX : X ⊆ Λ)
+    (A : Matrix (Reg loc X) (Reg loc X) ℂ) : ‖extendId hX A‖ ≤ ‖A‖ := by
+  rw [extendId_eq_kronecker]
+  exact (l2_opNorm_submatrix_le _ (Equiv.injective _) (Equiv.injective _)).trans
+    (l2_opNorm_kronecker_one_le A)
+
 section Nonempty
 
 variable [∀ i, Nonempty (loc i)]
@@ -104,6 +112,107 @@ theorem eq_quasilocal_ce (Λ : Finset σ) (a : σ) (l : ℕ) :
   refine ⟨h1, hpos, fun B h0 h1' => ⟨hpos B h0, ?_⟩, hfix⟩
   have := hpos (1 - B) (sub_nonneg.2 h1')
   rwa [E_sub, h1, sub_nonneg] at this
+
+/-! ### D4.2 contractivity and the twirl bound
+
+`E_{i,l}` is the uniform average of the conjugations by the Weyl operators `1 ⊗ W` on
+`Y = Λ \ N_l(a_i)` (`Matrix.complementaryWeylTwirl`), the finite form of the Haar twirl
+`∏_{y ∈ Y} T_y`. -/
+
+section Twirl
+
+variable {S T : Finset σ}
+
+omit [∀ i, Fintype (loc i)] [∀ i, DecidableEq (loc i)] [∀ i, Nonempty (loc i)] in
+private theorem restr_sdiff_sdiff_glue (h : S ⊆ T) (x : Reg loc S) (z : Reg loc (T \ S)) :
+    restr (S := T \ (T \ S)) Finset.sdiff_subset (glue x z) =
+      regEquivOfEq (Finset.sdiff_sdiff_eq_self h).symm x := by
+  funext j
+  have hj : (j : σ) ∈ S := by simpa [Finset.sdiff_sdiff_eq_self h] using j.2
+  simp [restr, glue, hj, Finset.restrict₂]
+
+omit [∀ i, Fintype (loc i)] [∀ i, Nonempty (loc i)] in
+private theorem extendId_sdiff_submatrix_glueEquiv (h : S ⊆ T)
+    (A : Matrix (Reg loc (T \ S)) (Reg loc (T \ S)) ℂ) :
+    (extendId (Finset.sdiff_subset : T \ S ⊆ T) A).submatrix (glueEquiv h) (glueEquiv h) =
+      (1 : Matrix (Reg loc S) (Reg loc S) ℂ) ⊗ₖ A := by
+  ext ⟨x, z⟩ ⟨x', z'⟩
+  simp only [submatrix_apply, glueEquiv_apply, extendId, of_apply, kroneckerMap_apply,
+    restr_sdiff_sdiff_glue h, (regEquivOfEq _).injective.eq_iff, restr_glue_compl, one_apply]
+  split_ifs <;> simp
+
+private noncomputable def regZModEquiv (C : Type*) [Fintype C] [Nonempty C] :
+    C ≃ ZMod (Fintype.card C) :=
+  (Fintype.equivFin C).trans (ZMod.finEquiv (Fintype.card C)).toEquiv
+
+private noncomputable def regWeylRoot (C : Type*) [Fintype C] : ℂ :=
+  Complex.exp (2 * Real.pi * Complex.I / Fintype.card C)
+
+private theorem isPrimitiveRoot_regWeylRoot (C : Type*) [Fintype C] [Nonempty C] :
+    IsPrimitiveRoot (regWeylRoot C) (Fintype.card C) :=
+  Complex.isPrimitiveRoot_exp _ Fintype.card_ne_zero
+
+/-- D4.2. In product coordinates `S | T \ S`, the normalized conditional expectation is the
+complementary Weyl twirl. -/
+theorem condExpect_submatrix_eq_complementaryWeylTwirl (h : S ⊆ T)
+    (B : Matrix (Reg loc T) (Reg loc T) ℂ) :
+    (condExpect h B).submatrix (glueEquiv h) (glueEquiv h) =
+      Matrix.complementaryWeylTwirl (regZModEquiv (Reg loc (T \ S)))
+        (regWeylRoot (Reg loc (T \ S))) (B.submatrix (glueEquiv h) (glueEquiv h)) := by
+  have : NeZero (Fintype.card (Reg loc (T \ S))) := ⟨Fintype.card_ne_zero⟩
+  rw [Matrix.complementaryWeylTwirl_eq_smul_traceRight_kronecker_one _
+    (isPrimitiveRoot_regWeylRoot _)]
+  ext ⟨x, z⟩ ⟨y, w⟩
+  simp only [Matrix.submatrix_apply, glueEquiv_apply, condExpect, Matrix.smul_apply,
+    extendId_apply_glue, Matrix.kronecker_apply, Matrix.one_apply, smul_eq_mul]
+  by_cases hzw : z = w
+  · subst w
+    simp only [if_pos, mul_one]
+    rfl
+  · simp [hzw]
+
+/-- D4.2. The normalized conditional expectation is contractive: `‖E B‖ ≤ ‖B‖`. -/
+theorem norm_condExpect_le (h : S ⊆ T) (B : Matrix (Reg loc T) (Reg loc T) ℂ) :
+    ‖condExpect h B‖ ≤ ‖B‖ := by
+  have : NeZero (Fintype.card (Reg loc (T \ S))) := ⟨Fintype.card_ne_zero⟩
+  rw [← l2_opNorm_submatrix (condExpect h B) (glueEquiv h) (glueEquiv h),
+    condExpect_submatrix_eq_complementaryWeylTwirl h B,
+    ← l2_opNorm_submatrix B (glueEquiv h) (glueEquiv h)]
+  exact Matrix.norm_complementaryWeylTwirl_le _ (isPrimitiveRoot_regWeylRoot _) _
+
+/-- D4.2. `E_{i,l}` is contractive in operator norm. -/
+theorem norm_E_le (Λ : Finset σ) (a : σ) (l : ℕ) (B : Matrix (Reg loc Λ) (Reg loc Λ) ℂ) :
+    ‖E G Λ a l B‖ ≤ ‖B‖ :=
+  norm_condExpect_le _ B
+
+/-- D4.4.9. `‖B - E B‖ ≤ sup_U ‖[B, U]‖` over the contractions `U` supported in `T \ S`. -/
+theorem norm_sub_condExpect_le (h : S ⊆ T) (B : Matrix (Reg loc T) (Reg loc T) ℂ) (ε : ℝ)
+    (hcomm : ∀ U : Matrix (Reg loc T) (Reg loc T) ℂ,
+      IsSupportedOn (Finset.sdiff_subset : T \ S ⊆ T) U → ‖U‖ ≤ 1 → ‖B * U - U * B‖ ≤ ε) :
+    ‖B - condExpect h B‖ ≤ ε := by
+  have : NeZero (Fintype.card (Reg loc (T \ S))) := ⟨Fintype.card_ne_zero⟩
+  have hζ := isPrimitiveRoot_regWeylRoot (Reg loc (T \ S))
+  rw [← l2_opNorm_submatrix (B - condExpect h B) (glueEquiv h) (glueEquiv h)]
+  change ‖B.submatrix (glueEquiv h) (glueEquiv h) -
+    (condExpect h B).submatrix (glueEquiv h) (glueEquiv h)‖ ≤ ε
+  rw [condExpect_submatrix_eq_complementaryWeylTwirl h B]
+  refine Matrix.norm_sub_complementaryWeylTwirl_le _ hζ _ _ fun a b => ?_
+  let W := Matrix.reindexedWeyl (regZModEquiv (Reg loc (T \ S)))
+    (regWeylRoot (Reg loc (T \ S))) a b
+  let U := extendId (Finset.sdiff_subset : T \ S ⊆ T) W
+  have hU : ‖U‖ ≤ 1 := (norm_extendId_le _ W).trans_eq
+    (CStarRing.norm_of_mem_unitary (Matrix.reindexedWeyl_mem_unitary _ hζ a b))
+  have hb := hcomm U ⟨W, rfl⟩ hU
+  rw [← l2_opNorm_submatrix (B * U - U * B) (glueEquiv h) (glueEquiv h)] at hb
+  change ‖(B * U).submatrix (glueEquiv h) (glueEquiv h) -
+    (U * B).submatrix (glueEquiv h) (glueEquiv h)‖ ≤ ε at hb
+  rw [← Matrix.submatrix_mul_equiv B U (glueEquiv h) (glueEquiv h) (glueEquiv h),
+    ← Matrix.submatrix_mul_equiv U B (glueEquiv h) (glueEquiv h) (glueEquiv h),
+    show U.submatrix (glueEquiv h) (glueEquiv h) = 1 ⊗ₖ W from
+      extendId_sdiff_submatrix_glueEquiv h W] at hb
+  exact hb
+
+end Twirl
 
 end Nonempty
 
