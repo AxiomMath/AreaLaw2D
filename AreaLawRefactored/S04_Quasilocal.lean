@@ -2,6 +2,7 @@ import AreaLawRefactored.S04_Quasilocal.Propagation
 import AreaLawRefactored.S04_Quasilocal.Filter
 import AreaLawRefactored.S04_Quasilocal.CenteredFilter
 import AreaLawRefactored.S04_Quasilocal.Locality
+import AreaLawRefactored.S04_Quasilocal.Positive
 import AreaLawRefactored.S04_Quasilocal.Roots
 import AreaLawRefactored.S04_Quasilocal.Truncation
 
@@ -20,6 +21,7 @@ Digest `digest/04-quasilocal.md`, paper `paper/sections/03-quasilocal.tex`. Grap
   `AreaLawForMathlib/Analysis/Fourier/GevreyBump.lean`, `GevreyBumpFourier.lean`.
 * `S04_Quasilocal/CenteredFilter.lean`: §4.2, D4.7.
 * `S04_Quasilocal/Locality.lean`: §4.2, D4.8.
+* `S04_Quasilocal/Positive.lean`: §4.2, Proposition 4.3 (D4.6).
 * `S04_Quasilocal/Roots.lean`: §4.2, Lemma 4.4 (D4.10); D4.9 is
   `CFC.norm_sqrt_sub_sqrt_le` (`AreaLawForMathlib/Analysis/CStarAlgebra/SqrtHolder.lean`).
 * `S04_Quasilocal/VolumeFree.lean`, `GroundState.lean`, `Crossing.lean`: §4.3, D4.12–D4.14.
