@@ -1,0 +1,4 @@
+**Upstream defect:** AxiomMath/axile (see link below) — AxiomCode's part: none beyond noting that `capabilities-sidecar axile open_workspace` on a project with a large `.lake/packages` (7.8 GB here) does not become ready in any reasonable time; agents should not use it for such projects and should say so instead of waiting.
+
+A subagent doing Lean checks on a Physlib/Mathlib project called `open_workspace`; it was still copying after ~15 min and was closed. Its `mcp__axile__diagnostics` calls also timed out twice: that is already #12725/#12726 (60 s HTTP MCP cap). The Physlib gate decline is #14281. Root cause of the copy: axile `_stage_copy_tree` copytree of the whole tree, no build-output ignore (axile issue linked in comment below). Local record: .axiomcode/bugs/ in the project.
+Axile issue: https://github.com/AxiomMath/axile/issues/3329
