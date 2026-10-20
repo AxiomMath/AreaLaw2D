@@ -14,6 +14,7 @@ namespace AreaLaw
 
 open MeasureTheory Matrix Finset Arealaw
 open OpenAI (condExpect)
+open Quasilocal (M)
 open scoped Matrix.Norms.L2Operator
 
 /-! ## The kernel tail (D4.8.3) -/

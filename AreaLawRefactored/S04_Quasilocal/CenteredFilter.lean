@@ -124,10 +124,13 @@ end Tau
 
 /-! ## D4.7 The centered filtered terms -/
 
-/-- D4.7. The centered filtered term `M_i = ∫_ℝ f(t) τ_t(h_i) dt - ⟨Ω, h_i Ω⟩ I`. -/
-noncomputable def M (H : Matrix ι ι ℂ) (Ω : ι → ℂ) (f : ℝ → ℝ) (h : Matrix ι ι ℂ) :
+/-- D4.7. The centered filtered term `M_i = ∫_ℝ f(t) τ_t(h_i) dt - ⟨Ω, h_i Ω⟩ I`. In the
+section namespace `Quasilocal`: `AreaLaw.M` is the moment generating function of D3.1. -/
+noncomputable def Quasilocal.M (H : Matrix ι ι ℂ) (Ω : ι → ℂ) (f : ℝ → ℝ) (h : Matrix ι ι ℂ) :
     Matrix ι ι ℂ :=
   (∫ t, f t • τ H t h) - (star Ω ⬝ᵥ (h *ᵥ Ω)) • 1
+
+open Quasilocal (M)
 
 /-- D4.7. With `f` from D4.5 at `δ = Δ/2`,
 `M_i = ∫_ℝ f(t) τ_t(h_i) dt - ⟨Ω, h_i Ω⟩ I`.
