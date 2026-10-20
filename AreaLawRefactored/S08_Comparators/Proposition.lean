@@ -1,5 +1,9 @@
-import AreaLawRefactored.S08_Comparators.Interfaces
-import AreaLawRefactored.S08_Comparators.Entropy
+import AreaLawRefactored.S08_Comparators.Basics
+import AreaLawRefactored.S08_Comparators.Labels
+import AreaLawRefactored.S08_Comparators.Pin
+import AreaLawRefactored.S08_Comparators.SharpUpper
+import AreaLawRefactored.S08_Comparators.Compression
+import AreaLawRefactored.S08_Comparators.Lower
 
 /-!
 # §8.1 Proposition 8.1
@@ -18,10 +22,20 @@ namespace AreaLaw.Comparators
 
 universe u v
 
-/-- D8.8 **Proposition 8.1**, from the anchors D8.12, D8.13, D8.20, D8.22, D8.35 (D8.36 and
-D8.30.6 are proved in `Entropy.lean`). -/
-theorem prop_8_1_of (h12 : Step_8_12.{u}) (h13 : Step_8_13.{u, v}) (h20 : Step_8_20.{u, v})
-    (h22 : Step_8_22.{u, v}) (h35 : Step_8_35.{u, v}) :
+/-- D8.8 **Proposition 8.1** (upper and lower norm comparisons). Assume D8.1 (incl. nesting),
+D8.2, D8.6, D8.7. There are labels `λ_k` and nonzero vectors
+`pre_k = π^{λ_k}_R (Ω̃ ⊗ Bell_{CR})^{⊗k} ∈ 𝒮_k`, `‖pre_k‖ ≤ 1`, physical mean-energy eigenvectors of
+eigenvalue `Ẽ₀` with label `λ_k` on `C` and on `R`. For every tree, `N = ‖𝓜^{-s} pre_k‖`,
+`v = 𝓜^{-s} pre_k / N`, `E_def = (⟨v, \overline{H̃} v⟩ - Ẽ₀)/g̃`:
+rough: for `0 < τ < 1/2`, (comparator:rough-upper) (with D8.4) and (comparator:rough-lower);
+sharp: if D8.5 holds and `a ≤ c/√𝓑`, then `g^pre_{j,g} ≥ 0`, (comparator:sharp-upper) and
+(comparator:sharp-lower); and the exact identity (comparator:entropy-identity)
+`2S_X + g^pre_{j,g} - g^post_{j,g} = I(X:V_{j,g}) + I(X:Y_{j,g}V_{j,g})`.
+Quantifiers: `k → ∞` with the physical system, auxiliary dimensions, status collection, tree, `a`,
+`τ` fixed; `o_k(1)` uniform over the terminal probabilities (the trees); the constants `C` of the
+rough bounds universal, those of the sharp bounds depending only on `C₀, c₀`; no dependence on
+system dimensions. -/
+theorem prop_8_1 :
     ∃ a₀ C : ℝ, 0 < a₀ ∧ 0 < C ∧ ∀ C₀ c₀ : ℝ, 0 < C₀ → 0 < c₀ →
     ∃ c C₁ C₂ : ℝ, 0 < c ∧ 0 < C₁ ∧ 0 < C₂ ∧
     ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
@@ -42,6 +56,17 @@ theorem prop_8_1_of (h12 : Step_8_12.{u}) (h13 : Step_8_13.{u, v}) (h20 : Step_8
           τ < 1 / 2 → SharpUpper D Γ E C₁ a 𝓑 l ∧ SharpLower D Γ E C₂ a τ 𝓑 l) ∧
         ∀ s g, 2 * D.S X + gpre D Γ s g - gpost D Γ s g =
           D.I X (Γ.V s g) + D.I X (Γ.Y s g ∪ Γ.V s g) := by
+  -- D8.8.1–D8.8.4: the anchors
+  have h1 : Step_8_1.{u, v} := step_8_1
+  have h10 : Step_8_10.{u} := step_8_10
+  have h11 : Step_8_11.{u} := step_8_11
+  have h12 : Step_8_12.{u} := step_8_12 h11
+  have h13 : Step_8_13.{u, v} := step_8_13 h11
+  have h15 : Step_8_15.{u, v} := step_8_15
+  have h16 : Step_8_16.{u, v} := step_8_16
+  have h20 := step_8_20 h1 h10 h11 h15 h16
+  have h22 := step_8_22 h1 h10 h11 h15 h16
+  have h35 := step_8_35 h1 h13 (step_8_31 h10)
   obtain ⟨a₁, ha₁, hU⟩ := h20
   obtain ⟨a₂, C, ha₂, hC, hL, hLs⟩ := h35
   refine ⟨min a₁ a₂, C, lt_min ha₁ ha₂, hC, fun C₀ c₀ hC₀ hc₀ => ?_⟩

@@ -1164,7 +1164,7 @@ private theorem roughLower_of_pin (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}
   · refine (tendsto_lower_remainder hδ Cf K).congr' ?_
     filter_upwards [eventually_ne_atTop 0] with k hk
     rw [if_neg hk]
-  intro k T
+  intro k _ T
   dsimp only
   rcases Nat.eq_zero_or_pos k with rfl | hk
   · rw [if_pos rfl, Edef_zero, Nat.cast_zero, div_zero, sub_self]
@@ -1281,8 +1281,7 @@ private theorem sharpLower_of_pin (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}
 
 end Assembly
 
-/-- D8.35 (`comparator:rough-lower`, `comparator:sharp-lower`), with the sharp bound for the copy
-numbers `k ≥ 1`. -/
+/-- D8.35 (`comparator:rough-lower`, `comparator:sharp-lower`), the sharp bound written out. -/
 theorem step_8_35_pos (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}) (h31 : Step_8_31.{u, v}) :
     ∃ a₀ C : ℝ, 0 < a₀ ∧ 0 < C ∧
     (∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
@@ -1316,5 +1315,10 @@ theorem step_8_35_pos (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}) (h31 : Ste
     obtain ⟨δ, hδ, hpin⟩ := hS' D E Γ l hl 𝓑 h𝓑 a τ ha hac hτ hτ'
     -- D8.35.1–4
     exact sharpLower_of_pin h1 h13 Γ hl ha hτ hτ' hC' h𝓑.one_le hδ hpin
+
+/-- D8.35 (`comparator:rough-lower`, `comparator:sharp-lower`). -/
+theorem step_8_35 (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}) (h31 : Step_8_31.{u, v}) :
+    Step_8_35.{u, v} :=
+  step_8_35_pos h1 h13 h31
 
 end AreaLaw.Comparators

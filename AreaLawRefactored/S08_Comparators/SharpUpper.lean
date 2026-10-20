@@ -617,7 +617,7 @@ theorem step_8_22 (h1 : Step_8_1.{u, v}) (h10 : Step_8_10.{u}) (h11 : Step_8_11.
     (K / 2) * (6 * Cw * Real.log ((k : ℝ) + 2) + (Cs + Ns * Real.log (k + 1)))
   set M := ∑ s, ∑ g, |gpost D Γ s g|
   refine ⟨fun k => if k = 0 then |base| + (1 / 2) * (a * K) * M else Gk k / k, ?_,
-    fun k T => ?_⟩
+    fun k _ T => ?_⟩
   · have hev : (fun k : ℕ => Gk k / k) =ᶠ[atTop]
         fun k => if k = 0 then |base| + (1 / 2) * (a * K) * M else Gk k / k := by
       filter_upwards [eventually_ge_atTop 1] with k hk

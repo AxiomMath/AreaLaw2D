@@ -942,14 +942,14 @@ theorem commute_eval_of_commute {m : Type*} [Fintype m] [DecidableEq m] {ι : Ty
 variable {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ}
 
 omit [DecidableEq σ] in
-theorem phys_mem_physReg (v : σ) : Site.phys v ∈ physReg (Finset.univ : Finset σ) :=
+private theorem phys_mem_physReg (v : σ) : Site.phys v ∈ physReg (Finset.univ : Finset σ) :=
   Finset.mem_map_of_mem _ (Finset.mem_univ v)
 
 omit [Fintype σ] [DecidableEq σ] in
-theorem C_not_mem_physReg (Q : Finset σ) : Site.C ∉ physReg Q := by simp [physReg]
+private theorem C_not_mem_physReg (Q : Finset σ) : Site.C ∉ physReg Q := by simp [physReg]
 
 omit [Fintype σ] [DecidableEq σ] in
-theorem R_not_mem_physReg (Q : Finset σ) : Site.R ∉ physReg Q := by simp [physReg]
+private theorem R_not_mem_physReg (Q : Finset σ) : Site.R ∉ physReg Q := by simp [physReg]
 
 theorem compl_C : ({Site.C} : Finset (Site σ))ᶜ = physReg Finset.univ ∪ {Site.R} := by
   ext f

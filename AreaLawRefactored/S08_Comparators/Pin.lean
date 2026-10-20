@@ -106,7 +106,8 @@ omit [Fintype σ] in
     (z : Reg (fun v => Fin (n v)) X) : glueXC x c z .R = x .R := rfl
 
 omit [Fintype σ] in
-@[simp] theorem restrictX_replaceX (x : SiteConfig n) (z : Reg (fun v => Fin (n v)) X) :
+@[simp] private theorem restrictX_replaceX (x : SiteConfig n)
+    (z : Reg (fun v => Fin (n v)) X) :
     restrictX (replaceX x z) = z :=
   funext fun v => by simp [restrictX, replaceX, v.2]
 
@@ -355,7 +356,8 @@ theorem re_star_mulVec_le {m : Type*} [Fintype m] {P : Matrix m m ℂ}
   linarith
 
 omit [Fintype σ] [DecidableEq σ] in
-theorem commute_rpow_of_commute {m : Type*} [Fintype m] [DecidableEq m] {Z A : Matrix m m ℂ}
+private theorem commute_rpow_of_commute {m : Type*} [Fintype m] [DecidableEq m]
+    {Z A : Matrix m m ℂ}
     (h : Commute Z A) (r : ℝ) : Commute Z (A ^ r) := by
   rw [CFC.rpow_def]
   exact (Commute.cfc_nnreal h.symm _).symm
@@ -363,7 +365,8 @@ theorem commute_rpow_of_commute {m : Type*} [Fintype m] [DecidableEq m] {Z A : M
 omit [Fintype σ] [DecidableEq σ] in
 /-- A matrix commuting with every leaf commutes with the root of a mean tree (no positivity
 needed: the root is built from products and real powers of the leaves). -/
-theorem commute_eval_of_commute {ι m : Type*} [Fintype m] [DecidableEq m] {Z : Matrix m m ℂ}
+private theorem commute_eval_of_commute {ι m : Type*} [Fintype m] [DecidableEq m]
+    {Z : Matrix m m ℂ}
     {A : ι → Matrix m m ℂ} (h : ∀ j, Commute Z (A j)) (T : Transport.MeanTree ι) :
     Commute Z (T.eval A) := by
   induction T with

@@ -1528,7 +1528,7 @@ theorem step_8_20 (h1 : Step_8_1.{u, v}) (h10 : Step_8_10.{u}) (h11 : Step_8_11.
       rw [Real.log_mul hs.ne' hN0.ne'] at hlog
       simp only [Gc]
       linarith
-  refine ⟨fun k => if k = 0 then |base| else G k / k, ?_, fun k T => ?_⟩
+  refine ⟨fun k => if k = 0 then |base| else G k / k, ?_, fun k _ T => ?_⟩
   · have hev : (fun k : ℕ => Gm k / k) =ᶠ[atTop]
         fun k => if k = 0 then |base| else G k / k := by
       filter_upwards [eventually_ge_atTop (max k₀ 1)] with k hk

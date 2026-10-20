@@ -320,11 +320,14 @@ noncomputable def gpre (s : St) (g : Fin K) : ℝ :=
 noncomputable def gpost (s : St) (g : Fin K) : ℝ :=
   D.S (Γ.U s g) + D.S (Γ.U s g ∪ Γ.Y s g) - D.S (Γ.Y s g)
 
+/-! The copy number `k` of the four comparisons is `≥ 1`
+(D8.8: `\overline{H̃} = k⁻¹ ∑_{i=1}^k H̃^{(i)}`, `pre_k ∈ 𝒮_k`); `k = 0` is excluded. -/
+
 /-- D8.8 (`comparator:rough-upper`), `s = 1/4`, `W = aK`:
 `-log N²/k ≤ 2 log d_* - log z + 2sW (2B_sh/z + 2B_exc) + o_k(1)`, uniformly in the tree. -/
 def RoughUpper [Fintype St] [DecidableEq St] (a : ℝ)
     (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))) (Bsh Bexc : ℝ) : Prop :=
-  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ (k : ℕ) (T : Transport.MeanTree St),
+  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ k : ℕ, 0 < k → ∀ T : Transport.MeanTree St,
     -Real.log (N2 D Γ E T a k (l k)) / k ≤
       2 * Real.log E.d - Real.log E.z + 2 * (1 / 4) * (a * K) * (2 * Bsh / E.z + 2 * Bexc) + r k
 
@@ -333,7 +336,7 @@ def RoughUpper [Fintype St] [DecidableEq St] (a : ℝ)
 tree. -/
 def RoughLower [Fintype St] [DecidableEq St] (C a τ : ℝ)
     (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))) : Prop :=
-  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ (k : ℕ) (T : Transport.MeanTree St),
+  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ k : ℕ, 0 < k → ∀ T : Transport.MeanTree St,
     2 * (1 / 4) * (a * K) * (2 * E.S' - C * (τ * Real.log E.d + Real.binEntropy τ / a) -
         C * (Edef D Γ E T a k (l k) / τ) * E.S') - r k ≤
       -Real.log (N2 D Γ E T a k (l k)) / k
@@ -342,7 +345,7 @@ def RoughLower [Fintype St] [DecidableEq St] (C a τ : ℝ)
 `-log N²/k ≤ 2 log d_* - log z + 2sW [⟨g^post⟩_av + C (a𝓑 + |log z|/a)] + o_k(1)`. -/
 def SharpUpper [Fintype St] [DecidableEq St] (C a 𝓑 : ℝ)
     (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))) : Prop :=
-  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ (k : ℕ) (T : Transport.MeanTree St),
+  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ k : ℕ, 0 < k → ∀ T : Transport.MeanTree St,
     -Real.log (N2 D Γ E T a k (l k)) / k ≤
       2 * Real.log E.d - Real.log E.z +
         2 * (1 / 4) * (a * K) * (avg T (gpost D Γ) + C * (a * 𝓑 + |Real.log E.z| / a)) + r k
@@ -352,7 +355,8 @@ leaves of positive weight): `-log N²/k ≥ 2sW [2S' + (1-τ)⟨g^pre⟩_av - C(
 - C (E_def/τ)(S' + g_max)] - o_k(1)`. -/
 def SharpLower [Fintype St] [DecidableEq St] (C a τ 𝓑 : ℝ)
     (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))) : Prop :=
-  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ (k : ℕ) (T : Transport.MeanTree St) (G : ℝ),
+  ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ k : ℕ, 0 < k →
+    ∀ (T : Transport.MeanTree St) (G : ℝ),
     (∀ s g, T.weight s ≠ 0 → gpre D Γ s g ≤ G) →
     2 * (1 / 4) * (a * K) * (2 * E.S' + (1 - τ) * avg T (gpre D Γ) -
         C * (τ * Real.log E.d + Real.binEntropy τ / a + a * 𝓑) -
