@@ -531,6 +531,198 @@ theorem step_3_7 (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1)) {f a
 
 end D37chain
 
+/-! ## D3.8 Clipping bounds log-ratios of filter eigenvalues (D3.8.1) -/
+
+section D381
+
+variable {m : Type*} [Fintype m] [DecidableEq m]
+
+omit [Fintype m] [DecidableEq m] in
+/-- D3.8.1, first order. If `‖c t‖ ≤ ‖c 0‖` for `0 < t < δ` and `c` has derivative `c'` at `0`,
+then `Re ⟨c 0, c'⟩ ≤ 0`. -/
+theorem step_3_8_1_curve {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    {c : ℝ → E} {c' : E} (hc : HasDerivAt c c' 0) {δ : ℝ} (hδ : 0 < δ)
+    (hle : ∀ t ∈ Set.Ioo 0 δ, ‖c t‖ ≤ ‖c 0‖) : (inner ℂ (c 0) c').re ≤ 0 := by
+  have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt (0 : ℝ) (hc.inner ℂ hc)
+  have hfun : (⇑Complex.reCLM ∘ fun t ↦ inner ℂ (c t) (c t)) = fun t ↦ ‖c t‖ ^ 2 := by
+    funext t
+    simp only [Function.comp_apply, Complex.reCLM_apply]
+    rw [← RCLike.re_to_complex, ← @norm_sq_eq_re_inner ℂ]
+  rw [hfun] at hre
+  -- the right difference quotients are `≤ 0`
+  have h0 := le_of_tendsto hre.tendsto_slope_zero_right (by
+    filter_upwards [Ioo_mem_nhdsGT hδ] with t ht
+    have := pow_le_pow_left₀ (norm_nonneg _) (hle t (by simpa using ht)) 2
+    simp only [zero_add, smul_eq_mul]
+    exact mul_nonpos_of_nonneg_of_nonpos (inv_nonneg.2 ht.1.le) (by linarith))
+  simp only [Complex.reCLM_apply, Complex.add_re] at h0
+  rw [← inner_conj_symm c', Complex.conj_re] at h0
+  linarith
+
+/-- D3.8.1. The diagonal variation `t ↦ V diag((x + tv)^{a/2}) V*` (`x > 0`) has derivative
+`V diag((a/2) x^{a/2-1} v) V*` at `0`. -/
+theorem hasDerivAt_conj_diagonal_rpow (V : Matrix m m ℂ) {x : m → ℝ} (hx : ∀ i, 0 < x i)
+    (v : m → ℝ) (a : ℝ) :
+    HasDerivAt (fun t : ℝ ↦ V * diagonal (fun i ↦ (((x i + t * v i) ^ (a / 2) : ℝ) : ℂ)) * Vᴴ)
+      (V * diagonal (fun i ↦ ((a / 2 * x i ^ (a / 2 - 1) * v i : ℝ) : ℂ)) * Vᴴ) 0 := by
+  let C : (m → ℂ) →L[ℝ] Matrix m m ℂ := LinearMap.toContinuousLinearMap
+    { toFun := fun c ↦ V * diagonal c * Vᴴ
+      map_add' := fun c c' ↦ by
+        rw [show diagonal (c + c') = diagonal c + diagonal c' from (diagonal_add c c').symm,
+          Matrix.mul_add, Matrix.add_mul]
+      map_smul' := fun r c ↦ by
+        ext i j
+        simp [mul_apply, diagonal, Finset.mul_sum, mul_assoc, mul_left_comm (r : ℂ)] }
+  have hc : HasDerivAt (fun t : ℝ ↦ fun i ↦ (((x i + t * v i) ^ (a / 2) : ℝ) : ℂ))
+      (fun i ↦ ((a / 2 * x i ^ (a / 2 - 1) * v i : ℝ) : ℂ)) 0 := by
+    rw [hasDerivAt_pi]
+    intro i
+    have h1 : HasDerivAt (fun t : ℝ ↦ x i + t * v i) (v i) 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).mul_const (v i)).const_add (x i)
+    refine (h1.rpow_const (p := a / 2) (Or.inl (by simp [(hx i).ne']))).ofReal_comp.congr_deriv ?_
+    rw [zero_mul, add_zero]
+    congr 1
+    ring
+  exact C.hasFDerivAt.comp_hasDerivAt (0 : ℝ) hc
+
+end D381
+
+section D381chain
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)] {U : Finset σ} {X : ℕ → Finset σ}
+
+/-- D3.8.1. At a maximizer of `N = ‖L_{n-1} ⋯ L_0 Ω‖` over feasible filters on nested regions,
+let `L_j = V diag(x^{a_j/2}) V*` and `ρ_{φ,X_j} = V diag(p) V*` in a common unitary eigenbasis
+(`j < n`, `φ = KΩ`). Moving mass from a free coordinate `i` (`x_i > f_j`) to `k`, D3.7.3 peels
+`K_{>j}` and gives `d log N ∝ (a_j/2)(p_k/x_k - p_i/x_i) ≤ 0`: the KKT hypothesis of
+`step_3_8_2`. -/
+theorem step_3_8_1 (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1)) {f a : ℕ → ℝ}
+    (hf : ∀ j, 0 < f j)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j)) (n : ℕ) {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)}
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' n) Ω‖ ≤ ‖toEuclideanLin (filterProd hX L n) Ω‖)
+    {j : ℕ} (hj : j < n) (ha : 0 < a j)
+    {V : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ} (hV : Vᴴ * V = 1)
+    {x p : Arealaw.Reg loc (X j) → ℝ} (hx : ∀ i, f j ≤ x i) (hsum : ∑ i, x i = 1)
+    (hLj : L j = V * diagonal (fun i ↦ ((x i ^ (a j / 2) : ℝ) : ℂ)) * Vᴴ)
+    (hρ : Arealaw.ptrace (hX j) (vecMulVec (filterProd hX L n *ᵥ WithLp.ofLp Ω)
+      (star (filterProd hX L n *ᵥ WithLp.ofLp Ω))) = V * diagonal (fun i ↦ (p i : ℂ)) * Vᴴ) :
+    ∀ i k, f j < x i → p k / x k ≤ p i / x i := by
+  intro i k hi
+  rcases eq_or_ne i k with rfl | hik
+  · exact le_rfl
+  obtain ⟨k', rfl⟩ : ∃ k', n = j + 1 + k' := ⟨n - 1 - j, by omega⟩
+  have hxpos : ∀ l, 0 < x l := fun l ↦ (hf j).trans_le (hx l)
+  set A := prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) k'
+  set w := toEuclideanLin (filterProd hX L j) Ω
+  let Φ : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ →ₗ[ℂ]
+      Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ :=
+    { toFun := Arealaw.extendId (hX j)
+      map_add' := Arealaw.extendId_add _
+      map_smul' := Arealaw.extendId_smul _ }
+  have hΦ : ∀ M, Φ M = Arealaw.extendId (hX j) M := fun _ ↦ rfl
+  have e2 : ∀ P Q : Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ, ∀ u,
+      toEuclideanLin (P * Q) u = toEuclideanLin P (toEuclideanLin Q u) := fun P Q u ↦ by
+    rw [toLpLin_mul_same]; rfl
+  -- D3.8.1: `N` along feasible variations of `L_j` alone is `‖A Φ(M) w‖`
+  have hN : ∀ M, IsFilter (f j) (a j) M →
+      ‖toEuclideanLin (A * Φ M) w‖ ≤ ‖toEuclideanLin (A * Φ (L j)) w‖ := by
+    intro M hM
+    have hfeas : ∀ l, IsFilter (f l) (a l) (Function.update L j M l) := by
+      intro l
+      rcases eq_or_ne l j with rfl | hl
+      · rw [Function.update_self]; exact hM
+      · rw [Function.update_of_ne hl]; exact hL l
+    have h := hmax _ hfeas
+    have hpre : filterProd hX (Function.update L j M) j = filterProd hX L j :=
+      prodDesc_congr fun l hl ↦ by rw [Function.update_of_ne hl.ne]
+    have hpost : prodDesc (fun l ↦ Arealaw.extendId (hX (j + 1 + l))
+        (Function.update L j M (j + 1 + l))) k' = A :=
+      prodDesc_congr fun l _ ↦ by rw [Function.update_of_ne (by omega)]
+    rw [filterProd_add, filterProd_add, hpre, hpost, Function.update_self, e2, e2] at h
+    simpa only [hΦ, e2] using h
+  -- the variation moving mass from `i` to `k`
+  set v : Arealaw.Reg loc (X j) → ℝ := Pi.single k 1 - Pi.single i 1
+  have hcurve := hasDerivAt_conj_diagonal_rpow V hxpos v (a j)
+  have hle : ∀ t ∈ Set.Ioo (0 : ℝ) (x i - f j),
+      ‖toEuclideanLin (A * Φ (V * diagonal (fun l ↦ (((x l + t * v l) ^ (a j / 2) : ℝ) : ℂ)) *
+        Vᴴ)) w‖ ≤ ‖toEuclideanLin (A * Φ (V * diagonal (fun l ↦ (((x l + 0 * v l) ^ (a j / 2) :
+          ℝ) : ℂ)) * Vᴴ)) w‖ := by
+    intro t ht
+    simp only [zero_mul, add_zero, ← hLj]
+    refine hN _ ⟨V, hV, _, fun l ↦ ?_, ?_, rfl⟩
+    · by_cases hlk : l = k
+      · subst hlk; simp [v, hik.symm]; linarith [hx l, ht.1]
+      · by_cases hli : l = i
+        · subst hli; simp [v, hlk]; linarith [ht.2]
+        · simp [v, hlk, hli, hx l]
+    · simp only [v, Pi.sub_apply, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib,
+        ← Finset.mul_sum]
+      simp [hsum]
+  let T : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ →L[ℂ]
+      EuclideanSpace ℂ (Arealaw.Reg loc U) := LinearMap.toContinuousLinearMap
+    { toFun := fun M ↦ toEuclideanLin (A * Φ M) w
+      map_add' := fun M M' ↦ by simp [Matrix.mul_add]
+      map_smul' := fun c M ↦ by simp }
+  have hder := step_3_8_1_curve ((T.restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) hcurve)
+    (by linarith) hle
+  simp only [Function.comp_apply, ContinuousLinearMap.coe_restrictScalars'] at hder
+  change (inner ℂ (toEuclideanLin (A * Φ _) w) (toEuclideanLin (A * Φ _) w)).re ≤ 0 at hder
+  simp only [zero_mul, add_zero, ← hLj] at hder
+  -- the derivative is `G L_j` with `G = V diag((a_j/2) v / x) V*`
+  set G := V * diagonal (fun l ↦ ((a j / 2 * (v l / x l) : ℝ) : ℂ)) * Vᴴ
+  have hGK : V * diagonal (fun l ↦ ((a j / 2 * x l ^ (a j / 2 - 1) * v l : ℝ) : ℂ)) * Vᴴ =
+      G * L j := by
+    rw [hLj, show G * (V * diagonal (fun i ↦ ((x i ^ (a j / 2) : ℝ) : ℂ)) * Vᴴ) =
+      V * (diagonal (fun l ↦ ((a j / 2 * (v l / x l) : ℝ) : ℂ)) * (Vᴴ * V) *
+        diagonal (fun i ↦ ((x i ^ (a j / 2) : ℝ) : ℂ))) * Vᴴ by simp only [G, Matrix.mul_assoc],
+      hV, Matrix.mul_one, diagonal_mul_diagonal]
+    congr 3
+    funext l
+    rw [Real.rpow_sub_one (hxpos l).ne']
+    push_cast
+    field_simp
+  -- D3.7.3: peel `K_{>j}`, leaving `Re Tr(ρ G)`
+  have hK : IsUnit A.det :=
+    isUnit_det_filterProd (X := fun l ↦ X (j + 1 + l)) (fun l ↦ hX (j + 1 + l))
+      (fun l ↦ (hL (j + 1 + l)).isUnit_det (hf _)) k'
+  have hM : A * Φ (G * L j) = A * Arealaw.extendId (hX j) G * A⁻¹ * (A * Φ (L j)) := by
+    simp only [hΦ, Arealaw.extendId_mul, Matrix.mul_assoc, nonsing_inv_mul_cancel_left _ _ hK]
+  have hφ : toEuclideanLin (A * Φ (L j)) w =
+      WithLp.toLp 2 (filterProd hX L (j + 1 + k') *ᵥ WithLp.ofLp Ω) := by
+    rw [hΦ, ← e2, filterProd_add]; rfl
+  have hc := fun l (hl : l < k') ↦ step_3_7 hX hnest hf hL (j + 1 + k') hmax
+    (j := j + 1 + l) (by omega)
+  rw [hGK, hM, e2 _ (A * Φ (L j)), hφ] at hder
+  simp only [EuclideanSpace.inner_eq_star_dotProduct, toLpLin_apply] at hder
+  rw [dotProduct_comm, step_3_7_3_prodDesc hX hnest j k' _ (fun l _ ↦ (hL _).isUnit_det (hf _))
+    hc, Arealaw.dotProduct_extendId_mulVec, hρ] at hder
+  -- `Tr(V diag(p) V* V diag(c) V*) = ∑ p_l c_l`
+  rw [show V * diagonal (fun i ↦ (p i : ℂ)) * Vᴴ * G =
+      V * (diagonal (fun i ↦ (p i : ℂ)) * (Vᴴ * V) *
+        diagonal (fun l ↦ ((a j / 2 * (v l / x l) : ℝ) : ℂ))) * Vᴴ by
+      simp only [G, Matrix.mul_assoc], hV, Matrix.mul_one, diagonal_mul_diagonal, trace_mul_cycle,
+    hV, Matrix.one_mul, trace_diagonal] at hder
+  have hreal : ∑ l, p l * (a j / 2 * (v l / x l)) = a j / 2 * (p k / x k - p i / x i) := by
+    have hv : ∀ l, p l * (a j / 2 * (v l / x l)) =
+        (if l = k then a j / 2 * (p k / x k) else 0) -
+          (if l = i then a j / 2 * (p i / x i) else 0) := by
+      intro l
+      simp only [v, Pi.sub_apply, Pi.single_apply]
+      split_ifs with h1 h2 h2 <;> subst_vars <;> first | exact absurd rfl hik | ring
+    simp only [hv, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    ring
+  have hsum' : (∑ l, (p l : ℂ) * ((a j / 2 * (v l / x l) : ℝ) : ℂ)).re =
+      a j / 2 * (p k / x k - p i / x i) := by
+    rw [← hreal]; push_cast; simp [Complex.re_sum]
+  rw [hsum'] at hder
+  nlinarith
+
+end D381chain
+
 /-! ## D3.9 The optimized vector has small excitation energy -/
 
 section D39
