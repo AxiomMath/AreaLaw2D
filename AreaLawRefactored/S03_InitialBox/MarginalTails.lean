@@ -1129,6 +1129,48 @@ theorem step_3_2_3 (Λ B : Finset (ℤ × ℤ)) (R q : ℕ) (hq : 1 ≤ q) :
   gcongr
   exact h2
 
+/-- D3.2.4. `C_M = 32 (M + 2) √((1 + ϑ) C₁)`. -/
+noncomputable def C_M (ϑ C₁ M : ℝ) : ℝ := 32 * (M + 2) * √((1 + ϑ) * C₁)
+
+/-- D3.2.4. If `𝓑 ≤ C₁ (1 + b')` and the tail of Lemma 3.1 at `w = C_M √(1 + b') log(n + 2)` is
+`P ≤ 2 e^{e/2} exp(-w / (32 √((1 + ϑ) 𝓑)))`, then `P ≤ (n + 2)^{-M}` for every `n ≥ 1`. -/
+theorem step_3_2_4 {ϑ 𝓑 C b M P : ℝ} {n : ℕ} (hn : 1 ≤ n) (hM : 0 ≤ M) (hϑ : 0 ≤ ϑ)
+    (h𝓑 : 0 < 𝓑) (hb : 0 ≤ b) (h𝓑C : 𝓑 ≤ C * (1 + b))
+    (htail : P ≤ 2 * Real.exp (Real.exp 1 / 2) * Real.exp (-(C_M ϑ C M * √(1 + b) *
+      Real.log (n + 2) / (32 * √((1 + ϑ) * 𝓑))))) :
+    P ≤ ((n : ℝ) + 2) ^ (-M) := by
+  set L := Real.log ((n : ℝ) + 2)
+  have hn' : (3 : ℝ) ≤ n + 2 := by linarith [(by exact_mod_cast hn : (1 : ℝ) ≤ n)]
+  have hL : 0 ≤ L := Real.log_nonneg (by linarith)
+  have hs : 0 < √((1 + ϑ) * 𝓑) := Real.sqrt_pos.2 (by positivity)
+  -- `w / (32 √((1 + ϑ) 𝓑)) ≥ (M + 2) log(n + 2)`
+  have hst : √((1 + ϑ) * 𝓑) ≤ √((1 + ϑ) * C) * √(1 + b) := by
+    rw [← Real.sqrt_mul (by nlinarith), mul_assoc]
+    exact Real.sqrt_le_sqrt (by gcongr)
+  have hw : (M + 2) * L ≤ C_M ϑ C M * √(1 + b) * L / (32 * √((1 + ϑ) * 𝓑)) := by
+    rw [le_div_iff₀ (by positivity), C_M]
+    have : 0 ≤ (M + 2) * L := by positivity
+    nlinarith
+  -- `2 e^{e/2} < 8 < 9 ≤ (n + 2)²`
+  have h8 : 2 * Real.exp (Real.exp 1 / 2) ≤ Real.exp (2 * L) := by
+    have h4 : Real.exp 1 / 2 ≤ Real.log 4 := by
+      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      linarith [Real.exp_one_lt_d9, Real.log_two_gt_d9]
+    have h2 : Real.log ((2 : ℝ) ^ 3) ≤ Real.log ((3 : ℝ) ^ 2) :=
+      Real.log_le_log (by norm_num) (by norm_num)
+    rw [Real.log_pow, Real.log_pow] at h2
+    have h3 : Real.log 3 ≤ L := Real.log_le_log (by norm_num) hn'
+    calc 2 * Real.exp (Real.exp 1 / 2) ≤ Real.exp (Real.log 2) * Real.exp (Real.log 4) := by
+          rw [Real.exp_log (by norm_num)]; gcongr
+      _ = Real.exp (Real.log 2 + Real.log 4) := (Real.exp_add _ _).symm
+      _ ≤ Real.exp (2 * L) := by
+          gcongr
+          rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; push_cast at h2 ⊢; linarith
+  rw [Real.rpow_def_of_pos (by linarith)]
+  calc P ≤ Real.exp (2 * L) * Real.exp (-((M + 2) * L)) :=
+        htail.trans (by gcongr)
+    _ = Real.exp (L * -M) := by rw [← Real.exp_add]; ring_nf
+
 end D32
 
 end AreaLaw
