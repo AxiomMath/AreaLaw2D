@@ -1332,6 +1332,213 @@ theorem step_3_9_5_region {S U D : Finset σ} (hS : S ⊆ U) (hD : D ⊆ U)
 
 end D393region
 
+section D39assembled
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)]
+
+/-- `|cψ⟩⟨cψ| = |c|² |ψ⟩⟨ψ|` for real `c`. -/
+theorem vecMulVec_smul_self_star {n : Type*} (c : ℝ) (ψ : n → ℂ) :
+    vecMulVec ((c : ℂ) • ψ) (star ((c : ℂ) • ψ)) = ((c ^ 2 : ℝ) : ℂ) • vecMulVec ψ (star ψ) := by
+  ext x y
+  simp only [vecMulVec_apply, Pi.smul_apply, Pi.star_apply, smul_eq_mul, star_mul',
+    Complex.star_def, Complex.conj_ofReal, Matrix.smul_apply]
+  push_cast; ring
+
+/-- D3.9 (lower bound). Under a gap `H - E₀ ≥ g₀ (1 - |Ω⟩⟨Ω|)`, `g₀ ≥ 0`, `‖Ω‖ = 1`:
+`0 ≤ ⟨φ, (H - E₀) φ⟩` for every `φ`. -/
+theorem re_dotProduct_sub_nonneg {n : Type*} [Fintype n] [DecidableEq n] {H : Matrix n n ℂ}
+    {E₀ g₀ : ℝ} {Ω : EuclideanSpace ℂ n} (hΩ1 : ‖Ω‖ = 1) (hg₀ : 0 ≤ g₀)
+    (hgap : OpenAI.HasGlobalGap H (WithLp.ofLp Ω) E₀ g₀) (φ : n → ℂ) :
+    0 ≤ (star φ ⬝ᵥ ((H - (E₀ : ℂ) • 1) *ᵥ φ)).re := by
+  set ψ : EuclideanSpace ℂ n := WithLp.toLp 2 φ
+  have h := gap_le hgap ψ
+  have hcs : ‖⟪Ω, ψ⟫_ℂ‖ ≤ ‖ψ‖ := (norm_inner_le_norm _ _).trans (by rw [hΩ1, one_mul])
+  have h2 : 0 ≤ g₀ * (‖ψ‖ ^ 2 - ‖⟪Ω, ψ⟫_ℂ‖ ^ 2) :=
+    mul_nonneg hg₀ (sub_nonneg.2 (pow_le_pow_left₀ (norm_nonneg _) hcs 2))
+  have hn := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) ψ
+  have hH : ⟪ψ, toEuclideanLin H ψ⟫_ℂ = star φ ⬝ᵥ (H *ᵥ φ) := by
+    rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]; rfl
+  rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm] at hn
+  rw [hH] at h
+  rw [sub_mulVec, smul_mulVec, one_mulVec, dotProduct_sub, dotProduct_smul, Complex.sub_re,
+    smul_eq_mul, Complex.re_ofReal_mul]
+  change 0 ≤ (star φ ⬝ᵥ (H *ᵥ φ)).re - E₀ * (star φ ⬝ᵥ φ).re
+  have hre : (star φ ⬝ᵥ φ).re = ‖ψ‖ ^ 2 := by
+    rw [hn]; norm_cast
+  rw [hre]
+  linarith
+
+/-- D3.9. Let `L_0, …, L_{n-1}` be feasible filters (floors `f_j > 0`, `0 < a_j ≤ ½`,
+`(dim ℋ_{X_j}) f_j < 1`) on nested regions `X_0 ⊆ X_1 ⊆ ⋯ ⊆ U` maximizing
+`N = ‖L_{n-1} ⋯ L_0 Ω‖`, `φ = L_{n-1} ⋯ L_0 Ω / N`. Let `H = ∑_{t ∈ T} h_t`, `h_t = Y_t ⊗ 1`
+Hermitian on `D_t ⊆ U` with `(dim ℋ_{D_t})² ‖h_t‖ ≤ c₀` (D2.10), `HΩ = E₀Ω`, every support
+split by `X_j` disjoint from `X_i` (`i < j`) and inside `X_{j+1}` (D3.5(d)), and at most
+`C' w_j` supports split by `X_j` (D3.5(e)). Then
+`⟨φ, (H - E₀) φ⟩ ≤ (16/e²) c₀ C' ∑_j w_j a_j²`. -/
+theorem step_3_9 {U : Finset σ} {X : ℕ → Finset σ} (hX : ∀ j, X j ⊆ U)
+    (hnest : ∀ j, X j ⊆ X (j + 1)) {f a : ℕ → ℝ} (hf : ∀ j, 0 < f j)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j)) (n : ℕ) {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)}
+    (hΩ1 : ‖Ω‖ = 1)
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' n) Ω‖ ≤ ‖toEuclideanLin (filterProd hX L n) Ω‖)
+    (ha : ∀ j < n, 0 < a j ∧ a j ≤ 1 / 2)
+    (hcard : ∀ j < n, (Fintype.card (Arealaw.Reg loc (X j)) : ℝ) * f j < 1)
+    {ι : Type*} (T : Finset ι) {D : ι → Finset σ} (hD : ∀ t, D t ⊆ U)
+    {Y : (t : ι) → Matrix (Arealaw.Reg loc (D t)) (Arealaw.Reg loc (D t)) ℂ}
+    (hY : ∀ t, (Y t).IsHermitian) {c₀ : ℝ} (hc₀ : 0 ≤ c₀)
+    (hYc : ∀ t ∈ T, (Fintype.card (Arealaw.Reg loc (D t)) : ℝ) ^ 2 * ‖Y t‖ ≤ c₀) {E₀ : ℝ}
+    (hΩ : (∑ t ∈ T, Arealaw.extendId (hD t) (Y t)) *ᵥ WithLp.ofLp Ω =
+      (E₀ : ℂ) • WithLp.ofLp Ω) {g₀ : ℝ} (hg₀ : 0 ≤ g₀)
+    (hgap : OpenAI.HasGlobalGap (∑ t ∈ T, Arealaw.extendId (hD t) (Y t)) (WithLp.ofLp Ω) E₀ g₀)
+    (hd : ∀ t ∈ T, ∀ j < n, (D t ∩ X j).Nonempty → (D t \ X j).Nonempty →
+      D t ⊆ X (j + 1) ∧ ∀ i < j, Disjoint (X i) (D t))
+    {C' : ℝ} {w : ℕ → ℝ}
+    (hcount : ∀ j < n, ((T.filter fun t ↦ (D t ∩ X j).Nonempty ∧ (D t \ X j).Nonempty).card : ℝ)
+      ≤ C' * w j) :
+    let φ := ((‖toEuclideanLin (filterProd hX L n) Ω‖⁻¹ : ℝ) : ℂ) •
+      (filterProd hX L n *ᵥ WithLp.ofLp Ω)
+    0 ≤ (star φ ⬝ᵥ ((∑ t ∈ T, Arealaw.extendId (hD t) (Y t) - (E₀ : ℂ) • 1) *ᵥ φ)).re ∧
+    (star φ ⬝ᵥ ((∑ t ∈ T, Arealaw.extendId (hD t) (Y t) - (E₀ : ℂ) • 1) *ᵥ φ)).re ≤
+      16 / Real.exp 2 * c₀ * C' * ∑ j ∈ Finset.range n, w j * a j ^ 2 := by
+  intro φ
+  classical
+  refine ⟨re_dotProduct_sub_nonneg hΩ1 hg₀ hgap φ, ?_⟩
+  have hΩ0 : Ω ≠ 0 := fun h0 ↦ by rw [h0, norm_zero] at hΩ1; exact zero_ne_one hΩ1
+  set K := filterProd hX L n
+  set ψ := K *ᵥ WithLp.ofLp Ω
+  set N := ‖toEuclideanLin K Ω‖
+  have hLu : ∀ j, IsUnit (L j).det := fun j ↦ (hL j).isUnit_det (hf j)
+  have hK := isUnit_det_filterProd hX hLu n
+  have hN : 0 < N := by
+    refine norm_pos_iff.2 fun h0 ↦ hΩ0 ?_
+    have := congrArg (toEuclideanLin K⁻¹) h0
+    rwa [← LinearMap.comp_apply, ← toLpLin_mul_same, nonsing_inv_mul _ hK, toLpLin_one,
+      LinearMap.id_apply, map_zero] at this
+  have hψψ : star ψ ⬝ᵥ ψ = ((N ^ 2 : ℝ) : ℂ) := by
+    rw [dotProduct_comm]
+    have h := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (toEuclideanLin K Ω)
+    simp only [EuclideanSpace.inner_eq_star_dotProduct, toLpLin_apply] at h
+    rw [h]; push_cast; rfl
+  have hφ1 : star φ ⬝ᵥ φ = 1 := by
+    simp only [φ, star_smul, smul_dotProduct, dotProduct_smul]
+    change ((N⁻¹ : ℝ) : ℂ) • (star (((N⁻¹ : ℝ) : ℂ)) • (star ψ ⬝ᵥ ψ)) = 1
+    rw [hψψ, Complex.star_def, Complex.conj_ofReal, smul_eq_mul, smul_eq_mul, ← Complex.ofReal_mul,
+      ← Complex.ofReal_mul, ← Complex.ofReal_one]
+    congr 1; field_simp
+  -- the marginals of `φ` are those of `KΩ`, rescaled by `N⁻²`
+  have hρφ : ∀ j, Arealaw.ptrace (hX j) (vecMulVec φ (star φ)) =
+      (((N⁻¹) ^ 2 : ℝ) : ℂ) • Arealaw.ptrace (hX j) (vecMulVec ψ (star ψ)) := by
+    intro j
+    rw [← Arealaw.ptrace_smul, ← vecMulVec_smul_self_star]
+  -- D3.7 for `φ`
+  have hcomm : ∀ j < n, L j * Arealaw.ptrace (hX j) (vecMulVec φ (star φ)) =
+      Arealaw.ptrace (hX j) (vecMulVec φ (star φ)) * L j := by
+    intro j hj
+    rw [hρφ, Matrix.mul_smul, Matrix.smul_mul, step_3_7 hX hnest hf hL n hmax hj]
+  set h : ι → Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ :=
+    fun t ↦ Arealaw.extendId (hD t) (Y t)
+  set e : ι → ℝ := fun t ↦ (star φ ⬝ᵥ ((h t - K * h t * K⁻¹) *ᵥ φ)).re
+  -- D3.9.1
+  have h1 : (star φ ⬝ᵥ ((∑ t ∈ T, h t - (E₀ : ℂ) • 1) *ᵥ φ)).re = ∑ t ∈ T, e t := by
+    rw [step_3_9_1 hΩ hK, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib,
+      Matrix.sum_mulVec, dotProduct_sum, Complex.re_sum]
+  -- the split index of a support
+  set sp : ι → ℕ := fun t ↦
+    if hex : ∃ j < n, (D t ∩ X j).Nonempty ∧ (D t \ X j).Nonempty then Nat.find hex else n
+  have hsp : ∀ t, sp t < n → sp t < n ∧ (D t ∩ X (sp t)).Nonempty ∧ (D t \ X (sp t)).Nonempty := by
+    intro t ht
+    simp only [sp] at ht ⊢
+    split_ifs at ht ⊢ with hex
+    · exact Nat.find_spec hex
+    · exact absurd ht (lt_irrefl n)
+  -- D3.9.2–D3.9.5: a split term is at most `(16/e²) c₀ a_j²`
+  have he : ∀ t ∈ T, sp t < n → e t ≤ 16 / Real.exp 2 * c₀ * a (sp t) ^ 2 := by
+    intro t ht hlt
+    obtain ⟨hj, hs1, hs2⟩ := hsp t hlt
+    set j := sp t
+    obtain ⟨hS, hdis⟩ := hd t ht j hj hs1 hs2
+    have hk : j + 1 + (n - 1 - j) = n := by omega
+    have h2 := step_3_9_2_of_disjoint hX hnest hLu j (n - 1 - j) φ
+      (fun i hi ↦ hcomm _ (by omega)) hS (Y t) hdis
+    rw [hk] at h2
+    obtain ⟨V, l, p, hV, hl, hLV, hρV, hclip⟩ :=
+      step_3_8 hX hnest hf hL n hmax hj (ha j hj).1 (hcard j hj)
+    have hρ' : ((OpenAI.pureState φ hφ1).toSubState.restrict (hX j)).M =
+        V * diagonal (fun i ↦ (((N⁻¹) ^ 2 * p i : ℝ) : ℂ)) * Vᴴ := by
+      change Arealaw.ptrace (hX j) (vecMulVec φ (star φ)) = _
+      have hdg : diagonal (fun i ↦ (((N⁻¹) ^ 2 * p i : ℝ) : ℂ)) =
+          (((N⁻¹) ^ 2 : ℝ) : ℂ) • diagonal (fun i ↦ (p i : ℂ)) := by
+        rw [← diagonal_smul]; congr 1; funext i; push_cast; rfl
+      rw [hρφ, hρV, hdg, Matrix.mul_smul, Matrix.smul_mul]
+    have hc2 : 0 < (N⁻¹) ^ 2 := by positivity
+    have h5 := step_3_9_5_region (hX j) (hD t) (hY t) φ hφ1 hV hl hLV hρ' (ha j hj).1.le
+      (ha j hj).2 (fun i k hi hk' ↦ by
+        rw [mul_div_mul_left _ _ hc2.ne']
+        exact hclip i k (pos_of_mul_pos_right hi hc2.le) (pos_of_mul_pos_right hk' hc2.le))
+    calc e t ≤ |e t| := le_abs_self _
+      _ = |(star φ ⬝ᵥ ((h t - Arealaw.extendId (hX j) (L j) * h t *
+            (Arealaw.extendId (hX j) (L j))⁻¹) *ᵥ φ)).re| := by
+          simp only [e, K]; rw [h2]
+      _ ≤ 16 / Real.exp 2 * a j ^ 2 *
+            ((Fintype.card (Arealaw.Reg loc (D t)) : ℝ) ^ 2 * ‖Y t‖) := h5
+      _ ≤ 16 / Real.exp 2 * a j ^ 2 * c₀ :=
+          mul_le_mul_of_nonneg_left (hYc t ht) (by positivity)
+      _ = _ := by ring
+  -- D3.9.2: an unsplit term contributes `0`
+  have he0 : ∀ t ∈ T, n ≤ sp t → e t = 0 := by
+    intro t ht hge
+    have hns : ∀ j < n, ¬((D t ∩ X j).Nonempty ∧ (D t \ X j).Nonempty) := by
+      intro j hj hs
+      have hex : ∃ j < n, (D t ∩ X j).Nonempty ∧ (D t \ X j).Nonempty := ⟨j, hj, hs⟩
+      have : sp t < n := by simp only [sp, dif_pos hex]; exact (Nat.find_spec hex).1
+      omega
+    by_cases hm : ∃ j < n, (D t ∩ X j).Nonempty
+    · -- `h_t` lives in the first `X_{j₀}` it meets
+      set j₀ := Nat.find hm
+      obtain ⟨hj₀, hmeet⟩ := Nat.find_spec hm
+      have hS : D t ⊆ X j₀ := by
+        have := hns j₀ hj₀
+        rw [not_and, Finset.not_nonempty_iff_eq_empty, Finset.sdiff_eq_empty_iff_subset] at this
+        exact this hmeet
+      have hdis : ∀ i < j₀, Disjoint (X i) (D t) := by
+        intro i hi
+        have := Nat.find_min hm hi
+        rw [Finset.disjoint_iff_inter_eq_empty, Finset.inter_comm,
+          ← Finset.not_nonempty_iff_eq_empty]
+        exact fun hne ↦ this ⟨by omega, hne⟩
+      have hk : j₀ + 1 + (n - 1 - j₀) = n := by omega
+      have h2 := step_3_9_2_unsplit hX hnest hLu j₀ (n - 1 - j₀) φ (hcomm j₀ hj₀)
+        (fun i hi ↦ hcomm _ (by omega)) hS (Y t) hdis
+      rw [hk] at h2
+      simp only [e, K]; rw [h2, Complex.zero_re]
+    · -- `h_t` misses every `X_j`: it commutes with `K`
+      push Not at hm
+      have hc : ∀ i ≤ n, Commute (filterProd hX L i) (h t) := by
+        intro i hi
+        induction i with
+        | zero => exact Commute.one_left _
+        | succ i ih =>
+          refine (Arealaw.commute_extendId_extendId (hX i) (hD t) ?_ (L i) (Y t)).mul_left
+            (ih (by omega))
+          rw [Finset.disjoint_iff_inter_eq_empty, Finset.inter_comm]
+          exact hm i (by omega)
+      simp only [e, K]
+      rw [(hc n le_rfl).eq, Matrix.mul_assoc, mul_nonsing_inv _ hK, Matrix.mul_one, sub_self,
+        zero_mulVec, dotProduct_zero, Complex.zero_re]
+  -- D3.9.6
+  rw [h1]
+  refine (step_3_9_6 (C := 16 / Real.exp 2 * c₀) (C' := C') T e sp n a w (by positivity)
+    he he0 fun j hj ↦ ?_).trans_eq (by ring)
+  refine le_trans ?_ (hcount j hj)
+  exact_mod_cast Finset.card_le_card fun t ht ↦ by
+    rw [Finset.mem_filter] at ht ⊢
+    exact ⟨ht.1, by rw [← ht.2]; exact (hsp t (by rw [ht.2]; exact hj)).2⟩
+
+end D39assembled
+
 /-! ## D3.11 First norm comparison -/
 
 section D311
