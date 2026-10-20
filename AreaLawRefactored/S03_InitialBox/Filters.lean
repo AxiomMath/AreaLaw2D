@@ -723,6 +723,137 @@ theorem step_3_8_1 (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1)) {f
 
 end D381chain
 
+/-! ## D3.8 assembled: common eigenbasis, normalisation, clipping -/
+
+section D38eigen
+
+variable {m : Type*} [Fintype m] [DecidableEq m]
+
+/-- D3.8. In any orthonormal eigenbasis `L = U diag(l) U*` of a feasible filter `L`, the
+eigenvalues are `l_i = x_i^{a/2}` with `x_i ≥ f` and `∑ x_i = 1` (`x_i := l_i^{2/a}`). -/
+theorem IsFilter.exists_rpow_of_eq_diagonal {f a : ℝ} (hf : 0 < f) (ha : 0 < a)
+    {L U : Matrix m m ℂ} (hL : IsFilter f a L) (hU : Uᴴ * U = 1) (hU' : U * Uᴴ = 1)
+    {l : m → ℝ} (hLU : L = U * diagonal (fun i ↦ (l i : ℂ)) * Uᴴ) :
+    ∃ x : m → ℝ, (∀ i, f ≤ x i) ∧ ∑ i, x i = 1 ∧ ∀ i, l i = x i ^ (a / 2) := by
+  obtain ⟨V, hV, y, hy, hys, hLV⟩ := hL
+  set W := Uᴴ * V
+  have hW : Wᴴ * W = 1 := by
+    simp only [W, conjTranspose_mul, conjTranspose_conjTranspose, Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc U Uᴴ V, hU', Matrix.one_mul, hV]
+  have hW' : W * Wᴴ = 1 := mul_eq_one_comm.mp hW
+  -- `diag(l) W = W diag(y^{a/2})`
+  have hd : diagonal (fun i ↦ (l i : ℂ)) * W =
+      W * diagonal (fun k ↦ ((y k ^ (a / 2) : ℝ) : ℂ)) := by
+    have e : diagonal (fun i ↦ (l i : ℂ)) = Uᴴ * L * U := by
+      rw [hLU]; simp only [Matrix.mul_assoc]
+      rw [hU, Matrix.mul_one, ← Matrix.mul_assoc, hU, Matrix.one_mul]
+    rw [e, hLV]
+    simp only [W, Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc U Uᴴ V, hU', Matrix.one_mul, hV, Matrix.mul_one]
+  have hent : ∀ i k, W i k ≠ 0 → l i = y k ^ (a / 2) := by
+    intro i k h
+    have := congrFun (congrFun hd i) k
+    rw [diagonal_mul, mul_diagonal, mul_comm] at this
+    exact_mod_cast mul_left_cancel₀ h this
+  have hrow : ∀ i, ∃ k, W i k ≠ 0 := by
+    intro i
+    by_contra h
+    push Not at h
+    have := sum_norm_sq_row_of_mul_conjTranspose hW' i
+    simp [h] at this
+  have hcol : ∀ k, ∑ i, ‖W i k‖ ^ 2 = 1 := fun k ↦ by
+    simpa [conjTranspose_apply, norm_star] using
+      sum_norm_sq_row_of_mul_conjTranspose (W := Wᴴ)
+        (by rw [conjTranspose_conjTranspose]; exact hW) k
+  set x : m → ℝ := fun i ↦ l i ^ (2 / a)
+  have hx : ∀ i k, W i k ≠ 0 → x i = y k := by
+    intro i k h
+    simp only [x]
+    rw [hent i k h, ← Real.rpow_mul (hf.le.trans (hy k)), show a / 2 * (2 / a) = 1 by field_simp,
+      Real.rpow_one]
+  refine ⟨x, fun i ↦ ?_, ?_, fun i ↦ ?_⟩
+  · obtain ⟨k, hk⟩ := hrow i
+    rw [hx i k hk]; exact hy k
+  · calc ∑ i, x i = ∑ i, ∑ k, ‖W i k‖ ^ 2 * x i := Finset.sum_congr rfl fun i _ ↦ by
+          rw [← Finset.sum_mul, sum_norm_sq_row_of_mul_conjTranspose hW' i, one_mul]
+      _ = ∑ i, ∑ k, ‖W i k‖ ^ 2 * y k := Finset.sum_congr rfl fun i _ ↦
+          Finset.sum_congr rfl fun k _ ↦ by
+            by_cases h : W i k = 0
+            · simp [h]
+            · rw [hx i k h]
+      _ = ∑ k, (∑ i, ‖W i k‖ ^ 2) * y k := by
+          rw [Finset.sum_comm]; simp only [Finset.sum_mul]
+      _ = 1 := by simp only [hcol, one_mul, hys]
+  · obtain ⟨k, hk⟩ := hrow i
+    rw [hx i k hk, hent i k hk]
+
+end D38eigen
+
+section D38
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)] {U : Finset σ} {X : ℕ → Finset σ}
+
+/-- D3.8. At a maximizer of `N = ‖L_{n-1} ⋯ L_0 Ω‖` over feasible filters on nested regions
+(`j < n`, `a_j > 0`, `(dim H_{X_j}) f_j < 1`), `L_j` and `ρ_{φ,X_j}` (`φ = KΩ`) have a common
+orthonormal eigenbasis, `L_j = U diag(l) U*`, `ρ_{φ,X_j} = U diag(p) U*`, in which
+`|log (l_i/l_k)| ≤ (a_j/2) |log (p_i/p_k)|` whenever `p_i, p_k > 0`. -/
+theorem step_3_8 (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1)) {f a : ℕ → ℝ}
+    (hf : ∀ j, 0 < f j)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j)) (n : ℕ) {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)}
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' n) Ω‖ ≤ ‖toEuclideanLin (filterProd hX L n) Ω‖)
+    {j : ℕ} (hj : j < n) (ha : 0 < a j)
+    (hcard : (Fintype.card (Arealaw.Reg loc (X j)) : ℝ) * f j < 1) :
+    ∃ (V : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ)
+      (l p : Arealaw.Reg loc (X j) → ℝ), Vᴴ * V = 1 ∧ (∀ i, 0 < l i) ∧
+      L j = V * diagonal (fun i ↦ (l i : ℂ)) * Vᴴ ∧
+      Arealaw.ptrace (hX j) (vecMulVec (filterProd hX L n *ᵥ WithLp.ofLp Ω)
+        (star (filterProd hX L n *ᵥ WithLp.ofLp Ω))) = V * diagonal (fun i ↦ (p i : ℂ)) * Vᴴ ∧
+      ∀ i k, 0 < p i → 0 < p k →
+        |Real.log (l i / l k)| ≤ a j / 2 * |Real.log (p i / p k)| := by
+  have hρ := Arealaw.posSemidef_ptrace (hX j)
+    (Matrix.posSemidef_vecMulVec_self_star (filterProd hX L n *ᵥ WithLp.ofLp Ω))
+  -- D3.7: common eigenbasis
+  obtain ⟨V, l, p, hV, hV', hLV, hρV⟩ := exists_unitary_diagonal_of_commute
+    ((hL j).posDef (hf j)).isHermitian hρ.isHermitian (step_3_7 hX hnest hf hL n hmax hj)
+  obtain ⟨x, hx, hxs, hlx⟩ := (hL j).exists_rpow_of_eq_diagonal (l := l) (hf j) ha hV hV' hLV
+  have hLj : L j = V * diagonal (fun i ↦ ((x i ^ (a j / 2) : ℝ) : ℂ)) * Vᴴ := by
+    rw [hLV]; simp only [hlx]; rfl
+  -- D3.8.1
+  have hopt := step_3_8_1 (x := x) (p := p) hX hnest hf hL n hmax hj ha hV hx hxs hLj hρV
+  have hp : ∀ i, 0 ≤ p i := by
+    have hd := hρ.conjTranspose_mul_mul_same V
+    rw [hρV] at hd
+    simp only [Matrix.mul_assoc] at hd
+    rw [← Matrix.mul_assoc Vᴴ V, hV, Matrix.one_mul, Matrix.mul_one, posSemidef_diagonal_iff] at hd
+    exact fun i ↦ Complex.zero_le_real.mp (hd i)
+  refine ⟨V, l, p, hV, fun i ↦ by rw [hlx]; exact Real.rpow_pos_of_pos ((hf j).trans_le (hx i)) _,
+    hLV, hρV, fun i k hpi hpk ↦ ?_⟩
+  set S := ∑ i, p i
+  have hS : 0 < S := hpi.trans_le (Finset.single_le_sum (fun l _ ↦ hp l) (Finset.mem_univ i))
+  -- D3.8.2: a free coordinate exists, as `dim · f_j < 1`
+  obtain ⟨i₀, hi₀⟩ : ∃ i₀, f j < x i₀ := by
+    by_contra h
+    push Not at h
+    rw [Finset.sum_congr rfl (fun i _ ↦ le_antisymm (h i) (hx i)), Finset.sum_const,
+      Finset.card_univ, nsmul_eq_mul] at hxs
+    linarith
+  -- D3.8.2 for `p / ∑ p` (the KKT condition is homogeneous)
+  obtain ⟨lam, hlam, hxl⟩ := step_3_8_2 (p := fun i ↦ p i / S) (hf j) hx
+    (fun i ↦ div_nonneg (hp i) hS.le) (by rw [← Finset.sum_div, div_self hS.ne']) hi₀
+    (fun i k h ↦ by
+      show p k / S / x k ≤ p i / S / x i
+      rw [div_right_comm, div_right_comm (p i)]
+      exact div_le_div_of_nonneg_right (hopt i k h) hS.le)
+  -- D3.8.3 (ratios are scale-invariant)
+  have h3 := step_3_8_3 (hf j) hlam ha.le (div_pos hpi hS) (div_pos hpk hS)
+  rwa [← hxl i, ← hxl k, ← hlx i, ← hlx k, div_div_div_cancel_right₀ hS.ne'] at h3
+
+end D38
+
 /-! ## D3.9 The optimized vector has small excitation energy -/
 
 section D39
