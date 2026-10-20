@@ -15,6 +15,139 @@ open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator InnerProductSpace K
 
 /-! ## D3.7 Optimized filters commute with their marginals -/
 
+/-- The ordered product `f (k-1) ⋯ f 0`. -/
+def prodDesc {n : Type*} [Fintype n] [DecidableEq n] (f : ℕ → Matrix n n ℂ) : ℕ → Matrix n n ℂ
+  | 0 => 1
+  | k + 1 => f k * prodDesc f k
+
+section D371
+
+variable {m : Type*} [Fintype m] [DecidableEq m]
+
+/-- D3.7. A feasible filter `L ≥ ε`, `Tr L^{2/a} = 1`, written spectrally:
+`L = V diag(x^{a/2}) V*` with `V` unitary, `x_i = l_i^{2/a} ≥ f = ε^{2/a}` and `∑ x_i = 1`. -/
+def IsFilter (f a : ℝ) (L : Matrix m m ℂ) : Prop :=
+  ∃ V : Matrix m m ℂ, Vᴴ * V = 1 ∧ ∃ x : m → ℝ, (∀ i, f ≤ x i) ∧ ∑ i, x i = 1 ∧
+    L = V * diagonal (fun i ↦ ((x i ^ (a / 2) : ℝ) : ℂ)) * Vᴴ
+
+/-- D3.7.1. The feasible filters form a compact set (`0 ≤ x_i ≤ 1`, `V` unitary). -/
+theorem isCompact_setOf_isFilter {f a : ℝ} (hf : 0 ≤ f) (ha : 0 ≤ a) :
+    IsCompact {L : Matrix m m ℂ | IsFilter f a L} := by
+  have hS : IsCompact {x : m → ℝ | (∀ i, f ≤ x i) ∧ ∑ i, x i = 1} := by
+    refine (isCompact_univ_pi fun _ : m ↦ isCompact_Icc (a := (0 : ℝ)) (b := 1)).of_isClosed_subset
+      ((isClosed_le continuous_const continuous_id).inter
+        (isClosed_eq (by fun_prop) continuous_const) : IsClosed {x : m → ℝ | (fun _ ↦ f) ≤ x ∧
+          ∑ i, x i = 1}) fun x hx ↦ Set.mem_univ_pi.mpr fun i ↦ ?_
+    have h0 : ∀ k, 0 ≤ x k := fun k ↦ hf.trans (hx.1 k)
+    exact ⟨h0 i, hx.2 ▸ Finset.single_le_sum (fun k _ ↦ h0 k) (Finset.mem_univ i)⟩
+  have heq : {L : Matrix m m ℂ | IsFilter f a L} = (fun p : Matrix m m ℂ × (m → ℝ) ↦
+      p.1 * diagonal (fun i ↦ ((p.2 i ^ (a / 2) : ℝ) : ℂ)) * p.1ᴴ) ''
+      ({V : Matrix m m ℂ | Vᴴ * V = 1} ×ˢ {x | (∀ i, f ≤ x i) ∧ ∑ i, x i = 1}) := by
+    ext L
+    exact ⟨fun ⟨V, hV, x, hx, hs, e⟩ ↦ ⟨(V, x), ⟨hV, hx, hs⟩, e.symm⟩,
+      fun ⟨⟨V, x⟩, ⟨hV, hx, hs⟩, e⟩ ↦ ⟨V, hV, x, hx, hs, e.symm⟩⟩
+  rw [heq]
+  refine (isCompact_setOf_conjTranspose_mul_self_eq_one.prod hS).image ?_
+  have hd : Continuous fun p : Matrix m m ℂ × (m → ℝ) ↦
+      diagonal (fun i ↦ ((p.2 i ^ (a / 2) : ℝ) : ℂ)) :=
+    continuous_id.matrix_diagonal.comp (continuous_pi fun i ↦ Complex.continuous_ofReal.comp
+      ((Real.continuous_rpow_const (by positivity)).comp ((continuous_apply i).comp
+        continuous_snd)))
+  exact (continuous_fst.matrix_mul hd).matrix_mul continuous_fst.matrix_conjTranspose
+
+/-- D3.7.1. A feasible filter with floor `f > 0` is invertible. -/
+theorem IsFilter.isUnit_det {f a : ℝ} (hf : 0 < f) {L : Matrix m m ℂ} (hL : IsFilter f a L) :
+    IsUnit L.det := by
+  obtain ⟨V, hV, x, hx, -, rfl⟩ := hL
+  have hV' : IsUnit V.det := isUnit_det_of_left_inverse hV
+  rw [det_mul, det_mul, det_diagonal, isUnit_iff_ne_zero]
+  refine mul_ne_zero (mul_ne_zero hV'.ne_zero (Finset.prod_ne_zero_iff.2 fun i _ ↦ ?_))
+    (isUnit_det_of_right_inverse (by rwa [mul_eq_one_comm] at hV)).ne_zero
+  exact Complex.ofReal_ne_zero.2 (Real.rpow_pos_of_pos (hf.trans_le (hx i)) _).ne'
+
+/-- D3.7.1. The uniform filter `(dim)^{-a/2}` is feasible when `dim · f ≤ 1`. -/
+theorem isFilter_uniform [Nonempty m] {f a : ℝ} (hcard : Fintype.card m * f ≤ 1) :
+    IsFilter f a (diagonal fun _ : m ↦ ((((Fintype.card m : ℝ)⁻¹) ^ (a / 2) : ℝ) : ℂ)) := by
+  have hpos : (0 : ℝ) < Fintype.card m := by exact_mod_cast Fintype.card_pos
+  refine ⟨1, by simp, fun _ ↦ (Fintype.card m : ℝ)⁻¹, fun _ ↦ ?_, ?_, by simp⟩
+  · rw [inv_eq_one_div, le_div_iff₀ hpos, mul_comm]; exact hcard
+  · simp [Finset.sum_const, Finset.card_univ, hpos.ne']
+
+end D371
+
+section D371chain
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)] {U : Finset σ} {X : ℕ → Finset σ}
+
+omit [∀ i, Fintype (loc i)] in
+theorem continuous_extendId {S T : Finset σ} (h : S ⊆ T) :
+    Continuous (Arealaw.extendId (loc := loc) (𝕜 := ℂ) h) :=
+  continuous_pi fun w ↦ continuous_pi fun w' ↦ by
+    simp only [Arealaw.extendId, Matrix.of_apply]
+    split_ifs
+    exacts [(continuous_apply _).comp (continuous_apply _), continuous_const]
+
+/-- D3.7. The product `K = (L_{k-1} ⊗ 1) ⋯ (L_0 ⊗ 1)` of filters on `X_j ⊆ U`. -/
+noncomputable def filterProd (hX : ∀ j, X j ⊆ U)
+    (L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ) (k : ℕ) :
+    Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ :=
+  prodDesc (fun j ↦ Arealaw.extendId (hX j) (L j)) k
+
+theorem continuous_filterProd (hX : ∀ j, X j ⊆ U) (k : ℕ) :
+    Continuous fun L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ ↦
+      filterProd hX L k := by
+  induction k with
+  | zero => exact continuous_const
+  | succ k ih =>
+    exact ((continuous_extendId (hX k)).comp (continuous_apply k)).matrix_mul ih
+
+theorem isUnit_det_filterProd (hX : ∀ j, X j ⊆ U)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsUnit (L j).det) (k : ℕ) : IsUnit (filterProd hX L k).det := by
+  induction k with
+  | zero => simp [filterProd, prodDesc]
+  | succ k ih =>
+    rw [filterProd, prodDesc, det_mul]
+    refine IsUnit.mul (isUnit_det_of_left_inverse (B := Arealaw.extendId (hX k) (L k)⁻¹) ?_) ih
+    rw [← Arealaw.extendId_mul, nonsing_inv_mul _ (hL k), Arealaw.extendId_one]
+
+/-- D3.7.1. Existence: for floors `f_j > 0` with `(dim H_{X_j}) f_j ≤ 1`, the norm
+`N = ‖L_{k-1} ⋯ L_0 Ω‖` attains its maximum over feasible filters, and `N > 0`. -/
+theorem step_3_7_1 (hX : ∀ j, X j ⊆ U) (k : ℕ) {f a : ℕ → ℝ} (hf : ∀ j, 0 < f j)
+    (ha : ∀ j, 0 ≤ a j) (hne : ∀ j, Nonempty (Arealaw.Reg loc (X j)))
+    (hcard : ∀ j, Fintype.card (Arealaw.Reg loc (X j)) * f j ≤ 1)
+    {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)} (hΩ : Ω ≠ 0) :
+    ∃ L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L j)) ∧
+      (∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+        (∀ j, IsFilter (f j) (a j) (L' j)) →
+          ‖toEuclideanLin (filterProd hX L' k) Ω‖ ≤ ‖toEuclideanLin (filterProd hX L k) Ω‖) ∧
+      0 < ‖toEuclideanLin (filterProd hX L k) Ω‖ := by
+  -- D3.7.1: the feasible set is nonempty and compact, `N` is continuous
+  have hcpt := isCompact_univ_pi fun j ↦ isCompact_setOf_isFilter (m := Arealaw.Reg loc (X j))
+    (hf j).le (ha j)
+  have hne' : (Set.univ.pi fun j ↦ {M | IsFilter (f j) (a j) M}).Nonempty :=
+    ⟨fun j ↦ diagonal fun _ ↦ ((((Fintype.card (Arealaw.Reg loc (X j)) : ℝ)⁻¹) ^ (a j / 2) : ℝ)
+      : ℂ), fun j _ ↦ isFilter_uniform (hcard j)⟩
+  have hcont : Continuous fun L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j))
+      (Arealaw.Reg loc (X j)) ℂ ↦ ‖toEuclideanLin (filterProd hX L k) Ω‖ := by
+    refine continuous_norm.comp ?_
+    simp only [toLpLin_apply]
+    exact (PiLp.continuous_toLp 2 _).comp ((continuous_filterProd hX k).matrix_mulVec
+      continuous_const)
+  obtain ⟨L, hL, hmax⟩ := hcpt.exists_isMaxOn hne' hcont.continuousOn
+  refine ⟨L, fun j ↦ hL j trivial, fun L' hL' ↦ hmax (fun j _ ↦ hL' j), norm_pos_iff.2 ?_⟩
+  -- D3.7.1: feasible products are invertible, so `N > 0`
+  intro h0
+  have hK := isUnit_det_filterProd hX (fun j ↦ (hL j trivial).isUnit_det (hf j)) k
+  apply hΩ
+  have := congrArg (toEuclideanLin (filterProd hX L k)⁻¹) h0
+  rwa [← LinearMap.comp_apply, ← toLpLin_mul_same, nonsing_inv_mul _ hK, toLpLin_one,
+    LinearMap.id_apply, map_zero] at this
+
+end D371chain
+
 section D37
 
 variable {m : Type*} [Fintype m] [DecidableEq m]
@@ -379,11 +512,6 @@ end D311
 section D312
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
-
-/-- The ordered product `f (k-1) ⋯ f 0`. -/
-def prodDesc (f : ℕ → Matrix n n ℂ) : ℕ → Matrix n n ℂ
-  | 0 => 1
-  | k + 1 => f k * prodDesc f k
 
 /-- D3.12.4. Moving the unitaries `U_j = M_j^{iy}` to the left: with `V_j = U_j ⋯ U_1`,
 `(U_m M_m) ⋯ (U_1 M_1) = (U_m ⋯ U_1) (V_{m-1}^* M_m V_{m-1}) ⋯ (V_0^* M_1 V_0)`. -/

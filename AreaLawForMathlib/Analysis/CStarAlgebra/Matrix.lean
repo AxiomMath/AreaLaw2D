@@ -1,7 +1,7 @@
 import Mathlib.Analysis.CStarAlgebra.Matrix
 
 /-!
-# The L2 operator norm of matrices: columns and two-sided contractions
+# The L2 operator norm of matrices: columns, two-sided contractions; unitaries are compact
 
 Extends `Mathlib.Analysis.CStarAlgebra.Matrix`.
 -/
@@ -29,5 +29,15 @@ theorem l2_opNorm_mul_mul_le_of_le_one [DecidableEq m] [DecidableEq n] [Decidabl
         (l2_opNorm_mul _ _).trans (mul_le_mul_of_nonneg_right (l2_opNorm_mul _ _) (norm_nonneg _))
     _ ≤ 1 * ‖X‖ * 1 := by gcongr
     _ = ‖X‖ := by ring
+
+/-- The unitary matrices form a compact set. -/
+theorem isCompact_setOf_conjTranspose_mul_self_eq_one [DecidableEq m] :
+    IsCompact {U : Matrix m m 𝕜 | Uᴴ * U = 1} := by
+  refine (isCompact_univ_pi fun _ : m ↦ isCompact_univ_pi fun _ : m ↦
+    isCompact_closedBall (0 : 𝕜) 1).of_isClosed_subset
+    (isClosed_eq (continuous_id.matrix_conjTranspose.matrix_mul continuous_id) continuous_const)
+    fun (U : Matrix m m 𝕜) hU ↦ Set.mem_univ_pi.mpr fun i ↦ Set.mem_univ_pi.mpr fun j ↦ ?_
+  rw [Metric.mem_closedBall, dist_zero_right]
+  exact entry_norm_bound_of_unitary (mem_unitaryGroup_iff'.mpr hU) i j
 
 end Matrix
