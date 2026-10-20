@@ -279,6 +279,82 @@ theorem step_3_7_4 {L ρ : Matrix m m ℂ} (hL : L.PosDef) (hρ : ρ.IsHermitian
 
 end D37
 
+section D37chain
+
+/-- Splitting `f (j+n) ⋯ f 0` at index `j`. -/
+theorem prodDesc_add {n : Type*} [Fintype n] [DecidableEq n] (f : ℕ → Matrix n n ℂ) (j k : ℕ) :
+    prodDesc f (j + 1 + k) = prodDesc (fun i ↦ f (j + 1 + i)) k * f j * prodDesc f j := by
+  induction k with
+  | zero => simp [prodDesc]
+  | succ k ih => rw [← add_assoc, prodDesc, ih, prodDesc, Matrix.mul_assoc, Matrix.mul_assoc,
+      Matrix.mul_assoc]
+
+/-- `prodDesc f k` depends only on `f 0, …, f (k-1)`. -/
+theorem prodDesc_congr {n : Type*} [Fintype n] [DecidableEq n] {f g : ℕ → Matrix n n ℂ} {k : ℕ}
+    (h : ∀ i < k, f i = g i) : prodDesc f k = prodDesc g k := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+    rw [prodDesc, prodDesc, h k k.lt_succ_self, ih fun i hi ↦ h i (hi.trans k.lt_succ_self)]
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)] {U : Finset σ} {X : ℕ → Finset σ}
+
+/-- D3.7.2. `K = K_{>j} (L_j ⊗ 1) K_{<j}`. -/
+theorem filterProd_add (hX : ∀ j, X j ⊆ U)
+    (L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ) (j k : ℕ) :
+    filterProd hX L (j + 1 + k) = prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i))
+      (L (j + 1 + i))) k * Arealaw.extendId (hX j) (L j) * filterProd hX L j := by
+  rw [filterProd, filterProd, prodDesc_add]
+
+/-- D3.7.2 at the maximizer of D3.7.1: for anti-Hermitian `B` on `X_j`, with
+`K_{>j} = L_{j+k} ⋯ L_{j+1}` and `w = K_{<j} Ω`, `Re ⟨K_{>j} L_j w, K_{>j} (BL_j - L_jB) w⟩ = 0`. -/
+theorem step_3_7_2_filter (hX : ∀ j, X j ⊆ U) {f a : ℕ → ℝ}
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j)) (j k : ℕ) {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)}
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' (j + 1 + k)) Ω‖ ≤
+          ‖toEuclideanLin (filterProd hX L (j + 1 + k)) Ω‖)
+    {B : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ} (hB : Bᴴ = -B) :
+    (inner ℂ (toEuclideanLin (prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i))
+        (L (j + 1 + i))) k * Arealaw.extendId (hX j) (L j)) (toEuclideanLin (filterProd hX L j) Ω))
+      (toEuclideanLin (prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) k *
+        Arealaw.extendId (hX j) (B * L j - L j * B)) (toEuclideanLin (filterProd hX L j) Ω))).re
+      = 0 := by
+  let Φ : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ →ₗ[ℂ]
+      Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ :=
+    { toFun := Arealaw.extendId (hX j)
+      map_add' := Arealaw.extendId_add _
+      map_smul' := Arealaw.extendId_smul _ }
+  refine step_3_7_2 Φ _ (L j) B _ (Filter.Eventually.of_forall fun t ↦ ?_)
+  have hΦ : ∀ M, Φ M = Arealaw.extendId (hX j) M := fun _ ↦ rfl
+  beta_reduce
+  simp only [hΦ, Complex.ofReal_zero, zero_smul, neg_zero, NormedSpace.exp_zero, Matrix.one_mul,
+    Matrix.mul_one]
+  -- D3.7.2: `L_j(t) = e^{tB} L_j e^{-tB}` is feasible, the other filters are unchanged
+  set M := NormedSpace.exp ((t : ℂ) • B) * L j * NormedSpace.exp ((-(t : ℂ)) • B)
+  have hfeas : ∀ i, IsFilter (f i) (a i) (Function.update L j M i) := by
+    intro i
+    rcases eq_or_ne i j with rfl | hi
+    · rw [Function.update_self]; exact (hL i).exp_conj hB t
+    · rw [Function.update_of_ne hi]; exact hL i
+  have h := hmax _ hfeas
+  have hpre : filterProd hX (Function.update L j M) j = filterProd hX L j :=
+    prodDesc_congr fun i hi ↦ by rw [Function.update_of_ne hi.ne]
+  have hpost : prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i))
+      (Function.update L j M (j + 1 + i))) k =
+      prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) k :=
+    prodDesc_congr fun i _ ↦ by rw [Function.update_of_ne (by omega)]
+  have e : ∀ Q : Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ,
+      toEuclideanLin (Q * filterProd hX L j) Ω =
+      toEuclideanLin Q (toEuclideanLin (filterProd hX L j) Ω) := fun Q ↦ by
+    rw [toLpLin_mul_same]; rfl
+  rw [filterProd_add, filterProd_add, hpre, hpost, Function.update_self, e, e] at h
+  exact pow_le_pow_left₀ (norm_nonneg _) h 2
+
+end D37chain
+
 /-! ## D3.9 The optimized vector has small excitation energy -/
 
 section D39
