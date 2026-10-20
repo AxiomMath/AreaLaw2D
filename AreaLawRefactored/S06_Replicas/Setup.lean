@@ -1,4 +1,4 @@
-import AreaLawForMathlib.RepresentationTheory.PermutationRepresentation
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TensorPowerAction
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.LinearAlgebra.Dimension.Finrank
 
@@ -24,38 +24,24 @@ variable {I : Type*} [DecidableEq I] (ι : I → Type*) (k : ℕ)
 /-! ## D6.1 Systems, symmetric subspaces, subsystems -/
 
 /-- D6.1. The basis configurations of `𝒱^{⊗k}`, `𝒱 = ⨂_{f : I} ℂ^{ι f}`. -/
-abbrev Config := Fin k → (f : I) → ι f
+abbrev Config := TensorPower.Config k ι
 
 /-- D6.1. The permutation of the `k` copies of the subsystem `Q`, fixing the other factors;
 its permutation operator is `U_Q(π)`. -/
-def copyPerm (Q : Finset I) : Equiv.Perm (Fin k) →* Equiv.Perm (Config ι k) where
-  toFun π :=
-    { toFun := fun x j f => if f ∈ Q then x (π⁻¹ j) f else x j f
-      invFun := fun x j f => if f ∈ Q then x (π j) f else x j f
-      left_inv := fun x => by ext j f; by_cases hf : f ∈ Q <;> simp [hf]
-      right_inv := fun x => by ext j f; by_cases hf : f ∈ Q <;> simp [hf] }
-  map_one' := by ext x j f; by_cases hf : f ∈ Q <;> simp
-  map_mul' π π' := by ext x j f; by_cases hf : f ∈ Q <;> simp [hf, Equiv.Perm.mul_apply]
+abbrev copyPerm (Q : Finset I) : Equiv.Perm (Fin k) →* Equiv.Perm (Config ι k) :=
+  TensorPower.subsystemPerm k ι Q
 
 @[simp]
 theorem copyPerm_apply (Q : Finset I) (π : Equiv.Perm (Fin k)) (x : Config ι k) (j : Fin k)
     (f : I) : copyPerm ι k Q π x j f = if f ∈ Q then x (π⁻¹ j) f else x j f := rfl
 
 theorem commute_copyPerm_of_disjoint {Q Q' : Finset I} (h : Disjoint Q Q')
-    (π π' : Equiv.Perm (Fin k)) : Commute (copyPerm ι k Q π) (copyPerm ι k Q' π') := by
-  ext x j f
-  simp only [Equiv.Perm.mul_apply, copyPerm_apply]
-  by_cases hf : f ∈ Q
-  · simp [hf, Finset.disjoint_left.mp h hf]
-  · by_cases hf' : f ∈ Q' <;> simp [hf, hf']
+    (π π' : Equiv.Perm (Fin k)) : Commute (copyPerm ι k Q π) (copyPerm ι k Q' π') :=
+  TensorPower.commute_subsystemPerm_of_disjoint k ι h π π'
 
 theorem copyPerm_union {Q Q' : Finset I} (h : Disjoint Q Q') (π : Equiv.Perm (Fin k)) :
-    copyPerm ι k (Q ∪ Q') π = copyPerm ι k Q π * copyPerm ι k Q' π := by
-  ext x j f
-  simp only [Equiv.Perm.mul_apply, copyPerm_apply, Finset.mem_union]
-  by_cases hf : f ∈ Q
-  · simp [hf, Finset.disjoint_left.mp h hf]
-  · by_cases hf' : f ∈ Q' <;> simp [hf, hf']
+    copyPerm ι k (Q ∪ Q') π = copyPerm ι k Q π * copyPerm ι k Q' π :=
+  TensorPower.subsystemPerm_union k ι h π
 
 variable [Fintype I] [∀ f, Fintype (ι f)] [∀ f, DecidableEq (ι f)]
 

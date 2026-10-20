@@ -395,7 +395,7 @@ theorem commutant_apply_perm {T : Matrix (Config ι k) (Config ι k) ℂ}
   have h' := congrFun (congrFun h (copyPerm ι k Finset.univ σ⁻¹ x)) y
   simp only [submatrix_apply, id, Equiv.Perm.inv_def, Equiv.symm_symm,
     Equiv.symm_apply_apply] at h'
-  convert h'.symm using 2 <;> ext j f <;> simp [copyPerm_apply]
+  convert h'.symm using 2 <;> ext j f <;> simp
 
 /-- The commutant has dimension at most the number of `S_k`-orbits on pairs of
 configurations, which is at most `(k+1)^{q²}`, `q = dim 𝒱`. -/
