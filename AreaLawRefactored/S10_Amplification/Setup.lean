@@ -29,10 +29,6 @@ noncomputable def β : ℝ := 1 - 2 / 1000000
 /-- D10.1. `α = p/(p+1)`, `p` the integer of Proposition 4.3. -/
 noncomputable def α (p : ℕ) : ℝ := p / (p + 1)
 
-theorem one_sub_ε : 1 - ε = 1 - (1 / 100000 : ℝ) := rfl
-
-theorem one_sub_two_mul_ε : β = 1 - (2 / 1000000 : ℝ) := rfl
-
 theorem α_pos {p : ℕ} (hp : 1 ≤ p) : 0 < α p := by
   have : (1 : ℝ) ≤ p := by exact_mod_cast hp
   unfold α; positivity
