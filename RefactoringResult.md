@@ -54,6 +54,7 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | gap transport under reindexing/conjugation (D3.1.1) | Mathlib `Matrix.posSemidef_submatrix_equiv`, `PosSemidef.mul_mul_conjTranspose_same` (`hasGlobalGap_submatrix`, `hasGlobalGap_conj`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:796, :803) | |
 | `OpenAI.commute_of_isHermitian_inv_mul_mul` (OpenAI/FilterStationarity.lean:111, ρL² = L²ρ ⇒ ρL = Lρ by an entrywise computation in the eigenbasis of L) | Mathlib `Commute.cfc_nnreal` with `CFC.sqrt_eq_cfc`, `CFC.sqrt_mul_self` (L = (L²)^{1/2}), in `AreaLaw.step_3_7_4` (AreaLawRefactored/S03_InitialBox/Filters.lean:89) | L ≥ 0 via `PosDef.posSemidef.nonneg` |
 | concavity of entropy (D3.13.2, `Arealaw.sum_vonNeumann_sub_negMulLog_le`, OpenAI/RegionSSA.lean:198) | `MState.sum_Sᵥₙ_le_Sᵥₙ_cq_traceRight` (AreaLawForMathlib/QuantumInfo/Entropy/ClassicalQuantum.lean, already in the library tree) | to be used when D3.13 is written |
+| §4: none removed yet (old OpenAI/ kept until the Step 1 gate) | Mathlib used in the new §4 proofs: `CFC.sqrt_le_sqrt`, `norm_cfc_le` (D4.9), `IsHermitian.spectral_theorem`, `eigenvectorBasis`, `posSemidef_diagonal_iff` (D4.13), `Real.fourierIntegral`/`Mathlib.Analysis.Fourier.Inversion` (D4.5.9), `selfAdjoint`/`NormedSpace.exp` (τ) | — |
 
 ## 4. Failed searches
 
@@ -72,6 +73,11 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | compactness of the unitary matrices (D3.7.1) | loogle `IsCompact, Matrix.unitaryGroup` (0 hits), `IsCompact (unitary _)` (no matrix hit) | `Matrix.isCompact_setOf_conjTranspose_mul_self_eq_one`, AreaLawForMathlib/Analysis/CStarAlgebra/Matrix.lean:34 (from Mathlib `entry_norm_bound_of_unitary`) |
 | `extendId` multiplicative; `⟨φ, (A ⊗ 1) φ⟩ = Tr(ρ_{φ,S} A)` (D3.7.3, D3.11.3) | grep Arealaw/PTrace.lean (`trace_ptrace_mul` only; `extendId_mul` exists only in OpenAI/Bridges.lean:407) | AreaLawForMathlib/QuantumInfo/Region.lean (`Arealaw.extendId_mul` :321, `Arealaw.dotProduct_extendId_mulVec` :327) |
 | `Re Tr(ρB) = 0` for Hermitian `ρ`, anti-Hermitian `B` (D3.7.4); `extendId` transitivity for `S ⊆ T ⊆ V` (D3.7.3) | atlas semantic "trace of the product of a Hermitian matrix and a skew-Hermitian matrix has zero real part" (no Mathlib hit; nearest `Matrix.IsHermitian.im_star_dotProduct_mulVec_self`); grep Arealaw/ for `extendId` (no transitivity lemma) | `AreaLaw.re_trace_mul_eq_zero`, `AreaLaw.extendId_extendId` (AreaLawRefactored/S03_InitialBox/Filters.lean:294, :422) |
+| D4.9 `‖√a − √b‖ ≤ √‖a − b‖` | atlas semantic (full sentence), loogle `‖CFC.sqrt _ - CFC.sqrt _‖` | library: `CFC.norm_sqrt_sub_sqrt_le` (AreaLawForMathlib/Analysis/CStarAlgebra/SqrtHolder.lean:57) |
+| D4.13 Weyl / Courant–Fischer for Hermitian matrices; unit eigenvector at the minimal eigenvalue | atlas semantic, three sentences; loogle | not in Mathlib (only third-party repos); diagonalisation route inside `step_4_13` |
+| D4.12 summability / boundedness of poly × `exp(−b x^α)`, α < 1 | atlas semantic, three sentences | not in Mathlib (only pure exponentials); `step_4_12_5`, `step_4_12_6` (AreaLawRefactored/S04_Quasilocal/VolumeFree.lean:52, :18) |
+| D4.5 Gevrey bump with stretched-exponential Fourier decay | atlas semantic, three sentences | not in Mathlib (only `ContDiffBump`); library `AreaLawForMathlib/Analysis/Fourier/GevreyBump.lean`, `GevreyBumpFourier.lean` |
+| D4.7 exp of a matrix on an eigenvector | atlas semantic | not in Mathlib; `Matrix.exp_mulVec_of_mulVec_eq_smul` (AreaLawRefactored/S04_Quasilocal/CenteredFilter.lean:22) |
 
 ## 5. Route differences
 
@@ -88,6 +94,11 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | D3.1.8 | power series of f_i, Cauchy estimate `|a_n| ≤ e c₀ δ_i⁻ⁿ`, sum over even n ≥ 2: `≤ (4/3) e c₀ x² δ_i⁻² ≤ 2 e c₀ x² δ_i⁻²` | Mathlib's higher-order Schwarz lemma on k(z) = f_i(z) + f_i(−z) − 2f_i(0), which vanishes to second order at 0 and is bounded by 4ec₀ on the disk of radius δ_i: `|Re(f_i(x) − f_i(0))| = |Re k(x)|/2 ≤ 2 e c₀ x² δ_i⁻²` (`AreaLaw.step_3_1_8`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:162) | no Mathlib Taylor-coefficient bound; same constant 128 e c₀ ℓ_i² x² |
 | D3.1.3 | commutation of F with h_i (D_i ⊆ B^c), cyclicity and [F, σ] = 0 (D_i ⊆ B) | f_i is constant for terms A ⊗ 1 and 1 ⊗ A (`modF_kronecker_one`, `modF_one_kronecker`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:352, :360), so every term enters through the D3.1.4 identity and the one-sided ones contribute 0 | same content in the Schmidt coordinates already used for D3.1.4 |
 | D3.1.1 | basis-free Schmidt form at B ∣ B^c | explicit unitary (V* ⊗ 1) ∘ glue⁻¹, V the eigenvector unitary of ρ (`step_3_1_1`, `isSchmidt_cut`, AreaLawRefactored/S03_InitialBox/MarginalTails.lean:900, :865) | encoding only |
+| D4.4.5–7 | iterate the recursion m times, simplex volume t^m/m!, chain sum, `1_{d≤(m+1)R} ≤ e^{μ((m+1)R−d)}` | weighted finite Volterra/Gronwall comparison (`finite_volterra_le_weight_mul_exp`, AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:524), each support weighted by `e^{−μ d(X_k, y)}`; same constants `v = 2κe^{cR}`, `C = 2e^{cR}` (`AreaLaw.lemma_4_1`, AreaLawRefactored/S04_Quasilocal/Propagation.lean:386) | ported old route; the chain sum needs a combinatorial path-count the Volterra form avoids |
+| D4.4.8 | no finite chain reaches y | the bound for every N ≤ d_Λ = ⊤, and e^{−cN} → 0 | same statement |
+| D4.12.4–6 | split at d = 2r₀+2, tail by ∫(x+1)²e^{−c(x/3)^α}dx (incomplete gamma) | `e^{−c max(r₀,⌊d/2⌋)^α} ≤ e^{−(c/2)r₀^α}e^{−(c/2)⌊d/2⌋^α}`, `(d+1)^{m+2}e^{−(c/2)⌊d/2⌋^α} ≤ M`, Σ1/(d+1)² (`step_4_12_5`, AreaLawRefactored/S04_Quasilocal/VolumeFree.lean:52); c' = c/2 | no incomplete-gamma API in Mathlib |
+| D4.13.2 | Weyl / min–max λ₂(H̃) ≥ λ₂(H_F) − ε | diagonalise H̃; for each other eigenvector v_j, the combination −⟨Ω,v_j⟩Ω̃ + ⟨Ω,Ω̃⟩v_j ⊥ Ω tested against H̃ ≥ g(1−P_Ω) − ε; second eigenvalue as the Loewner bound `Ẽ₀P̃ + (g−ε)(1−P̃) ≤ H̃`; D4.13.4 proved first (`step_4_13`, AreaLawRefactored/S04_Quasilocal/GroundState.lean:20) | no Weyl/Courant–Fischer in Mathlib |
+| D4.6 consumers (D4.10, D4.11) | use the k_i of Prop 4.3 | `lemma_4_4`, `prop_4_5` take the D4.6 output (0 ≤ k ≤ 1, kΩ = 0, k_{i,l} ∈ [0,I], tail, gap g) as hypotheses, constants fixed first | D4.6 not yet formalized; remove the hypotheses when it is |
 
 ## 6. Constants changed
 
@@ -101,6 +112,9 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 | D3.9.4 | `C a_j²(p_i+p_k)`, sup z²cosh(z/2)/cosh z ≤ 32/e² < 4.4 | old sharper a²/2 by another route | explicit `8/e²` on the paper's route (`step_3_9_4`, AreaLawRefactored/S03_InitialBox/BufferDiscount.lean:528) |
 | D3.10 | C_pad "large enough" | packaged through Z_min (old `bufferDiscount_complex`) | C_pad = ⌈(2+D)e^{L₀}⌉ + D + 2, L₀ = max{4, 16CD/Δ, 128D√((1+J/Δ)C₂)} (`eq_initial_weight_range`, AreaLawRefactored/S03_InitialBox/BufferDiscount.lean:600) |
 | D3.14.5 | C_buf unspecified | (1024e(J/Δ)K' + C_pad)/2 | C(C_pad/D+1)·2D/log((C_pad+1)/(2+D)) (`step_3_14_5`, AreaLawRefactored/S03_InitialBox/BufferDiscount.lean:769) |
+| D4.4 | v = 2v_R J μ_R e^{cR}, C = 2e^{cR} | e^{2μR} in v (old `norm_heisenberg_commutator_le_graphDistance`) | the paper's, with V_R for v_R (`lemma_4_1`) |
+| D4.12 | any c'' < c(2/3)^α | old c/2 | c' = c/2 (`step_4_12`); C₁ = (β/c')², β = 1000 + s + 2C'C₀/min(1, g/4) (`step_4_12_7`) |
+| D4.11/D4.14 (dimension) | (r₀+1)², (r₀+1)⁶, (log n)¹² on ℤ² | box (2R+1)² constants | (r₀+1)^m, (r₀+1)^{3m}, (log n)^{6m} for V ≤ K(r+1)^m; = paper at m = 2 |
 
 ## 7. Digest corrections
 
@@ -108,6 +122,7 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 |---|---|---|
 | §2 | none found by the §2 part agents | — |
 | §3 | none found by the §3 worker | — |
+| §4 | none found by the §4 worker | — |
 
 ## 8. Cuts
 
@@ -115,6 +130,7 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 |---|---|---|
 | §2 old code (Map.md §2 rows) | not yet deleted: later sections still import it; cut at the Step 1 gate | — |
 | §3 old code (Map.md §3 rows) | not yet deleted (instruction: keep OpenAI/ until the Step 1 gate) | — |
+| §4 old code (Map.md §4 rows) | not yet deleted (keep OpenAI/ until the Step 1 gate). Name clash to remember: `CFC.norm_sqrt_sub_sqrt_le`, `CFC.sqrt_add_algebraMap_le`, `CFC.sqrt_le_sqrt_add_sqrt_norm_sub` exist in both OpenAI/SqrtHolder.lean and the library file; no module imports both | — |
 
 ## 9. Per-section lines
 
@@ -122,6 +138,7 @@ Mapping (Map.md): 238 anchors — faithful 107, drift 41, smeared 63, missing 3,
 |---|---|---|---|
 | 02 Preliminaries | 4865 | 786 (`AreaLawRefactored/S02_Preliminaries.lean`) + 607 library (`AreaLawForMathlib/QuantumInfo/Region.lean` 314, `…/Entropy/ClassicalQuantum.lean` 259, `Data/Int/L1Ball.lean` 34) = 1393 | |
 | 03 InitialBox | 10096 | 3209 (`AreaLawRefactored/S03_InitialBox/MarginalTails.lean` 1184, `AreaLawRefactored/S03_InitialBox/BufferDiscount.lean` 790, `AreaLawRefactored/S03_InitialBox/Filters.lean` 589, `AreaLawRefactored/S03_InitialBox.lean` 645) + 243 library (`AreaLawForMathlib/Analysis/CStarAlgebra/Matrix.lean` 43, `AreaLawForMathlib/Analysis/Matrix/TraceHolder.lean` 178, `AreaLawForMathlib/QuantumInfo/Region.lean` +22) = 3452, PARTIAL: Lemma 3.1 (`lemma_3_1`) and D3.2 done; Lemma 3.2 (`lemma_3_2`) open: written D3.7.1–4 (no chain assembly), D3.9.1, D3.9.3, D3.9.5, D3.11.2–4, D3.12.4, D3.13 (scalar averaging); not written: chain assembly of D3.7, D3.8.1, D3.9.2, D3.9.6, D3.11.1, D3.12.1–3/5–6, D3.13.2 on regions, `lemma_3_2` itself; `prop_3_3` still takes Lemma 3.2 as hypothesis | |
+| 04 Quasilocal | 8021 | 2380 (`AreaLawRefactored/S04_Quasilocal/`: Setup 169, Propagation 415, Filter 79, CenteredFilter 298, Roots 331, VolumeFree 235, GroundState 250, Crossing 254, Truncation 125; umbrella `AreaLawRefactored/S04_Quasilocal.lean` 23) + 1660 library (`AreaLawForMathlib/Analysis/Fourier/GevreyBump.lean` 505, `GevreyBumpFourier.lean` 459, `Analysis/ODE/LiebRobinson.lean` 586, `Analysis/CStarAlgebra/SqrtHolder.lean` 110) = 4040; D4.4 line 2, D4.6, D4.8 missing; not yet cleaned/golfed | |
 
 ## 10. Final numbers
 
@@ -148,3 +165,6 @@ What remains in §3, in paper order (old faithful proofs to translate are cited 
 7. `lemma_3_2 (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 < Δ) : BufferDiscount ℂ q R J Δ` from D3.5, D3.6, D3.10, D3.11, D3.13 and `step_3_14`, `step_3_14_5` (BufferDiscount.lean:744, :769). The frozen statement does not carry these hypotheses; the old `OpenAI.buffer_discount` (OpenAI/BufferDiscount.lean:508) and `initial_box_estimate` (OpenAI/InitialBoxEstimate.lean:356) take the same three, so `prop_3_3` becomes `(hq) (hJ) (hΔ) : InitialBoxEstimate ℂ q R J Δ`, and the transfer to `𝕜` (decision 1) passes them on.
 
 §4 onward (S04_Quasilocal … S01_AreaLaw), Step 2, Step 3 and the final gate are untouched.
+
+§4 (worker on branch `agents/18b3b627-b93d-5732-9c67-7919d1fb0eea-s04`): `AreaLawRefactored/S04_Quasilocal.lean` imports `S04_Quasilocal/{Setup, Propagation, Filter, CenteredFilter, Roots, VolumeFree, GroundState, Crossing, Truncation}.lean`; graph anchors are over `G : SimpleGraph σ` with growth `V` (`hV`), and where a sum over distances must converge, `V r ≤ K (r+1)^m`. Done, standard axioms each: D4.1 `GraphDomain.step_4_1`, D4.2 `GraphDomain.E`/`eq_quasilocal_ce`, D4.3 `step_4_3`, D4.4 line 1 `lemma_4_1`, D4.5 `lemma_4_2`, D4.7 `step_4_7`, D4.9 `CFC.norm_sqrt_sub_sqrt_le`, D4.10 `lemma_4_4`, D4.11 `prop_4_5`, D4.12 `step_4_12`/`step_4_12_7`, D4.13 `step_4_13`, D4.14 `step_4_14`/`step_4_14_7` (file:line in Map.md §4). What remains, in order: (a) D4.2 contractivity `‖E B‖ ≤ ‖B‖` (Kraus form of the normalized partial trace with `Matrix.norm_mul_mul_add_mul_mul_le`-type isometry argument, or the old Weyl twirl OpenAI/ComplementaryWeylTwirl.lean) and the twirl bound `‖B − E B‖ ≤ Σ_{y∉N_l} sup_U ‖[B,U_y]‖` (D4.4.9); (b) D4.4 line 2 `eq:quasilocal-lr-ce` from (a), `lemma_4_1` and `Σ_{d>l} V(d)e^{−cd}` (polynomial V), added as a second conjunct of `lemma_4_1`; (c) D4.8 `step_4_8` (old OpenAI/SpectralFilter/FilterLocality.lean:212 with L := E); (d) D4.6 `prop_4_3` over G from `lemma_4_2` (δ = Δ/2), `step_4_7`, `step_4_8`, `CFC.norm_sqrt_sub_sqrt_le`, then the frozen `OpenAI.PositiveReplacement ℂ q R J Δ p` as the `G = squareLattice`, `V = v 2` instance (S02's rfl lemmas, `domainComponent_eq_graph`, Setup.lean) and the ℂ → 𝕜 transfer of decision 1; (e) drop the D4.6 hypotheses of `lemma_4_4`/`prop_4_5` by applying `prop_4_3`; (f) `mathlib-quality:cleanup`/golf on the S04 files and the ported library files (GevreyBump* and LiebRobinson.lean are ports, not golfed). No frozen statement is reached from §4 yet.
+
