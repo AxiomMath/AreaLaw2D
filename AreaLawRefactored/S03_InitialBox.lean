@@ -1,4 +1,4 @@
-import AreaLawRefactored.S03_InitialBox.BufferDiscount
+import AreaLawRefactored.S03_InitialBox.Filters
 
 /-!
 # §3 Marginal tails and an initial box estimate
