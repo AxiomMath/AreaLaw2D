@@ -1,4 +1,5 @@
 import AreaLawRefactored.S02_Preliminaries
+import AreaLawForMathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Analysis.Complex.Hadamard
 import Mathlib.Analysis.Complex.Schwarz
 
@@ -383,16 +384,6 @@ theorem sum_add_mul_le {ι : Type*} [Fintype ι] {s : ι → ℝ} (hs : ∀ j, 0
         exacts [hs j, cs _ _ (hCr j) (hDr j), hs k, cs _ _ (hCc k) (hDc k)]
     _ = 2 * (a * b) := by rw [← Finset.sum_mul, hsum]; ring
 
-omit [Fintype β] [DecidableEq β] in
-theorem sum_norm_sq_col_le {γ : Type*} [Fintype γ] (A : Matrix γ α ℂ) (k : α) :
-    ∑ j, ‖A j k‖ ^ 2 ≤ ‖A‖ ^ 2 := by
-  classical
-  have h := Matrix.l2_opNorm_mulVec A (EuclideanSpace.single k 1)
-  rw [PiLp.norm_single, norm_one, mul_one] at h
-  have h2 := pow_le_pow_left₀ (norm_nonneg _) h 2
-  rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun _ _ ↦ sq_nonneg _)] at h2
-  simpa [mulVec, dotProduct, Pi.single_apply] using h2
-
 /-- The normalized rows `Θⱼ / √sⱼ`, `0` where `sⱼ = 0`: the Schmidt vectors `gⱼ`. -/
 noncomputable def unitRow (Θ : EuclideanSpace ℂ (α × β)) (s : α → ℝ) (j : α) :
     EuclideanSpace ℂ β :=
@@ -504,7 +495,7 @@ theorem step_3_1_6 (hs : ∀ j, 0 ≤ s j) (hsum : ∑ j, s j = 1) (hΘ : IsSchm
         pow_le_pow_left₀ (norm_nonneg _) ((Matrix.l2_opNorm_mulVec A _).trans
           (mul_le_of_le_one_right (norm_nonneg _) (norm_unitRow_le hs hΘ j))) 2
       have hcr (j : α) : ∑ k, ‖c a j k‖ ^ 2 ≤ ‖c a‖ ^ 2 := by
-        have h := sum_norm_sq_col_le (c a)ᴴ j
+        have h := sum_norm_apply_sq_le_l2_opNorm_sq (c a)ᴴ j
         rw [l2_opNorm_conjTranspose] at h
         simpa [conjTranspose_apply] using h
       have hDr (j : α) : ∑ k, ‖D j k‖ ^ 2 ≤ ‖d a‖ ^ 2 := by
@@ -514,8 +505,9 @@ theorem step_3_1_6 (hs : ∀ j, 0 ≤ s j) (hsum : ∑ j, s j = 1) (hΘ : IsSchm
         simp only [D]
         rw [toEuclideanLin_conjTranspose_eq_adjoint, LinearMap.adjoint_inner_right,
           norm_inner_symm]
-      exact sum_add_mul_le hs hsum (norm_nonneg _) (norm_nonneg _) hcr (sum_norm_sq_col_le (c a))
-        hDr fun k ↦ (sum_norm_inner_unitRow_sq_le hs hΘ _).trans (hd (d a) k)
+      exact sum_add_mul_le hs hsum (norm_nonneg _) (norm_nonneg _) hcr
+        (sum_norm_apply_sq_le_l2_opNorm_sq (c a)) hDr
+        fun k ↦ (sum_norm_inner_unitRow_sq_le hs hΘ _).trans (hd (d a) k)
 
 
 end Rows
@@ -793,5 +785,297 @@ theorem step_3_1_10 {ι : Type*} [Fintype ι] {h : ι → Matrix (α × β) (α 
   nlinarith
 
 end Core
+
+/-! ## The cut `B | U ∖ B` in the eigenbasis of `ρ` -/
+
+section Transport
+
+variable {m n : Type*} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n]
+
+theorem hasGlobalGap_submatrix {H : Matrix n n ℂ} {Ψ : n → ℂ} {E₀ g₀ : ℝ} (e : m ≃ n)
+    (hgap : HasGlobalGap H Ψ E₀ g₀) : HasGlobalGap (H.submatrix e e) (Ψ ∘ e) E₀ g₀ := by
+  rw [HasGlobalGap, Matrix.le_iff] at hgap ⊢
+  convert (posSemidef_submatrix_equiv e).2 hgap using 1
+  ext a b
+  simp [Matrix.sub_apply, Matrix.smul_apply, one_apply, vecMulVec_apply, e.injective.eq_iff]
+
+theorem hasGlobalGap_conj {H : Matrix n n ℂ} {Ψ : n → ℂ} {E₀ g₀ : ℝ}
+    (hgap : HasGlobalGap H Ψ E₀ g₀) {W : Matrix m n ℂ} (hW : W * Wᴴ = 1) :
+    HasGlobalGap (W * H * Wᴴ) (W *ᵥ Ψ) E₀ g₀ := by
+  rw [HasGlobalGap, Matrix.le_iff] at hgap ⊢
+  convert hgap.mul_mul_conjTranspose_same W using 1
+  simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one,
+    hW, mul_vecMulVec, vecMulVec_mul, star_mulVec]
+
+end Transport
+
+section Cut
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)] {U B D : Finset σ}
+
+/-- D3.1.6. Across the cut `B | U ∖ B`, a term supported on `D` is `∑_{a,b} E_{ab} ⊗ h_{ab}`:
+`E_{ab}` the matrix units of `ℋ_{D ∩ B}` (extended by `1` to `B`),
+`h_{ab} = (⟨a| ⊗ 1) X (|b⟩ ⊗ 1)` on `U ∖ B`. -/
+theorem extendId_submatrix_eq_sum (hB : B ⊆ U) (hDU : D ⊆ U)
+    (Y : Matrix (Reg loc D) (Reg loc D) ℂ) (w₀ : Reg loc (B \ (D ∩ B))) :
+    (extendId hDU Y).submatrix (glueEquiv hB) (glueEquiv hB) =
+      ∑ ab : Reg loc (D ∩ B) × Reg loc (D ∩ B),
+        extendId Finset.inter_subset_right (single ab.1 ab.2 (1 : ℂ)) ⊗ₖ
+          (extendId hDU Y).submatrix (fun z ↦ glue (glue ab.1 w₀ : Reg loc B) z)
+            (fun z ↦ glue (glue ab.2 w₀ : Reg loc B) z) := by
+  have hC (y y' : Reg loc B) (v v' : Reg loc (U \ B)) :
+      restr (S := U \ D) Finset.sdiff_subset (glue y v) = restr Finset.sdiff_subset (glue y' v') ↔
+        restr (S := B \ (D ∩ B)) Finset.sdiff_subset y = restr Finset.sdiff_subset y' ∧
+          restr (S := (U \ B) \ D) Finset.sdiff_subset v = restr Finset.sdiff_subset v' := by
+    simp only [restr, Finset.restrict₂, funext_iff, Subtype.forall, Finset.mem_sdiff,
+      Finset.mem_inter, glue, not_and]
+    constructor
+    · intro h
+      refine ⟨fun i hi ↦ ?_, fun i hi ↦ ?_⟩
+      · simpa [hi.1] using h i ⟨hB hi.1, fun hD ↦ hi.2 hD hi.1⟩
+      · simpa [hi.1.2] using h i ⟨hi.1.1, hi.2⟩
+    · rintro ⟨hy, hv⟩ i ⟨hiU, hiD⟩
+      by_cases hiB : i ∈ B
+      · simpa [hiB] using hy i ⟨hiB, fun h _ ↦ hiD h⟩
+      · simpa [hiB] using hv i ⟨⟨hiU, hiB⟩, hiD⟩
+  have hD (y : Reg loc B) (v : Reg loc (U \ B)) :
+      restr hDU (glue (glue (restr Finset.inter_subset_right y) w₀ : Reg loc B) v) =
+        restr hDU (glue y v) :=
+    funext fun i ↦ by
+      by_cases hi : (i : σ) ∈ B <;> simp [restr, glue, Finset.restrict₂, hi, Finset.mem_inter]
+  ext ⟨x, z⟩ ⟨x', z'⟩
+  have hc (ab : Reg loc (D ∩ B) × Reg loc (D ∩ B)) :
+      extendId Finset.inter_subset_right (single ab.1 ab.2 (1 : ℂ)) x x' =
+        if restr (S := B \ (D ∩ B)) Finset.sdiff_subset x = restr Finset.sdiff_subset x' ∧
+          ab = (restr Finset.inter_subset_right x, restr Finset.inter_subset_right x')
+        then 1 else 0 := by
+    simp only [extendId, of_apply, single_apply, Prod.ext_iff]
+    split_ifs <;> tauto
+  simp only [submatrix_apply, glueEquiv_apply, Matrix.sum_apply, kroneckerMap_apply, hc,
+    ite_mul, one_mul, zero_mul]
+  by_cases hx : restr (S := B \ (D ∩ B)) Finset.sdiff_subset x = restr Finset.sdiff_subset x'
+  · simp only [hx, true_and, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [extendId, of_apply, hD, hC, hx, restr_glue_compl, true_and]
+  · simp [hx, extendId, hC]
+
+/-- D3.1.1. Schmidt form across the cut: for `V` the eigenvector unitary of
+`ρ = Tr_{U∖B} |Ψ⟩⟨Ψ|`, the vector `(V* ⊗ 1) Ψ` has Schmidt weights the eigenvalues of `ρ`. -/
+theorem isSchmidt_cut (hB : B ⊆ U) (Ψ : Reg loc U → ℂ) (hΨ : star Ψ ⬝ᵥ Ψ = 1) :
+    let hρ := ((pureState Ψ hΨ).toSubState.restrict hB).psd.isHermitian
+    IsSchmidt (WithLp.toLp 2 (((hρ.eigenvectorUnitary : Matrix (Reg loc B) (Reg loc B) ℂ)ᴴ ⊗ₖ
+      (1 : Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ)) *ᵥ (Ψ ∘ glueEquiv hB)))
+      hρ.eigenvalues := by
+  intro hρ j k
+  set V : Matrix (Reg loc B) (Reg loc B) ℂ :=
+    (hρ.eigenvectorUnitary : Matrix (Reg loc B) (Reg loc B) ℂ)
+  set Φ := WithLp.toLp 2 ((Vᴴ ⊗ₖ (1 : Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ)) *ᵥ
+    (Ψ ∘ glueEquiv hB))
+  have hd := hρ.conjStarAlgAut_star_eigenvectorUnitary
+  rw [Unitary.conjStarAlgAut_star_apply, star_eq_conjTranspose] at hd
+  have hr (i : Reg loc B) (b : Reg loc (U \ B)) :
+      row Φ i b = ∑ a, star (V a i) * Ψ (glue a b) := by
+    simp [Φ, row, mulVec, dotProduct, Fintype.sum_prod_type, one_apply]
+  have key : ⟪row Φ j, row Φ k⟫_ℂ =
+      (Vᴴ * ((pureState Ψ hΨ).toSubState.restrict hB).M * V) k j := by
+    simp only [PiLp.inner_apply, RCLike.inner_apply, hr, mul_apply, conjTranspose_apply,
+      star_def, map_sum, map_mul, Complex.conj_conj, Finset.sum_mul, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun a _ ↦ ?_
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun b _ ↦ ?_
+    change _ = _ * (∑ z, Ψ (glue b z) * star (Ψ (glue a z))) * _
+    rw [Finset.mul_sum, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun z _ ↦ by simp only [star_def]; ring
+  rw [key, hd, diagonal_apply]
+  by_cases hjk : j = k
+  · subst hjk; simp
+  · simp [hjk, Ne.symm hjk]
+
+/-- D3.1.1 and D3.1.3. In the basis `eⱼ ⊗ (·)` of `ℋ_B ⊗ ℋ_{U∖B}`, `eⱼ` the eigenvectors of `ρ`:
+the ground vector has Schmidt weights `p`, a term with `Dᵢ ⊆ B` is `A ⊗ 1`, one with
+`Dᵢ ⊆ U ∖ B` is `1 ⊗ A`, every term is a sum of products over the matrix units of
+`ℋ_{Dᵢ ∩ B}` (D3.1.6), and norms, eigenequation and gap are unchanged. -/
+theorem step_3_1_1 (hB : B ⊆ U) {ι : Type*} [Fintype ι] {D : ι → Finset σ}
+    (hD : ∀ i, D i ⊆ U) {h : ι → Matrix (Reg loc U) (Reg loc U) ℂ}
+    (hsupp : ∀ i, IsSupportedOn (hD i) (h i)) (hherm : ∀ i, (h i).IsHermitian) {c₀ E₀ g₀ : ℝ}
+    (hnorm : ∀ i, ‖h i‖ ≤ c₀) (Ψ : Reg loc U → ℂ) (hΨ : star Ψ ⬝ᵥ Ψ = 1)
+    (heig : (∑ i, h i) *ᵥ Ψ = (E₀ : ℂ) • Ψ) (hgap : HasGlobalGap (∑ i, h i) Ψ E₀ g₀) :
+    ∃ (h' : ι → Matrix (Reg loc B × Reg loc (U \ B)) (Reg loc B × Reg loc (U \ B)) ℂ)
+      (Ψ' : EuclideanSpace ℂ (Reg loc B × Reg loc (U \ B))),
+      (∀ i, (h' i).IsHermitian) ∧ (∀ i, ‖h' i‖ ≤ c₀) ∧
+      (∀ i, ¬((D i ∩ B).Nonempty ∧ (D i \ B).Nonempty) →
+        (∃ A, h' i = A ⊗ₖ 1) ∨ ∃ A, h' i = 1 ⊗ₖ A) ∧
+      (∀ i, ∃ (c : Reg loc (D i ∩ B) × Reg loc (D i ∩ B) → Matrix (Reg loc B) (Reg loc B) ℂ)
+        (d : Reg loc (D i ∩ B) × Reg loc (D i ∩ B) →
+          Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ),
+        h' i = ∑ a, c a ⊗ₖ d a ∧ ∀ a, ‖c a‖ * ‖d a‖ ≤ c₀) ∧
+      IsSchmidt Ψ' ((pureState Ψ hΨ).toSubState.restrict hB).psd.isHermitian.eigenvalues ∧
+      toEuclideanLin (∑ i, h' i) Ψ' = (E₀ : ℂ) • Ψ' ∧
+      HasGlobalGap (∑ i, h' i) (WithLp.ofLp Ψ') E₀ g₀ := by
+  classical
+  obtain ⟨x₀⟩ : Nonempty (Reg loc U) := by
+    by_contra hU
+    rw [not_nonempty_iff] at hU
+    simp [dotProduct, Finset.univ_eq_empty] at hΨ
+  set e := glueEquiv (loc := loc) hB
+  set V : Matrix (Reg loc B) (Reg loc B) ℂ :=
+    (((pureState Ψ hΨ).toSubState.restrict hB).psd.isHermitian.eigenvectorUnitary :
+      Matrix (Reg loc B) (Reg loc B) ℂ)
+  set T := Vᴴ ⊗ₖ (1 : Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ)
+  have hV : Vᴴ * V = 1 := by rw [← star_eq_conjTranspose]; exact Unitary.coe_star_mul_self _
+  have hV' : V * Vᴴ = 1 := by rw [← star_eq_conjTranspose]; exact Unitary.coe_mul_star_self _
+  have hVn : ‖V‖ ≤ 1 := l2_opNorm_le_one_of_conjTranspose_mul_self hV
+  have hT : Tᴴ * T = 1 := by simp [T, conjTranspose_kronecker, ← mul_kronecker_mul, hV']
+  have hT' : T * Tᴴ = 1 := by simp [T, conjTranspose_kronecker, ← mul_kronecker_mul, hV]
+  have hTn : ‖T‖ ≤ 1 := l2_opNorm_le_one_of_conjTranspose_mul_self hT
+  have hconj (A : Matrix (Reg loc B) (Reg loc B) ℂ) (A' : Matrix (Reg loc (U \ B)) _ ℂ) :
+      T * (A ⊗ₖ A') * Tᴴ = (Vᴴ * A * V) ⊗ₖ A' := by
+    simp [T, conjTranspose_kronecker, ← mul_kronecker_mul]
+  have hsum : ∑ i, T * (h i).submatrix e e * Tᴴ = T * (∑ i, h i).submatrix e e * Tᴴ := by
+    rw [← Finset.sum_mul, ← Finset.mul_sum]
+    congr 2
+    ext; simp [Matrix.sum_apply]
+  refine ⟨fun i ↦ T * (h i).submatrix e e * Tᴴ, WithLp.toLp 2 (T *ᵥ (Ψ ∘ e)),
+    fun i ↦ isHermitian_mul_mul_conjTranspose T ((hherm i).submatrix e), fun i ↦ ?_,
+    fun i hi ↦ ?_, fun i ↦ ?_, isSchmidt_cut hB Ψ hΨ, ?_, ?_⟩
+  · exact (l2_opNorm_mul_mul_le_of_le_one hTn (by rwa [l2_opNorm_conjTranspose]) _).trans
+      ((l2_opNorm_submatrix _ _ _).trans_le (hnorm i))
+  · -- D3.1.3: a term on one side of the cut is `A ⊗ 1` or `1 ⊗ A`
+    obtain ⟨Y, hY⟩ := hsupp i
+    simp only [not_and_or, Finset.not_nonempty_iff_eq_empty] at hi
+    rcases hi with hi | hi
+    · have hDB : D i ⊆ U \ B := fun x hx ↦ Finset.mem_sdiff.2 ⟨hD i hx, fun hxB ↦ by
+        simpa [hi] using Finset.mem_inter.2 ⟨hx, hxB⟩⟩
+      refine Or.inr ⟨extendId hDB Y, ?_⟩
+      have : (h i).submatrix e e = 1 ⊗ₖ extendId hDB Y := by
+        ext ⟨x, z⟩ ⟨x', z'⟩
+        simp [hY, e, extendId_glue_of_subset_sdiff hB hDB, one_apply]
+      beta_reduce
+      rw [this, hconj, mul_one, hV]
+    · have hDB : D i ⊆ B := Finset.sdiff_eq_empty_iff_subset.1 hi
+      refine Or.inl ⟨Vᴴ * extendId hDB Y * V, ?_⟩
+      have : (h i).submatrix e e = extendId hDB Y ⊗ₖ 1 := by
+        ext ⟨x, z⟩ ⟨x', z'⟩
+        simp [hY, e, extendId_glue_of_subset hB hDB, one_apply]
+      beta_reduce
+      rw [this, hconj]
+  · -- D3.1.6: the matrix units of `ℋ_{Dᵢ ∩ B}`
+    obtain ⟨Y, hY⟩ := hsupp i
+    set w₀ : Reg loc (B \ (D i ∩ B)) := restr Finset.sdiff_subset (restr hB x₀)
+    refine ⟨fun ab ↦ Vᴴ * extendId Finset.inter_subset_right (single ab.1 ab.2 (1 : ℂ)) * V,
+      fun ab ↦ (h i).submatrix (fun z ↦ glue (glue ab.1 w₀ : Reg loc B) z)
+        (fun z ↦ glue (glue ab.2 w₀ : Reg loc B) z), ?_, fun ab ↦ ?_⟩
+    · simp only
+      rw [hY, extendId_submatrix_eq_sum hB (hD i) Y w₀, Finset.mul_sum, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun ab _ ↦ hconj _ _
+    · refine (mul_le_mul ((l2_opNorm_mul_mul_le_of_le_one
+        (by rwa [l2_opNorm_conjTranspose]) hVn _).trans ?_)
+        (l2_opNorm_submatrix_le _ (glue_right_injective _) (glue_right_injective _))
+        (norm_nonneg _) zero_le_one).trans (by simpa using hnorm i)
+      rw [extendId_eq_kronecker, l2_opNorm_submatrix]
+      exact (l2_opNorm_kronecker_one_le _).trans (by simp)
+  · rw [hsum]
+    simp only [toLpLin_apply]
+    rw [← WithLp.toLp_smul, mulVec_mulVec, mul_assoc (T * _), hT, mul_one, ← mulVec_mulVec,
+      submatrix_mulVec_equiv, Function.comp_assoc, Equiv.self_comp_symm, Function.comp_id, heig,
+      show ((E₀ : ℂ) • Ψ) ∘ e = (E₀ : ℂ) • (Ψ ∘ e) from rfl, mulVec_smul]
+  · rw [hsum]
+    exact hasGlobalGap_conj (hasGlobalGap_submatrix e hgap) hT'
+
+end Cut
+
+/-! ## Lemma 3.1 -/
+
+/-- D3.1 **Lemma 3.1** (`lem:tail`). Let `ℋ = ⨂_{v ∈ V} ℋ_v` be finite with finite-dimensional
+factors, `𝖧 = ∑_{i ∈ 𝓘} hᵢ`, `hᵢ = hᵢ*`, `‖hᵢ‖ ≤ c₀`, `hᵢ` with support `Dᵢ ⊆ V`; unit ground
+vector `Ψ`, `𝖧 Ψ = E₀ Ψ`, `g₀ > 0` with `𝖧 - E₀ ≥ g₀ (1 - |Ψ⟩⟨Ψ|)`. For a bipartition
+`B ⊔ Bᶜ = V`, `𝓘× = {i : Dᵢ ∩ B ≠ ∅ ≠ Dᵢ ∩ Bᶜ}`, `ρ = Tr_{Bᶜ} |Ψ⟩⟨Ψ|`,
+`dᵢ = ∏_{v ∈ Dᵢ} dim ℋ_v`, `𝓑 = 1 + ∑_{i ∈ 𝓘×} log² (e dᵢ)`, `ϑ = c₀/g₀`. Let `pⱼ` be the positive
+eigenvalues of `ρ`, `K = -log pⱼ` with probability `pⱼ`, `S = S(ρ)`. Then
+`log E e^{uK} ≤ u S + 512 e ϑ 𝓑 u²` for `|u| ≤ [32 √((1+ϑ)𝓑)]⁻¹`, and for every `w ≥ 0`
+`P{|K - S| > w} ≤ min {1, 2 e^{e/2} exp (-w / (32 √((1+ϑ)𝓑)))}`. -/
+theorem lemma_3_1 {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+    [∀ i, DecidableEq (loc i)] : MarginalTails σ loc ℂ := by
+  intro U ι _ D hD h c₀ g₀ E₀ Ψ hΨ hsupp hherm hc₀ hnorm hg₀ heig hgap B hB ρ p 𝓑
+  classical
+  set ϑ := c₀ / g₀
+  set r := (32 * Real.sqrt ((1 + ϑ) * 𝓑))⁻¹
+  have hp : ∀ j, 0 ≤ p j := ρ.psd.eigenvalues_nonneg
+  have hs : ∑ j, p j = 1 := by
+    have h1 := ρ.psd.isHermitian.trace_eq_sum_eigenvalues
+    have h2 := ((pureState Ψ hΨ).restrict hB).tr_eq_one
+    rw [show ((pureState Ψ hΨ).restrict hB).M = ρ.M from rfl, h1] at h2
+    simpa using h2
+  have hS : ρ.entropy = H p := ρ.entropy_eq_H
+  obtain ⟨x₀⟩ : Nonempty (Reg loc U) := by
+    by_contra hU
+    rw [not_nonempty_iff] at hU
+    simp [dotProduct, Finset.univ_eq_empty] at hΨ
+  -- D3.1.1: Schmidt coordinates across the cut
+  obtain ⟨h', Ψ', hherm', hnorm', hone, hdec, hrow, heig', hgap'⟩ :=
+    step_3_1_1 hB hD hsupp hherm hnorm Ψ hΨ heig hgap
+  choose c d hdec hcd using hdec
+  have hdim (i : ι) : 1 ≤ Fintype.card (Reg loc (D i)) :=
+    Fintype.card_pos_iff.2 ⟨restr (hD i) x₀⟩
+  have hκ (i : ι) : Fintype.card (Reg loc (D i ∩ B) × Reg loc (D i ∩ B)) ≤
+      Fintype.card (Reg loc (D i)) ^ 2 := by
+    rw [Fintype.card_prod, ← sq]
+    refine Nat.pow_le_pow_left (Fintype.card_le_of_surjective
+      (restr (S := D i ∩ B) Finset.inter_subset_left) fun y ↦ ?_) 2
+    exact ⟨glue y (restr Finset.sdiff_subset (restr (hD i) x₀)), restr_glue _ _ _⟩
+  -- D3.1.2–D3.1.10 for every admissible `t`
+  have key (t : ℝ) (ht : |t| ≤ r) :
+      1 - 128 * Real.exp 1 * ϑ * 𝓑 * t ^ 2 ≤ M p (t / 2) ^ 2 / M p t :=
+    step_3_1_10 hherm' hc₀ hnorm' (fun i hi ↦ hone i (by simpa using hi))
+      (fun i _ ↦ hdec i) (fun i _ ↦ hcd i) (fun i _ ↦ hκ i) (fun i _ ↦ hdim i) hp hs hrow hg₀
+      heig' hgap' ht
+  have hϑ : 0 ≤ ϑ := div_nonneg hc₀ hg₀.le
+  have h𝓑 : 1 ≤ 𝓑 := le_add_of_nonneg_right (Finset.sum_nonneg fun _ _ ↦ sq_nonneg _)
+  have hr2 : r ^ 2 = 1 / (1024 * ((1 + ϑ) * 𝓑)) := by
+    simp only [r]; rw [inv_pow, mul_pow, Real.sq_sqrt (by positivity)]; norm_num
+  have he : Real.exp 1 < 3 := Real.exp_one_lt_d9.trans (by norm_num)
+  have hϑ1 : ϑ / (1 + ϑ) ≤ 1 := (div_le_one (by positivity)).2 (by linarith)
+  -- D3.1.11: `v ≤ e ϑ / (8 (1 + ϑ)) < 1/2` and `L(t) ≤ 2 L(t/2) + κ t²`, `κ = 256 e ϑ 𝓑`
+  have halving (t : ℝ) (ht : |t| ≤ r) : Real.log (M p t) ≤
+      2 * Real.log (M p (t / 2)) + 256 * Real.exp 1 * ϑ * 𝓑 * t ^ 2 := by
+    have hv : 128 * Real.exp 1 * ϑ * 𝓑 * t ^ 2 ≤ 1 / 2 :=
+      calc _ ≤ 128 * Real.exp 1 * ϑ * 𝓑 * r ^ 2 := mul_le_mul_of_nonneg_left
+            (by rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) ht 2) (by positivity)
+        _ = Real.exp 1 * (ϑ / (1 + ϑ)) / 8 := by rw [hr2]; field_simp; ring
+        _ ≤ 3 * 1 / 8 := by gcongr
+        _ ≤ 1 / 2 := by norm_num
+    set v := 128 * Real.exp 1 * ϑ * 𝓑 * t ^ 2
+    have hv0 : 0 ≤ v := by positivity
+    have hM := M_pos hp hs t
+    have h1 := Real.log_le_log (by linarith) (key t ht)
+    rw [Real.log_div (pow_pos (M_pos hp hs _) 2).ne' hM.ne', Real.log_pow] at h1
+    have h2 : (1 - v)⁻¹ ≤ 1 + 2 * v := by
+      rw [inv_eq_one_div, div_le_iff₀ (by linarith)]; nlinarith
+    have h3 := Real.one_sub_inv_le_log_of_pos (by linarith : 0 < 1 - v)
+    push_cast at h1
+    linarith
+  -- D3.1.12: `L(u) ≤ u S + 2κ u² = u S + 512 e ϑ 𝓑 u²`
+  have hmgf (u : ℝ) (hu : |u| ≤ r) :
+      Real.log (M p u) ≤ u * ρ.entropy + 512 * Real.exp 1 * ϑ * 𝓑 * u ^ 2 := by
+    have := step_3_1_12 (L := fun t ↦ Real.log (M p t)) (by simp [M, hs])
+      (hasDerivAt_log_M hs) halving hu
+    rw [hS]; linarith
+  refine ⟨fun u hu ↦ by rw [← M_eq_sum_filter hp]; exact hmgf u hu, fun w _ ↦ ?_⟩
+  -- D3.1.13: exponential Markov at `u = ± r`, quadratic term `512 e ϑ 𝓑 r² ≤ e/2`
+  have hr0 : 0 < r := by positivity
+  have hq : 512 * Real.exp 1 * ϑ * 𝓑 * r ^ 2 ≤ Real.exp 1 / 2 :=
+    calc _ = Real.exp 1 / 2 * (ϑ / (1 + ϑ)) := by rw [hr2]; field_simp; ring
+      _ ≤ Real.exp 1 / 2 * 1 := by gcongr
+      _ = _ := mul_one _
+  have hplus := hmgf r (by rw [abs_of_pos hr0])
+  have hminus := hmgf (-r) (by rw [abs_neg, abs_of_pos hr0])
+  rw [neg_sq] at hminus
+  refine le_min ((Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
+    fun j _ _ ↦ hp j).trans hs.le) ?_
+  refine (step_3_1_13 hp hs hr0 (C := Real.exp 1 / 2) (w := w) (by linarith)
+    (by linarith)).trans_eq ?_
+  simp only [r]
+  ring_nf
 
 end AreaLaw
