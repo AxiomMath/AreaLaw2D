@@ -67,6 +67,18 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 /-- The Hermitian matrices, the domain along which matrix means are differentiated. -/
 def hermitianSet (n : Type*) [Fintype n] : Set (Matrix n n ℂ) := {X | X.IsHermitian}
 
+/-- A real power of a matrix is Hermitian (the functional calculus returns a positive
+semidefinite matrix). -/
+theorem isHermitian_rpow (X : Matrix n n ℂ) (r : ℝ) : (X ^ r).IsHermitian :=
+  (Matrix.nonneg_iff_posSemidef.mp (CFC.rpow_nonneg (a := X) (y := r))).isHermitian
+
+/-- The weighted geometric mean of any two matrices is Hermitian. -/
+theorem isHermitian_geomMean (p : ℝ) (A B : Matrix n n ℂ) : (geomMean p A B).IsHermitian := by
+  unfold geomMean IsHermitian
+  rw [conjTranspose_mul, conjTranspose_mul, (isHermitian_rpow A _).eq,
+    (isHermitian_rpow _ p).eq]
+  simp only [Matrix.mul_assoc]
+
 /-! ### Real powers with endpoint exponents -/
 
 /-- The derivative of `X ↦ X ^ p` at `C` for `0 ≤ p ≤ 1`: the zero map at `p = 0`,

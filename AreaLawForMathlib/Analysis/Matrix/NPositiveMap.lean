@@ -53,6 +53,11 @@ def IsNPositiveMap (k : ℕ) (E : Matrix n n ℂ →ₗ[ℂ] Matrix n' n' ℂ) :
   ∀ X : Matrix (n × Fin k) (n × Fin k) ℂ,
     X.PosSemidef → (nPositiveAmpliation k E X).PosSemidef
 
+/-- A linear map on matrices is **completely positive** if its entrywise action on every matrix
+amplification preserves positive semidefinite matrices. -/
+def IsCompletelyPositive (E : Matrix n n ℂ →ₗ[ℂ] Matrix n' n' ℂ) : Prop :=
+  ∀ k, IsNPositiveMap k E
+
 /-- The single-sandwich linear map `X ↦ V X Vᴴ`. -/
 noncomputable def singleKrausMap [Fintype n] [Fintype n']
     (V : Matrix n' n ℂ) : Matrix n n ℂ →ₗ[ℂ] Matrix n' n' ℂ where

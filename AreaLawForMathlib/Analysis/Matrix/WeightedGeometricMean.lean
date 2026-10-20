@@ -61,6 +61,17 @@ protected theorem PosDef.geomMean (hA : A.PosDef) (hB : B.PosDef) (p : ℝ) :
           (A ^ (-(1 / 2) : ℝ) * A ^ (1 / 2 : ℝ)) := by noncomm_ring
     _ = B := by rw [h1, hA.rpow_neg_mul_rpow, one_mul, mul_one]
 
+/-- Idempotence: `X #_p X = X`. -/
+theorem geomMean_self {X : Matrix n n ℂ} (hX : X.PosDef) (p : ℝ) : geomMean p X X = X := by
+  have h1 : X ^ (-(1 / 2) : ℝ) * X * X ^ (-(1 / 2) : ℝ) = 1 := by
+    calc X ^ (-(1 / 2) : ℝ) * X * X ^ (-(1 / 2) : ℝ)
+        = X ^ (-(1 / 2) : ℝ) * (X ^ (1 / 2 : ℝ) * X ^ (1 / 2 : ℝ)) * X ^ (-(1 / 2) : ℝ) := by
+          rw [hX.rpow_half_mul_rpow_half]
+      _ = (X ^ (-(1 / 2) : ℝ) * X ^ (1 / 2 : ℝ)) * (X ^ (1 / 2 : ℝ) * X ^ (-(1 / 2) : ℝ)) := by
+          noncomm_ring
+      _ = 1 := by rw [hX.rpow_neg_mul_rpow, hX.rpow_mul_rpow_neg, one_mul]
+  rw [geomMean, h1, CFC.one_rpow, mul_one, hX.rpow_half_mul_rpow_half]
+
 /-- With the identity as first argument the mean is a real power. -/
 @[simp] theorem one_geomMean (p : ℝ) (B : Matrix n n ℂ) : geomMean p 1 B = B ^ p := by
   simp [geomMean, CFC.one_rpow]
