@@ -444,6 +444,91 @@ theorem extendId_extendId {S T V : Finset σ} (hST : S ⊆ T) (hTV : T ⊆ V)
     | exact absurd (h3.1 h4).2 h2
     | exact absurd (h3.1 h4).1 h1
 
+
+/-- D3.7.3 through `K_{>j}`: for nested regions and filters `L_{j+1}, …, L_{j+m}` invertible and
+commuting with their marginals in `φ`, `⟨φ, K (W ⊗ 1) K⁻¹ φ⟩ = ⟨φ, (W ⊗ 1) φ⟩` for
+`K = L_{j+m} ⋯ L_{j+1}` and `W` on `X_j`. -/
+theorem step_3_7_3_prodDesc (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1))
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ} (j m : ℕ)
+    (φ : Arealaw.Reg loc U → ℂ) (hL : ∀ i < m, IsUnit (L (j + 1 + i)).det)
+    (hc : ∀ i < m, L (j + 1 + i) * Arealaw.ptrace (hX (j + 1 + i)) (vecMulVec φ (star φ)) =
+      Arealaw.ptrace (hX (j + 1 + i)) (vecMulVec φ (star φ)) * L (j + 1 + i))
+    (W : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ) :
+    star φ ⬝ᵥ ((prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) m *
+      Arealaw.extendId (hX j) W *
+      (prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) m)⁻¹) *ᵥ φ) =
+      star φ ⬝ᵥ (Arealaw.extendId (hX j) W *ᵥ φ) := by
+  -- the conjugate `K (W ⊗ 1) K⁻¹` is again an operator on `X_{j+1+m}`, extended by `1`
+  suffices h : ∃ W' : Matrix (Arealaw.Reg loc (X (j + 1 + m))) (Arealaw.Reg loc (X (j + 1 + m))) ℂ,
+      prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) m *
+        Arealaw.extendId (hX j) W *
+        (prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) m)⁻¹ =
+        Arealaw.extendId (hX (j + 1 + m)) W' ∧
+      star φ ⬝ᵥ (Arealaw.extendId (hX (j + 1 + m)) W' *ᵥ φ) =
+        star φ ⬝ᵥ (Arealaw.extendId (hX j) W *ᵥ φ) by
+    obtain ⟨W', e, h⟩ := h
+    rw [e, h]
+  induction m with
+  | zero =>
+    refine ⟨Arealaw.extendId (hnest j) W, ?_, ?_⟩
+    · simp only [prodDesc, Matrix.one_mul, inv_one, Matrix.mul_one, extendId_extendId]
+    · rw [extendId_extendId]
+  | succ m ih =>
+    obtain ⟨W', e, h⟩ := ih (fun i hi ↦ hL i (by omega)) (fun i hi ↦ hc i (by omega))
+    have hu := hL m m.lt_succ_self
+    have hinv : (Arealaw.extendId (hX (j + 1 + m)) (L (j + 1 + m)))⁻¹ =
+        Arealaw.extendId (hX (j + 1 + m)) (L (j + 1 + m))⁻¹ :=
+      Matrix.inv_eq_right_inv (by rw [← Arealaw.extendId_mul, mul_nonsing_inv _ hu,
+        Arealaw.extendId_one])
+    refine ⟨Arealaw.extendId (hnest (j + 1 + m)) (L (j + 1 + m) * W' * (L (j + 1 + m))⁻¹), ?_, ?_⟩
+    · rw [extendId_extendId, prodDesc, Matrix.mul_inv_rev,
+        show ∀ A P E Q R : Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ,
+          A * P * E * (Q * R) = A * (P * E * Q) * R from fun _ _ _ _ _ ↦ by
+            simp only [Matrix.mul_assoc], e, hinv, ← Arealaw.extendId_mul, ← Arealaw.extendId_mul]
+    · rw [extendId_extendId]
+      exact (step_3_7_3 (hX (j + 1 + m)) φ hu (hc m m.lt_succ_self) W').trans h
+
+/-- D3.7. At a maximizer of `N = ‖L_{n-1} ⋯ L_0 Ω‖` over feasible filters with floors `f_j > 0`
+on nested regions `X_0 ⊆ X_1 ⊆ ⋯ ⊆ U`, every filter commutes with its marginal:
+`[L_j, ρ_{φ,X_j}] = 0` for `j < n`, where `φ = K Ω`. -/
+theorem step_3_7 (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1)) {f a : ℕ → ℝ}
+    (hf : ∀ j, 0 < f j)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j)) (n : ℕ) {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)}
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' n) Ω‖ ≤ ‖toEuclideanLin (filterProd hX L n) Ω‖)
+    {j : ℕ} (hj : j < n) :
+    L j * Arealaw.ptrace (hX j) (vecMulVec (filterProd hX L n *ᵥ WithLp.ofLp Ω)
+      (star (filterProd hX L n *ᵥ WithLp.ofLp Ω))) =
+      Arealaw.ptrace (hX j) (vecMulVec (filterProd hX L n *ᵥ WithLp.ofLp Ω)
+        (star (filterProd hX L n *ᵥ WithLp.ofLp Ω))) * L j := by
+  -- descending induction on `k = n - 1 - j`
+  suffices H : ∀ k j, j + 1 + k = n →
+      L j * Arealaw.ptrace (hX j) (vecMulVec (filterProd hX L n *ᵥ WithLp.ofLp Ω)
+        (star (filterProd hX L n *ᵥ WithLp.ofLp Ω))) =
+      Arealaw.ptrace (hX j) (vecMulVec (filterProd hX L n *ᵥ WithLp.ofLp Ω)
+        (star (filterProd hX L n *ᵥ WithLp.ofLp Ω))) * L j from H (n - 1 - j) j (by omega)
+  intro k
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+  intro j hjk
+  have hc := fun i (hi : i < k) ↦ ih (k - 1 - i) (by omega) (j + 1 + i) (by omega)
+  subst hjk
+  set φ := filterProd hX L (j + 1 + k) *ᵥ WithLp.ofLp Ω
+  have hρ : (Arealaw.ptrace (hX j) (vecMulVec φ (star φ))).IsHermitian :=
+    (Arealaw.posSemidef_ptrace (hX j) (Matrix.posSemidef_vecMulVec_self_star φ)).isHermitian
+  refine step_3_7_4 ((hL j).posDef (hf j)) hρ fun B hB ↦ ?_
+  -- D3.7.2 at the maximizer, then D3.7.3 peels `K_{>j}`: `Re Tr(ρ (B - L_jBL_j⁻¹)) = 0`
+  have h := step_3_7_2_pairing hX hf hL j k hmax hB
+  simp only [EuclideanSpace.inner_eq_star_dotProduct, toLpLin_apply] at h
+  rw [dotProduct_comm, step_3_7_3_prodDesc hX hnest j k φ (fun i _ ↦ (hL _).isUnit_det (hf _))
+    hc, Arealaw.dotProduct_extendId_mulVec, Matrix.mul_sub, trace_sub, Complex.sub_re,
+    re_trace_mul_eq_zero hρ hB, ← Matrix.mul_assoc, ← Matrix.mul_assoc, trace_mul_comm] at h
+  -- D3.7.4: `Re Tr(L_j⁻¹ ρ L_j B) = 0`
+  simp only [Matrix.mul_assoc] at h ⊢
+  linarith
+
 end D37chain
 
 /-! ## D3.9 The optimized vector has small excitation energy -/
