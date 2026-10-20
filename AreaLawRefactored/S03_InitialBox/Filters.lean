@@ -277,6 +277,29 @@ theorem step_3_7_4 {L ρ : Matrix m m ℂ} (hL : L.PosDef) (hρ : ρ.IsHermitian
   rw [← CFC.sqrt_eq_cfc, CFC.sqrt_mul_self L hL0] at this
   exact this
 
+/-- D3.7.4. A feasible filter with floor `f > 0` is positive definite. -/
+theorem IsFilter.posDef {f a : ℝ} (hf : 0 < f) {L : Matrix m m ℂ} (hL : IsFilter f a L) :
+    L.PosDef := by
+  obtain ⟨V, hV, x, hx, -, rfl⟩ := hL
+  have hD : (diagonal fun i ↦ ((x i ^ (a / 2) : ℝ) : ℂ)).PosDef :=
+    posDef_diagonal_iff.2 fun i ↦ by
+      exact_mod_cast Real.rpow_pos_of_pos (hf.trans_le (hx i)) _
+  have hinj : Function.Injective (Vᴴ).mulVec := fun u v huv ↦ by
+    have hV' : V * Vᴴ = 1 := by rwa [mul_eq_one_comm] at hV
+    simpa [mulVec_mulVec, hV'] using congrArg (V *ᵥ ·) huv
+  simpa using hD.conjTranspose_mul_mul_same hinj
+
+omit [DecidableEq m] in
+/-- D3.7.4. `Tr(ρB)` is imaginary for `ρ = ρ*` and `B = -B*`. -/
+theorem re_trace_mul_eq_zero {ρ B : Matrix m m ℂ} (hρ : ρ.IsHermitian) (hB : Bᴴ = -B) :
+    (ρ * B).trace.re = 0 := by
+  have h : star (ρ * B).trace = -(ρ * B).trace := by
+    rw [← trace_conjTranspose, conjTranspose_mul, hB, hρ.eq, Matrix.neg_mul, trace_neg,
+      trace_mul_comm]
+  have := congrArg Complex.re h
+  simp only [Complex.star_def, Complex.conj_re, Complex.neg_re] at this
+  linarith
+
 end D37
 
 section D37chain
@@ -352,6 +375,74 @@ theorem step_3_7_2_filter (hX : ∀ j, X j ⊆ U) {f a : ℕ → ℝ}
     rw [toLpLin_mul_same]; rfl
   rw [filterProd_add, filterProd_add, hpre, hpost, Function.update_self, e, e] at h
   exact pow_le_pow_left₀ (norm_nonneg _) h 2
+
+/-- D3.7.2. `BL - LB = (B - LBL⁻¹)L` for invertible `L`. -/
+theorem sub_mul_inv_mul {n : Type*} [Fintype n] [DecidableEq n] {L : Matrix n n ℂ}
+    (hL : IsUnit L.det) (B : Matrix n n ℂ) : B * L - L * B = (B - L * B * L⁻¹) * L := by
+  rw [Matrix.sub_mul, Matrix.mul_assoc (L * B), nonsing_inv_mul _ hL, Matrix.mul_one]
+
+/-- D3.7.2 in the paper's form: at the maximizer, with `φ = K Ω` and `K_{>j} = L_{j+k} ⋯ L_{j+1}`,
+`Re ⟨φ, K_{>j} (B - L_jBL_j⁻¹) K_{>j}⁻¹ φ⟩ = 0` for anti-Hermitian `B` on `X_j`. -/
+theorem step_3_7_2_pairing (hX : ∀ j, X j ⊆ U) {f a : ℕ → ℝ} (hf : ∀ j, 0 < f j)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j)) (j k : ℕ) {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)}
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' (j + 1 + k)) Ω‖ ≤
+          ‖toEuclideanLin (filterProd hX L (j + 1 + k)) Ω‖)
+    {B : Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ} (hB : Bᴴ = -B) :
+    (inner ℂ (toEuclideanLin (filterProd hX L (j + 1 + k)) Ω)
+      (toEuclideanLin (prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) k *
+        Arealaw.extendId (hX j) (B - L j * B * (L j)⁻¹) *
+        (prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) k)⁻¹)
+        (toEuclideanLin (filterProd hX L (j + 1 + k)) Ω))).re = 0 := by
+  set K := prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) k
+  have hK : IsUnit K.det :=
+    isUnit_det_filterProd (X := fun i ↦ X (j + 1 + i)) (fun i ↦ hX (j + 1 + i))
+      (fun i ↦ (hL (j + 1 + i)).isUnit_det (hf _)) k
+  have h := step_3_7_2_filter hX hL j k hmax hB
+  rw [sub_mul_inv_mul ((hL j).isUnit_det (hf j)), Arealaw.extendId_mul] at h
+  have e : ∀ Q : Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ,
+      toEuclideanLin (Q * filterProd hX L j) Ω =
+      toEuclideanLin Q (toEuclideanLin (filterProd hX L j) Ω) := fun Q ↦ by
+    rw [toLpLin_mul_same]; rfl
+  have e2 : ∀ P Q : Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ, ∀ v,
+      toEuclideanLin (P * Q) v = toEuclideanLin P (toEuclideanLin Q v) := fun P Q v ↦ by
+    rw [toLpLin_mul_same]; rfl
+  have hM : K * (Arealaw.extendId (hX j) (B - L j * B * (L j)⁻¹) *
+      Arealaw.extendId (hX j) (L j)) = K * Arealaw.extendId (hX j) (B - L j * B * (L j)⁻¹) *
+      K⁻¹ * (K * Arealaw.extendId (hX j) (L j)) := by
+    simp only [Matrix.mul_assoc, nonsing_inv_mul_cancel_left _ _ hK]
+  rw [hM, e2 _ (K * _)] at h
+  rw [filterProd_add, e]
+  exact h
+
+omit [∀ i, Fintype (loc i)] in
+/-- `(A ⊗ 1_{T∖S}) ⊗ 1_{U∖T} = A ⊗ 1_{U∖S}`: extension by the identity is transitive. -/
+theorem extendId_extendId {S T V : Finset σ} (hST : S ⊆ T) (hTV : T ⊆ V)
+    (A : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ) :
+    Arealaw.extendId hTV (Arealaw.extendId hST A) = Arealaw.extendId (hST.trans hTV) A := by
+  ext w w'
+  simp only [Arealaw.extendId, Matrix.of_apply]
+  have h3 : ∀ {u u' : Arealaw.Reg loc V},
+      Arealaw.restr (S := V \ S) Finset.sdiff_subset u =
+        Arealaw.restr (S := V \ S) Finset.sdiff_subset u' ↔
+      Arealaw.restr (S := V \ T) Finset.sdiff_subset u =
+        Arealaw.restr (S := V \ T) Finset.sdiff_subset u' ∧
+      Arealaw.restr (S := T \ S) Finset.sdiff_subset (Arealaw.restr hTV u) =
+        Arealaw.restr (S := T \ S) Finset.sdiff_subset (Arealaw.restr hTV u') := by
+    intro u u'
+    refine ⟨fun h ↦ ⟨funext fun i ↦ congrFun h ⟨i, Finset.sdiff_subset_sdiff le_rfl hST i.2⟩,
+      funext fun i ↦ congrFun h ⟨i, Finset.sdiff_subset_sdiff hTV le_rfl i.2⟩⟩,
+      fun ⟨h1, h2⟩ ↦ funext fun i ↦ ?_⟩
+    by_cases hi : (i : σ) ∈ T
+    · exact congrFun h2 ⟨i, Finset.mem_sdiff.2 ⟨hi, (Finset.mem_sdiff.1 i.2).2⟩⟩
+    · exact congrFun h1 ⟨i, Finset.mem_sdiff.2 ⟨(Finset.mem_sdiff.1 i.2).1, hi⟩⟩
+  split_ifs with h1 h2 h4 h4 h4 <;> first
+    | rfl
+    | exact absurd (h3.2 ⟨h1, h2⟩) h4
+    | exact absurd (h3.1 h4).2 h2
+    | exact absurd (h3.1 h4).1 h1
 
 end D37chain
 
