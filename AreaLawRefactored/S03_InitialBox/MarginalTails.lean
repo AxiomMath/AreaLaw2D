@@ -868,20 +868,21 @@ theorem extendId_submatrix_eq_sum (hB : B ⊆ U) (hDU : D ⊆ U)
     simp only [extendId, of_apply, hD, hC, hx, restr_glue_compl, true_and]
   · simp [hx, extendId, hC]
 
-/-- D3.1.1. Schmidt form across the cut: for `V` the eigenvector unitary of
-`ρ = Tr_{U∖B} |Ψ⟩⟨Ψ|`, the vector `(V* ⊗ 1) Ψ` has Schmidt weights the eigenvalues of `ρ`. -/
-theorem isSchmidt_cut (hB : B ⊆ U) (Ψ : Reg loc U → ℂ) (hΨ : star Ψ ⬝ᵥ Ψ = 1) :
-    let hρ := ((pureState Ψ hΨ).toSubState.restrict hB).psd.isHermitian
-    IsSchmidt (WithLp.toLp 2 (((hρ.eigenvectorUnitary : Matrix (Reg loc B) (Reg loc B) ℂ)ᴴ ⊗ₖ
-      (1 : Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ)) *ᵥ (Ψ ∘ glueEquiv hB)))
-      hρ.eigenvalues := by
-  intro hρ j k
-  set V : Matrix (Reg loc B) (Reg loc B) ℂ :=
-    (hρ.eigenvectorUnitary : Matrix (Reg loc B) (Reg loc B) ℂ)
+/-- D3.1.1 for any diagonalising unitary: if `ρ = Tr_{U∖B} |Ψ⟩⟨Ψ| = V diag(p) V*` with `V`
+unitary, then `(V* ⊗ 1) Ψ` is in Schmidt form with weights `p`. -/
+theorem isSchmidt_cut_of_eq (hB : B ⊆ U) (Ψ : Reg loc U → ℂ) (hΨ : star Ψ ⬝ᵥ Ψ = 1)
+    {V : Matrix (Reg loc B) (Reg loc B) ℂ} (hV : Vᴴ * V = 1) {p : Reg loc B → ℝ}
+    (hρ : ((pureState Ψ hΨ).toSubState.restrict hB).M =
+      V * diagonal (fun i ↦ (p i : ℂ)) * Vᴴ) :
+    IsSchmidt (WithLp.toLp 2 ((Vᴴ ⊗ₖ (1 : Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ)) *ᵥ
+      (Ψ ∘ glueEquiv hB))) p := by
+  intro j k
   set Φ := WithLp.toLp 2 ((Vᴴ ⊗ₖ (1 : Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ)) *ᵥ
     (Ψ ∘ glueEquiv hB))
-  have hd := hρ.conjStarAlgAut_star_eigenvectorUnitary
-  rw [Unitary.conjStarAlgAut_star_apply, star_eq_conjTranspose] at hd
+  have hd : Vᴴ * ((pureState Ψ hΨ).toSubState.restrict hB).M * V =
+      diagonal (fun i ↦ (p i : ℂ)) := by
+    rw [hρ, Matrix.mul_assoc, Matrix.mul_assoc, hV, Matrix.mul_one, ← Matrix.mul_assoc, hV,
+      Matrix.one_mul]
   have hr (i : Reg loc B) (b : Reg loc (U \ B)) :
       row Φ i b = ∑ a, star (V a i) * Ψ (glue a b) := by
     simp [Φ, row, mulVec, dotProduct, Fintype.sum_prod_type, one_apply]
@@ -900,6 +901,19 @@ theorem isSchmidt_cut (hB : B ⊆ U) (Ψ : Reg loc U → ℂ) (hΨ : star Ψ ⬝
   by_cases hjk : j = k
   · subst hjk; simp
   · simp [hjk, Ne.symm hjk]
+
+/-- D3.1.1. Schmidt form across the cut: for `V` the eigenvector unitary of
+`ρ = Tr_{U∖B} |Ψ⟩⟨Ψ|`, the vector `(V* ⊗ 1) Ψ` has Schmidt weights the eigenvalues of `ρ`. -/
+theorem isSchmidt_cut (hB : B ⊆ U) (Ψ : Reg loc U → ℂ) (hΨ : star Ψ ⬝ᵥ Ψ = 1) :
+    let hρ := ((pureState Ψ hΨ).toSubState.restrict hB).psd.isHermitian
+    IsSchmidt (WithLp.toLp 2 (((hρ.eigenvectorUnitary : Matrix (Reg loc B) (Reg loc B) ℂ)ᴴ ⊗ₖ
+      (1 : Matrix (Reg loc (U \ B)) (Reg loc (U \ B)) ℂ)) *ᵥ (Ψ ∘ glueEquiv hB)))
+      hρ.eigenvalues := by
+  intro hρ
+  refine isSchmidt_cut_of_eq hB Ψ hΨ
+    (by rw [← star_eq_conjTranspose]; exact Unitary.coe_star_mul_self _) ?_
+  conv_lhs => rw [hρ.spectral_theorem]
+  simp [Function.comp_def, star_eq_conjTranspose]
 
 /-- D3.1.1 and D3.1.3. In the basis `eⱼ ⊗ (·)` of `ℋ_B ⊗ ℋ_{U∖B}`, `eⱼ` the eigenvectors of `ρ`:
 the ground vector has Schmidt weights `p`, a term with `Dᵢ ⊆ B` is `A ⊗ 1`, one with
