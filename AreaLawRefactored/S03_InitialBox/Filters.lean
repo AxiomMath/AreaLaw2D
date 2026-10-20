@@ -1232,6 +1232,104 @@ theorem step_3_9_3_region {S T : Finset σ} (hST : S ⊆ T)
   rw [← hWh, dotProduct_comm]
   exact key
 
+/-- D3.9.5 on regions. Let `φ` be a unit vector on `U`, `S ⊆ U`, and let
+`ρ_{φ,S} = V diag(p) V*` and `L = V diag(l) V*` (`V` unitary, `l > 0`) with the clipping bound
+of D3.8 and `0 ≤ a ≤ ½`. For a Hermitian term `h = Y ⊗ 1` supported on `D ⊆ U`, the split term
+is at most `(16/e²) a² (dim ℋ_D)² ‖h‖`: in the Schmidt coordinates of `S | U ∖ S`
+(`isSchmidt_cut_of_eq`), `h` is `∑_α c_α ⊗ d_α` over the matrix units of `ℋ_{D ∩ S}`
+(D3.1.6), `‖c_α‖ ‖d_α‖ ≤ ‖h‖`, and `step_3_9_5` applies. -/
+theorem step_3_9_5_region {S U D : Finset σ} (hS : S ⊆ U) (hD : D ⊆ U)
+    {Y : Matrix (Arealaw.Reg loc D) (Arealaw.Reg loc D) ℂ} (hY : Y.IsHermitian)
+    (φ : Arealaw.Reg loc U → ℂ) (hφ : star φ ⬝ᵥ φ = 1)
+    {L V : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ} (hV : Vᴴ * V = 1)
+    {l p : Arealaw.Reg loc S → ℝ} (hl : ∀ i, 0 < l i)
+    (hLV : L = V * diagonal (fun i ↦ (l i : ℂ)) * Vᴴ)
+    (hρ : ((OpenAI.pureState φ hφ).toSubState.restrict hS).M =
+      V * diagonal (fun i ↦ (p i : ℂ)) * Vᴴ)
+    {a : ℝ} (ha : 0 ≤ a) (ha2 : a ≤ 1 / 2)
+    (hclip : ∀ i k, 0 < p i → 0 < p k →
+      |Real.log (l i / l k)| ≤ a / 2 * |Real.log (p i / p k)|) :
+    |(star φ ⬝ᵥ ((Arealaw.extendId hD Y - Arealaw.extendId hS L * Arealaw.extendId hD Y *
+      (Arealaw.extendId hS L)⁻¹) *ᵥ φ)).re| ≤
+      16 / Real.exp 2 * a ^ 2 * ((Fintype.card (Arealaw.Reg loc D) : ℝ) ^ 2 * ‖Y‖) := by
+  classical
+  obtain ⟨x₀⟩ : Nonempty (Arealaw.Reg loc U) := by
+    by_contra hU
+    rw [not_nonempty_iff] at hU
+    simp [dotProduct, Finset.univ_eq_empty] at hφ
+  set e := Arealaw.glueEquiv hS
+  set one : Matrix (Arealaw.Reg loc (U \ S)) (Arealaw.Reg loc (U \ S)) ℂ := 1
+  set Θ := WithLp.toLp 2 ((Vᴴ ⊗ₖ one) *ᵥ (φ ∘ e))
+  -- the Schmidt form of `φ` at `S | U ∖ S` in the eigenbasis `V`
+  have hΘ : IsSchmidt Θ p := isSchmidt_cut_of_eq hS φ hφ hV hρ
+  have hp : ∀ i, 0 ≤ p i := by
+    intro i
+    have h := hΘ i i
+    rw [if_pos rfl, inner_self_eq_norm_sq_to_K] at h
+    have : p i = ‖row Θ i‖ ^ 2 := Complex.ofReal_injective (by push_cast; exact h.symm)
+    rw [this]; positivity
+  have hsum : ∑ i, p i = 1 := by
+    have h2 := ((OpenAI.pureState φ hφ).restrict hS).tr_eq_one
+    rw [show ((OpenAI.pureState φ hφ).restrict hS).M =
+      ((OpenAI.pureState φ hφ).toSubState.restrict hS).M from rfl, hρ, trace_mul_comm,
+      ← Matrix.mul_assoc, hV, Matrix.one_mul, trace_diagonal] at h2
+    simpa using h2
+  -- D3.1.6: `h' = ∑_{ab} (V* E_{ab} V) ⊗ h_{ab}` over the matrix units of `ℋ_{D ∩ S}`
+  set w₀ : Arealaw.Reg loc (S \ (D ∩ S)) :=
+    Arealaw.restr Finset.sdiff_subset (Arealaw.restr hS x₀)
+  set c : Arealaw.Reg loc (D ∩ S) × Arealaw.Reg loc (D ∩ S) →
+      Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ := fun ab ↦
+    Vᴴ * Arealaw.extendId Finset.inter_subset_right (single ab.1 ab.2 (1 : ℂ)) * V
+  set d : Arealaw.Reg loc (D ∩ S) × Arealaw.Reg loc (D ∩ S) →
+      Matrix (Arealaw.Reg loc (U \ S)) (Arealaw.Reg loc (U \ S)) ℂ := fun ab ↦
+    (Arealaw.extendId hD Y).submatrix
+      (fun z ↦ Arealaw.glue (Arealaw.glue ab.1 w₀ : Arealaw.Reg loc S) z)
+      (fun z ↦ Arealaw.glue (Arealaw.glue ab.2 w₀ : Arealaw.Reg loc S) z)
+  have hdec : (Vᴴ ⊗ₖ one) * (Arealaw.extendId hD Y).submatrix e e * (V ⊗ₖ one) =
+      ∑ ab, c ab ⊗ₖ d ab := by
+    rw [extendId_submatrix_eq_sum hS hD Y w₀, Finset.mul_sum, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun ab _ ↦ ?_
+    rw [← mul_kronecker_mul, ← mul_kronecker_mul]
+    simp [one, c, d]
+  have hh : (Arealaw.extendId hD Y).IsHermitian := Arealaw.isHermitian_extendId hD hY
+  have hh' : (∑ ab, c ab ⊗ₖ d ab).IsHermitian := by
+    rw [← hdec]
+    have := isHermitian_conjTranspose_mul_mul (V ⊗ₖ one) (hh.submatrix e)
+    simpa [conjTranspose_kronecker, one] using this
+  -- D3.9.3 on regions, then D3.9.3–D3.9.5 in Schmidt coordinates
+  rw [step_3_9_3_region hS hh hV hl hLV φ]
+  change |-∑ i, ∑ k, (Real.cosh (Real.log (l i / l k)) - 1) *
+    (pair Θ ((Vᴴ ⊗ₖ one) * (Arealaw.extendId hD Y).submatrix e e * (V ⊗ₖ one)) i k).re| ≤ _
+  rw [hdec, ← step_3_9_3 hh' hl Θ]
+  refine (step_3_9_5 hp hsum hΘ c d hh' hl ha ha2 hclip).trans
+    (mul_le_mul_of_nonneg_left ?_ (by positivity))
+  -- `‖c_{ab}‖ ‖d_{ab}‖ ≤ ‖h‖`, and there are `(dim ℋ_{D ∩ S})² ≤ (dim ℋ_D)²` of them
+  have hVn : ‖V‖ ≤ 1 := Arealaw.l2_opNorm_le_one_of_conjTranspose_mul_self hV
+  have hY' : ‖Arealaw.extendId hD Y‖ ≤ ‖Y‖ := by
+    rw [Arealaw.extendId_eq_kronecker, Arealaw.l2_opNorm_submatrix]
+    exact Arealaw.l2_opNorm_kronecker_one_le _
+  have hcd : ∀ ab, ‖c ab‖ * ‖d ab‖ ≤ ‖Y‖ := by
+    intro ab
+    refine (mul_le_mul ((l2_opNorm_mul_mul_le_of_le_one
+      (by rwa [l2_opNorm_conjTranspose]) hVn _).trans ?_)
+      ((Arealaw.l2_opNorm_submatrix_le _ (Arealaw.glue_right_injective _)
+        (Arealaw.glue_right_injective _)).trans hY')
+      (norm_nonneg _) zero_le_one).trans (by simp)
+    rw [Arealaw.extendId_eq_kronecker, Arealaw.l2_opNorm_submatrix]
+    exact (Arealaw.l2_opNorm_kronecker_one_le _).trans (by simp)
+  have hκ : Fintype.card (Arealaw.Reg loc (D ∩ S) × Arealaw.Reg loc (D ∩ S)) ≤
+      Fintype.card (Arealaw.Reg loc D) ^ 2 := by
+    rw [Fintype.card_prod, ← sq]
+    refine Nat.pow_le_pow_left (Fintype.card_le_of_surjective
+      (Arealaw.restr (S := D ∩ S) Finset.inter_subset_left) fun y ↦ ?_) 2
+    exact ⟨Arealaw.glue y (Arealaw.restr Finset.sdiff_subset (Arealaw.restr hD x₀)),
+      Arealaw.restr_glue _ _ _⟩
+  calc ∑ ab, ‖c ab‖ * ‖d ab‖ ≤ ∑ _ab : Arealaw.Reg loc (D ∩ S) × Arealaw.Reg loc (D ∩ S), ‖Y‖ :=
+        Finset.sum_le_sum fun ab _ ↦ hcd ab
+    _ = (Fintype.card (Arealaw.Reg loc (D ∩ S) × Arealaw.Reg loc (D ∩ S)) : ℝ) * ‖Y‖ := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    _ ≤ _ := mul_le_mul_of_nonneg_right (by exact_mod_cast hκ) (norm_nonneg _)
+
 end D393region
 
 /-! ## D3.11 First norm comparison -/
