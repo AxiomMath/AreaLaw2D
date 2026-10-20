@@ -32,6 +32,21 @@ def Step_8_10 : Prop :=
               (labelObservable (TensorPower.copyPerm Ω k) fun l => Real.log l.dim))).re ≤
           2 * C₀ * k * 𝓑 * u ^ 2 + Cp + Np * Real.log (k + 1)
 
+/-- D8.11. The Schmidt decomposition `Ω̃ = ∑_i √p_i |i⟩_X |w_i⟩` across `X | X^c` (`|i⟩_X` the
+eigenbasis of `ρ_X`, `p_i ≥ 0`, `∑ p_i = 1`); `w_i` ignores the `X`-part, and the `w_i` with
+`p_i > 0` are orthonormal on `X^c` (sums over all physical configurations count each
+`X^c`-configuration `dim 𝓗_X` times). -/
+def Step_8_11 : Prop :=
+  ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} (D : PhysData n) (X : Finset σ),
+    (∀ x : SiteConfig n, D.Ω x = ∑ i, (Real.sqrt (D.p X i) : ℂ) *
+      schmidtX (D := D) i (restrictX x) * schmidtW (D := D) i x) ∧
+    (∀ (i : Reg (fun v => Fin (n v)) X) (x : SiteConfig n) (y : Reg (fun v => Fin (n v)) X),
+      schmidtW (D := D) i (replaceX x y) = schmidtW (D := D) i x) ∧
+    (∀ i j, 0 < D.p X i → 0 < D.p X j →
+      ∑ x : SiteConfig n, star (schmidtW (D := D) i x) * schmidtW (D := D) j x =
+        if i = j then (dimReg n X : ℂ) else 0) ∧
+    (∀ i, 0 ≤ D.p X i) ∧ ∑ i, D.p X i = 1
+
 /-- D8.12 (`comparator:high-label`). Every typical set has a high label sequence. -/
 def Step_8_12 : Prop :=
   ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] {D : PhysData n}
