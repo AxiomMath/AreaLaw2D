@@ -5,6 +5,10 @@ import AreaLawRefactored.S06_Replicas.Surprisal
 import AreaLawRefactored.S06_Replicas.InjectionAverage
 import AreaLawRefactored.S06_Replicas.FromS05
 import AreaLawRefactored.S06_Replicas.SchurLemma
+import AreaLawRefactored.S06_Replicas.Metric
+import AreaLawRefactored.S06_Replicas.RelativePin
+import AreaLawRefactored.S06_Replicas.Coherent
+import AreaLawRefactored.S06_Replicas.Symbol
 
 /-!
 # §6 Symmetric replicas and entropy metrics
