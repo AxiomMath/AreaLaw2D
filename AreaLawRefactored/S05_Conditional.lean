@@ -11,6 +11,16 @@ import AreaLawRefactored.S05_Conditional.Faithful52
 import AreaLawRefactored.S05_Conditional.Lemma52
 import AreaLawRefactored.S05_Conditional.SkewStrip
 import AreaLawRefactored.S05_Conditional.Lemma53
+import AreaLawRefactored.S05_Conditional.Movement.Setup
+import AreaLawRefactored.S05_Conditional.Movement.ArakiLiebThirring
+import AreaLawRefactored.S05_Conditional.Movement.LogMomentsMatrix
+import AreaLawRefactored.S05_Conditional.Movement.Schatten
+import AreaLawRefactored.S05_Conditional.Movement.Hellinger
+import AreaLawRefactored.S05_Conditional.Movement.StateMovement
+import AreaLawRefactored.S05_Conditional.Movement.Region
+import AreaLawRefactored.S05_Conditional.Movement.Analytic
+import AreaLawRefactored.S05_Conditional.Movement.Regularise
+import AreaLawRefactored.S05_Conditional.Lemma51
 
 /-!
 # §5 Two conditional operator estimates
@@ -33,4 +43,16 @@ Digest `digest/05-conditional.md`, paper `paper/sections/04-conditional.tex`. La
 * `S05_Conditional/SkewAnalytic.lean`: §5.3, D5.16.6, D5.18, D5.19 for an arbitrary entire `f`.
 * `S05_Conditional/SkewStrip.lean`: D5.16, `step_5_16`.
 * `S05_Conditional/Lemma53.lean`: D5.17, D5.18.1 and **Lemma 5.3** `lemma_5_3`.
+* `S05_Conditional/Movement/Setup.lean`: §5.1 shared objects (`IsCondPair`, `Kmat`, `Zval`,
+  `xiMat`, `Qmat`, `tauU`, `thetaU`, `sigmaU`, `Gfun`) and the step statements of Lemma 5.1.
+* `S05_Conditional/Movement/ArakiLiebThirring.lean`: D5.4.2–4 (formal route, Araki–Lieb–Thirring
+  by Stein interpolation).
+* `S05_Conditional/Movement/LogMomentsMatrix.lean`: D5.2 (matrix level), `step_5_2`.
+* `S05_Conditional/Movement/Schatten.lean`: D5.4, D5.6.2, D5.6.4 (`step_5_4_of`, `step_5_6`).
+* `S05_Conditional/Movement/Hellinger.lean`: D5.7 (matrix level).
+* `S05_Conditional/Movement/StateMovement.lean`: D5.8 (matrix form), D5.9.
+* `S05_Conditional/Movement/Region.lean`: D5.2 at the region level, D5.5.A, D5.9.1.
+* `S05_Conditional/Movement/Analytic.lean`: D5.5.3, D5.6.1, D5.10.1.
+* `S05_Conditional/Movement/Regularise.lean`: D5.5.11, D5.10.3.
+* `S05_Conditional/Lemma51.lean`: D5.5 assembly and **Lemma 5.1** `lemma_5_1`.
 -/
