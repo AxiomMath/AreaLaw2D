@@ -6,6 +6,7 @@ import AreaLawRefactored.S11_Geometry.Scales
 import AreaLawRefactored.S11_Geometry.RepairScales
 import AreaLawRefactored.S11_Geometry.Primaries
 import AreaLawRefactored.S11_Geometry.RepairRegions
+import AreaLawRefactored.S11_Geometry.Templates
 
 /-!
 # §11 Two families of regions and the area bound
