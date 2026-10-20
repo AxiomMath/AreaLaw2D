@@ -65,6 +65,7 @@ import AreaLawForMathlib.QuantumInfo.Entropy.Concavity
 import AreaLawForMathlib.QuantumInfo.Entropy.Subadditivity
 import AreaLawForMathlib.QuantumInfo.Region
 import AreaLawForMathlib.QuantumInfo.RegionToComplex
+import AreaLawForMathlib.QuantumInfo.StateToComplex
 import AreaLawForMathlib.RepresentationTheory.PermutationRepresentation
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Alternant
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Branching
