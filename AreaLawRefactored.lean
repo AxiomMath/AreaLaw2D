@@ -2,6 +2,7 @@ import AreaLawRefactored.S02_Preliminaries
 import AreaLawRefactored.S03_InitialBox
 import AreaLawRefactored.S04_Quasilocal
 import AreaLawRefactored.S06_Replicas
+import AreaLawRefactored.S07_Transport
 import AreaLawRefactored.Transfer
 
 /-!
