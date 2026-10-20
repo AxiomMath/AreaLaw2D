@@ -1,6 +1,6 @@
 import AreaLawRefactored.S07_Transport.Histories
 import AreaLawRefactored.S07_Transport.Fourier
-import AreaLawForMathlib.Analysis.Matrix.HermitianUnitaryPath
+import AreaLawForMathlib.Analysis.Matrix.FilteredNorm
 
 /-!
 # §7.4 The objects of Proposition 7.4
@@ -28,16 +28,11 @@ variable {K : ℕ} {H : Type*} {C : H → Type*} (R : Round V K H C) (n)
 
 /-- D7.14 (`transport:filtered-vector`). `N(p)² = ‖𝓜(p)^{-s} pre‖²`, `s = 1/4`. -/
 noncomputable def normSq (t : ℝ) (k : ℕ) (pre : Config n k → ℂ) (p : ℝ) : ℝ :=
-  (star (R.root n t k p ^ (-(1 / 4) : ℝ) *ᵥ pre) ⬝ᵥ (R.root n t k p ^ (-(1 / 4) : ℝ) *ᵥ pre)).re
+  Matrix.Transport.filteredNormSq (R.root n t k p) pre
 
 /-- D7.14 (`transport:filtered-vector`). `v(p) = 𝓜(p)^{-s} pre / N(p)`, `s = 1/4`. -/
 noncomputable def v (t : ℝ) (k : ℕ) (pre : Config n k → ℂ) (p : ℝ) : Config n k → ℂ :=
-  ((Real.sqrt (R.normSq n t k pre p))⁻¹ : ℂ) • (R.root n t k p ^ (-(1 / 4) : ℝ) *ᵥ pre)
-
-/-- The unitary `M^{-iu} = exp(-iu log M)`. -/
-noncomputable def imagPow {m : Type*} [Fintype m] [DecidableEq m] (M : Matrix m m ℂ) (u : ℝ) :
-    Matrix m m ℂ :=
-  hermitianUnitaryPath (CFC.log M) (-u)
+  Matrix.Transport.filteredVector (R.root n t k p) pre
 
 variable [DecidableEq H] [∀ h, DecidableEq (C h)]
 
@@ -46,7 +41,7 @@ variable [DecidableEq H] [∀ h, DecidableEq (C h)]
 `Tr(Φ_j^*(σ) Z) = Tr(σ Φ_j(Z))`. -/
 noncomputable def state (t : ℝ) (k : ℕ) (pre : Config n k → ℂ) (p : I) (j : Leaf H C) (u : ℝ) :
     Matrix (Config n k) (Config n k) ℂ :=
-  let w := imagPow (R.root n t k p) u *ᵥ R.v n t k pre p
+  let w := Matrix.Transport.imagPow (R.root n t k p) u *ᵥ R.v n t k pre p
   (R.tree p).leafDual (R.input n t k) j (vecMulVec w (star w))
 
 /-- D7.14 (a), right side: `∑_h w_h ∫ m_s(u) Tr(σ_{h,u} log C_h) du`. -/
