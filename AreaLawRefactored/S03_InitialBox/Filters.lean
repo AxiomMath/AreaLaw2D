@@ -147,6 +147,21 @@ section D311
 
 variable {m : Type*} [Fintype m] [DecidableEq m]
 
+/-- D3.11.2. For `L_j = L_j*`, `N_j = ‖L_j K_{<j} Ω‖` and an overlap
+`s ≤ |⟨Ω, φ_j⟩|`, `φ_j = L_j K_{<j} Ω / N_j`: `s N_j ≤ |⟨L_j Ω, K_{<j} Ω⟩| ≤ ‖L_j Ω‖ ‖K_{<j} Ω‖`. -/
+theorem step_3_11_2 {L : Matrix m m ℂ} (hL : L.IsHermitian) (Ω ψ : EuclideanSpace ℂ m) {s : ℝ}
+    (hs : s ≤ ‖inner ℂ Ω (((‖toEuclideanLin L ψ‖⁻¹ : ℝ) : ℂ) • toEuclideanLin L ψ)‖) :
+    s * ‖toEuclideanLin L ψ‖ ≤ ‖toEuclideanLin L Ω‖ * ‖ψ‖ := by
+  rcases (norm_nonneg (toEuclideanLin L ψ)).lt_or_eq with hN | hN
+  · rw [inner_smul_right, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_inv,
+      abs_of_pos hN, ← isSymmetric_toEuclideanLin_iff.2 hL] at hs
+    calc s * ‖toEuclideanLin L ψ‖
+        ≤ ‖toEuclideanLin L ψ‖⁻¹ * ‖inner ℂ (toEuclideanLin L Ω) ψ‖ * ‖toEuclideanLin L ψ‖ := by
+          gcongr
+      _ = ‖inner ℂ (toEuclideanLin L Ω) ψ‖ := by field_simp
+      _ ≤ _ := norm_inner_le_norm _ _
+  · rw [← hN, mul_zero]; positivity
+
 /-- D3.11.3. Schatten Hölder with exponents `1/(1-a)`, `1/a`: for `ρ ≥ 0` and `B ≥ 0` with
 `Tr B^{1/a} = 1` (`B = L_j²`, `Tr L_j^{2/a} = 1`), `Tr(ρ B) ≤ (Tr ρ^{1/(1-a)})^{1-a}`. -/
 theorem step_3_11_3 {ρ B : Matrix m m ℂ} (hρ : ρ.PosSemidef) (hB : B.PosSemidef) {a : ℝ}
@@ -260,5 +275,32 @@ theorem step_3_12_4 (U M : ℕ → Matrix n n ℂ) (hU : ∀ j, U j * (U j)ᴴ =
     rw [← Matrix.mul_assoc (prodDesc U k) (prodDesc U k)ᴴ, hV, Matrix.one_mul]
 
 end D312
+
+/-! ## D3.13 Schmidt-averaged upper bound on `-2 log N` -/
+
+section D313
+
+/-- D3.13. Schmidt weights `p_i > 0`, `∑ p_i = 1`, `S(X) = ∑ p_i (-log p_i)`. From the per-`i`
+bounds `-2 log N ≤ -log p_i + ∑_j a_j S_{w_i}(T_j)` (D3.13.1, from D3.12) and concavity
+`∑_i p_i S_{w_i}(T_j) ≤ S(T_j)` (D3.13.2): `-2 log N ≤ S(X) + ∑_j a_j S(T_j)`. -/
+theorem step_3_13 {ι : Type*} [Fintype ι] {p : ι → ℝ} (hp : ∀ i, 0 < p i) (hp1 : ∑ i, p i = 1)
+    {J : Finset ℕ} {a : ℕ → ℝ} (ha : ∀ j ∈ J, 0 ≤ a j) {Sw : ι → ℕ → ℝ} {ST : ℕ → ℝ}
+    {SX N : ℝ} (hSX : SX = ∑ i, p i * -Real.log (p i))
+    (h1 : ∀ i, -2 * Real.log N ≤ -Real.log (p i) + ∑ j ∈ J, a j * Sw i j)
+    (h2 : ∀ j ∈ J, ∑ i, p i * Sw i j ≤ ST j) :
+    -2 * Real.log N ≤ SX + ∑ j ∈ J, a j * ST j := by
+  -- D3.13.1, averaged with weights `p_i`
+  have h := Finset.sum_le_sum fun i (_ : i ∈ Finset.univ) ↦
+    mul_le_mul_of_nonneg_left (h1 i) (hp i).le
+  rw [← Finset.sum_mul, hp1, one_mul] at h
+  simp only [mul_add, Finset.sum_add_distrib, Finset.mul_sum] at h
+  rw [Finset.sum_comm, ← hSX] at h
+  -- D3.13.2
+  refine h.trans (add_le_add le_rfl (Finset.sum_le_sum fun j hj ↦ ?_))
+  calc ∑ i, p i * (a j * Sw i j) = a j * ∑ i, p i * Sw i j := by
+        rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun i _ ↦ by ring
+    _ ≤ a j * ST j := mul_le_mul_of_nonneg_left (h2 j hj) (ha j hj)
+
+end D313
 
 end AreaLaw
