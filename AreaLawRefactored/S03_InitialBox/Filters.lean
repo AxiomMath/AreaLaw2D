@@ -941,6 +941,22 @@ theorem step_3_9_2 (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1))
   rw [hK, sub_mulVec, sub_mulVec, dotProduct_sub, dotProduct_sub, hW,
     step_3_7_3_prodDesc_succ hX hnest j k φ (fun i _ ↦ hL _) hc]
 
+/-- D3.9.2 with `I_in` read off the supports: the filters `L_i`, `i < j`, act on regions `X_i`
+disjoint from the support `S` of `h`, so they commute with `h` (`commute_extendId_extendId`). -/
+theorem step_3_9_2_of_disjoint (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1))
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ i, IsUnit (L i).det) (j k : ℕ) (φ : Arealaw.Reg loc U → ℂ)
+    (hc : ∀ i < k, L (j + 1 + i) * Arealaw.ptrace (hX (j + 1 + i)) (vecMulVec φ (star φ)) =
+      Arealaw.ptrace (hX (j + 1 + i)) (vecMulVec φ (star φ)) * L (j + 1 + i))
+    {S : Finset σ} (hS : S ⊆ X (j + 1)) (h : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ)
+    (hd : ∀ i < j, Disjoint (X i) S) :
+    star φ ⬝ᵥ ((Arealaw.extendId (hS.trans (hX (j + 1))) h - filterProd hX L (j + 1 + k) *
+      Arealaw.extendId (hS.trans (hX (j + 1))) h * (filterProd hX L (j + 1 + k))⁻¹) *ᵥ φ) =
+    star φ ⬝ᵥ ((Arealaw.extendId (hS.trans (hX (j + 1))) h - Arealaw.extendId (hX j) (L j) *
+      Arealaw.extendId (hS.trans (hX (j + 1))) h * (Arealaw.extendId (hX j) (L j))⁻¹) *ᵥ φ) :=
+  step_3_9_2 hX hnest hL j k φ hc hS h fun i hi ↦
+    Arealaw.commute_extendId_extendId (hX i) (hS.trans (hX (j + 1))) (hd i hi) (L i) h
+
 end D392
 
 /-- D3.9.6. Sum over supports: if the term of `h` is at most `C a_j²` when `h` is split by

@@ -329,6 +329,73 @@ theorem dotProduct_extendId_mulVec (h : S ⊆ T) (φ : Reg loc T → 𝕜)
     star φ ⬝ᵥ (extendId h A *ᵥ φ) = (ptrace h (vecMulVec φ (star φ)) * A).trace := by
   rw [trace_ptrace_mul, vecMulVec_mul, trace_vecMulVec, dotProduct_comm φ, ← dotProduct_mulVec]
 
+/-- Entries of a product of extensions from disjoint regions `S, U ⊆ T`: the product is
+diagonal off `S ∪ U` and acts by `A` on `S` and by `B` on `U`. -/
+theorem extendId_mul_extendId_apply {U : Finset σ} (hS : S ⊆ T) (hU : U ⊆ T)
+    (hd : Disjoint S U) (A : Matrix (Reg loc S) (Reg loc S) 𝕜)
+    (B : Matrix (Reg loc U) (Reg loc U) 𝕜) (w w' : Reg loc T) :
+    (extendId hS A * extendId hU B) w w' =
+      if ∀ i : T, i.1 ∉ S → i.1 ∉ U → w i = w' i then
+        A (restr hS w) (restr hS w') * B (restr hU w) (restr hU w') else 0 := by
+  classical
+  let v₀ : Reg loc T := fun i ↦ if i.1 ∈ S then w' i else w i
+  rw [mul_apply, Finset.sum_eq_single v₀]
+  · have h1 : restr (S := T \ S) Finset.sdiff_subset w =
+        restr (S := T \ S) Finset.sdiff_subset v₀ := by
+      funext i
+      simp [restr, Finset.restrict₂, v₀, (Finset.mem_sdiff.1 i.2).2]
+    have h2 : restr hS v₀ = restr hS w' := by
+      funext i
+      simp [restr, Finset.restrict₂, v₀, i.2]
+    have h3 : restr hU v₀ = restr hU w := by
+      funext i
+      simp [restr, Finset.restrict₂, v₀, Finset.disjoint_right.1 hd i.2]
+    simp only [extendId, of_apply, h1, h2, h3, if_true]
+    by_cases hc : ∀ i : T, i.1 ∉ S → i.1 ∉ U → w i = w' i
+    · have h4 : restr (S := T \ U) Finset.sdiff_subset v₀ =
+          restr (S := T \ U) Finset.sdiff_subset w' := by
+        funext i
+        have hiU := (Finset.mem_sdiff.1 i.2).2
+        simp only [restr, Finset.restrict₂, v₀]
+        split_ifs with hiS
+        · rfl
+        · exact hc ⟨i.1, Finset.sdiff_subset i.2⟩ hiS hiU
+      rw [if_pos h4, if_pos hc]
+    · have h4 : restr (S := T \ U) Finset.sdiff_subset v₀ ≠
+          restr (S := T \ U) Finset.sdiff_subset w' := by
+        intro he
+        apply hc
+        intro i hiS hiU
+        have := congrFun he ⟨i.1, Finset.mem_sdiff.2 ⟨i.2, hiU⟩⟩
+        simpa [restr, Finset.restrict₂, v₀, hiS] using this
+      rw [if_neg h4, if_neg hc, mul_zero]
+  · intro v _ hv
+    simp only [extendId, of_apply]
+    split_ifs with ha hb
+    · exfalso
+      apply hv
+      funext i
+      by_cases hiS : i.1 ∈ S
+      · have := congrFun hb ⟨i.1, Finset.mem_sdiff.2 ⟨i.2, Finset.disjoint_left.1 hd hiS⟩⟩
+        simpa [restr, Finset.restrict₂, v₀, hiS] using this
+      · have := congrFun ha ⟨i.1, Finset.mem_sdiff.2 ⟨i.2, hiS⟩⟩
+        simpa [restr, Finset.restrict₂, v₀, hiS] using this.symm
+    · rw [mul_zero]
+    · rw [zero_mul]
+    · rw [zero_mul]
+  · intro h; exact absurd (Finset.mem_univ _) h
+
+/-- **Operators on disjoint regions commute**: for `A` on `S`, `B` on `U` with `S ∩ U = ∅`,
+`(A ⊗ 1)(B ⊗ 1) = (B ⊗ 1)(A ⊗ 1)` on `T ⊇ S ∪ U`. -/
+theorem commute_extendId_extendId {U : Finset σ} (hS : S ⊆ T) (hU : U ⊆ T)
+    (hd : Disjoint S U) (A : Matrix (Reg loc S) (Reg loc S) 𝕜)
+    (B : Matrix (Reg loc U) (Reg loc U) 𝕜) :
+    Commute (extendId hS A) (extendId hU B) := by
+  ext w w'
+  rw [extendId_mul_extendId_apply hS hU hd, extendId_mul_extendId_apply hU hS hd.symm,
+    mul_comm]
+  exact if_congr ⟨fun h i hU hS ↦ h i hS hU, fun h i hS hU ↦ h i hU hS⟩ rfl rfl
+
 end Lift
 
 end Arealaw
