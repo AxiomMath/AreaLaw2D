@@ -626,6 +626,14 @@ theorem isBlockDiagonalMap_derivLabel {m : Type*} [Fintype m] [DecidableEq m]
       ((isBlockDiagonalMap_geomMeanDerivRight (posDef_eval hA l) (posDef_eval hB l)
         (posDef_eval hA r) (posDef_eval hB r) p.2).comp ihr)
 
+/-- The leaf identity `M^{-1/2} ∂_{A_j} M[A_j^{1/2} Z A_j^{1/2}] M^{-1/2} = w_j Φ_j(Z)`. -/
+theorem sandwich_derivLabel_eq_smul_leafMap (T : MeanTree ι) {j : ι} (hw : T.weight j ≠ 0)
+    (Z : Matrix n n ℂ) :
+    T.eval A ^ (-(1 / 2) : ℝ) * T.derivLabel A j (A j ^ (1 / 2 : ℝ) * Z * A j ^ (1 / 2 : ℝ)) *
+        T.eval A ^ (-(1 / 2) : ℝ) = T.weight j • T.leafMap A j Z := by
+  simp only [leafMap, normalizedDerivMap, _root_.smul_apply,
+    ContinuousLinearMap.comp_apply, sandwichL_apply, smul_smul, mul_inv_cancel₀ hw, one_smul]
+
 /-- The trace-pairing dual `Φ_j^*`, `Tr(Φ_j^*(σ) Z) = Tr(σ Φ_j(Z))`. -/
 noncomputable def leafDual (A : ι → Matrix n n ℂ) (j : ι) (T : MeanTree ι) :
     Matrix n n ℂ →ₗ[ℂ] Matrix n n ℂ :=
