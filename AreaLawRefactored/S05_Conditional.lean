@@ -5,6 +5,12 @@ import AreaLawRefactored.S05_Conditional.Interpolation
 import AreaLawRefactored.S05_Conditional.PhaseRate
 import AreaLawRefactored.S05_Conditional.Compression
 import AreaLawRefactored.S05_Conditional.SkewAnalytic
+import AreaLawRefactored.S05_Conditional.Interfaces
+import AreaLawRefactored.S05_Conditional.HilbertSchmidt
+import AreaLawRefactored.S05_Conditional.Faithful52
+import AreaLawRefactored.S05_Conditional.Lemma52
+import AreaLawRefactored.S05_Conditional.SkewStrip
+import AreaLawRefactored.S05_Conditional.Lemma53
 
 /-!
 # §5 Two conditional operator estimates
@@ -20,5 +26,11 @@ Digest `digest/05-conditional.md`, paper `paper/sections/04-conditional.tex`. La
 * `S05_Conditional/PhaseRate.lean`, `Compression.lean`: §5.2, D5.12.7–8, D5.13, D5.14
   (abstract); the Mellin integral of D5.12.6 is
   `AreaLawForMathlib/Analysis/SpecialFunctions/ResolventMellin.lean`.
+* `S05_Conditional/Interfaces.lean`: the statements `Lemma_5_2_faithful` (D5.12.1–10) and
+  `Step_5_16` (D5.16).
+* `S05_Conditional/HilbertSchmidt.lean`, `Faithful52.lean`: D5.12.1–10, `lemma_5_2_faithful`.
+* `S05_Conditional/Lemma52.lean`: D5.12.11 and **Lemma 5.2** `lemma_5_2`.
 * `S05_Conditional/SkewAnalytic.lean`: §5.3, D5.16.6, D5.18, D5.19 for an arbitrary entire `f`.
+* `S05_Conditional/SkewStrip.lean`: D5.16, `step_5_16`.
+* `S05_Conditional/Lemma53.lean`: D5.17, D5.18.1 and **Lemma 5.3** `lemma_5_3`.
 -/
