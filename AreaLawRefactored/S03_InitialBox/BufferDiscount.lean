@@ -350,20 +350,20 @@ theorem step_3_5_3 (hab : a ≤ b) (hQ₀r : boxSize (Icc a b) ≤ r) (hC : D + 
   have h2 := (le_max_right _ _).trans hQ₀r
   omega
 
-/-- D3.5.4 (d). A support split by `X_j` is disjoint from `X_i` for `i < j` and contained in
-`X_i` for `j < i ≤ m`. -/
+/-- D3.5.4 (d). A support split by `X_j` (`j ≤ m`) is disjoint from `X_i` for `i < j` and
+contained in `X_i` for every `i > j`. -/
 theorem step_3_5_4 (hab : a ≤ b) (hD : 2 * R + 2 < D) (hC : D + 1 < Cpad)
     (hQ₀Q : ambientDilation (Icc a b) (Cpad * r) ⊆ Q) (hs : IsSafe D₀ Λ A Q)
     (hRD₀ : (R : ℝ) < D₀) :
     ∀ X ∈ supports Λ R, ∀ j ≤ m Cpad r D, (X ∩ X_j A (Icc a b) r D j).Nonempty →
       (X \ X_j A (Icc a b) r D j).Nonempty →
       (∀ i < j, Disjoint X (X_j A (Icc a b) r D i)) ∧
-        ∀ i, j < i → i ≤ m Cpad r D → X ⊆ X_j A (Icc a b) r D i := by
+        ∀ i, j < i → X ⊆ X_j A (Icc a b) r D i := by
   intro X hX j hj ⟨p, hp⟩ ⟨p', hp'⟩
   have hXA := (step_3_5_2 hab hC hQ₀Q hs hRD₀).1 j hj X hX ⟨p, hp⟩
   rw [mem_inter, mem_X_j hab] at hp
   rw [mem_sdiff, mem_X_j hab] at hp'
-  refine ⟨fun i hi => disjoint_left.2 fun s hs hsi => hp'.2 ?_, fun i hi _ s hs => ?_⟩
+  refine ⟨fun i hi => disjoint_left.2 fun s hs hsi => hp'.2 ?_, fun i hi s hs => ?_⟩
   · have := l1_le_of_mem_supports hX hs hp'.1
     have := rad_add_le (r := r) (D := D) hi
     rw [mem_X_j hab] at hsi
@@ -413,7 +413,7 @@ end D35
 `X_0 = A ∩ Q₀`, `X_j = A ∩ Q₀^{+d_j}`. Then (a) `1 ≤ m`, `m D ≤ C_pad r`,
 `X_0 ⊆ X_1 ⊆ ⋯ ⊆ X_m`, `Q₀^{+d_m} ⊆ Q`; (b) every support meeting some `X_j` lies in `A`, and
 no edge of `∂_Λ A` is incident with any `X_j`; (c) `|∂_Λ X_j| ≤ 4 (r + 2 d_j)`; (d) a support
-split by `X_j` is disjoint from `X_i` for `i < j` and contained in `X_i` for `j < i ≤ m`;
+split by `X_j` is disjoint from `X_i` for `i < j` and contained in `X_i` for every `i > j`;
 (e) `#{supports split by X_j} ≤ 16 v_R μ_R (r + d_j)` and `𝓑_j ≤ C₂ (r + d_j)`. -/
 theorem step_3_5 {q R : ℕ} {D₀ : ℝ} {Λ A Q Q₀ : Finset (ℤ × ℤ)} {r D Cpad : ℕ} (hq : 1 ≤ q)
     (_hA : A ⊆ Λ) (_hQ : IsIntRect Q) (hs : IsSafe D₀ Λ A Q) (hRD₀ : (R : ℝ) < D₀) (hr : 1 ≤ r)
@@ -429,7 +429,7 @@ theorem step_3_5 {q R : ℕ} {D₀ : ℝ} {Λ A Q Q₀ : Finset (ℤ × ℤ)} {r
     (∀ X ∈ supports Λ R, ∀ j ≤ m Cpad r D, (X ∩ X_j A Q₀ r D j).Nonempty →
       (X \ X_j A Q₀ r D j).Nonempty →
       (∀ i < j, Disjoint X (X_j A Q₀ r D i)) ∧
-        ∀ i, j < i → i ≤ m Cpad r D → X ⊆ X_j A Q₀ r D i) ∧
+        ∀ i, j < i → X ⊆ X_j A Q₀ r D i) ∧
     ∀ j, 1 ≤ j → j ≤ m Cpad r D →
       (#{X ∈ supports Λ R | (X ∩ X_j A Q₀ r D j).Nonempty ∧ (X \ X_j A Q₀ r D j).Nonempty} : ℝ)
           ≤ 16 * v 2 R * μ (v 2) R * (r + d r D j) ∧
