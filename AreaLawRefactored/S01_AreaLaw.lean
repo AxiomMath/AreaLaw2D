@@ -6,9 +6,9 @@ import AreaLawRefactored.S11_Geometry
 Digest `digest/01-introduction.md`; the proof of Theorem 1.1 is D11.26
 (`paper/sections/10-geometry.tex`, §11.8).
 
-Propositions 9.6, 10.2 and 11.2 enter through their frozen statements `OpenAI.CollarBound`,
-`OpenAI.Amplification` and `OpenAI.TwoFamilyDecomposition`, taken as hypotheses; Lemma 11.1 is
-`lemma_11_1` and Lemma 2.2 is `lemma_2_2`.
+Propositions 9.6 and 10.2 enter through their frozen statements `OpenAI.CollarBound` and
+`OpenAI.Amplification`, taken as hypotheses; Proposition 11.2 is `AreaLaw.Geometry.prop_11_2`,
+Lemma 11.1 is `lemma_11_1` and Lemma 2.2 is `lemma_2_2`.
 -/
 
 namespace AreaLaw
@@ -24,8 +24,7 @@ square-lattice domain `Λ ⊂ ℤ²`, every admissible Hamiltonian `H` on `𝓗_
 normalized ground vector `Ω`, ground energy `E₀` and `H - E₀ ≥ Δ(1 - |Ω⟩⟨Ω|)`, and every
 `A ⊆ Λ`, `S_Ω(A) ≤ C |∂_Λ A|`. -/
 theorem theorem_1_1 {q R : ℕ} {J Δ : ℝ} (hΔ : 0 < Δ) (prop_9_6 : CollarBound ℂ q R J Δ)
-    (prop_10_2 : Amplification ℂ q R J Δ p) (prop_11_2 : TwoFamilyDecomposition) :
-    AreaLaw ℂ q R J Δ := by
+    (prop_10_2 : Amplification ℂ q R J Δ p) : AreaLaw ℂ q R J Δ := by
   -- D11.26.2: `n_*` from Propositions 9.6 and 10.2, then Proposition 11.2 at `n_*`
   obtain ⟨Ctpl, CM, hCM, nStar, hnStar, hinfo⟩ :=
     step_11_26_2 prop_9_6 prop_10_2 (2 * R + 11) (by linarith)
@@ -138,11 +137,11 @@ rectangular square lattice with bounded on-site and nearest-neighbour interactio
 ground state separated by a fixed global gap. (b) For every domain covered by Theorem 1.1 and
 with `C` its constant: `S_Ω(A) ≤ 4C |∂_in A|` and `S_Ω(A) ≤ 2C |Z_A|`. -/
 theorem corollary_1_2 {q : ℕ} {J Δ : ℝ} (hΔ : 0 < Δ)
-    (prop_9_6 : ∀ R, CollarBound ℂ q R J Δ) (prop_10_2 : ∀ R, Amplification ℂ q R J Δ p)
-    (prop_11_2 : TwoFamilyDecomposition) : AreaLawCorollary ℂ q J Δ := by
+    (prop_9_6 : ∀ R, CollarBound ℂ q R J Δ) (prop_10_2 : ∀ R, Amplification ℂ q R J Δ p) :
+    AreaLawCorollary ℂ q J Δ := by
   -- D1.7.1: rectangles are finite domains, on-site and nearest-neighbour terms have range `1`
-  refine ⟨theorem_1_1 hΔ (prop_9_6 1) (prop_10_2 1) prop_11_2, fun R => ?_⟩
-  obtain ⟨C, hC⟩ := theorem_1_1 hΔ (prop_9_6 R) (prop_10_2 R) prop_11_2
+  refine ⟨theorem_1_1 hΔ (prop_9_6 1) (prop_10_2 1), fun R => ?_⟩
+  obtain ⟨C, hC⟩ := theorem_1_1 hΔ (prop_9_6 R) (prop_10_2 R)
   refine ⟨max C 0, fun Λ Φ hΦ Ω hΩ E₀ hE hgap A hA => ?_⟩
   have h := (hC Λ Φ hΦ Ω hΩ E₀ hE hgap A hA).trans
     (mul_le_mul_of_nonneg_right (le_max_left C 0) (Nat.cast_nonneg _))

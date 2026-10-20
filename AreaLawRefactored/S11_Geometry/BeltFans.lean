@@ -165,7 +165,8 @@ lemma t_eq (k : ℕ) : (t k : ℝ) = 2 ^ ⌊ζ * k⌋₊ := by simp [t]
 
 /-- D11.8, D11.11. The data of the initial configuration: the endpoint set `Z`, the integer `C₀`,
 the dummy layer `k₀` and the last layer `K > k₀`, and the residue classes `a k` (one per
-coordinate) of the belt cells of layer `k`. `k₀` is large: `S_* ≤ t_{k₀}`. -/
+coordinate) of the belt cells of layer `k`, and the stopping scale `S_* ≥ Sstar`. `k₀` is large:
+`S_* ≤ t_{k₀}`. -/
 structure Layout where
   /-- The endpoints of the cut edges. -/
   Z : Finset (Fin 2 → ℝ)
@@ -180,7 +181,10 @@ structure Layout where
   Z_nonempty : Z.Nonempty
   two_le_C₀ : 2 ≤ C₀
   lt_K : k₀ < K
-  Sstar_le : Sstar ≤ t k₀
+  /-- The stopping scale `S_*` of the repair, at least `Sstar`. -/
+  S_star : ℝ
+  Sstar_le : Sstar ≤ S_star
+  S_star_le : S_star ≤ t k₀
 
 /-- D11.11. The raw pieces of the plane: the dummy tile `N_{k₀}`, the exterior tile outside
 `N_K`, the primary `j` of layer `k`, and the belt cell `w` of layer `k`. -/
@@ -316,7 +320,7 @@ lemma mem_D_lev {x : ℝ × ℝ} {k : ℕ} (h : L.lev x = k + 1) : pt x ∈ D o�
 
 lemma two_le_floor {k : ℕ} (hk : L.k₀ ≤ k) : 2 ≤ ⌊ζ * k⌋₊ := by
   have h4 : (4 : ℝ) ≤ 2 ^ ⌊ζ * L.k₀⌋₊ :=
-    (le_max_left _ _).trans (L.Sstar_le.trans (t_eq _).le)
+    (le_max_left _ _).trans (L.Sstar_le.trans (L.S_star_le.trans (t_eq _).le))
   by_contra h; push Not at h
   have : ⌊ζ * L.k₀⌋₊ ≤ 1 := by have := floor_zeta_mono hk; omega
   have : (2 : ℝ) ^ ⌊ζ * L.k₀⌋₊ ≤ 2 ^ 1 := pow_le_pow_right₀ (by norm_num) this

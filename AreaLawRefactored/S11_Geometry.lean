@@ -10,15 +10,17 @@ import AreaLawRefactored.S11_Geometry.Templates
 import AreaLawRefactored.S11_Geometry.InitialStars
 import AreaLawRefactored.S11_Geometry.TileShapes
 import AreaLawRefactored.S11_Geometry.Separation
+import AreaLawRefactored.S11_Geometry.Counting
+import AreaLawRefactored.S11_Geometry.Assembly
 
 /-!
 # §11 Two families of regions and the area bound
 
 Digest `digest/11-geometry.md`, paper `paper/sections/10-geometry.tex`.
 
-Propositions 9.6 and 10.2 and Proposition 11.2 enter through their frozen statements
-`OpenAI.CollarBound`, `OpenAI.Amplification` and `OpenAI.TwoFamilyDecomposition`, taken as
-hypotheses.
+Propositions 9.6 and 10.2 enter through their frozen statements `OpenAI.CollarBound` and
+`OpenAI.Amplification`, taken as hypotheses; Proposition 11.2 (`OpenAI.TwoFamilyDecomposition`)
+is `AreaLaw.Geometry.prop_11_2`, assembled in `S11_Geometry/Assembly.lean`.
 -/
 
 namespace AreaLaw
