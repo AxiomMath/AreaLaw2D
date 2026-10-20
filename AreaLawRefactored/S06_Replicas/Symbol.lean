@@ -59,7 +59,7 @@ theorem marg_univ (θ : SiteConfig n → ℂ) (D : Finset V) (hD : D ⊆ Finset.
   congr 2
 
 /-- Bracket powers of §5 are the support powers `suppRpow` of the ported files. -/
-theorem bracketPow_ofReal {m : Type*} [Fintype m] [DecidableEq m] {ρ : Matrix m m ℂ}
+theorem bracketPow_eq_cfc_suppRpow {m : Type*} [Fintype m] [DecidableEq m] {ρ : Matrix m m ℂ}
     (hρ : ρ.PosSemidef) (s : ℝ) : bracketPow ρ (s : ℂ) = cfc (suppRpow s) ρ := by
   rw [bracketPow, dif_pos hρ.isHermitian, hρ.isHermitian.cfc_eq, IsHermitian.cfc,
     Unitary.conjStarAlgAut_apply]
@@ -83,9 +83,9 @@ theorem f_univ {P₀ P₁ X U : Finset V} (hP : P₀ ∪ P₁ ⊆ Finset.univ)
     Conditional.f hP hY hPX (θ ∘ univEquiv) K (s : ℂ) =
       markedScalarSymbol s (P₀ ∪ P₁) (X ∪ U) (localLift (P₀ ∪ X) K) θ := by
   have hneg : -(s : ℂ) = ((-s : ℝ) : ℂ) := by push_cast; ring
-  rw [Conditional.f, hneg, marg_univ, marg_univ, bracketPow_ofReal (posSemidef_margMatrix _ _),
-    bracketPow_ofReal (posSemidef_margMatrix _ _), bracketPow_ofReal (posSemidef_margMatrix _ _),
-    bracketPow_ofReal (posSemidef_margMatrix _ _), extendId_univ, extendId_univ, extendId_univ,
+  rw [Conditional.f, hneg, marg_univ, marg_univ, bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
+    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _), bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
+    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _), extendId_univ, extendId_univ, extendId_univ,
     extendId_univ, extendId_univ]
   simp only [submatrix_mul_equiv, submatrix_mulVec_equiv]
   simp only [markedScalarSymbol, regionPow, dotProduct, Function.comp_apply, Pi.star_apply,
