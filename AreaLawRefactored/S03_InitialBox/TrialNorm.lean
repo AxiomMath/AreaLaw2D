@@ -132,4 +132,125 @@ theorem eq_initial_trial_norm (T : ℕ → Finset σ) (hTU : ∀ j, T j ⊆ U)
   filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num)] with δ hδ'
   exact hδ δ hδ'.1 hδ'.2
 
+/-- D3.13 (eq:initial-norm-upper). For `X ⊆ U` and `T_0 ⊆ T_1 ⊆ ⋯ ⊆ U` disjoint from `X`,
+weights `a_j > 0` and a unit vector `Ω`: if every product of zero-floor filters `L_j` on
+`X ∪ T_j` has `‖L_{m-1} ⋯ L_0 Ω‖ ≤ B`, `B > 0`, then `-2 log B ≤ S(X) + ∑_j a_j S(T_j)`. -/
+theorem eq_initial_norm_upper {X : Finset σ} (hXU : X ⊆ U) (T : ℕ → Finset σ)
+    (hTU : ∀ j, T j ⊆ U) (hT : ∀ j, T j ⊆ T (j + 1)) (hXT : ∀ j, Disjoint X (T j))
+    {a : ℕ → ℝ} (ha : ∀ j, 0 < a j) (m : ℕ) (Ω : Reg loc U → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1)
+    {B : ℝ} (hB0 : 0 < B)
+    (hB : ∀ L : (j : ℕ) → Matrix (Reg loc (X ∪ T j)) (Reg loc (X ∪ T j)) ℂ,
+      (∀ j, IsFilter 0 (a j) (L j)) →
+      ‖toEuclideanLin (filterProd (fun j ↦ Finset.union_subset hXU (hTU j)) L m)
+        (WithLp.toLp 2 Ω)‖ ≤ B) :
+    -2 * Real.log B ≤ (OpenAI.pureState Ω hΩ).regionEntropy hXU +
+      ∑ j ∈ Finset.range m, a j * (OpenAI.pureState Ω hΩ).regionEntropy (hTU j) := by
+  set ρ := (OpenAI.pureState Ω hΩ).toSubState.restrict hXU
+  set W : Matrix (Reg loc X) (Reg loc X) ℂ := ↑ρ.psd.isHermitian.eigenvectorUnitary
+  set p := ρ.psd.isHermitian.eigenvalues
+  have hW : Wᴴ * W = 1 := by rw [← star_eq_conjTranspose]; exact Unitary.coe_star_mul_self _
+  have hW' : W * Wᴴ = 1 := by rw [← star_eq_conjTranspose]; exact Unitary.coe_mul_star_self _
+  have hρeq : ptrace hXU (vecMulVec (WithLp.ofLp (WithLp.toLp 2 Ω : EuclideanSpace ℂ _))
+      (star (WithLp.ofLp (WithLp.toLp 2 Ω : EuclideanSpace ℂ _)))) =
+      W * diagonal (fun x ↦ (p x : ℂ)) * Wᴴ :=
+    IsHermitian.eq_eigenvectorUnitary_mul ρ.psd.isHermitian
+  have hp : ∀ i, 0 ≤ p i := ρ.psd.eigenvalues_nonneg
+  have hps : ∑ i, p i = 1 := ((OpenAI.pureState Ω hΩ).restrict hXU).sum_eigenvalues_eq_one
+  -- D3.12.2: the pinned vectors `φ_i = (|u_i⟩⟨u_i| ⊗ 1) Ω = √p_i u_i ⊗ w_i`, `‖φ_i‖² = p_i`
+  set φ : Reg loc X → EuclideanSpace ℂ (Reg loc U) :=
+    fun i ↦ toEuclideanLin (extendId hXU (pinProj W i)) (WithLp.toLp 2 Ω)
+  have hφp : ∀ i, ‖φ i‖ ^ 2 = p i := step_3_12_2_norm hXU hW hρeq
+  have hp0 : ∀ i, φ i = 0 → p i = 0 := fun i h ↦ by rw [← hφp, h, norm_zero]; ring
+  -- the unit vectors `ξ_i = φ_i/‖φ_i‖` (any unit vector where `p_i = 0`)
+  set ξ : Reg loc X → Reg loc U → ℂ :=
+    fun i ↦ if φ i = 0 then Ω else ((‖φ i‖⁻¹ : ℝ) : ℂ) • WithLp.ofLp (φ i)
+  have hξφ : ∀ i, φ i ≠ 0 → WithLp.ofLp (φ i) = ((‖φ i‖ : ℝ) : ℂ) • ξ i := fun i h ↦ by
+    simp only [ξ, if_neg h, smul_smul, ← Complex.ofReal_mul,
+      mul_inv_cancel₀ (norm_ne_zero_iff.2 h), Complex.ofReal_one, one_smul]
+  have hξ : ∀ i, star (ξ i) ⬝ᵥ ξ i = 1 := fun i ↦ by
+    by_cases h : φ i = 0
+    · simp only [ξ, if_pos h]; exact hΩ
+    · have h1 : star (WithLp.ofLp (φ i)) ⬝ᵥ WithLp.ofLp (φ i) = ((‖φ i‖ ^ 2 : ℝ) : ℂ) := by
+        rw [dotProduct_comm, ← EuclideanSpace.inner_eq_star_dotProduct,
+          inner_self_eq_norm_sq_to_K]
+        push_cast; rfl
+      have hn : ‖φ i‖ ≠ 0 := norm_ne_zero_iff.2 h
+      simp only [ξ, if_neg h, star_smul, smul_dotProduct, dotProduct_smul, h1, smul_eq_mul,
+        Complex.star_def, Complex.conj_ofReal]
+      push_cast
+      field_simp
+  -- D3.12(b), (c) for each Schmidt index: `-2 log B ≤ -log p_i + ∑_j a_j S_{w_i}(T_j)`
+  have hone : ∀ i, p i * -(∑ j ∈ Finset.range m,
+      a j / 2 * (OpenAI.pureState (ξ i) (hξ i)).regionEntropy (hTU j)) ≤
+      p i * Real.log B + Real.negMulLog (p i) / 2 := by
+    intro i
+    by_cases h0 : φ i = 0
+    · simp [hp0 i h0]
+    have hpos : 0 < ‖φ i‖ := norm_pos_iff.2 h0
+    have hBi : ∀ M : (j : ℕ) → Matrix (Reg loc (T j)) (Reg loc (T j)) ℂ,
+        (∀ j, IsFilter 0 (a j) (M j)) →
+        ‖toEuclideanLin (filterProd hTU M m) (WithLp.toLp 2 (ξ i))‖ ≤ B / ‖φ i‖ := by
+      intro M hM
+      obtain ⟨L, hL, hle⟩ := step_3_12_2 hXU hTU hXT ha hW i hM (WithLp.toLp 2 Ω) m
+      have h1 := hle.trans (hB L hL)
+      have hφ' : φ i = ((‖φ i‖ : ℝ) : ℂ) • WithLp.toLp 2 (ξ i) := by
+        conv_lhs => rw [show φ i = WithLp.toLp 2 (WithLp.ofLp (φ i)) from rfl, hξφ i h0,
+          WithLp.toLp_smul]
+      change ‖toEuclideanLin (filterProd hTU M m) (φ i)‖ ≤ B at h1
+      rw [hφ', map_smul, norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_norm] at h1
+      rw [le_div_iff₀ hpos, mul_comm]
+      exact h1
+    have hlog := eq_initial_trial_norm T hTU hT (hξ i) ha m (div_pos hB0 hpos) hBi
+    rw [Real.log_div hB0.ne' hpos.ne'] at hlog
+    have hη : Real.negMulLog (p i) / 2 = -(p i * Real.log ‖φ i‖) := by
+      rw [← hφp, Real.negMulLog, Real.log_pow]; push_cast; ring
+    rw [hη]
+    have := mul_le_mul_of_nonneg_left hlog (hp i)
+    linarith
+  -- D3.13.2: `ρ_{Ω,T_j} = ∑_i p_i ρ_{w_i,T_j}` and concavity
+  have hconc : ∀ j, ∑ i, p i * (OpenAI.pureState (ξ i) (hξ i)).regionEntropy (hTU j) ≤
+      (OpenAI.pureState Ω hΩ).regionEntropy (hTU j) := by
+    intro j
+    refine MState.sum_mul_entropy_le_entropy hp hps
+      (fun i ↦ (OpenAI.pureState (ξ i) (hξ i)).restrict (hTU j))
+      ((OpenAI.pureState Ω hΩ).restrict (hTU j)) ?_
+    have hm := step_3_13_2_marginal hXU (hTU j) (hXT j) hW hW' (WithLp.toLp 2 Ω)
+    rw [WithLp.ofLp_toLp] at hm
+    change ptrace (hTU j) (vecMulVec Ω (star Ω)) =
+      ∑ i, (p i : ℂ) • ptrace (hTU j) (vecMulVec (ξ i) (star (ξ i)))
+    rw [← hm]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    change ptrace (hTU j) (vecMulVec (WithLp.ofLp (φ i)) (star (WithLp.ofLp (φ i)))) = _
+    by_cases h0 : φ i = 0
+    · rw [h0, hp0 i h0]
+      simp only [WithLp.ofLp_zero, star_zero, vecMulVec_zero, ptrace_zero, Complex.ofReal_zero,
+        zero_smul]
+    · rw [hξφ i h0, star_smul, smul_vecMulVec, vecMulVec_smul, smul_smul, ptrace_smul, ← hφp i,
+        Complex.star_def, Complex.conj_ofReal]
+      push_cast
+      ring_nf
+  -- D3.13.2: average over `i` with weights `p_i`
+  have hsum := Finset.sum_le_sum fun i (_ : i ∈ Finset.univ) ↦ hone i
+  rw [Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.sum_div, hps, one_mul] at hsum
+  have hSX : (OpenAI.pureState Ω hΩ).regionEntropy hXU = ∑ i, Real.negMulLog (p i) :=
+    ρ.entropy_eq_H
+  rw [← hSX] at hsum
+  have hswap : ∑ i, p i * -(∑ j ∈ Finset.range m,
+      a j / 2 * (OpenAI.pureState (ξ i) (hξ i)).regionEntropy (hTU j)) =
+      -∑ j ∈ Finset.range m, a j / 2 *
+        ∑ i, p i * (OpenAI.pureState (ξ i) (hξ i)).regionEntropy (hTU j) := by
+    simp only [mul_neg, Finset.sum_neg_distrib, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    exact congrArg _ (Finset.sum_congr rfl fun j _ ↦ Finset.sum_congr rfl fun i _ ↦ by ring)
+  rw [hswap] at hsum
+  have hconc' : ∑ j ∈ Finset.range m, a j / 2 *
+      ∑ i, p i * (OpenAI.pureState (ξ i) (hξ i)).regionEntropy (hTU j) ≤
+      ∑ j ∈ Finset.range m, a j / 2 * (OpenAI.pureState Ω hΩ).regionEntropy (hTU j) :=
+    Finset.sum_le_sum fun j _ ↦ mul_le_mul_of_nonneg_left (hconc j) (by linarith [ha j])
+  have h2 : ∑ j ∈ Finset.range m, a j * (OpenAI.pureState Ω hΩ).regionEntropy (hTU j) =
+      2 * ∑ j ∈ Finset.range m, a j / 2 * (OpenAI.pureState Ω hΩ).regionEntropy (hTU j) := by
+    rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun j _ ↦ by ring
+  rw [h2]
+  linarith
+
 end AreaLaw
