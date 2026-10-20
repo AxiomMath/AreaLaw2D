@@ -292,4 +292,15 @@ theorem prop_4_3 {p : ℕ} (hp : 1 ≤ p) (R : ℕ) (J Δ : ℝ) (hΔ : 0 < Δ) 
 
 end Prop43
 
+/-- D4.6 on the square lattice over `ℂ`: the frozen `PositiveReplacement` is the
+`G = squareLattice`, `V = v 2` instance of `prop_4_3`. -/
+theorem positiveReplacement_complex (q R : ℕ) (J Δ : ℝ) (p : ℕ) (hq : 1 ≤ q) (hΔ : 0 < Δ)
+    (hp : 1 ≤ p) : OpenAI.PositiveReplacement ℂ q R J Δ p := by
+  have : ∀ i, Nonempty (OpenAI.Qudits q i) := fun _ => ⟨⟨0, hq⟩⟩
+  obtain ⟨cs, hcs, C, c, hc, hP⟩ := prop_4_3 squareLattice (v 2) eq_ball_count_two
+    (loc := OpenAI.Qudits q) hp R J Δ hΔ
+  refine ⟨cs, hcs, C, c, hc, fun Λ Φ hΦ Ω hΩ E₀ hHΩ hgap anchor hanchor => ?_⟩
+  obtain ⟨k, h1, h2, h3, h4, h5⟩ := hP Λ Φ hΦ Ω hΩ E₀ hHΩ hgap anchor hanchor
+  exact ⟨k, h1, h2, h3, h4, h5⟩
+
 end AreaLaw
