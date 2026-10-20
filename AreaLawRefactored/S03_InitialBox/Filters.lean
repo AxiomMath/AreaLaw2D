@@ -1133,6 +1133,107 @@ theorem step_3_9_5 {Θ : EuclideanSpace ℂ (α × β)} {p : α → ℝ} (hp : �
 
 end D393
 
+section D393region
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)]
+
+/-- A quadratic form is unchanged by the change of basis `ψ ↦ Pᴴ ψ`, `M ↦ Pᴴ M P`, for
+`P Pᴴ = 1`. -/
+theorem star_dotProduct_mulVec_conj {n m : Type*} [Fintype n] [Fintype m] [DecidableEq n]
+    {P : Matrix n m ℂ} (hP : P * Pᴴ = 1) (M : Matrix n n ℂ) (ψ : n → ℂ) :
+    star (Pᴴ *ᵥ ψ) ⬝ᵥ ((Pᴴ * M * P) *ᵥ (Pᴴ *ᵥ ψ)) = star ψ ⬝ᵥ (M *ᵥ ψ) := by
+  rw [star_mulVec, conjTranspose_conjTranspose, ← dotProduct_mulVec, mulVec_mulVec,
+    mulVec_mulVec]
+  simp only [← Matrix.mul_assoc, hP]
+  rw [Matrix.one_mul, Matrix.mul_assoc M, hP, Matrix.mul_one]
+
+/-- A quadratic form is unchanged by relabelling the index set. -/
+theorem star_dotProduct_mulVec_submatrix {n m : Type*} [Fintype n] [Fintype m] (e : m ≃ n)
+    (M : Matrix n n ℂ) (ψ : n → ℂ) :
+    star (ψ ∘ e) ⬝ᵥ (M.submatrix e e *ᵥ (ψ ∘ e)) = star ψ ⬝ᵥ (M *ᵥ ψ) := by
+  simp only [dotProduct, mulVec, submatrix_apply, Function.comp_apply, Pi.star_apply]
+  refine Fintype.sum_equiv e _ _ fun x ↦ ?_
+  congr 1
+  exact Fintype.sum_equiv e _ _ fun y ↦ rfl
+
+/-- D3.9.3 on regions. Let `h = h*` act on `T`, and `L = V diag(l) V*` (`V` unitary, `l > 0`)
+act on `S ⊆ T`. In the Schmidt coordinates `Θ = (V* ⊗ 1) φ` of the cut `S | T ∖ S`, with
+`h' = (V* ⊗ 1) h (V ⊗ 1)`:
+`Re ⟨φ, (h - (L ⊗ 1) h (L ⊗ 1)⁻¹) φ⟩ = -∑_{i,k} (cosh log (l_i/l_k) - 1) Re H_{ik}`,
+`H_{ik} = ⟨Θ_i, h'_{ik} Θ_k⟩`. -/
+theorem step_3_9_3_region {S T : Finset σ} (hST : S ⊆ T)
+    {h : Matrix (Arealaw.Reg loc T) (Arealaw.Reg loc T) ℂ} (hh : h.IsHermitian)
+    {L V : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ} (hV : Vᴴ * V = 1)
+    {l : Arealaw.Reg loc S → ℝ} (hl : ∀ i, 0 < l i)
+    (hLV : L = V * diagonal (fun i ↦ (l i : ℂ)) * Vᴴ) (φ : Arealaw.Reg loc T → ℂ) :
+    (star φ ⬝ᵥ ((h - Arealaw.extendId hST L * h * (Arealaw.extendId hST L)⁻¹) *ᵥ φ)).re =
+      -∑ i, ∑ k, (Real.cosh (Real.log (l i / l k)) - 1) *
+        (pair (WithLp.toLp 2 ((Vᴴ ⊗ₖ (1 : Matrix (Arealaw.Reg loc (T \ S))
+            (Arealaw.Reg loc (T \ S)) ℂ)) *ᵥ (φ ∘ Arealaw.glueEquiv hST)))
+          ((Vᴴ ⊗ₖ (1 : Matrix (Arealaw.Reg loc (T \ S)) (Arealaw.Reg loc (T \ S)) ℂ)) *
+            h.submatrix (Arealaw.glueEquiv hST) (Arealaw.glueEquiv hST) *
+            (V ⊗ₖ (1 : Matrix (Arealaw.Reg loc (T \ S)) (Arealaw.Reg loc (T \ S)) ℂ))) i k).re := by
+  set e := Arealaw.glueEquiv hST
+  set one : Matrix (Arealaw.Reg loc (T \ S)) (Arealaw.Reg loc (T \ S)) ℂ := 1
+  set W := V ⊗ₖ one
+  have hWh : Wᴴ = Vᴴ ⊗ₖ one := by simp [W, one, conjTranspose_kronecker]
+  have hV' : V * Vᴴ = 1 := mul_eq_one_comm.1 hV
+  have hW : Wᴴ * W = 1 := by
+    rw [hWh, ← mul_kronecker_mul, hV, Matrix.one_mul, one_kronecker_one]
+  have hW' : W * Wᴴ = 1 := by
+    rw [hWh, ← mul_kronecker_mul, hV', Matrix.one_mul, one_kronecker_one]
+  set D : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ := diagonal (fun i ↦ (l i : ℂ))
+  set D' : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ := diagonal (fun i ↦ ((l i)⁻¹ : ℂ))
+  have hDD : D * D' = 1 := by
+    rw [diagonal_mul_diagonal, ← diagonal_one]
+    exact congrArg diagonal (funext fun i ↦ mul_inv_cancel₀ (by exact_mod_cast (hl i).ne'))
+  have hinv : (Arealaw.extendId hST L)⁻¹ = Arealaw.extendId hST (V * D' * Vᴴ) := by
+    refine Matrix.inv_eq_right_inv ?_
+    rw [← Arealaw.extendId_mul, hLV]
+    have : V * D * Vᴴ * (V * D' * Vᴴ) = 1 := by
+      simp only [Matrix.mul_assoc]
+      rw [← Matrix.mul_assoc Vᴴ V, hV, Matrix.one_mul, ← Matrix.mul_assoc D, hDD, Matrix.one_mul,
+        hV']
+    rw [this, Arealaw.extendId_one]
+  have hext : ∀ A : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ,
+      (Arealaw.extendId hST A).submatrix e e = A ⊗ₖ one := by
+    intro A
+    rw [Arealaw.extendId_eq_kronecker, submatrix_submatrix]
+    simp [e, one]
+  have hconj : ∀ A : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ,
+      (V * A * Vᴴ) ⊗ₖ one = W * (A ⊗ₖ one) * Wᴴ := by
+    intro A
+    rw [hWh, ← mul_kronecker_mul, ← mul_kronecker_mul]
+    simp [one]
+  have hdiag : ∀ c : Arealaw.Reg loc S → ℂ,
+      diagonal c ⊗ₖ one = diagonal (fun x ↦ c x.1) := by
+    intro c
+    rw [show one = diagonal (fun _ ↦ 1) from diagonal_one.symm, diagonal_kronecker_diagonal]
+    simp
+  set h' := Wᴴ * h.submatrix e e * W
+  have hh' : h'.IsHermitian := isHermitian_conjTranspose_mul_mul W (hh.submatrix e)
+  have hM : (h - Arealaw.extendId hST L * h * Arealaw.extendId hST (V * D' * Vᴴ)).submatrix e e =
+      h.submatrix e e - (L ⊗ₖ one) * h.submatrix e e * ((V * D' * Vᴴ) ⊗ₖ one) := by
+    rw [show (h - Arealaw.extendId hST L * h * Arealaw.extendId hST (V * D' * Vᴴ)).submatrix e e =
+      h.submatrix e e -
+        (Arealaw.extendId hST L * h * Arealaw.extendId hST (V * D' * Vᴴ)).submatrix e e from rfl,
+      ← submatrix_mul_equiv _ _ _ e _, ← submatrix_mul_equiv _ _ _ e _, hext, hext]
+  have hM2 : Wᴴ * (h.submatrix e e - (L ⊗ₖ one) * h.submatrix e e * ((V * D' * Vᴴ) ⊗ₖ one)) * W =
+      h' - diagonal (fun x ↦ (l x.1 : ℂ)) * h' * diagonal (fun x ↦ ((l x.1)⁻¹ : ℂ)) := by
+    have hD1 : D ⊗ₖ one = diagonal (fun x ↦ (l x.1 : ℂ)) := hdiag _
+    have hD2 : D' ⊗ₖ one = diagonal (fun x ↦ ((l x.1)⁻¹ : ℂ)) := hdiag _
+    rw [hLV, hconj, hconj, hD1, hD2]
+    simp only [h', Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc Wᴴ W, hW, Matrix.one_mul, Matrix.mul_one]
+  have key := step_3_9_3 hh' hl (WithLp.toLp 2 (Wᴴ *ᵥ (φ ∘ e)))
+  simp only [EuclideanSpace.inner_eq_star_dotProduct, toLpLin_apply] at key
+  rw [← star_dotProduct_mulVec_submatrix e, ← star_dotProduct_mulVec_conj hW', hinv, hM, hM2]
+  rw [← hWh, dotProduct_comm]
+  exact key
+
+end D393region
+
 /-! ## D3.11 First norm comparison -/
 
 section D311
