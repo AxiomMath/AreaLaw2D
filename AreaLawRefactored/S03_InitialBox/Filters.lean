@@ -73,6 +73,27 @@ theorem isFilter_uniform [Nonempty m] {f a : ℝ} (hcard : Fintype.card m * f �
   · rw [inv_eq_one_div, le_div_iff₀ hpos, mul_comm]; exact hcard
   · simp [Finset.sum_const, Finset.card_univ, hpos.ne']
 
+/-- D3.7.2. Feasibility is invariant under unitary conjugation (same spectrum). -/
+theorem IsFilter.conj {f a : ℝ} {L W : Matrix m m ℂ} (hL : IsFilter f a L) (hW : Wᴴ * W = 1) :
+    IsFilter f a (W * L * Wᴴ) := by
+  obtain ⟨V, hV, x, hx, hs, rfl⟩ := hL
+  refine ⟨W * V, ?_, x, hx, hs, by simp only [conjTranspose_mul, Matrix.mul_assoc]⟩
+  rw [conjTranspose_mul, Matrix.mul_assoc, ← Matrix.mul_assoc Wᴴ, hW, Matrix.one_mul, hV]
+
+/-- D3.7.2. For anti-Hermitian `B` and real `t`, `L(t) = e^{tB} L e^{-tB}` is feasible
+whenever `L` is. -/
+theorem IsFilter.exp_conj {f a : ℝ} {L B : Matrix m m ℂ} (hL : IsFilter f a L) (hB : Bᴴ = -B)
+    (t : ℝ) :
+    IsFilter f a (NormedSpace.exp ((t : ℂ) • B) * L * NormedSpace.exp ((-(t : ℂ)) • B)) := by
+  have hc : (NormedSpace.exp ((t : ℂ) • B))ᴴ = NormedSpace.exp ((-(t : ℂ)) • B) := by
+    rw [← Matrix.exp_conjTranspose, conjTranspose_smul, hB, Complex.star_def, Complex.conj_ofReal,
+      smul_neg, neg_smul]
+  have hu : (NormedSpace.exp ((t : ℂ) • B))ᴴ * NormedSpace.exp ((t : ℂ) • B) = 1 := by
+    rw [hc, ← Matrix.exp_add_of_commute _ _ ((Commute.refl B).smul_left _ |>.smul_right _),
+      neg_smul, neg_add_cancel, NormedSpace.exp_zero]
+  have := hL.conj hu
+  rwa [hc] at this
+
 end D371
 
 section D371chain
@@ -81,6 +102,7 @@ variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc
   [∀ i, DecidableEq (loc i)] {U : Finset σ} {X : ℕ → Finset σ}
 
 omit [∀ i, Fintype (loc i)] in
+/-- `A ↦ A ⊗ 1` is continuous. -/
 theorem continuous_extendId {S T : Finset σ} (h : S ⊆ T) :
     Continuous (Arealaw.extendId (loc := loc) (𝕜 := ℂ) h) :=
   continuous_pi fun w ↦ continuous_pi fun w' ↦ by
@@ -94,6 +116,7 @@ noncomputable def filterProd (hX : ∀ j, X j ⊆ U)
     Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ :=
   prodDesc (fun j ↦ Arealaw.extendId (hX j) (L j)) k
 
+/-- `L ↦ K` is continuous (D3.7.1: `N` is continuous). -/
 theorem continuous_filterProd (hX : ∀ j, X j ⊆ U) (k : ℕ) :
     Continuous fun L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ ↦
       filterProd hX L k := by
@@ -102,6 +125,7 @@ theorem continuous_filterProd (hX : ∀ j, X j ⊆ U) (k : ℕ) :
   | succ k ih =>
     exact ((continuous_extendId (hX k)).comp (continuous_apply k)).matrix_mul ih
 
+/-- D3.7.1. Feasible products with positive floors are invertible. -/
 theorem isUnit_det_filterProd (hX : ∀ j, X j ⊆ U)
     {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
     (hL : ∀ j, IsUnit (L j).det) (k : ℕ) : IsUnit (filterProd hX L k).det := by
