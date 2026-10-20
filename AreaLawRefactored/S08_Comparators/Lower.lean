@@ -1281,25 +1281,11 @@ private theorem sharpLower_of_pin (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}
 
 end Assembly
 
-/-- D8.35 (`comparator:rough-lower`, `comparator:sharp-lower`), the sharp bound written out. -/
-theorem step_8_35_pos (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}) (h31 : Step_8_31.{u, v}) :
-    ∃ a₀ C : ℝ, 0 < a₀ ∧ 0 < C ∧
-    (∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
-      {X : Finset σ} (E : TypicalSet D X) {K : ℕ} {St : Type v} [Fintype St] [DecidableEq St]
-      (Γ : Statuses σ K St X) (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))), HighLabel E l →
-      ∀ a τ : ℝ, 0 < a → a ≤ a₀ → 0 < τ → τ < 1 / 2 → RoughLower D Γ E C a τ l) ∧
-    ∀ C₀ c₀ : ℝ, 0 < C₀ → 0 < c₀ → ∃ c C' : ℝ, 0 < c ∧ 0 < C' ∧
-    ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
-      {X : Finset σ} (E : TypicalSet D X) {K : ℕ} {St : Type v} [Fintype St] [DecidableEq St]
-      (Γ : Statuses σ K St X) (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))), HighLabel E l →
-      ∀ 𝓑 : ℝ, MgfData D Γ C₀ c₀ 𝓑 → ∀ a τ : ℝ, 0 < a → a ≤ c / Real.sqrt 𝓑 → 0 < τ →
-      τ < 1 / 2 →
-      ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ k : ℕ, 0 < k →
-        ∀ (T : Transport.MeanTree St) (G : ℝ), (∀ s g, T.weight s ≠ 0 → gpre D Γ s g ≤ G) →
-        2 * (1 / 4) * (a * K) * (2 * E.S' + (1 - τ) * avg T (gpre D Γ) -
-            C' * (τ * Real.log E.d + Real.binEntropy τ / a + a * 𝓑) -
-            C' * (Edef D Γ E T a k (l k) / τ) * (E.S' + G)) - r k ≤
-          -Real.log (N2 D Γ E T a k (l k)) / k := by
+/-- D8.35 (`comparator:rough-lower`, `comparator:sharp-lower`). (comparator:rough-lower) and
+(comparator:sharp-lower) of D8.8. -/
+theorem step_8_35 (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}) (h31 : Step_8_31.{u, v}) :
+    Step_8_35.{u, v} := by
+  unfold Step_8_35
   obtain ⟨a₀, C₃₁, ha₀, hC₃₁, hR, hS⟩ := h31
   refine ⟨a₀, max C₃₁ 2, ha₀, lt_max_of_lt_left hC₃₁, ?_, ?_⟩
   · intro σ _ _ n _ D X E K St _ _ Γ l hl a τ ha haa hτ hτ'
@@ -1315,10 +1301,5 @@ theorem step_8_35_pos (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}) (h31 : Ste
     obtain ⟨δ, hδ, hpin⟩ := hS' D E Γ l hl 𝓑 h𝓑 a τ ha hac hτ hτ'
     -- D8.35.1–4
     exact sharpLower_of_pin h1 h13 Γ hl ha hτ hτ' hC' h𝓑.one_le hδ hpin
-
-/-- D8.35 (`comparator:rough-lower`, `comparator:sharp-lower`). -/
-theorem step_8_35 (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v}) (h31 : Step_8_31.{u, v}) :
-    Step_8_35.{u, v} :=
-  step_8_35_pos h1 h13 h31
 
 end AreaLaw.Comparators
