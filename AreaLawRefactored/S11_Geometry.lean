@@ -1,6 +1,9 @@
 import AreaLawRefactored.S02_Preliminaries
 import AreaLawForMathlib.QuantumInfo.Entropy.Subadditivity
 import AreaLawRefactored.S11_Geometry.Exponents
+import AreaLawRefactored.S11_Geometry.Layers
+import AreaLawRefactored.S11_Geometry.Scales
+import AreaLawRefactored.S11_Geometry.RepairScales
 
 /-!
 # §11 Two families of regions and the area bound
