@@ -1,10 +1,11 @@
-import AreaLawRefactored.S03_InitialBox.Filters
+import AreaLawRefactored.S03_InitialBox.Lemma32
 
 /-!
 # §3 Marginal tails and an initial box estimate
 
 Digest `digest/03-initial-box.md`, paper `paper/sections/02-initial.tex`. Lemma 3.1 (§3.1) is
-in `S03_InitialBox/MarginalTails.lean`, Lemma 3.2 (§3.2) in `S03_InitialBox/BufferDiscount.lean`;
+in `S03_InitialBox/MarginalTails.lean`, Lemma 3.2 (§3.2) in `S03_InitialBox/BufferDiscount.lean`,
+`Filters.lean`, `ZeroFloorPinning.lean`, `ThreeLines.lean`, `TrialNorm.lean`, `Lemma32.lean`;
 this file is §3.3: `F_box` (D3.15) and Proposition 3.3 (D3.16).
 -/
 
@@ -587,11 +588,10 @@ theorem step_3_16_3 (ρ : Arealaw.MState (Reg loc Λ) ℂ) (hA : A ⊆ Λ) (hab 
   linarith
 
 /-- D3.16 (Proposition 3.3, prop:initial-box). There are `C < ∞` and `e₀ ∈ (0, 1)`, depending
-only on `q, R, J, Δ`, with `F_box(r) ≤ C r^{1+e₀}` (`r ≥ 1`). Stated with Lemma 3.2 (D3.4) as
-hypothesis `lemma_3_2`. -/
-theorem prop_3_3 {q R : ℕ} {J Δ : ℝ} (lemma_3_2 : BufferDiscount ℂ q R J Δ) :
+only on `q, R, J, Δ`, with `F_box(r) ≤ C r^{1+e₀}` (`r ≥ 1`). -/
+theorem prop_3_3 {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 < Δ) :
     InitialBoxEstimate ℂ q R J Δ := by
-  obtain ⟨Cpad, -, Cbuf, hbuf⟩ := lemma_3_2
+  obtain ⟨Cpad, -, Cbuf, hbuf⟩ := lemma_3_2 (R := R) hq hJ hΔ
   set c := max Cbuf 0
   set p := p₀ Cpad
   have hp : 0 < p ∧ p ≤ 1 / 25 := ⟨by simp only [p, p₀]; positivity, by
