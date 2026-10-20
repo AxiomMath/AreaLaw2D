@@ -3,7 +3,6 @@ import AreaLawRefactored.S06_Replicas.SymmetricDimension
 import AreaLawRefactored.S06_Replicas.Labels
 import AreaLawRefactored.S06_Replicas.Surprisal
 import AreaLawRefactored.S06_Replicas.InjectionAverage
-import AreaLawRefactored.S06_Replicas.FromS05
 import AreaLawRefactored.S06_Replicas.SchurLemma
 import AreaLawRefactored.S06_Replicas.Metric
 import AreaLawRefactored.S06_Replicas.RelativePin
@@ -22,5 +21,4 @@ family of tensor factors (`Map.md`, Dimension: every §6 anchor is `any d`).
 * `SchurLemma`: D6.2 (`eq_replicas_schur_decomposition`), D6.4 (1), (3), (4), (6) and Lemma 6.1
   (`lemma_6_1`); the Schur–Weyl library is `AreaLawForMathlib/RepresentationTheory/SchurWeyl/`.
 * `InjectionAverage`: D6.14 `𝒯_{k,m}`, D6.15 (`eq_replicas_injection_product`).
-* `FromS05`: the §5 inputs (D5.1, Lemma 5.1, Lemma 5.3), replaced by `S05_Conditional` at the merge.
 -/

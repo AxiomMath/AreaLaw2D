@@ -1,5 +1,5 @@
 import AreaLawRefactored.S06_Replicas.Ported.MarkedSimilaritySymbol
-import AreaLawRefactored.S06_Replicas.FromS05
+import AreaLawRefactored.S05_Conditional.Lemma53
 
 /-!
 # §6 Lemma 6.4: marked-copy scalar symbols (D6.12, D6.13, D6.16)
@@ -7,7 +7,7 @@ import AreaLawRefactored.S06_Replicas.FromS05
 Digest `digest/06-replicas.md` §6.3, paper `paper/sections/05-replicas.tex` lines 615–845.
 The system is `𝒱 = ⨂_{v : V} ℂ^{n_v}` over an arbitrary finite site type `V` (local dimensions
 `Fin (n v)`, as in the ported files). `coherentIntegral b σ φ` is `∫ φ dμ_σ` (D6.11). Item 4
-takes Lemma 5.3 as a hypothesis; the bridges below read the §5 region encoding
+uses `AreaLaw.lemma_5_3` (§5); the bridges below read the §5 region encoding
 (`Reg`, `extendId`, `marg`, `bracketPow`) on the full region `Reg (Fin ∘ n) univ ≃ SiteConfig n`.
 -/
 
@@ -386,7 +386,7 @@ theorem step_6_12_5 {t : ℝ} (ht : 0 ≤ t) (k : ℕ) {P F : Finset V} (hPF : D
 designated support, `f_θ = f(t)` of Lemma 5.3 with `a = 2t`, `x = Y ∩ D`, `U = Y₀ = Y \ D`,
 `P₀ = P ∩ D`, `P₁ = P \ D`; so `a log(e d_h) ≤ c` gives
 `|f_θ| - Re f_θ ≤ C a² log⁴(e d_h) η_θ^{1/8}`, `η_θ = I_θ(x:F|Y₀)`, `c, C` of Lemma 5.3. -/
-theorem step_6_12_4 (lemma_5_3 : Lemma_5_3.{u, 0}) : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
+theorem step_6_12_4 : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     ∀ (V : Type u) [Fintype V] [DecidableEq V] (n : V → ℕ) [∀ v, NeZero (n v)]
       (P Y F : Finset V), Disjoint P Y → Disjoint P F → Disjoint Y F →
       P ∪ Y ∪ F = Finset.univ →
@@ -396,7 +396,7 @@ theorem step_6_12_4 (lemma_5_3 : Lemma_5_3.{u, 0}) : ∃ c C : ℝ, 0 < c ∧ 0 
         (markedScalarSymbol t P Y (localLift D K) θ).re ≤
       C * (2 * t) ^ 2 * ℓ (Fintype.card (RegionConfig n D)) ^ 4 *
         η (Y ∩ D) (Y \ D) F θ ^ (1 / 8 : ℝ) := by
-  obtain ⟨c, C, hc, hC, hL⟩ := lemma_5_3
+  obtain ⟨c, C, hc, hC, hL⟩ := lemma_5_3.{u, 0}
   refine ⟨c, C, hc, hC, fun V _ _ n _ P Y F hPY hPF hYF hcov D K hD hK0 hK1 t ht hac θ hθ => ?_⟩
   have hPeq : P ∩ D ∪ P \ D = P := by rw [Finset.union_comm]; exact Finset.sdiff_union_inter P D
   have hYeq : Y ∩ D ∪ Y \ D = Y := by rw [Finset.union_comm]; exact Finset.sdiff_union_inter Y D
@@ -441,7 +441,7 @@ Here `O_k = markedSimilarity`, `f_θ = markedScalarSymbol`, `𝒟_k = skewOperat
 `coherentIntegral b σ φ = ∫ φ dμ_σ` (D6.11); the support `D` of `h = lift_D K` is designated,
 `log^C` is `ℓ(d_h)⁴`, `0 < t < 1/2` (weaker than `t < 1/4`), and `c, C` are universal.
 Item 4 with the outer parts exchanged is item 4 at `(F, Y, P)`, by `step_6_12_5`. -/
-theorem lemma_6_4 (lemma_5_3 : Lemma_5_3.{u, 0}) : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
+theorem lemma_6_4 : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     ∀ (V : Type u) [Fintype V] [DecidableEq V] (n : V → ℕ) [∀ v, NeZero (n v)] (t : ℝ),
       0 < t → t < 1 / 2 → ∀ (P Y F : Finset V), Disjoint P Y → Disjoint P F → Disjoint Y F →
     ∀ h : Matrix (SiteConfig n) (SiteConfig n) ℂ, IsSupportedOn h (P ∪ Y) →
@@ -476,7 +476,7 @@ theorem lemma_6_4 (lemma_5_3 : Lemma_5_3.{u, 0}) : ∃ c C : ℝ, 0 < c ∧ 0 < 
               C * (2 * t) ^ 2 * ℓ (Fintype.card (RegionConfig n D)) ^ 4 *
                 (coherentIntegral b σ fun θ =>
                   ((η (Y ∩ D) (Y \ D) F θ ^ (1 / 8 : ℝ) : ℝ) : ℂ)).re + ε) := by
-  obtain ⟨c, C, hc, hC, h4⟩ := step_6_12_4 lemma_5_3
+  obtain ⟨c, C, hc, hC, h4⟩ := step_6_12_4
   refine ⟨c, 2 * C, hc, by positivity, fun V _ _ n _ t ht0 ht1 P Y F hPY hPF hYF h hh => ?_⟩
   obtain ⟨⟨hfc, -⟩, hpoly, -, -, hskew⟩ := step_6_16 (F := F) ht0 ht1 hPY hPF hYF hh
   -- D6.12.3, item 3: `2 (|f| - Re f)` is the symbol of `𝒟_k`

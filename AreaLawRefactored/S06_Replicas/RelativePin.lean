@@ -1,4 +1,4 @@
-import AreaLawRefactored.S06_Replicas.FromS05
+import AreaLawRefactored.S05_Conditional.Lemma51
 import AreaLawRefactored.S06_Replicas.Ported.RelativePinCommute
 import AreaLawRefactored.S06_Replicas.Setup
 
@@ -6,7 +6,7 @@ import AreaLawRefactored.S06_Replicas.Setup
 # §6 Lemma 6.3: the relative coherent pin (D6.10)
 
 Digest `digest/06-replicas.md` D6.10, paper `paper/sections/05-replicas.tex` lines 480–587.
-Lemma 5.1 enters as the hypothesis `lemma_5_1 : Lemma_5_1`. The sites are an arbitrary finite
+Lemma 5.1 enters as `AreaLaw.lemma_5_1` (§5). The sites are an arbitrary finite
 type `V` with local dimensions `Fin (n v)`; a vector of the §2 encoding is a function on
 `Reg (fun v => Fin (n v)) univ`, identified with `SiteConfig n` by `univEquiv`.
 -/
@@ -32,17 +32,6 @@ theorem hatPow_ofReal {ρ : Matrix X X ℂ} (hρ : ρ.IsHermitian) (r : ℝ) :
   split_ifs with h
   · rw [Real.rpow_def_of_pos h]; simp [Complex.ofReal_exp, mul_comm]
   · simp
-
-theorem bracketPow_ofReal {ρ : Matrix X X ℂ} (hρ : ρ.PosSemidef) {r : ℝ} (hr : 0 < r) :
-    bracketPow ρ r = ρ ^ r := by
-  rw [bracketPow, dif_pos hρ.isHermitian, CFC.rpow_eq_cfc_real hρ.nonneg,
-    hρ.isHermitian.cfc_eq, IsHermitian.cfc, Unitary.conjStarAlgAut_apply]
-  congr 3
-  funext i
-  simp only [Function.comp_apply]
-  split_ifs with h
-  · rw [Real.rpow_def_of_pos h]; simp [Complex.ofReal_exp, mul_comm]
-  · rw [le_antisymm (not_lt.mp h) (hρ.eigenvalues_nonneg i), Real.zero_rpow hr.ne']; simp
 
 /-- `ρ^t ρ̂^{-t} = 1 - Π_{ker ρ}` for `ρ ≥ 0`, `t > 0`. -/
 theorem rpow_mul_hatPow_neg {ρ : Matrix X X ℂ} (hρ : ρ.PosSemidef) {t : ℝ} (ht : 0 < t) :
@@ -138,7 +127,7 @@ in `θ`; on `𝒮_k`, `P_{θ,k} = |θ^{⊗k}⟩⟨θ^{⊗k}|`:
 `C_{x,k} ≥ poly(k)^{-1} exp{ka[η_θ - C a^{1/4} log^C(e dim x)]} P_{θ,k}`.
 Same for a move to `F` with the outer parts exchanged. No move (`x = ∅`): `C_{x,k} = I`,
 gain `0`. -/
-theorem lemma_6_3 (lemma_5_1 : Lemma_5_1.{u, 0}) :
+theorem lemma_6_3 :
     ∃ C c : ℝ, 0 < C ∧ 0 < c ∧
       ∀ {V : Type u} [Fintype V] [DecidableEq V] {n : V → ℕ} [∀ v, NeZero (n v)]
         {P x Y₀ F : Finset V}, P ∪ x ∪ Y₀ ∪ F = Finset.univ → Disjoint P x → Disjoint P Y₀ →
@@ -151,7 +140,7 @@ theorem lemma_6_3 (lemma_5_1 : Lemma_5_1.{u, 0}) :
               (Finset.subset_univ x) (Finset.subset_univ Y₀) (Finset.subset_univ F) -
               C * (2 * t) ^ (1 / 4 : ℝ) * ℓ (Fintype.card (Reg (fun v => Fin (n v)) x)) ^ 2)) ≤
           K * ((k : ℝ) + 2) ^ N * (star w ⬝ᵥ (relativeMetric n t k P x Y₀ F *ᵥ w)).re := by
-  obtain ⟨c, C₀, hc, hC₀, H⟩ := lemma_5_1
+  obtain ⟨c, C₀, hc, hC₀, H⟩ := lemma_5_1.{u, 0}
   refine ⟨2 * C₀, c, by positivity, hc, ?_⟩
   intro V _ _ n _ P x Y₀ F hcov hPx hPY hPF hxY hxF hYF t ht0 ht1 hsmall
   have hmove : MoveParts P x Y₀ F := ⟨hPx, hPY, hPF, hxY, hxF, hYF⟩
@@ -271,8 +260,8 @@ theorem lemma_6_3 (lemma_5_1 : Lemma_5_1.{u, 0}) :
     have hone := H V (fun v => Fin (n v)) Finset.univ P x Y₀ F hP hX hU hF hcov.symm hPx hPY
       hPF hxY hxF hYF θ hθ (2 * t) (by positivity) hsmall (σ ω) (τ ω') hω.1.posSemidef hω.2
       hω'.1.posSemidef hω'.2
-    rw [show 2 * t / 2 = t by ring, bracketPow_ofReal hω.1.posSemidef ht0,
-      bracketPow_ofReal hω'.1.posSemidef ht0] at hone
+    rw [show 2 * t / 2 = t by ring, bracketPow_ofReal hω.1.posSemidef ht0.ne',
+      bracketPow_ofReal hω'.1.posSemidef ht0.ne'] at hone
     calc ‖(EuclideanSpace.equiv _ ℂ).symm
           ((localLift (x ∪ P) (σ ω ^ t) * localLift (x ∪ Y₀) (τ ω' ^ t)) *ᵥ v)‖ ^ k
         ≤ Real.exp (-t * η + C₀ * (2 * t) ^ (5 / 4 : ℝ) * ℓx ^ 2) ^ k := by
@@ -353,7 +342,7 @@ end Exchange
 `A_k = A_k(P, xY₀, F)` and `B_k = A_k(P, Y₀, xF)`,
 `A_k^{-1/2} B_k A_k^{-1/2} ≥ poly(k)^{-1} exp{ka[η_θ - C a^{1/4} log^C(e dim x)]} P_{θ,k}`, now
 with `η_θ = S_θ(x|F) + S_θ(x|Y₀) = I_θ(x:P|Y₀)`. -/
-theorem lemma_6_3_exchange (lemma_5_1 : Lemma_5_1.{u, 0}) :
+theorem lemma_6_3_exchange :
     ∃ C c : ℝ, 0 < C ∧ 0 < c ∧
       ∀ {V : Type u} [Fintype V] [DecidableEq V] {n : V → ℕ} [∀ v, NeZero (n v)]
         {P x Y₀ F : Finset V}, P ∪ x ∪ Y₀ ∪ F = Finset.univ → Disjoint P x → Disjoint P Y₀ →
@@ -368,7 +357,7 @@ theorem lemma_6_3_exchange (lemma_5_1 : Lemma_5_1.{u, 0}) :
           K * ((k : ℝ) + 2) ^ N * (star w ⬝ᵥ (((CFC.sqrt (leafMetric n t k P (x ∪ Y₀) F))⁻¹ *
             leafMetric n t k P Y₀ (x ∪ F) * (CFC.sqrt (leafMetric n t k P (x ∪ Y₀) F))⁻¹) *ᵥ
               w)).re := by
-  obtain ⟨C, c, hC, hc, H⟩ := lemma_6_3 lemma_5_1
+  obtain ⟨C, c, hC, hc, H⟩ := lemma_6_3
   refine ⟨C, c, hC, hc, ?_⟩
   intro V _ _ n _ P x Y₀ F hcov hPx hPY hPF hxY hxF hYF t ht0 ht1 hsmall
   obtain ⟨K, N, hK, H'⟩ := H (P := F) (x := x) (Y₀ := Y₀) (F := P)
