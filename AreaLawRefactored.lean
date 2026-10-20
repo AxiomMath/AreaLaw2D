@@ -4,12 +4,13 @@ import AreaLawRefactored.S04_Quasilocal
 import AreaLawRefactored.S05_Conditional
 import AreaLawRefactored.S06_Replicas
 import AreaLawRefactored.S07_Transport
+import AreaLawRefactored.S10_Amplification
 import AreaLawRefactored.Transfer
 
 /-!
 # The area law for gapped two-dimensional lattice Hamiltonians
 
 One module per paper section (`digest/00-overview.md` §2): `S02_Preliminaries`,
-`S03_InitialBox`, `S04_Quasilocal`, …; `Transfer` proves the
+`S03_InitialBox`, `S04_Quasilocal`, `S10_Amplification`, …; `Transfer` proves the
 `RCLike 𝕜` frozen statements from their `ℂ` instances (one layer at the top).
 -/
