@@ -10,6 +10,7 @@ import AreaLawForMathlib.Analysis.RCLike.ToComplex
 import AreaLawForMathlib.Data.Int.L1Ball
 import AreaLawForMathlib.QuantumInfo.Entropy.ClassicalQuantum
 import AreaLawForMathlib.QuantumInfo.Entropy.Concavity
+import AreaLawForMathlib.QuantumInfo.Entropy.Subadditivity
 import AreaLawForMathlib.QuantumInfo.Region
 import AreaLawForMathlib.QuantumInfo.RegionToComplex
 
