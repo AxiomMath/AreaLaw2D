@@ -161,6 +161,14 @@ theorem clockExp_le_of_sum_le {t : ℝ} (ht : 0 ≤ t) {F : ∀ m : ℕ, (Fin m 
   have hsum := Summable.of_nonneg_of_le h0 hle hs.summable
   exact ⟨hsum, (hsum.tsum_le_tsum hle hs.summable).trans_eq hs.tsum_eq⟩
 
+/-- A bounded nonnegative observable, `0 ≤ F ≤ b`, has a summable expectation. -/
+theorem summable_clock_of_le {t : ℝ} (ht : 0 ≤ t) {F : ∀ m : ℕ, (Fin m → ι) → ℝ}
+    (hF : ∀ m w, 0 ≤ F m w) {b : ℝ} (hb : ∀ m w, F m w ≤ b) :
+    Summable (fun m => clockWeight (Fintype.card ι) t m * ∑ w : Fin m → ι, F m w) :=
+  (clockExp_le_of_sum_le ht hF (A := b) (a := Fintype.card ι) fun m => by
+    refine (Finset.sum_le_sum fun w _ => hb m w).trans_eq ?_
+    simp [Finset.card_univ, mul_comm]).1
+
 /-- If `∑_w F m w ≤ A m a^{m-1}` for nonnegative `F`, then `𝔼_t F ≤ A t e^{(a - N) t}`. -/
 theorem clockExp_le_of_sum_le_mul {t : ℝ} (ht : 0 ≤ t) {F : ∀ m : ℕ, (Fin m → ι) → ℝ}
     (hF : ∀ m w, 0 ≤ F m w) {A a : ℝ} (hb : ∀ m, ∑ w, F m w ≤ A * (m * a ^ (m - 1))) :
@@ -271,5 +279,75 @@ theorem vnorm_eq_one {v : n → ℂ} (hv : star v ⬝ᵥ v = 1) : vnorm v = 1 :=
   rw [vnorm_eq_sqrt, hv]; simp
 
 end VNorm
+
+/-! ## Shared objects of §10
+
+Operators carry a finite spectator factor `κ`: an operator `A` on the physical region `Λ`
+acts on `Reg loc Λ × κ` as `A ⊗ₖ 1`. In Proposition 10.2, `κ = Reg loc X × Reg loc X`, the
+copies `s'` (first factor) and `e'` (second factor) of the Hilbert space on `X`. -/
+
+section Objects
+
+open Arealaw Matrix
+open OpenAI (pureState)
+open scoped Kronecker Matrix.Norms.L2Operator ComplexOrder
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)]
+
+/-- D10.2.5. The oscillation `d_y(B) = sup_{‖U‖ ≤ 1} ‖[U_y, B]‖` at a site `y ∈ Λ`, with
+`U_y = U ⊗ I` on the on-site space at `y`, spectators untouched (`0` for `y ∉ Λ`). The paper
+takes the supremum over unitaries; the contractions give the same facts. -/
+noncomputable def osc {Λ : Finset σ} (κ : Type*) [Fintype κ] [DecidableEq κ] (y : σ)
+    (B : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ) : ℝ :=
+  if hy : y ∈ Λ then
+    ⨆ U : {U : Matrix (Reg loc {y}) (Reg loc {y}) ℂ // ‖U‖ ≤ 1},
+      ‖(extendId (Finset.singleton_subset_iff.2 hy) U.1 ⊗ₖ (1 : Matrix κ κ ℂ)) * B -
+        B * (extendId (Finset.singleton_subset_iff.2 hy) U.1 ⊗ₖ (1 : Matrix κ κ ℂ))‖
+  else 0
+
+/-- The splitting `(w, (s, e)) ↦ ((w|_N, s), (w|_{Λ∖N}, e))` of
+`ℋ_Λ ⊗ ℋ_{s'} ⊗ ℋ_{e'}` into `(ℋ_N ⊗ ℋ_{s'}) ⊗ (ℋ_{Λ∖N} ⊗ ℋ_{e'})`. -/
+def splitN {Λ N : Finset σ} (hN : N ⊆ Λ) (X : Finset σ) :
+    Reg loc Λ × (Reg loc X × Reg loc X) ≃
+      (Reg loc N × Reg loc X) × (Reg loc (Λ \ N) × Reg loc X) :=
+  ((glueEquiv hN).symm.prodCongr (Equiv.refl _)).trans
+    (Equiv.prodProdProdComm _ _ _ _)
+
+/-- D10.14. An operator acts on `N ∪ s'` (and trivially on `Λ \ N` and `e'`): in the
+coordinates of `splitN` it is `M ⊗ I`. -/
+def ActsOn {Λ N : Finset σ} (hN : N ⊆ Λ) (X : Finset σ)
+    (R : Matrix (Reg loc Λ × (Reg loc X × Reg loc X))
+      (Reg loc Λ × (Reg loc X × Reg loc X)) ℂ) : Prop :=
+  ∃ M : Matrix (Reg loc N × Reg loc X) (Reg loc N × Reg loc X) ℂ,
+    R = (M ⊗ₖ (1 : Matrix (Reg loc (Λ \ N) × Reg loc X)
+      (Reg loc (Λ \ N) × Reg loc X) ℂ)).submatrix (splitN hN X) (splitN hN X)
+
+variable [∀ i, Nonempty (loc i)]
+
+/-- D10.6. The blank configuration `|0⟩` of a region. -/
+noncomputable def blank (X : Finset σ) : Reg loc X := fun _ => Classical.arbitrary _
+
+/-- D2.1. The marginal `ρ_X` of `|Ω⟩⟨Ω|`. -/
+noncomputable abbrev marg {Λ X : Finset σ} (Ω : Reg loc Λ → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1)
+    (hX : X ⊆ Λ) : SubState (Reg loc X) ℂ :=
+  (pureState Ω hΩ).toSubState.restrict hX
+
+/-- D10.6. `φ = 𝓡_X Ω = |0⟩_X |0⟩_{s'} ∑_y √p_y |y⟩_{e'} |ω_y⟩`: the configuration of `X`
+moved to `e'`, blanks on `X` and `s'`. -/
+noncomputable def copyVec {Λ X : Finset σ} (hX : X ⊆ Λ) (Ω : Reg loc Λ → ℂ) :
+    Reg loc Λ × (Reg loc X × Reg loc X) → ℂ :=
+  fun v => if ((glueEquiv hX).symm v.1).1 = blank X ∧ v.2.1 = blank X then
+    Ω (glueEquiv hX (v.2.2, ((glueEquiv hX).symm v.1).2)) else 0
+
+/-- D10.6. `η = Ω ⊗ ∑_x √p_x |x⟩_{s'} |x⟩_{e'}`, with `ρ_X = ∑_x p_x |x⟩⟨x|` the
+eigendecomposition (`|x⟩` the columns of the eigenvector unitary). -/
+noncomputable def restoredVec {Λ X : Finset σ} (hX : X ⊆ Λ) (Ω : Reg loc Λ → ℂ)
+    (hΩ : star Ω ⬝ᵥ Ω = 1) : Reg loc Λ × (Reg loc X × Reg loc X) → ℂ :=
+  fun v => Ω v.1 * ∑ x, (Real.sqrt ((marg Ω hΩ hX).psd.isHermitian.eigenvalues x) : ℂ) *
+    ((marg Ω hΩ hX).psd.isHermitian.eigenvectorUnitary : Matrix _ _ ℂ) v.2.1 x *
+    ((marg Ω hΩ hX).psd.isHermitian.eigenvectorUnitary : Matrix _ _ ℂ) v.2.2 x
+
+end Objects
 
 end AreaLaw
