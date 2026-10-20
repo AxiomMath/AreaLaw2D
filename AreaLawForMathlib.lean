@@ -14,6 +14,7 @@ import AreaLawForMathlib.QuantumInfo.Entropy.ClassicalQuantum
 import AreaLawForMathlib.QuantumInfo.Entropy.Concavity
 import AreaLawForMathlib.QuantumInfo.Region
 import AreaLawForMathlib.QuantumInfo.RegionToComplex
+import AreaLawForMathlib.RepresentationTheory.PermutationRepresentation
 
 /-!
 # AreaLawForMathlib
