@@ -15,6 +15,21 @@ namespace AreaLaw.Comparators
 
 universe u v
 
+/-- D8.1, Output. (iii) Within one leaf, the regions `U_{j,g}, U_{j,g}Y_{j,g}, Y_{j,g}` of any two
+bands are nested or disjoint (so all their labels commute, Lemma 6.1 (2)). (ii) Band factors of
+different bands commute, at any two leaves: `[A_{j,g}, A_{j',g'}] = 0` for `g ≠ g'` (the
+hypothesis of Lemma 7.1 (6)). -/
+def Step_8_1 : Prop :=
+  ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {K : ℕ} {St : Type v} {X : Finset σ}
+    (Γ : Statuses σ K St X),
+    (∀ (s : St) (g g' : Fin K),
+      ∀ Q ∈ ({Γ.U s g, Γ.U s g ∪ Γ.Y s g, Γ.Y s g} : Finset (Finset σ)),
+      ∀ Q' ∈ ({Γ.U s g', Γ.U s g' ∪ Γ.Y s g', Γ.Y s g'} : Finset (Finset σ)),
+        Q ⊆ Q' ∨ Q' ⊆ Q ∨ Disjoint Q Q') ∧
+    ∀ (n : σ → ℕ) [∀ v, NeZero (n v)] (d : ℕ) [NeZero d] (t : ℝ), 0 ≤ t →
+      ∀ (k : ℕ) (s s' : St) (g g' : Fin K), g ≠ g' →
+        Commute (Γ.bandA n d t k s g) (Γ.bandA n d t k s' g')
+
 /-- D8.10 (`comparator:signed-label-moments`), for an iid density `ρ^{⊗k}` on `k` copies of a
 fixed finite system with `log Tr ρ^{1-u} ≤ u S + C₀ 𝓑 u²` for `|u| ≤ c₀/√𝓑` (`𝓑 ≥ 1`), `F` its
 label observable: for `0 ≤ u ≤ c/√𝓑`,
