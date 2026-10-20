@@ -1641,6 +1641,250 @@ theorem step_3_11_4_region {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [�
 
 end D311
 
+section D311assembled
+
+variable {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fintype (loc i)]
+  [∀ i, DecidableEq (loc i)]
+
+/-- D3.11.3. `Tr (L²)^{1/a} = Tr L^{2/a} = 1` for a feasible filter. -/
+theorem IsFilter.sum_eigenvalues_rpow {m : Type*} [Fintype m] [DecidableEq m] {f a : ℝ}
+    (hf : 0 < f) (ha : 0 < a) {L : Matrix m m ℂ} (hL : IsFilter f a L) (hB : (L * L).PosSemidef) :
+    ∑ j, hB.1.eigenvalues j ^ (1 / a) = 1 := by
+  obtain ⟨V, hV, x, hx, hs, rfl⟩ := hL
+  have hx0 : ∀ i, 0 < x i := fun i ↦ hf.trans_le (hx i)
+  have hV' : V * Vᴴ = 1 := mul_eq_one_comm.1 hV
+  have hLL : V * diagonal (fun i ↦ ((x i ^ (a / 2) : ℝ) : ℂ)) * Vᴴ *
+      (V * diagonal (fun i ↦ ((x i ^ (a / 2) : ℝ) : ℂ)) * Vᴴ) =
+      V * diagonal (fun i ↦ ((x i ^ a : ℝ) : ℂ)) * Vᴴ := by
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc Vᴴ V, hV, Matrix.one_mul, ← Matrix.mul_assoc (diagonal _),
+      diagonal_mul_diagonal]
+    congr 3
+    funext i
+    rw [← Complex.ofReal_mul, ← Real.rpow_add (hx0 i), add_halves]
+  obtain ⟨τ, hτ⟩ := hB.1.eigenvalues_eq_of_unitary_similarity_diagonal
+    (by rw [Matrix.mem_unitaryGroup_iff, star_eq_conjTranspose]; exact hV') hLL
+  rw [← Equiv.sum_comp τ]
+  refine (Finset.sum_congr rfl fun j _ ↦ ?_).trans hs
+  rw [show hB.1.eigenvalues (τ j) = x j ^ a from congrFun hτ j, ← Real.rpow_mul (hx0 j).le,
+    mul_one_div_cancel ha.ne', Real.rpow_one]
+
+/-- `⟨φ, (H - E₀) φ⟩ = ⟨φ, H φ⟩ - E₀ ‖φ‖²`, real parts. -/
+theorem re_dotProduct_sub_eq {n : Type*} [Fintype n] [DecidableEq n] (H : Matrix n n ℂ)
+    (E₀ : ℝ) (φ : n → ℂ) :
+    (star φ ⬝ᵥ ((H - (E₀ : ℂ) • 1) *ᵥ φ)).re =
+      (⟪WithLp.toLp 2 φ, toEuclideanLin H (WithLp.toLp 2 φ)⟫_ℂ).re -
+        E₀ * ‖(WithLp.toLp 2 φ : EuclideanSpace ℂ n)‖ ^ 2 := by
+  have hn := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (WithLp.toLp 2 φ : EuclideanSpace ℂ n)
+  have hH : ⟪(WithLp.toLp 2 φ : EuclideanSpace ℂ n), toEuclideanLin H (WithLp.toLp 2 φ)⟫_ℂ =
+      star φ ⬝ᵥ (H *ᵥ φ) := by
+    rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]; rfl
+  rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm] at hn
+  rw [hH, sub_mulVec, smul_mulVec, one_mulVec, dotProduct_sub, dotProduct_smul, Complex.sub_re,
+    smul_eq_mul, Complex.re_ofReal_mul]
+  have hre : (star φ ⬝ᵥ φ).re = ‖(WithLp.toLp 2 φ : EuclideanSpace ℂ n)‖ ^ 2 := by
+    change (star (WithLp.ofLp (WithLp.toLp 2 φ : EuclideanSpace ℂ n)) ⬝ᵥ
+      WithLp.ofLp (WithLp.toLp 2 φ : EuclideanSpace ℂ n)).re = _
+    rw [hn]; norm_cast
+  rw [hre]
+
+/-- D3.9, Output (with the gap `Δ` of D1.4): `1 - |⟨Ω, φ⟩|² ≤ C 𝓔 / Δ` for the optimized
+vector `φ = KΩ/N`, `C 𝓔 = (16/e²) c₀ C' ∑_j w_j a_j²` the bound of `step_3_9`. -/
+theorem step_3_9_overlap {U : Finset σ} {X : ℕ → Finset σ} (hX : ∀ j, X j ⊆ U)
+    (hnest : ∀ j, X j ⊆ X (j + 1)) {f a : ℕ → ℝ} (hf : ∀ j, 0 < f j)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j)) (n : ℕ) {Ω : EuclideanSpace ℂ (Arealaw.Reg loc U)}
+    (hΩ1 : ‖Ω‖ = 1)
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' n) Ω‖ ≤ ‖toEuclideanLin (filterProd hX L n) Ω‖)
+    (ha : ∀ j < n, 0 < a j ∧ a j ≤ 1 / 2)
+    (hcard : ∀ j < n, (Fintype.card (Arealaw.Reg loc (X j)) : ℝ) * f j < 1)
+    {ι : Type*} (T : Finset ι) {D : ι → Finset σ} (hD : ∀ t, D t ⊆ U)
+    {Y : (t : ι) → Matrix (Arealaw.Reg loc (D t)) (Arealaw.Reg loc (D t)) ℂ}
+    (hY : ∀ t, (Y t).IsHermitian) {c₀ : ℝ} (hc₀ : 0 ≤ c₀)
+    (hYc : ∀ t ∈ T, (Fintype.card (Arealaw.Reg loc (D t)) : ℝ) ^ 2 * ‖Y t‖ ≤ c₀) {E₀ : ℝ}
+    (hΩ : (∑ t ∈ T, Arealaw.extendId (hD t) (Y t)) *ᵥ WithLp.ofLp Ω =
+      (E₀ : ℂ) • WithLp.ofLp Ω) {Δ : ℝ} (hΔ : 0 < Δ)
+    (hgap : OpenAI.HasGlobalGap (∑ t ∈ T, Arealaw.extendId (hD t) (Y t)) (WithLp.ofLp Ω) E₀ Δ)
+    (hd : ∀ t ∈ T, ∀ j < n, (D t ∩ X j).Nonempty → (D t \ X j).Nonempty →
+      D t ⊆ X (j + 1) ∧ ∀ i < j, Disjoint (X i) (D t))
+    {C' : ℝ} {w : ℕ → ℝ}
+    (hcount : ∀ j < n, ((T.filter fun t ↦ (D t ∩ X j).Nonempty ∧ (D t \ X j).Nonempty).card : ℝ)
+      ≤ C' * w j) :
+    1 - ‖⟪Ω, ((‖toEuclideanLin (filterProd hX L n) Ω‖⁻¹ : ℝ) : ℂ) •
+      toEuclideanLin (filterProd hX L n) Ω⟫_ℂ‖ ^ 2 ≤
+      16 / Real.exp 2 * c₀ * C' * (∑ j ∈ Finset.range n, w j * a j ^ 2) / Δ := by
+  obtain ⟨-, hup⟩ := step_3_9 hX hnest hf hL n hΩ1 hmax ha hcard T hD hY hc₀ hYc hΩ hΔ.le hgap
+    hd hcount
+  set K := filterProd hX L n
+  set N := ‖toEuclideanLin K Ω‖
+  have hN : 0 < N := by
+    have hK := isUnit_det_filterProd hX (fun j ↦ (hL j).isUnit_det (hf j)) n
+    refine norm_pos_iff.2 fun h0 ↦ ?_
+    have := congrArg (toEuclideanLin K⁻¹) h0
+    rw [← LinearMap.comp_apply, ← toLpLin_mul_same, nonsing_inv_mul _ hK, toLpLin_one,
+      LinearMap.id_apply, map_zero] at this
+    rw [this, norm_zero] at hΩ1; exact zero_ne_one hΩ1
+  set ψ : EuclideanSpace ℂ (Arealaw.Reg loc U) := ((N⁻¹ : ℝ) : ℂ) • toEuclideanLin K Ω
+  have hψ1 : ‖ψ‖ = 1 := by
+    rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg (inv_nonneg.2 hN.le),
+      inv_mul_cancel₀ hN.ne']
+  have h := gap_le hgap ψ
+  have he := re_dotProduct_sub_eq (∑ t ∈ T, Arealaw.extendId (hD t) (Y t)) E₀
+    (((N⁻¹ : ℝ) : ℂ) • (K *ᵥ WithLp.ofLp Ω))
+  change _ = (⟪ψ, toEuclideanLin _ ψ⟫_ℂ).re - E₀ * ‖ψ‖ ^ 2 at he
+  rw [hψ1] at h he
+  rw [le_div_iff₀ hΔ]
+  linarith
+
+/-- D3.11 (eq:initial-norm-lower). Let `L_0, …, L_{m-1}` maximize `N = ‖L_{m-1} ⋯ L_0 Ω‖` over
+feasible filters (floors `f_j > 0`, `(dim ℋ_{X_j}) f_j < 1`, `0 < a_j ≤ ½`) on nested regions
+`X_0 ⊆ X_1 ⊆ ⋯ ⊆ U`, under the hypotheses of D3.9 (`step_3_9`) with gap `Δ > 0`, overlap budget
+`v = C 𝓔 / Δ ≤ ¼` (D3.10(i)), and Lemma 3.1 at `u = -a_j/(1-a_j)` for the cut `X_j | U ∖ X_j`
+(`hM`, admissible by D3.10(iii)). Then
+`-2 log N ≥ ∑_j (a_j S(X_j) - 1024 e ϑ 𝓑_j a_j²) - 2 m v`. -/
+theorem step_3_11 {U : Finset σ} {X : ℕ → Finset σ} (hX : ∀ j, X j ⊆ U)
+    (hnest : ∀ j, X j ⊆ X (j + 1)) {f a : ℕ → ℝ} (hf : ∀ j, 0 < f j) (ha0 : ∀ j, 0 ≤ a j)
+    (m : ℕ) (ha : ∀ j < m, 0 < a j ∧ a j ≤ 1 / 2)
+    (hne : ∀ j, Nonempty (Arealaw.Reg loc (X j)))
+    (hcard : ∀ j, (Fintype.card (Arealaw.Reg loc (X j)) : ℝ) * f j < 1)
+    (Ω : Arealaw.Reg loc U → ℂ) (hΩ1 : star Ω ⬝ᵥ Ω = 1)
+    {L : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ}
+    (hL : ∀ j, IsFilter (f j) (a j) (L j))
+    (hmax : ∀ L' : (j : ℕ) → Matrix (Arealaw.Reg loc (X j)) (Arealaw.Reg loc (X j)) ℂ,
+      (∀ j, IsFilter (f j) (a j) (L' j)) →
+        ‖toEuclideanLin (filterProd hX L' m) (WithLp.toLp 2 Ω)‖ ≤
+          ‖toEuclideanLin (filterProd hX L m) (WithLp.toLp 2 Ω)‖)
+    {ι : Type*} (T : Finset ι) {D : ι → Finset σ} (hD : ∀ t, D t ⊆ U)
+    {Y : (t : ι) → Matrix (Arealaw.Reg loc (D t)) (Arealaw.Reg loc (D t)) ℂ}
+    (hY : ∀ t, (Y t).IsHermitian) {c₀ : ℝ} (hc₀ : 0 ≤ c₀)
+    (hYc : ∀ t ∈ T, (Fintype.card (Arealaw.Reg loc (D t)) : ℝ) ^ 2 * ‖Y t‖ ≤ c₀) {E₀ : ℝ}
+    (hΩ : (∑ t ∈ T, Arealaw.extendId (hD t) (Y t)) *ᵥ Ω = (E₀ : ℂ) • Ω) {Δ : ℝ} (hΔ : 0 < Δ)
+    (hgap : OpenAI.HasGlobalGap (∑ t ∈ T, Arealaw.extendId (hD t) (Y t)) Ω E₀ Δ)
+    (hd : ∀ t ∈ T, ∀ j < m, (D t ∩ X j).Nonempty → (D t \ X j).Nonempty →
+      D t ⊆ X (j + 1) ∧ ∀ i < j, Disjoint (X i) (D t))
+    {C' : ℝ} (hC' : 0 ≤ C') {w : ℕ → ℝ} (hw : ∀ j, 0 ≤ w j)
+    (hcount : ∀ j < m, ((T.filter fun t ↦ (D t ∩ X j).Nonempty ∧ (D t \ X j).Nonempty).card : ℝ)
+      ≤ C' * w j)
+    (hv : 16 / Real.exp 2 * c₀ * C' * (∑ j ∈ Finset.range m, w j * a j ^ 2) / Δ ≤ 1 / 4)
+    {ϑ : ℝ} (hϑ : 0 ≤ ϑ) {𝓑 : ℕ → ℝ} (h𝓑 : ∀ j, 0 ≤ 𝓑 j)
+    (hM : ∀ j < m, let ρ := (OpenAI.pureState Ω hΩ1).toSubState.restrict (hX j)
+      let p := ρ.psd.isHermitian.eigenvalues
+      Real.log (∑ i ∈ Finset.univ.filter (fun i ↦ 0 < p i),
+          p i * Real.exp (-(-a j / (1 - a j)) * Real.log (p i))) ≤
+        -a j / (1 - a j) * ρ.entropy + 512 * Real.exp 1 * ϑ * 𝓑 j * (-a j / (1 - a j)) ^ 2) :
+    ∑ j ∈ Finset.range m, (a j * ((OpenAI.pureState Ω hΩ1).toSubState.restrict (hX j)).entropy -
+        1024 * Real.exp 1 * ϑ * 𝓑 j * a j ^ 2) -
+      2 * m * (16 / Real.exp 2 * c₀ * C' * (∑ j ∈ Finset.range m, w j * a j ^ 2) / Δ) ≤
+      -2 * Real.log ‖toEuclideanLin (filterProd hX L m) (WithLp.toLp 2 Ω)‖ := by
+  set Ω' : EuclideanSpace ℂ (Arealaw.Reg loc U) := WithLp.toLp 2 Ω
+  set v := 16 / Real.exp 2 * c₀ * C' * (∑ j ∈ Finset.range m, w j * a j ^ 2) / Δ
+  have hΩ'1 : ‖Ω'‖ = 1 := by
+    have hn := inner_self_eq_norm_sq_to_K (𝕜 := ℂ) Ω'
+    rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm] at hn
+    change star Ω ⬝ᵥ Ω = _ at hn
+    rw [hΩ1] at hn
+    have h' : ((‖Ω'‖ ^ 2 : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by push_cast; exact hn.symm
+    have : ‖Ω'‖ ^ 2 = 1 := Complex.ofReal_injective h'
+    nlinarith [norm_nonneg Ω']
+  have hΩ0 : Ω' ≠ 0 := fun h0 ↦ by rw [h0, norm_zero] at hΩ'1; exact zero_ne_one hΩ'1
+  have hv0 : 0 ≤ v := by
+    have := Finset.sum_nonneg fun j (_ : j ∈ Finset.range m) ↦
+      mul_nonneg (hw j) (sq_nonneg (a j))
+    positivity
+  -- D3.11.1: the prefix problems `N_k` and their maximizers
+  choose Lk hLk hmaxk hNk using fun k ↦
+    step_3_7_1 hX k hf ha0 hne (fun j ↦ (hcard j).le) hΩ0
+  set N : ℕ → ℝ := fun k ↦ ‖toEuclideanLin (filterProd hX (Lk k) k) Ω'‖
+  set x : ℕ → ℝ := fun k ↦
+    ‖toEuclideanLin (Arealaw.extendId (hX (k - 1)) (Lk k (k - 1))) Ω'‖
+  -- D3.9–D3.10 on every prefix: `|⟨Ω, φ_k⟩| ≥ √(1 - v)`
+  have hov : ∀ k ≤ m, √(1 - v) ≤ ‖⟪Ω', (((N k)⁻¹ : ℝ) : ℂ) •
+      toEuclideanLin (filterProd hX (Lk k) k) Ω'⟫_ℂ‖ := by
+    intro k hk
+    have h := step_3_9_overlap hX hnest hf (hLk k) k hΩ'1 (hmaxk k)
+      (fun j hj ↦ ha j (by omega)) (fun j _ ↦ hcard j) T hD hY hc₀ hYc hΩ hΔ hgap
+      (fun t ht j hj ↦ hd t ht j (by omega)) (fun j hj ↦ hcount j (by omega))
+    have hle : 16 / Real.exp 2 * c₀ * C' * (∑ j ∈ Finset.range k, w j * a j ^ 2) / Δ ≤ v := by
+      have hsub : ∑ j ∈ Finset.range k, w j * a j ^ 2 ≤ ∑ j ∈ Finset.range m, w j * a j ^ 2 :=
+        Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_subset_range.2 hk)
+          fun j _ _ ↦ mul_nonneg (hw j) (sq_nonneg (a j))
+      exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hsub (by positivity)) hΔ.le
+    rw [← Real.sqrt_sq (norm_nonneg (⟪Ω', (((N k)⁻¹ : ℝ) : ℂ) •
+      toEuclideanLin (filterProd hX (Lk k) k) Ω'⟫_ℂ))]
+    exact Real.sqrt_le_sqrt (by linarith)
+  -- D3.11.2: telescoping
+  have hstep : ∀ k, toEuclideanLin (Arealaw.extendId (hX k) (Lk (k + 1) k))
+      (toEuclideanLin (filterProd hX (Lk (k + 1)) k) Ω') =
+      toEuclideanLin (filterProd hX (Lk (k + 1)) (k + 1)) Ω' := by
+    intro k
+    rw [show filterProd hX (Lk (k + 1)) (k + 1) = Arealaw.extendId (hX k) (Lk (k + 1) k) *
+      filterProd hX (Lk (k + 1)) k from rfl, toLpLin_mul_same, LinearMap.comp_apply]
+  have htel : ∀ j ∈ Finset.Icc 1 m, √(1 - v) * N j ≤ x j * N (j - 1) := by
+    intro j hj
+    obtain ⟨k, rfl⟩ : ∃ k, j = k + 1 := ⟨j - 1, by have := (Finset.mem_Icc.1 hj).1; omega⟩
+    have hk : k + 1 ≤ m := (Finset.mem_Icc.1 hj).2
+    have hLh : (Arealaw.extendId (hX k) (Lk (k + 1) k)).IsHermitian :=
+      Arealaw.isHermitian_extendId (hX k) ((hLk (k + 1) k).posDef (hf k)).isHermitian
+    have h2 := step_3_11_2 hLh Ω' (toEuclideanLin (filterProd hX (Lk (k + 1)) k) Ω')
+      (s := √(1 - v)) (by rw [hstep]; exact hov (k + 1) hk)
+    rw [hstep] at h2
+    simp only [N, x, Nat.add_sub_cancel]
+    exact h2.trans (mul_le_mul_of_nonneg_left (hmaxk k _ (hLk (k + 1))) (norm_nonneg _))
+  have hs : 0 < √(1 - v) := Real.sqrt_pos.2 (by linarith)
+  have hx : ∀ j ∈ Finset.Icc 1 m, 0 < x j := by
+    intro j hj
+    have h := htel j hj
+    have h1 : 0 < √(1 - v) * N j := mul_pos hs (hNk j)
+    by_contra hneg
+    have : x j = 0 := le_antisymm (not_lt.1 hneg) (norm_nonneg _)
+    rw [this, zero_mul] at h; linarith
+  -- D3.11.3–D3.11.4
+  have hlog : ∀ j ∈ Finset.Icc 1 m, 2 * Real.log (x j) ≤
+      -(a (j - 1) * ((OpenAI.pureState Ω hΩ1).toSubState.restrict (hX (j - 1))).entropy) +
+        1024 * Real.exp 1 * ϑ * 𝓑 (j - 1) * a (j - 1) ^ 2 := by
+    intro j hj
+    obtain ⟨k, rfl⟩ : ∃ k, j = k + 1 := ⟨j - 1, by have := (Finset.mem_Icc.1 hj).1; omega⟩
+    have hk : k < m := (Finset.mem_Icc.1 hj).2
+    simp only [Nat.add_sub_cancel] at hx ⊢
+    have hLh := ((hLk (k + 1) k).posDef (hf k)).isHermitian
+    have hB : (Lk (k + 1) k * Lk (k + 1) k).PosSemidef := by
+      have := posSemidef_conjTranspose_mul_self (Lk (k + 1) k)
+      rwa [hLh.eq] at this
+    have hxx : (star (Arealaw.extendId (hX k) (Lk (k + 1) k) *ᵥ Ω) ⬝ᵥ
+        (Arealaw.extendId (hX k) (Lk (k + 1) k) *ᵥ Ω)).re = x (k + 1) ^ 2 := by
+      have hn := inner_self_eq_norm_sq_to_K (𝕜 := ℂ)
+        (toEuclideanLin (Arealaw.extendId (hX k) (Lk (k + 1) k)) Ω')
+      rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm] at hn
+      change _ = ((x (k + 1) : ℂ)) ^ 2 at hn
+      change (star (WithLp.ofLp (toEuclideanLin (Arealaw.extendId (hX k) (Lk (k + 1) k)) Ω')) ⬝ᵥ
+        WithLp.ofLp (toEuclideanLin (Arealaw.extendId (hX k) (Lk (k + 1) k)) Ω')).re = _
+      rw [hn]; norm_cast
+    have h4 := step_3_11_4_region (hX k) Ω hΩ1 hLh hB (ha k hk).1 (ha k hk).2 hϑ (h𝓑 k)
+      ((hLk (k + 1) k).sum_eigenvalues_rpow (hf k) (ha k hk).1 hB)
+      (by rw [hxx]; exact pow_pos (hx (k + 1) hj) 2) (hM k hk)
+    rw [hxx, Real.log_pow] at h4
+    push_cast at h4
+    linarith
+  -- D3.11.5
+  have h5 := step_3_11_5 (N := N) (x := x) (a := fun j ↦ a (j - 1))
+    (S := fun j ↦ ((OpenAI.pureState Ω hΩ1).toSubState.restrict (hX (j - 1))).entropy)
+    (c := fun j ↦ 1024 * Real.exp 1 * ϑ * 𝓑 (j - 1) * a (j - 1) ^ 2) hv0 hv
+    (by simp [N, filterProd, prodDesc, hΩ'1]) hNk hx htel hlog
+  have hNm : N m = ‖toEuclideanLin (filterProd hX L m) Ω'‖ :=
+    le_antisymm (hmax _ (hLk m)) (hmaxk m L hL)
+  rw [← hNm]
+  refine le_trans (le_of_eq ?_) h5
+  congr 1
+  refine Finset.sum_bij' (fun j _ ↦ j + 1) (fun j _ ↦ j - 1) (fun j hj ↦ ?_) (fun j hj ↦ ?_)
+    (fun j _ ↦ by simp) (fun j hj ↦ ?_) (fun j _ ↦ by simp)
+  · simp only [Finset.mem_range, Finset.mem_Icc] at hj ⊢; omega
+  · simp only [Finset.mem_range, Finset.mem_Icc] at hj ⊢; omega
+  · simp only [Finset.mem_Icc] at hj; omega
+
+end D311assembled
+
 /-! ## D3.12 Zero-floor limit and the trial-norm bound -/
 
 section D312
