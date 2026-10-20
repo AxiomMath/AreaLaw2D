@@ -2130,3 +2130,251 @@ Tool: `atlas_search` (semantic unless noted) over corpora `mathlib` + `physlib` 
 | OpenAI/WeylRecursion.lean | 2 |
 | OpenAI/ZeroBoundary.lean | 4 |
 
+
+
+## Dimension
+
+For every anchor: `any d` (verbatim on `ℤ^d`, `d` a parameter, possibly with `d`-dependent constants; "no geometry" = no lattice content at all), `graph` (only through the induced-graph metric with a ball-growth bound), `2D only` (genuinely uses `d = 2`). Judged from the digest (RefactoringPlan.md, "Dimension"); a worker who finds a row wrong fixes it and records it in RefactoringResult.md §7. Counts: 209 `any d`, 11 `graph`, 18 `2D only` (of 238).
+
+Note on §3: D3.4, D3.6, D3.10 are `2D only` because the harmonic sum `Z_r = ∑ 1/(r + d_j)` diverges only when the perimeter of the nested regions grows linearly; D3.5, D3.9, D3.11, D3.14, D3.16 are `any d` as arguments but serve Lemma 3.2 only through D3.10, so a `ℤ^d` Proposition 3.3 needs a new D3.6/D3.10.
+
+| Anchor | Dim | Reason |
+|---|---|---|
+| D1.1 | any d | Induced graph on finite subset of Z^d; only the degree and ball-count constants become d-dependent. |
+| D1.2 | any d | Admissible Hamiltonian; counting constants v_r=1+2r(r+1), mu_R, split count become d-dependent ball counts (about (2r+1)^d). |
+| D1.3 | any d | Edge boundary, reduced state, entropy: no geometry beyond graph edges. |
+| D1.4 | any d | Statement S(A)<=C|boundary A| has the obvious Z^d form; proof depends on 2D-only D11.4 (Prop 11.2). |
+| D1.5 | any d | Remarks on induced-graph locality and global gap; no geometry. |
+| D1.6 | any d | Inner boundary and endpoint set Z_A; pure definitions on the graph. |
+| D1.7 | any d | Rectangles become boxes; degree factor 4 becomes 2d in the counting. |
+| D1.8 | any d | Literature survey, roadmap; no proof. |
+| D1.9 | any d | PEPS definition; incident virtual indices per site become 2d. |
+| D1.10 | 2D only | Cited companion theorem is stated for the open LxL square grid; routing/compression and d=3 analogue not available. |
+| D1.11 | any d | Mutual information definition; no geometry. |
+| D1.12 | any d | Two-family entropy reduction; no geometry (chain rule, purity). |
+| D1.13 | any d | Ambient vs graph locality via d_Lambda >= sup-distance; holds in any d. |
+| D1.14 | any d | Stage 1 outline; box bound r^{1+e0} becomes r^{d-1+e0}. |
+| D1.15 | any d | Stage 2 outline (positive operators, replicas, interpolation); no geometry. |
+| D1.16 | any d | Stage 3 outline; scanner and collar bound with exponents re-tuned for row size n^{d-1}. |
+| D1.17 | any d | Stage 4 outline; amplification by constraint products, no geometry beyond ball counts. |
+| D1.18 | 2D only | Stage 5 outline: narrow strips and repairs at point contacts of a planar tiling; contacts are higher-dimensional in d>=3. |
+| D2.1 | any d | no geometry; entropy definitions |
+| D2.2 | any d | no geometry; entropy inequalities (SSA, purification) |
+| D2.3 | any d | no geometry; binary entropy, trace distance |
+| D2.4 | any d | no geometry; Alicki-Fannes-Winter continuity |
+| D2.5 | any d | no geometry; pure-state trace distance |
+| D2.6 | any d | notation; ambient dilation T_j becomes an l-infinity box sum in Z^d |
+| D2.7 | any d | ball bound v_r = size of l1-ball in Z^d, Θ(r^d) instead of 1+2r(r+1); v_R, mu_R d-dependent |
+| D2.8 | graph | subsets of a graph ball; μ = 2^(V R − 1) for any growth function V with #B_Λ(x,r) ≤ V r; ℤ^d: V = v d |
+| D2.9 | graph | anchors within d_Λ ≤ R of crossing-edge endpoints; constant 2 V_R μ_R from the growth function |
+| D2.10 | any d | matrix-unit expansion; no geometry beyond |X| <= v_R |
+| D2.11 | any d | degenerate cases; no geometry |
+| D2.12 | graph | a finite-diameter support of the induced graph lies on one side of an empty cut; no dimension used |
+| D2.13 | any d | convention on constants; no geometry |
+| D3.1 | any d | no geometry; abstract tilting/tail bound for any bipartition |
+| D3.2 | any d | crossing count and |X| <= v_R as D2.9; constants d-dependent |
+| D3.3 | any d | rectangles become boxes, dist_infty safety, buffers Q^{+d} in Z^d |
+| D3.4 | 2D only | proof needs Sum 1/(r+d_j) to diverge (D3.6, D3.10); in d>=3 buffer discount fails |
+| D3.5 | any d | nested regions and single-split locality dimension-free; perimeter 4(r+2d_j) becomes (r+d_j)^(d-1) |
+| D3.6 | 2D only | harmonic sum Z_r=Sum 1/(r+d_j) diverges logarithmically from perimeter ~ radius; in d>=3 weights (r+d_j)^(d-1) give E not small |
+| D3.7 | any d | optimization of filters; no geometry |
+| D3.8 | any d | KKT clipping; no geometry |
+| D3.9 | any d | excitation energy <= C E with E=Sum (r+d_j)^(d-1) a_j^2; Schmidt argument dimension-free |
+| D3.10 | 2D only | needs E=4/Z_r -> 0 as C_pad -> infinity (log divergence); fails for d>=3 |
+| D3.11 | any d | telescoping and Lemma 3.1 at u=-a_j/(1-a_j); error stated via E, B_j ~ (r+d_j)^(d-1) |
+| D3.12 | any d | zero-floor limit, Schmidt pinning, three lines; no geometry |
+| D3.13 | any d | concavity average; no geometry |
+| D3.14 | any d | algebra and SSA; error (m+1)E scales as r^(d-1) but only meaningful given D3.10 |
+| D3.15 | any d | F_box definition; trivial bound r^2 log q becomes r^d log q |
+| D3.16 | any d | M^2 children become M^d, noninterior count M^(d-1), p_0 d-dependent; exponent shifts; conditional on a d-version of D3.4 |
+| D3.17 | any d | remark; no geometry |
+| D4.1 | graph | anchors and graph balls N_l(a) in induced graph |
+| D4.2 | graph | normalised partial trace outside a graph ball |
+| D4.3 | any d | counting budget from D2.8; v_R, mu_R d-dependent |
+| D4.4 | graph | Lieb-Robinson via graph distance; sphere count 3(d+1)^2 becomes C d^(d-1), polynomial growth enough |
+| D4.5 | any d | no geometry; Gevrey spectral filter |
+| D4.6 | graph | positive replacement terms; locality only via D4.4 graph tails |
+| D4.7 | any d | no geometry; filtered centered terms via gap |
+| D4.8 | graph | filter tail plus Lieb-Robinson in graph metric |
+| D4.9 | any d | no geometry; operator Holder-1/2 |
+| D4.10 | any d | no geometry; square-root channels, cb-norm perturbation |
+| D4.11 | graph | variable-radius truncation; counts via ball growth: |S_0|<=C n^d, B_X <= C(1+b)(r_0+1)^(2d+2), exponents d-dependent |
+| D4.12 | graph | anchor count at distance d is |S_0| v_d, (d+1)^(d-1) in place of (d+1)^2 |
+| D4.13 | any d | no geometry; spectral perturbation |
+| D4.14 | graph | crossing count b_X v_{r0} mu_R; (r_0+1)^2 becomes (r_0+1)^d |
+| D4.15 | any d | remarks; T_L is an ambient l-infinity box in Z^d |
+| D5.1 | any d | no geometry; spectral powers notation |
+| D5.2 | any d | no geometry; log-moments, dimension-only constants |
+| D5.3 | any d | no geometry; log-MGF bound |
+| D5.4 | any d | no geometry; Schatten interpolation |
+| D5.5 | any d | no geometry; conditional movement estimate |
+| D5.6 | any d | no geometry; left boundary slack |
+| D5.7 | any d | no geometry; Hellinger closeness |
+| D5.8 | any d | no geometry; phases Hellinger-continuous |
+| D5.9 | any d | no geometry; state movement |
+| D5.10 | any d | no geometry; right boundary via continuity |
+| D5.11 | any d | no geometry; harmonic-measure interpolation |
+| D5.12 | any d | no geometry; marginal-phase comparison |
+| D5.13 | any d | no geometry; resolvent defect |
+| D5.14 | any d | no geometry; resolvent bounds |
+| D5.15 | any d | no geometry; conditional skew estimate |
+| D5.16 | any d | no geometry; strip bound |
+| D5.17 | any d | no geometry; phase products |
+| D5.18 | any d | no geometry; imaginary-axis skew |
+| D5.19 | any d | no geometry; Gaussian-weighted three lines |
+| D5.20 | any d | no geometry; parameter bookkeeping |
+| D5.21 | any d | no geometry; remark |
+| D6.1 | any d | Abstract finite-dim tensor factorization; D_k degree depends on dim V only; no geometry. |
+| D6.2 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.3 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.4 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.5 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.6 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.7 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.8 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.9 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.10 | any d | Abstract partition P,x,Y0,F of V; uses Lemma 5.1 on abstract systems; no geometry. |
+| D6.11 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.12 | any d | Abstract partition and operator h; relies on abstract Lemma 5.3; no geometry. |
+| D6.13 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.14 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.15 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.16 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D6.17 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.1 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.2 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.3 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.4 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.5 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.6 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.7 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.8 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.9 | any d | Abstract bands, trees, commutation hypotheses; K bands is just a parameter; no geometry. |
+| D7.10 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.11 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.12 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.13 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.14 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.15 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.16 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.17 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.18 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.19 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.20 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.21 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.22 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.23 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.24 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.25 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.26 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D7.27 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.1 | any d | Abstract tensor-factor partitions with nesting; no geometry (nesting is supplied by caller; K bands fixed). |
+| D8.2 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.3 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.4 | any d | Abstract nested family of subsystems with entropy/dimension bounds; no geometry. |
+| D8.5 | any d | Hypothesis on marginal moments; no geometry (B may be d-dependent upstream, not here). |
+| D8.6 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.7 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.8 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.9 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.10 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.11 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.12 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.13 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.14 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.15 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.16 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.17 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.18 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.19 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.20 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.21 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.22 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.23 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.24 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.25 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.26 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.27 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.28 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.29 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.30 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.31 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.32 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.33 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.34 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.35 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.36 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D8.37 | any d | No geometry: pure operator algebra, representation theory, entropy or matrix analysis. |
+| D9.1 | any d | Depth = sup-norm distance to T; graph metric dominates it in any d. |
+| D9.2 | any d | Scales n,L,m,K,D defined by exponents; n becomes row size n^{d-1}, exponents re-tuned. |
+| D9.3 | any d | Test geometry: |T|<=Cn^2, rows <=n become |T|<=Cn^{d/(d-1)}, rows <=n; clearance condition dimension-free. |
+| D9.4 | any d | Bands, offsets, initial partitions defined by depth windows; no planarity. |
+| D9.5 | any d | Fill/charge rounds sweep depth rows of size n in a fixed slot order; dimension-free. |
+| D9.6 | any d | Charge lottery over anchors within depth window; list length uses ball counts mu_R n D, r_0^d. |
+| D9.7 | any d | History tree, root metric, replica vector: no geometry. |
+| D9.8 | any d | Depth-front kinematics, nested prefixes, Peierls ancestry counting; ball size r0^2 becomes r0^d, cuts O(nD). |
+| D9.9 | any d | Scanner estimate; entropy hypotheses n^{1+e} become row-size scaling; argument depth-based. |
+| D9.10 | any d | Entropy cost of old splits; terms within r_0-balls, no geometry. |
+| D9.11 | any d | Entropy production per round; uses only split-term lottery probability c/(nD). |
+| D9.12 | any d | Telescoping and averaging over rounds; no geometry. |
+| D9.13 | any d | Energy at selected point; counting with K, n, D, m; exponent bookkeeping only. |
+| D9.14 | 2D only | Template = union of planar convex rectangles/triangles with slopes 0, infinity, +-1; needs a d-dimensional piece family. |
+| D9.15 | 2D only | Row, ring and boundary bounds for planar-polygon templates; proof via D9.16-D9.18 row intervals. |
+| D9.16 | 2D only | Row-interval structure of dilated polygons: endpoints l(y), r(y) with slopes -1,0,1; planar. |
+| D9.17 | 2D only | Mixed dyadic squares counted per strip via row endpoints moving by <=1; d-version needs new argument ((n/u)^{(d-1)} cubes). |
+| D9.18 | any d | Maximal dyadic (Whitney) cover and geometric entropy sum; cubes replace squares, given the mixed-cube count. |
+| D9.19 | any d | Bootstrap of safe-box exponent; improvement e -> (1-l)e, exponent 1+e becomes d-1+e. |
+| D9.20 | any d | Numerical parameters g0, mu, nu, l, kappa; re-tuned for d. |
+| D9.21 | any d | Hypotheses of scanner for a safe box; ring size 4s0+8j becomes O(s0^{d-1}+j^{d-1}). |
+| D9.22 | any d | Arithmetic on exponents; numerics change with d. |
+| D9.23 | any d | Rough comparisons give S_X bound; no geometry. |
+| D9.24 | any d | Exponent improvement and iteration; geometric decay of exponent. |
+| D9.25 | any d | Collar mutual-information bound I(X:rest)<=Cn^{1-eps}; L<=s0 needs L=n^{(1-l)/(d-1)}-type rescaling. |
+| D9.26 | any d | Parameter arithmetic; thin margin 0.999952 vs 0.99999 must be re-tuned for row size n^{d-1}. |
+| D9.27 | any d | Difference of sharp comparisons; entropies of nested prefixes only. |
+| D9.28 | any d | Purity identity and monotonicity of mutual information; no geometry. |
+| D9.29 | any d | Error table of exponents; numerics re-tuned. |
+| D9.30 | any d | Transfer back via continuity, log dim e' <=|S_0| log q, |S_0|=O(n^{d/(d-1)}). |
+| D10.1 | any d | Exponents and positive system H_F from Prop 4.3; no geometry. |
+| D10.2 | any d | Local constraint products via dissipative Lieb-Robinson; ball count (1+l)^2 becomes (1+l)^d. |
+| D10.3 | any d | Excited-state decay from global gap; no geometry. |
+| D10.4 | any d | Amplification; hypotheses |S_0|<=C0 n^2, cuts O(n) rescale with row size; N_{2r}(S_0) containment generic. |
+| D10.5 | any d | Typical projections via marginal tail bound; crossing-term count linear in cut size. |
+| D10.6 | any d | Vectors phi, eta, relabeling isometry; no geometry. |
+| D10.7 | any d | Restoring and column operators; no geometry. |
+| D10.8 | any d | Norm bound by exp((I+3w)/2) from spectral inequalities and purity. |
+| D10.9 | any d | Adjoint identity and error; no geometry. |
+| D10.10 | any d | Ground component of R_0 phi <=1; no geometry. |
+| D10.11 | any d | Clock time t_* and radius r; r ~ t^{1/alpha}, ball count enters polynomially. |
+| D10.12 | any d | Good trajectory by Markov bounds; no geometry. |
+| D10.13 | any d | Estimates before polar decomposition; no geometry. |
+| D10.14 | any d | Local unitary by polar decomposition; supported on N_{2r}(S_0). |
+| D10.15 | any d | Mutual-information bound via continuity; log dim e' = |X| log q polynomial in n. |
+| D10.16 | any d | Radius bounds and containment N_{2r}(S_0) in A from sup-distance clearance. |
+| D10.17 | any d | Closing remark, no proof. |
+| D11.1 | any d | Two-family entropy cancellation; chain rule and purity only. |
+| D11.2 | any d | Exponent constraints beta, zeta, rho0, delta0; numerics must be re-tuned (e.g. zeta>1-delta0/(d-1)). |
+| D11.3 | any d | Birth/actual region notation; planar region becomes region in R^d. |
+| D11.4 | 2D only | Statement has Z^d form, but proof uses planar belts with point contacts and fan-triangle templates; d>=3 needs new argument. |
+| D11.5 | any d | Irrational origin and dyadic cells; squares become cubes, o in R^d generic. |
+| D11.6 | any d | Whitney layers around Z; cell counts (2C0+1)^d |Z|, distances unchanged. |
+| D11.7 | any d | Non-adjacent layer separation by 1-Lipschitz distance to Z; dimension-free. |
+| D11.8 | any d | Scales s_k, t_k, belt cells, pitch interiors; belt width must be re-tuned for d. |
+| D11.9 | any d | Belt count Cb r^d/(t^{d-1}s) must decay: needs zeta>1-delta0/(d-1); 2D exponent r^2/(s t) fails verbatim. |
+| D11.10 | any d | Primary tiles, pieces (s/r+2)^d, separated by slabs; labels by layer parity. |
+| D11.11 | 2D only | Fans of <=8 triangles and 2-label interfaces make same-label contacts single points; in d>=3 contacts are lines/planes. |
+| D11.12 | 2D only | Marks at centre, corners, midpoints of 2D belt cells are the point-contact roots; d>=3 needs strata of all codimensions. |
+| D11.13 | 2D only | Isolated stars: eight rays from a point, sectors with opposite labels; planar local pattern. |
+| D11.14 | 2D only | Repair rule removes squares at point contacts, continues eight rays; d-dimensional contacts need different repair. |
+| D11.15 | 2D only | Uniform repair induction: nine child marks, eight rays, finite planar line arrangement. |
+| D11.16 | any d | Edges avoid lattice sites via irrational offsets; hyperplane analogue immediate (x_i, x_i+-x_j equations). |
+| D11.17 | any d | Order of tile identifiers by generation; combinatorial. |
+| D11.18 | 2D only | Birth-template separation by compactness over finite 2D patterns and angular gap pi/4 across eight rays at point contacts. |
+| D11.19 | 2D only | Repair count: <=9 children per mark, loglog depth, polylog descendants per point contact. |
+| D11.20 | any d | Exceptional set: dummy cells (2C0+1)^d|Z| plus terminal squares S_*^d times repair count; inherits D11.19. |
+| D11.21 | any d | Primary template scales n=C_P r^{1+2delta0}, N0<=C r^{2delta0}; exponents change to d-dimensional row-size scaling. |
+| D11.22 | 2D only | Belt and replacement templates are <=8 fan triangles; d-dimensional template pieces differ. |
+| D11.23 | any d | Cut clearance of descendant templates by sup-distance estimates; dimension-free given D11.15 displacement bound. |
+| D11.24 | any d | Order of thresholds and rho0>beta clearance comparison; numerics only. |
+| D11.25 | any d | Assembly of Prop 11.2 from earlier steps; generic given d-versions of D11.11-D11.22. |
+| D11.26 | any d | Area-law assembly via Lemma 11.1, Props 9.6, 10.2, 11.2; generic given d-version of D11.4. |
