@@ -323,10 +323,24 @@ def ActsOn {Λ N : Finset σ} (hN : N ⊆ Λ) (X : Finset σ)
     R = (M ⊗ₖ (1 : Matrix (Reg loc (Λ \ N) × Reg loc X)
       (Reg loc (Λ \ N) × Reg loc X) ℂ)).submatrix (splitN hN X) (splitN hN X)
 
+/-- The product vector `Ω ⊗ ξ` on `n × κ`. -/
+def tensVec {n κ : Type*} (Ω : n → ℂ) (ξ : κ → ℂ) : n × κ → ℂ := fun p => Ω p.1 * ξ p.2
+
+/-- The spectral projection `∑_{j ∈ sel} |u_j⟩⟨u_j|` of a Hermitian matrix onto the
+eigenvectors `u_j` (columns of `eigenvectorUnitary`) indexed by `sel`. -/
+noncomputable def specProj {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℂ}
+    (hA : A.IsHermitian) (sel : Finset n) : Matrix n n ℂ :=
+  (hA.eigenvectorUnitary : Matrix n n ℂ) * diagonal (fun j => if j ∈ sel then 1 else 0) *
+    star (hA.eigenvectorUnitary : Matrix n n ℂ)
+
 variable [∀ i, Nonempty (loc i)]
 
 /-- D10.6. The blank configuration `|0⟩` of a region. -/
 noncomputable def blank (X : Finset σ) : Reg loc X := fun _ => Classical.arbitrary _
+
+/-- D10.6. The blank vector `|00⟩_{s'e'}`. -/
+noncomputable def blankVec (X : Finset σ) : Reg loc X × Reg loc X → ℂ :=
+  fun v => if v = (blank X, blank X) then 1 else 0
 
 /-- D2.1. The marginal `ρ_X` of `|Ω⟩⟨Ω|`. -/
 noncomputable abbrev marg {Λ X : Finset σ} (Ω : Reg loc Λ → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1)
