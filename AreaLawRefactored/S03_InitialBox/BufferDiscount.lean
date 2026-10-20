@@ -487,6 +487,228 @@ theorem step_3_5 {q R : ℕ} {D₀ : ℝ} {Λ A Q Q₀ : Finset (ℤ × ℤ)} {r
     step_3_5_3 hab hQ₀r hC hQ₀Q hs hRD₀, step_3_5_4 hab hD hC hQ₀Q hs hRD₀,
     step_3_5_5 hq hab hr hQ₀r hC hQ₀Q hs hRD₀⟩
 
+/-! ## D3.8 Clipping bounds log-ratios of filter eigenvalues (D3.8.2–D3.8.3) -/
+
+section D38
+
+variable {ι : Type*} [Fintype ι]
+
+/-- D3.8.2. KKT with floor: `x_i ≥ f > 0`, some coordinate free (`x_{i₀} > f`), `p_i ≥ 0`,
+`∑_i p_i = 1`, and `p_k / x_k ≤ p_i / x_i` whenever `x_i > f`. Then `x_i = max {f, p_i/λ}` for
+some `λ > 0`. -/
+theorem step_3_8_2 {x p : ι → ℝ} {f : ℝ} (hf : 0 < f) (hx : ∀ i, f ≤ x i)
+    (hp : ∀ i, 0 ≤ p i) (hs : ∑ i, p i = 1) {i₀ : ι} (hi₀ : f < x i₀)
+    (hopt : ∀ i k, f < x i → p k / x k ≤ p i / x i) :
+    ∃ lam : ℝ, 0 < lam ∧ ∀ i, x i = max f (p i / lam) := by
+  have hxpos : ∀ i, 0 < x i := fun i => hf.trans_le (hx i)
+  -- D3.8.2: `p_i / x_i = λ` on free coordinates, `≤ λ` on floored ones
+  have hle : ∀ k, p k / x k ≤ p i₀ / x i₀ := fun k => hopt i₀ k hi₀
+  -- D3.8.2: `λ > 0`, as `∑ p = 1`
+  have hlam : 0 < p i₀ / x i₀ := by
+    by_contra h
+    have h0 : ∀ k, p k = 0 := fun k => le_antisymm (by
+      simpa using (div_le_iff₀ (hxpos k)).1 ((hle k).trans (not_lt.1 h))) (hp k)
+    simp [h0] at hs
+  refine ⟨p i₀ / x i₀, hlam, fun i => ?_⟩
+  -- D3.8.3: hence `x_i = max {f, p_i/λ}`
+  have := hle i
+  rw [div_le_iff₀ (hxpos i)] at this
+  rcases (hx i).eq_or_lt with h | h
+  · rw [← h, max_eq_left]
+    rw [div_le_iff₀ hlam]; rw [← h] at this; linarith
+  · have he := le_antisymm (hle i) (hopt i i₀ h)
+    rw [div_eq_iff (hxpos i).ne'] at he
+    have hx' : p i / (p i₀ / x i₀) = x i := by rw [he, mul_div_cancel_left₀ _ hlam.ne']
+    rw [hx', max_eq_right h.le]
+
+/-- D3.8.3. If `x_i = max {f, p_i/λ}` and `l_i = x_i^{a/2}` (`f, λ > 0`, `a ≥ 0`), then for
+`p_i, p_k > 0`: `|log (l_i/l_k)| ≤ (a/2) |log (p_i/p_k)|`. -/
+theorem step_3_8_3 {f lam a p₁ p₂ : ℝ} (hf : 0 < f) (hlam : 0 < lam) (ha : 0 ≤ a)
+    (hp₁ : 0 < p₁) (hp₂ : 0 < p₂) :
+    |Real.log (max f (p₁ / lam) ^ (a / 2) / max f (p₂ / lam) ^ (a / 2))| ≤
+      a / 2 * |Real.log (p₁ / p₂)| := by
+  have h1 : 0 < max f (p₁ / lam) := lt_max_of_lt_left hf
+  have h2 : 0 < max f (p₂ / lam) := lt_max_of_lt_left hf
+  have hlog : ∀ y, 0 < y → Real.log (max f y) = max (Real.log f) (Real.log y) := fun y hy => by
+    rcases le_total f y with h | h
+    · rw [max_eq_right h, max_eq_right (Real.log_le_log hf h)]
+    · rw [max_eq_left h, max_eq_left (Real.log_le_log hy h)]
+  rw [Real.log_div (by positivity) (by positivity), Real.log_rpow h1, Real.log_rpow h2, ← mul_sub,
+    abs_mul, abs_of_nonneg (by linarith : 0 ≤ a / 2)]
+  refine mul_le_mul_of_nonneg_left ?_ (by linarith)
+  -- D3.8.3: `s ↦ log max {f, e^s}` is 1-Lipschitz
+  rw [hlog _ (by positivity), hlog _ (by positivity), max_comm (Real.log f),
+    max_comm (Real.log f), Real.log_div hp₁.ne' hp₂.ne']
+  refine (abs_max_sub_max_le_abs _ _ _).trans_eq ?_
+  rw [Real.log_div hp₁.ne' hlam.ne', Real.log_div hp₂.ne' hlam.ne']
+  ring_nf
+
+end D38
+
+/-! ## D3.9 The optimized vector has small excitation energy (D3.9.4) -/
+
+section D39
+
+/-- `cosh s - 1 ≤ ½ s² cosh s` (termwise Taylor). -/
+theorem cosh_sub_one_le (s : ℝ) : Real.cosh s - 1 ≤ s ^ 2 / 2 * Real.cosh s := by
+  have h1 : HasSum (fun k : ℕ => s ^ (2 * (k + 1)) / (2 * (k + 1)).factorial)
+      (Real.cosh s - 1) := by
+    simpa using (hasSum_nat_add_iff' 1).mpr (Real.hasSum_cosh s)
+  refine hasSum_le (fun k => ?_) h1 ((Real.hasSum_cosh s).mul_left (s ^ 2 / 2))
+  have hf : (2 : ℝ) * (2 * k).factorial ≤ (2 * (k + 1)).factorial := by
+    rw [show 2 * (k + 1) = 2 * k + 1 + 1 by ring, Nat.factorial_succ, Nat.factorial_succ]
+    push_cast
+    have hF := (Nat.cast_pos (α := ℝ)).2 (Nat.factorial_pos (2 * k))
+    have hk : (0 : ℝ) ≤ k := k.cast_nonneg
+    nlinarith [mul_nonneg hk hF.le, mul_nonneg (mul_nonneg hk hk) hF.le]
+  have h0 : 0 ≤ s ^ 2 * s ^ (2 * k) := by rw [pow_mul]; positivity
+  calc s ^ (2 * (k + 1)) / ((2 * (k + 1)).factorial : ℝ)
+      = s ^ 2 * s ^ (2 * k) / ((2 * (k + 1)).factorial : ℝ) := by ring_nf
+    _ ≤ s ^ 2 * s ^ (2 * k) / (2 * (2 * k).factorial) :=
+        div_le_div_of_nonneg_left h0 (by positivity) hf
+    _ = _ := by ring
+
+/-- D3.9.4. For `p_i, p_k > 0`, `0 ≤ a_j ≤ ½` and `|log (l_i/l_k)| ≤ (a_j/2) |log (p_i/p_k)|`
+(D3.8): `√(p_i p_k) (cosh log (l_i/l_k) - 1) ≤ (8/e²) a_j² (p_i + p_k)`. -/
+theorem step_3_9_4 {a p₁ p₂ t : ℝ} (ha : 0 ≤ a) (ha2 : a ≤ 1 / 2) (hp₁ : 0 < p₁) (hp₂ : 0 < p₂)
+    (ht : |t| ≤ a / 2 * |Real.log (p₁ / p₂)|) :
+    √(p₁ * p₂) * (Real.cosh t - 1) ≤ 8 / Real.exp 2 * a ^ 2 * (p₁ + p₂) := by
+  set z := Real.log (p₁ / p₂) / 2
+  set w := (Real.log p₁ + Real.log p₂) / 2
+  have hlz : Real.log (p₁ / p₂) = Real.log p₁ - Real.log p₂ := Real.log_div hp₁.ne' hp₂.ne'
+  have hp1 : p₁ = Real.exp (w + z) := by
+    rw [show w + z = Real.log p₁ by simp only [w, z, hlz]; ring, Real.exp_log hp₁]
+  have hp2 : p₂ = Real.exp (w - z) := by
+    rw [show w - z = Real.log p₂ by simp only [w, z, hlz]; ring, Real.exp_log hp₂]
+  -- D3.9.4: `√(p_i p_k) = (p_i + p_k) / (2 cosh z)`
+  have hsq : √(p₁ * p₂) = Real.exp w := by
+    rw [hp1, hp2, ← Real.exp_add, show w + z + (w - z) = w + w by ring, Real.exp_add,
+      Real.sqrt_mul_self (Real.exp_pos w).le]
+  have hsum : p₁ + p₂ = 2 * Real.exp w * Real.cosh z := by
+    rw [hp1, hp2, Real.cosh_eq, Real.exp_add, Real.exp_sub, Real.exp_neg]; field_simp
+  -- D3.9.4: `cosh log(l_i/l_k) ≤ cosh(a_j z) ≤ cosh(z/2)`
+  have hat : |t| ≤ |a * z| := by
+    rw [abs_mul, abs_of_nonneg ha, abs_div, abs_two]; linarith
+  have hc1 : Real.cosh t - 1 ≤ (a * z) ^ 2 / 2 * Real.cosh (z / 2) := by
+    refine (sub_le_sub_right (Real.cosh_le_cosh.2 hat) 1).trans ((cosh_sub_one_le _).trans ?_)
+    gcongr
+    rw [Real.cosh_le_cosh, abs_mul, abs_of_nonneg ha, abs_div z 2, abs_two]
+    nlinarith [abs_nonneg z]
+  -- D3.9.4: `z² cosh(z/2) / cosh z ≤ 2 z² e^{-|z|/2} ≤ 32/e²`
+  have hch : Real.cosh (z / 2) ≤ Real.exp (|z| / 2) := by
+    rw [Real.cosh_eq]
+    have h1 : Real.exp (z / 2) ≤ Real.exp (|z| / 2) :=
+      Real.exp_le_exp.2 (by linarith [le_abs_self z])
+    have h2 : Real.exp (-(z / 2)) ≤ Real.exp (|z| / 2) :=
+      Real.exp_le_exp.2 (by linarith [neg_abs_le z])
+    linarith
+  have hcz : Real.exp |z| ≤ 2 * Real.cosh z := by
+    rw [← Real.cosh_abs, Real.cosh_eq]; nlinarith [Real.exp_pos (-|z|)]
+  have hez : Real.exp 2 * z ^ 2 ≤ 16 * Real.exp (|z| / 2) := by
+    have := Real.add_one_le_exp (|z| / 4 - 1)
+    have h4 : Real.exp (|z| / 2) = (Real.exp 1 * Real.exp (|z| / 4 - 1)) ^ 2 := by
+      rw [← Real.exp_add, ← Real.exp_nat_mul]; congr 1; push_cast; ring
+    rw [h4, show Real.exp 2 = Real.exp 1 ^ 2 by rw [← Real.exp_nat_mul]; norm_num,
+      ← sq_abs z]
+    have he := Real.exp_pos 1
+    have hu : Real.exp 1 * (|z| / 4) ≤ Real.exp 1 * Real.exp (|z| / 4 - 1) :=
+      mul_le_mul_of_nonneg_left (by linarith) he.le
+    nlinarith [pow_le_pow_left₀ (by positivity) hu 2]
+  have hE2 := Real.exp_pos 2
+  have hw := Real.exp_pos w
+  have hcpos : 0 < Real.cosh z := Real.cosh_pos z
+  rw [hsq, hsum]
+  calc Real.exp w * (Real.cosh t - 1)
+      ≤ Real.exp w * ((a * z) ^ 2 / 2 * Real.exp (|z| / 2)) := by
+        gcongr; exact hc1.trans (by gcongr)
+    _ = Real.exp w * a ^ 2 / 2 * (Real.exp 2 * z ^ 2) * Real.exp (|z| / 2) / Real.exp 2 := by
+        field_simp
+    _ ≤ Real.exp w * a ^ 2 / 2 * (16 * Real.exp (|z| / 2)) * Real.exp (|z| / 2) /
+        Real.exp 2 := by gcongr
+    _ = 8 * Real.exp w * a ^ 2 * Real.exp |z| / Real.exp 2 := by
+        rw [← show Real.exp (|z| / 2) * Real.exp (|z| / 2) = Real.exp |z| by
+          rw [← Real.exp_add]; ring_nf]
+        ring
+    _ ≤ 8 * Real.exp w * a ^ 2 * (2 * Real.cosh z) / Real.exp 2 := by gcongr
+    _ = _ := by ring
+
+end D39
+
+/-! ## D3.10 Final choice of `C_pad` -/
+
+section D310
+
+/-- D3.10 (eq:initial-weight-range), with the last sentence of D3.6. For `D ≥ 1`, `C` (the
+constant of D3.9), `Δ > 0`, `J ≥ 0` there is an integer `C_pad > D + 1` such that for all `r ≥ 1`,
+`1 ≤ j ≤ m`: (i) `C ℰ / Δ ≤ 1/4`; (ii) `a_j ≤ ½`;
+(iii) `a_j / (1 - a_j) ≤ 1 / (32 √((1 + J/Δ) C₂ (r + d_j)))` (`𝓑_j ≤ C₂ (r + d_j)`, D3.5(e)). -/
+theorem eq_initial_weight_range (q R D : ℕ) (hD : 0 < D) {C J Δ : ℝ} (hΔ : 0 < Δ)
+    (hJ : 0 ≤ J) :
+    ∃ Cpad : ℕ, D + 1 < Cpad ∧ ∀ r, 1 ≤ r → C * ℰ Cpad r D / Δ ≤ 1 / 4 ∧
+      ∀ j ∈ Icc 1 (m Cpad r D), a Cpad r D j ≤ 1 / 2 ∧
+        a Cpad r D j / (1 - a Cpad r D j) ≤
+          1 / (32 * √((1 + J / Δ) * (C₂ q R * (r + d r D j)))) := by
+  set K := (1 + J / Δ) * C₂ q R
+  have hC₂ : 1 ≤ C₂ q R := by
+    unfold C₂
+    have : (0 : ℝ) ≤ 16 * v R * μ R * (1 + v R * Real.log q) ^ 2 := by positivity
+    linarith
+  have hK : 0 < K := mul_pos (by positivity) (by linarith)
+  set L₀ := max 4 (max (16 * C * D / Δ) (128 * D * √K))
+  have hD' : (1 : ℝ) ≤ D := by exact_mod_cast hD
+  refine ⟨⌈(2 + D) * Real.exp L₀⌉₊ + D + 2, by omega, fun r hr => ?_⟩
+  set Cpad := ⌈(2 + D) * Real.exp L₀⌉₊ + D + 2
+  -- D3.10.1: `log ((C_pad + 1)/(2 + D)) ≥ L₀`
+  have hL : L₀ ≤ Real.log ((Cpad + 1) / (2 + D)) := by
+    rw [Real.le_log_iff_exp_le (by positivity), le_div_iff₀ (by positivity), mul_comm]
+    have := Nat.le_ceil ((2 + D) * Real.exp L₀)
+    simp only [Cpad]; push_cast; linarith
+  obtain ⟨-, hE, -, hZ⟩ := eq_initial_harmonic_weights hD (by omega : D + 1 < Cpad) hr
+  have hL₀ : 4 ≤ L₀ := le_max_left _ _
+  have hZ' : L₀ / D ≤ Z_r Cpad r D := by
+    refine le_trans ?_ hZ; rw [one_div_mul_eq_div]; gcongr
+  have hZpos : 0 < Z_r Cpad r D := lt_of_lt_of_le (by positivity) hZ'
+  have hDZ : L₀ ≤ D * Z_r Cpad r D := by rwa [div_le_iff₀ (by positivity), mul_comm] at hZ'
+  refine ⟨?_, fun j hj => ?_⟩
+  · -- D3.10.1 (i): `C ℰ / Δ ≤ 4 C D / (L₀ Δ) ≤ 1/4`
+    rw [hE, div_le_iff₀ hΔ]
+    have h1 : 16 * C * D / Δ ≤ L₀ := (le_max_left _ _).trans (le_max_right _ _)
+    rw [div_le_iff₀ hΔ] at h1
+    rw [mul_div_assoc', div_le_iff₀ hZpos]
+    nlinarith
+  · have hs : (2 : ℝ) ≤ ((r + d r D j : ℕ) : ℝ) := by
+      have : 2 ≤ r + d r D j := by unfold d; omega
+      exact_mod_cast this
+    have hs' : ((r + d r D j : ℕ) : ℝ) = r + d r D j := by push_cast; ring
+    have hDs : (D : ℝ) + 2 ≤ ((r + d r D j : ℕ) : ℝ) := by
+      have : D + 2 ≤ r + d r D j := by
+        unfold d; have := Nat.le_mul_of_pos_left D (show 0 < j by simp at hj; omega); omega
+      exact_mod_cast this
+    have hZs : 0 < Z_r Cpad r D * ((r + d r D j : ℕ) : ℝ) := by positivity
+    -- D3.6.3 (ii): `a_j ≤ 2 / (Z_r (D + 2)) ≤ ½`
+    have ha2 : a Cpad r D j ≤ 1 / 2 := by
+      rw [a, div_le_div_iff₀ hZs (by norm_num)]
+      nlinarith [mul_le_mul_of_nonneg_left hDs hZpos.le]
+    refine ⟨ha2, ?_⟩
+    -- D3.10.2 (iii): `a_j/(1 - a_j) ≤ 2 a_j = 4/(Z_r (r + d_j)) ≤ 1/(32 √K (r + d_j))`
+    have ha0 : 0 < a Cpad r D j := div_pos two_pos hZs
+    have h1 : a Cpad r D j / (1 - a Cpad r D j) ≤ 2 * a Cpad r D j := by
+      rw [div_le_iff₀ (by linarith)]; nlinarith
+    refine h1.trans ?_
+    have h128 : 128 * D * √K ≤ L₀ := (le_max_right _ _).trans (le_max_right _ _)
+    have hsq : √(K * ((r + d r D j : ℕ) : ℝ)) ≤ √K * ((r + d r D j : ℕ) : ℝ) := by
+      rw [Real.sqrt_mul hK.le]; gcongr
+      exact Real.sqrt_le_iff.2 ⟨by linarith, by nlinarith⟩
+    have hKZ : 128 * √K ≤ Z_r Cpad r D :=
+      le_of_mul_le_mul_left (by linarith [h128.trans hDZ] :
+        (D : ℝ) * (128 * √K) ≤ D * Z_r Cpad r D) (by positivity)
+    rw [show (1 + J / Δ) * (C₂ q R * (r + d r D j)) = K * ((r + d r D j : ℕ) : ℝ) by
+      rw [hs']; ring, a, mul_div_assoc', le_div_iff₀ (by positivity), div_mul_eq_mul_div,
+      div_le_iff₀ hZs]
+    nlinarith [mul_le_mul_of_nonneg_right hKZ (by positivity : (0 : ℝ) ≤ ((r + d r D j : ℕ) : ℝ))]
+
+end D310
+
 /-! ## D3.14 Conclusion of Lemma 3.2 -/
 
 section D314
@@ -527,6 +749,36 @@ theorem step_3_14 (ρ : Arealaw.MState (Reg loc U) ℂ) {X T : Finset σ} {m : �
   rw [← sum_mul, hsum, sum_sub_distrib] at this
   simp only [hf] at h ⊢
   linarith
+
+/-- D3.14.5. `m + 1 ≤ (C_pad/D + 1) r` (`r ≥ 1`) and `ℰ = 4/Z_r ≤ 4D / log((C_pad + 1)/(2 + D))`
+(D3.6), so the error `½ C (m + 1) ℰ` is at most `C_buf r`,
+`C_buf = C (C_pad/D + 1) · 2D / log((C_pad + 1)/(2 + D))`. -/
+theorem step_3_14_5 {Cpad r D : ℕ} (hD : 0 < D) (hC : D + 1 < Cpad) (hr : 1 ≤ r) {C : ℝ}
+    (hC0 : 0 ≤ C) :
+    C * (m Cpad r D + 1) * ℰ Cpad r D / 2 ≤
+      C * (Cpad / D + 1) * (2 * D / Real.log ((Cpad + 1) / (2 + D))) * r := by
+  obtain ⟨-, hE, -, hZ⟩ := eq_initial_harmonic_weights hD hC hr
+  have hD' : (0 : ℝ) < D := by exact_mod_cast hD
+  have hr' : (1 : ℝ) ≤ r := by exact_mod_cast hr
+  have hL : 0 < Real.log ((Cpad + 1) / (2 + D)) := Real.log_pos (by
+    rw [one_lt_div (by positivity)]; exact_mod_cast (by omega : 2 + D < Cpad + 1))
+  -- D3.14.5: `m + 1 ≤ (C_pad/D + 1) r`
+  have hm : (m Cpad r D : ℝ) + 1 ≤ (Cpad / D + 1) * r := by
+    have h1 : (m Cpad r D * D : ℝ) ≤ Cpad * r := by
+      have := Nat.div_mul_le_self ((Cpad - 1) * r) D
+      have h2 : (Cpad - 1) * r ≤ Cpad * r := Nat.mul_le_mul_right _ (Nat.sub_le _ _)
+      exact_mod_cast this.trans h2
+    have h3 : (m Cpad r D : ℝ) ≤ Cpad * r / D := by rw [le_div_iff₀ hD']; exact h1
+    calc (m Cpad r D : ℝ) + 1 ≤ Cpad * r / D + r := by linarith
+      _ = _ := by ring
+  -- D3.6: `ℰ ≤ 4 D / log((C_pad + 1)/(2 + D))`
+  have hE' : ℰ Cpad r D ≤ 4 * D / Real.log ((Cpad + 1) / (2 + D)) := by
+    rw [hE, div_le_div_iff₀ (lt_of_lt_of_le (by positivity) hZ) hL]
+    rw [one_div_mul_eq_div, div_le_iff₀ hD'] at hZ; linarith
+  have hE0 : 0 ≤ ℰ Cpad r D := by unfold ℰ; positivity
+  calc C * (m Cpad r D + 1) * ℰ Cpad r D / 2
+      ≤ C * ((Cpad / D + 1) * r) * (4 * D / Real.log ((Cpad + 1) / (2 + D))) / 2 := by gcongr
+    _ = _ := by ring
 
 end D314
 
