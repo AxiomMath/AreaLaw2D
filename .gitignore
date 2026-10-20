@@ -11,3 +11,8 @@ logs/
 reports/
 
 .DS_Store
+
+# AxiomCode scratch and tool state
+.axiomcode/scratch/
+.axiomcode/scratch_bak
+.axiomcode/prepare.*
