@@ -332,6 +332,8 @@ def Lemma_5_2 : Prop :=
         C * |Real.sinh (Real.pi * u)| *
           𝓡 (Fintype.card (Reg loc X)) (condMutualInfo (pureState θ hθ).toSubState hX hU hF)
 
+namespace Conditional
+
 /-- D5.15. The entire function
 `f(z) = ⟨θ, ρ_P^{[z]} ρ_Y^{[-z]} h ρ_P^{[-z]} ρ_Y^{[z]} θ⟩` of Lemma 5.3, `Y = xU`,
 `P = P₀P₁`, `h` on `P₀x`. -/
@@ -342,6 +344,8 @@ noncomputable def f {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, F
   star θ ⬝ᵥ ((extendId hP (bracketPow (marg θ hP) z) * extendId hY (bracketPow (marg θ hY) (-z)) *
     extendId hPX h * extendId hP (bracketPow (marg θ hP) (-z)) *
     extendId hY (bracketPow (marg θ hY) z)) *ᵥ θ)
+
+end Conditional
 
 /-- D5.15 **Lemma 5.3** (conditional skew estimate). `θ` unit pure vector on `P, x, U, F`;
 `Y = xU`; `P = P₀P₁` and `0 ≤ h ≤ I` supported on `P₀x`. `d_h = (dim P₀)(dim x)`,
@@ -358,9 +362,9 @@ def Lemma_5_3 : Prop :=
       (h : Matrix (Reg loc (P₀ ∪ X)) (Reg loc (P₀ ∪ X)) ℂ), 0 ≤ h → h ≤ 1 →
     ∀ a : ℝ, 0 < a * ℓ (Fintype.card (Reg loc (P₀ ∪ X))) →
       a * ℓ (Fintype.card (Reg loc (P₀ ∪ X))) ≤ c →
-      ‖f (Finset.union_subset hP₀ hP₁) (Finset.union_subset hX hU) (Finset.union_subset hP₀ hX)
-          θ h (a / 2 : ℝ)‖ -
-        (f (Finset.union_subset hP₀ hP₁) (Finset.union_subset hX hU)
+      ‖Conditional.f (Finset.union_subset hP₀ hP₁) (Finset.union_subset hX hU)
+          (Finset.union_subset hP₀ hX) θ h (a / 2 : ℝ)‖ -
+        (Conditional.f (Finset.union_subset hP₀ hP₁) (Finset.union_subset hX hU)
           (Finset.union_subset hP₀ hX) θ h (a / 2 : ℝ)).re ≤
         C * a ^ 2 * ℓ (Fintype.card (Reg loc (P₀ ∪ X))) ^ 4 *
           condMutualInfo (pureState θ hθ).toSubState hX hU hF ^ (1 / 8 : ℝ)
