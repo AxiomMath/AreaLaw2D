@@ -2138,6 +2138,8 @@ For every anchor: `any d` (verbatim on `ℤ^d`, `d` a parameter, possibly with `
 
 Note on §3: D3.4, D3.6, D3.10 are `2D only` because the harmonic sum `Z_r = ∑ 1/(r + d_j)` diverges only when the perimeter of the nested regions grows linearly; D3.5, D3.9, D3.11, D3.14, D3.16 are `any d` as arguments but serve Lemma 3.2 only through D3.10, so a `ℤ^d` Proposition 3.3 needs a new D3.6/D3.10.
 
+Lean state: §2 (D2.6–D2.12) is generalised (RefactoringResult.md, Next steps, first paragraph); everything else is still on `ℤ × ℤ` where it has lattice content.
+
 | Anchor | Dim | Reason |
 |---|---|---|
 | D1.1 | any d | Induced graph on finite subset of Z^d; only the degree and ball-count constants become d-dependent. |
