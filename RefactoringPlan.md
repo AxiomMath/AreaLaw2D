@@ -57,10 +57,25 @@ Reverse pass: every declaration in `OpenAI/` and `Arealaw/` in no row is listed 
 
 The 1 398 never-referenced and 2 543 once-referenced declarations are the first candidates for `inline`, `scaffold` and `dead`. Confirm by search before cutting.
 
-Decide these two before anything else and record them in `RefactoringResult.md` §2:
+Decide these three before anything else and record them in `RefactoringResult.md` §2:
 
 1. Scalar field. The paper works over $\mathbb C$; the frozen statements and `Solution/` quantify over `[RCLike 𝕜]`. Develop over `ℂ` and prove each frozen `𝕜`-generic statement by one transfer theorem at the top, unless a specific anchor makes that impossible. Delete every piecewise transfer the choice makes unnecessary.
 2. Encoding of regions, partial traces, entropy. The statements use `Reg`, `pureState`, `SubState.regionEntropy`, `mutualInfo` from `Arealaw/`. Any second encoding of these inside `OpenAI/`, and any bridge between the two, is scaffolding: keep the statement encoding, re-prove what the other carried, delete the bridge.
+
+3. Dimension. See the next section; record the classification of every anchor in `Map.md`'s "Dimension" table.
+
+
+# Dimension
+
+The paper works on `ℤ²`, but the code is to be generalised to `ℤ³` later (user request), so the lattice dimension is a parameter wherever the paper's argument does not use `d = 2`.
+
+- Every anchor gets a class in `Map.md`'s "Dimension" table, judged from the digest: `any d` (the argument is verbatim on `ℤ^d`, possibly with `d`-dependent constants; anchors with no geometry at all are `any d`), `graph` (the argument uses distances, balls, boundaries only through a graph metric with a ball-growth bound), `2D only` (it genuinely uses `d = 2`: planarity, contours, planar templates, scanner geometry in the plane, a count with no `d`-analogue). The class is a judgement, recorded with a one-line reason; a worker who finds it wrong fixes the row and says so in `RefactoringResult.md` §7.
+- `graph` anchors are stated for a simple graph `G` on a site type `σ` (distance = the induced graph's `edist`, as `OpenAI.domainEDist` is for the square lattice) with the growth bound as a hypothesis or a parameter `V : ℕ → ℕ` with `#B_Λ(x, r) ≤ V r`. `any d` anchors with lattice content are stated on `Fin d → ℤ` with the ℓ¹ nearest-neighbour graph, `d` a variable. Anchors without lattice content are stated over an arbitrary site type `σ`, as `Arealaw.Reg` already is.
+- Anything `2D only` stays on `ℤ × ℤ`, and its docstring line after the statement says `2D only: <reason>`. Do not invent a `d`-dimensional replacement for a 2D argument.
+- Constants that depend on `d` (ball counts, `μ_R`, packing numbers, exponents like `|∂A| ∼ n^{d-1}`) become functions of `d` (or of the growth function `V`), defined once, with a lemma that they equal the paper's number at `d = 2` (e.g. `v 2 r = 1 + 2r(r+1)`). The interlocked exponents of `digest/00-overview.md` §4 are not touched: if they would need to depend on `d`, the anchor is `2D only` for now and the row says why.
+- The frozen statements of `OpenAI/Statements.lean` stay exactly as they are, on `ℤ × ℤ` with `hasse ℤ □ hasse ℤ`. They are reached by ONE specialisation layer at the top, next to the `ℂ → RCLike` transfer of decision 1: the `ℤ × ℤ` objects are the `d = 2` (or `G = hasse ℤ □ hasse ℤ`) instances of the general ones, by `rfl` where the definitions are written to make that possible, otherwise through `ℤ × ℤ ≃ (Fin 2 → ℤ)` once. No piecewise bridges inside the sections.
+- Names, docstrings and the digest-step structure are the paper's in every dimension: `eq_ball_count` is the `ℤ^d` (or `V`) statement; its `ℤ²` form is a corollary next to it only if a frozen statement needs it.
+- Writing the area law for `ℤ^d` is a goal only after every non-`2D only` anchor is general; until then it is not attempted.
 
 
 # Step 1: the golfed draft
@@ -75,7 +90,7 @@ Rules:
 - Variables carry the paper's letters: `Λ`, `A`, `Ω`, `H`, `Δ`, `T`, `S₀`, `X`, `Y`, `k_i`, `W_{P,k}`. Rename every project name to the paper's. `open` and `open scoped` so that `π`, `‖·‖`, `⊗ₖ`, `∑`, `⨂` read as in the paper; no `Real.pi`, no qualified names in proof bodies.
 - One type per quantity, the paper's: ambient distances real, `d_Λ` in `ℕ∞`, exponents real. Remove casts that only move between `ℕ`, `ℝ`, `ℕ∞`, `ENNReal`.
 - A declaration used once is inlined unless it is an anchor; used twice inside one anchor's proof, inlined.
-- Generality: a lemma stated for arbitrary finite types, `k`, normed fields or graphs where the paper uses `ℤ²`, `k = 2`, `ℂ` is restated at the paper's generality, unless the general form is what Mathlib would want, in which case it goes to the library tree.
+- Generality: a lemma stated for arbitrary finite types, `k` or normed fields where the paper uses `k = 2` or `ℂ` is restated at the paper's generality, unless the general form is what Mathlib would want, in which case it goes to the library tree. The lattice is the exception: `ℤ²` is stated over `ℤ^d` (or a graph with a growth bound) as fixed in "Dimension" above, and only what that section classifies `2D only` is stated on `ℤ²`.
 - Drift is rewritten along the digest steps. Exception: the paper's route needs a fact Lean cannot get at reasonable cost (a compactness argument, an analytic identity without Mathlib support). Then keep the formal route and record anchor, paper route, formal route, reason in `RefactoringResult.md` §5, as the Cohn–Elkies refactor did for the Phragmén–Lindelöf substitution. This exception is for mathematics, not convenience.
 - Mathlib and Physlib first. Search before keeping any `standard` declaration. Record each replacement (§3) and each failed search with the queries tried (§4).
 - The paper's explicit constants (`512 e ϑ 𝓑`, `C_h = 1 + 2/e`, `4` in Lemma 2.1, `B_M = 4(C_pad+2)M`, the exponent tables of D9.22, D9.26) are the ones in the code; a different constant is changed or recorded (§6). The exponents `10⁻⁵`, `2·10⁻⁶`, `10⁻⁶`, `2·10⁻⁷` are interlocked (`digest/00-overview.md` §4): never adjust one to close a proof; a proof that does not close with the paper's exponent is wrong, not the exponent.
@@ -89,7 +104,7 @@ Gate: `lake build` clean; `#print axioms` on each frozen statement gives `propex
 
 # Step 2: separation
 
-- `AreaLaw/`: the paper. Keep the section files; split one only past 1 500 lines, along the paper's subsections (`S09_Scanner/MovingPartitions`, `S09_Scanner/CollarInformation`). Nothing here is more general than the paper states it.
+- `AreaLaw/`: the paper. Keep the section files; split one only past 1 500 lines, along the paper's subsections (`S09_Scanner/MovingPartitions`, `S09_Scanner/CollarInformation`). Nothing here is more general than the paper states it, except the lattice dimension of "Dimension".
 - `AreaLawForMathlib/`: the `standard` declarations Mathlib and Physlib lack, in Mathlib's generality, naming and directory layout (`Analysis/Matrix/…`, `LinearAlgebra/Matrix/…`, `RepresentationTheory/…`, `InformationTheory/…`, `Combinatorics/SimpleGraph/…`). Each file's docstring names the Mathlib file it extends. Run `mathlib-quality:mathlibable` on each declaration; "mathlib has it" → replace, "not general enough" → generalise or move to `AreaLaw/`.
 - `Arealaw/`: per file, what Physlib covers is replaced; what is lattice-specific and used by the statements moves to `AreaLawForMathlib/` or `AreaLaw/S01_Setting` by generality. `Arealaw/` ends empty; `OpenAI/Statements.lean` imports only Mathlib, Physlib and `AreaLawForMathlib`.
 - Delete `docs/oai265/`, `HISTORY.md`, `OpenAI/Audit*.lean` (replace by one `scripts/audit.lean` printing axioms of the frozen statements), the root `OpenAI.lean`. Rewrite `README.md`: what is proved, the tree, how to build, the comparator, the blueprint. No provenance narrative.
