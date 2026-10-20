@@ -178,6 +178,107 @@ theorem step_5_8 {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 ≤ β) (b : ℝ) :
 
 end D58
 
+/-! ## D5.20 Parameter bookkeeping -/
+
+section D520
+
+open Real
+
+theorem one_le_ℓ {d : ℕ} (hd : 1 ≤ d) : 1 ≤ ℓ d := by
+  rw [ℓ, le_log_iff_exp_le (by positivity)]
+  have : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  nlinarith [exp_pos 1]
+
+theorem ℓ_mono {d d' : ℕ} (hd : 1 ≤ d) (h : d ≤ d') : ℓ d ≤ ℓ d' := by
+  have : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  exact log_le_log (by positivity) (by gcongr)
+
+/-- D5.20. With `1 ≤ d = dim x ≤ d_h`, `m = min(1, 𝓡_η)` and `0 ≤ η ≤ 2ℓ_h` (D2.2 item 4:
+`η = S(x|P) + S(x|U) ≤ 2 log d`): `ℓ_h² m^{1/2} + 𝓡_η² ≤ C ℓ_h⁴ η^{1/8}`, with `C = 10`. -/
+theorem step_5_20 {d dh : ℕ} (hd : 1 ≤ d) (hddh : d ≤ dh) {η : ℝ} (hη0 : 0 ≤ η)
+    (hη : η ≤ 2 * ℓ dh) :
+    ℓ dh ^ 2 * √(min 1 (𝓡 d η)) + 𝓡 d η ^ 2 ≤ 10 * ℓ dh ^ 4 * η ^ (1 / 8 : ℝ) := by
+  set L := ℓ dh
+  have hL : 1 ≤ L := one_le_ℓ (hd.trans hddh)
+  have hld : ℓ d ≤ L := ℓ_mono hd hddh
+  rcases hη0.eq_or_lt with rfl | hηp
+  · simp [𝓡]
+  set q := η ^ (1 / 8 : ℝ) with hq
+  have hq0 : 0 < q := rpow_pos_of_pos hηp _
+  have hq8 : q ^ 8 = η := by
+    rw [hq, ← rpow_natCast, ← rpow_mul hηp.le]; norm_num
+  have hsq : √η = q ^ 4 := by rw [← hq8, show q ^ 8 = (q ^ 4) ^ 2 by ring, sqrt_sq (by positivity)]
+  have hR0 : 0 ≤ 𝓡 d η := by rw [𝓡, if_pos hηp]; positivity
+  have hdpos : (0 : ℝ) < d := by exact_mod_cast hd
+  by_cases h1 : η ≤ 1
+  · -- D5.20.1
+    have hmin : min 1 η = η := min_eq_right h1
+    have hq1 : q ≤ 1 := (pow_le_one_iff_of_nonneg hq0.le (by norm_num : 8 ≠ 0)).1 (hq8 ▸ h1)
+    have hq4 : 0 < q ^ 4 := pow_pos hq0 4
+    have hlogη : -log η ≤ 2 * (q ^ 4)⁻¹ := by
+      have h := log_le_sub_one_of_pos (inv_pos.2 hq4)
+      rw [log_inv] at h
+      have : log η = 2 * log (q ^ 4) := by
+        rw [← hq8, show q ^ 8 = (q ^ 4) ^ 2 by ring, log_pow]; norm_num
+      nlinarith [inv_pos.2 hq4]
+    have hge : 1 ≤ exp 1 * d / η := by
+      rw [le_div_iff₀ hηp]
+      nlinarith [add_one_le_exp (1 : ℝ), (by exact_mod_cast hd : (1 : ℝ) ≤ d)]
+    have hA0 : 0 ≤ η * log (exp 1 * d / η) := mul_nonneg hηp.le (log_nonneg hge)
+    have hA : η * log (exp 1 * d / η) ≤ 3 * L * q ^ 4 := by
+      rw [log_div (by positivity) hηp.ne']
+      have e1 : η * (2 * (q ^ 4)⁻¹) = 2 * q ^ 4 := by
+        rw [← hq8]; field_simp
+      have e2 : q ^ 8 ≤ q ^ 4 := pow_le_pow_of_le_one hq0.le hq1 (by norm_num)
+      have := mul_le_mul_of_nonneg_left hlogη hηp.le
+      have := mul_le_mul_of_nonneg_left hld hηp.le
+      have hℓ : ℓ d = log (exp 1 * d) := rfl
+      nlinarith [mul_le_mul_of_nonneg_left hL hq4.le]
+    have hR : 𝓡 d η = q ^ 4 + √(η * log (exp 1 * d / η)) := by
+      rw [𝓡, if_pos hηp, hmin, hsq]
+    have hR2 : 𝓡 d η ^ 2 ≤ 8 * L * q ^ 4 := by
+      rw [hR]
+      have hs2 := sq_sqrt hA0
+      have e2 : q ^ 8 ≤ q ^ 4 := pow_le_pow_of_le_one hq0.le hq1 (by norm_num)
+      nlinarith [sq_nonneg (q ^ 4 - √(η * log (exp 1 * d / η))),
+        mul_le_mul_of_nonneg_left hL hq4.le]
+    have hR4 : 𝓡 d η ≤ 4 * L ^ 2 * q ^ 2 := by
+      have : 𝓡 d η ^ 2 ≤ (4 * L ^ 2 * q ^ 2) ^ 2 := by
+        have hL1 : L ≤ L ^ 4 := by
+          calc L = L ^ 1 := (pow_one L).symm
+            _ ≤ L ^ 4 := pow_le_pow_right₀ hL (by norm_num)
+        nlinarith [mul_le_mul_of_nonneg_left hL1 hq4.le]
+      exact (pow_le_pow_iff_left₀ hR0 (by positivity) two_ne_zero).1 this
+    have hm : √(min 1 (𝓡 d η)) ≤ 2 * L * q := by
+      rw [show 2 * L * q = √((2 * L * q) ^ 2) by rw [sqrt_sq (by positivity)]]
+      exact sqrt_le_sqrt ((min_le_right _ _).trans (by nlinarith))
+    have hq41 : q ^ 4 ≤ q := by
+      calc q ^ 4 ≤ q ^ 1 := pow_le_pow_of_le_one hq0.le hq1 (by norm_num)
+        _ = q := pow_one q
+    have hL3 : L ^ 3 ≤ L ^ 4 := pow_le_pow_right₀ hL (by norm_num)
+    have hL1 : L ≤ L ^ 4 := by
+      calc L = L ^ 1 := (pow_one L).symm
+        _ ≤ L ^ 4 := pow_le_pow_right₀ hL (by norm_num)
+    nlinarith [mul_le_mul_of_nonneg_left hm (sq_nonneg L), mul_le_mul_of_nonneg_left hL3 hq0.le,
+      mul_le_mul_of_nonneg_left hq41 (by linarith : (0 : ℝ) ≤ 8 * L),
+      mul_le_mul_of_nonneg_left hL1 hq0.le]
+  · -- D5.20.2
+    have h1' : 1 < η := not_le.1 h1
+    have hmin : min 1 η = 1 := min_eq_left h1'.le
+    have hR : 𝓡 d η = 1 + √(η * ℓ d) := by rw [𝓡, if_pos hηp, hmin, sqrt_one, div_one, ℓ]
+    have hηl : η * ℓ d ≤ (2 * L) ^ 2 := by nlinarith [one_le_ℓ hd]
+    have hs : √(η * ℓ d) ≤ 2 * L := by
+      rw [sqrt_le_left (by positivity)]; exact hηl
+    have hR3 : 𝓡 d η ≤ 3 * L := by rw [hR]; linarith
+    have hm : √(min 1 (𝓡 d η)) ≤ 1 := by
+      rw [sqrt_le_one]; exact min_le_left _ _
+    have hq1 : 1 ≤ q := one_le_rpow h1'.le (by norm_num)
+    have hL2 : L ^ 2 ≤ L ^ 4 := pow_le_pow_right₀ hL (by norm_num)
+    nlinarith [pow_le_pow_left₀ hR0 hR3 2, mul_le_mul_of_nonneg_left hm (sq_nonneg L),
+      mul_le_mul_of_nonneg_left hq1 (by positivity : (0 : ℝ) ≤ 10 * L ^ 4)]
+
+end D520
+
 /-! ## Lemma 5.1, Lemma 5.2, Lemma 5.3: statements -/
 
 section Statements
