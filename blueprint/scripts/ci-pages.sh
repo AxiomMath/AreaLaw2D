@@ -9,3 +9,6 @@ lake exe vbp build
 test -f _out/site/html-multi/index.html
 test -f _out/site/html-multi/-verso-data/blueprint-manifest.json
 test -f _out/site/html-multi/-verso-data/blueprint-html-cache.json
+
+# the rendered dependency graph must be the DAG of digest/00-overview.md §2.1
+python3 scripts/check_dag.py
