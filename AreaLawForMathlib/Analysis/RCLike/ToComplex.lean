@@ -194,7 +194,7 @@ noncomputable def realProjection (A : Matrix m n ℂ) : Matrix m n 𝕜 :=
     realProjection (𝕜 := 𝕜) (A - B) = realProjection A - realProjection B := by
   ext; simp
 
-@[simp] theorem realProjection_ofReal_smul (r : ℝ) (A : Matrix m n ℂ) :
+theorem realProjection_ofReal_smul (r : ℝ) (A : Matrix m n ℂ) :
     realProjection (𝕜 := 𝕜) ((r : ℂ) • A) = (r : 𝕜) • realProjection A := by
   ext; simp
 

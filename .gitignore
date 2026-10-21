@@ -1,4 +1,5 @@
 /.lake
+scripts/lint/.lake
 
 # scratch development files
 Arealaw/Probe.lean

@@ -61,13 +61,13 @@ def IsCompletelyPositive (E : Matrix n n ℂ →ₗ[ℂ] Matrix n' n' ℂ) : Pro
   ∀ k, IsNPositiveMap k E
 
 /-- The single-sandwich linear map `X ↦ V X Vᴴ`. -/
-noncomputable def singleKrausMap [Fintype n] [Fintype n']
+noncomputable def singleKrausMap [Fintype n]
     (V : Matrix n' n ℂ) : Matrix n n ℂ →ₗ[ℂ] Matrix n' n' ℂ where
   toFun X := V * X * Vᴴ
   map_add' X Y := by simp [Matrix.mul_add, Matrix.add_mul]
   map_smul' c X := by simp [Matrix.mul_smul, Matrix.smul_mul]
 
-@[simp] theorem singleKrausMap_apply [Fintype n] [Fintype n']
+@[simp] theorem singleKrausMap_apply [Fintype n]
     (V : Matrix n' n ℂ) (X : Matrix n n ℂ) :
     singleKrausMap V X = V * X * Vᴴ :=
   rfl

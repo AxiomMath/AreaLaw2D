@@ -54,7 +54,8 @@ theorem isCompact_unitaryGroup : IsCompact (unitaryGroup n ℂ : Set (Matrix n n
 instance : CompactSpace (unitaryGroup n ℂ) :=
   isCompact_iff_compactSpace.mp (isCompact_unitaryGroup n)
 
-noncomputable instance : MeasurableSpace (unitaryGroup n ℂ) := borel _
+noncomputable instance instMeasurableSpaceUnitaryGroup : MeasurableSpace (unitaryGroup n ℂ) :=
+  borel _
 
 instance : BorelSpace (unitaryGroup n ℂ) := ⟨rfl⟩
 

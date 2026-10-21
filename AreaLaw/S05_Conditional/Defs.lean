@@ -351,6 +351,7 @@ end Conditional
 `Y = xU`; `P = P₀P₁` and `0 ≤ h ≤ I` supported on `P₀x`. `d_h = (dim P₀)(dim x)`,
 `ℓ_h = log(e d_h)`, `η = I(x:F|U)_θ = I(x:F|P)_θ`. Universal `c, C > 0` such that for
 `0 < aℓ_h ≤ c` and `t = a/2`: `|f(t)| − Re f(t) ≤ C a² ℓ_h⁴ η^{1/8}`. -/
+@[nolint defsWithUnderscore]
 def Lemma_5_3 : Prop :=
   ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]

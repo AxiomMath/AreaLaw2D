@@ -409,7 +409,7 @@ theorem redEJ_m_of_tensor (hJ : J ⊆ Λ) (Ω : Reg loc Λ → ℂ) (ξ : Reg lo
 
 /-- D10.6.2. In `η`, `e'` is purified by `s'` and `Ω` is a tensor factor:
 `ρ^η_{e'J} = ρ^η_{e'} ⊗ ρ^η_J`, `I(e' : J)_η = 0`. -/
-theorem step_10_6_2 [∀ i, Nonempty (loc i)] (hX : X ⊆ Λ) (hJ : J ⊆ Λ) (Ω : Reg loc Λ → ℂ)
+theorem step_10_6_2 (hX : X ⊆ Λ) (hJ : J ⊆ Λ) (Ω : Reg loc Λ → ℂ)
     (hΩ : star Ω ⬝ᵥ Ω = 1) (hη : star (restoredVec hX Ω hΩ) ⬝ᵥ restoredVec hX Ω hΩ = 1) :
     qMutualInfo (redEJ hJ (restoredVec hX Ω hΩ) hη) = 0 :=
   qMutualInfo_eq_zero_of_kronecker _ _ _ (redEJ_m_of_tensor hJ Ω
@@ -455,7 +455,7 @@ theorem dotProduct_schmidt {n : Type*} [Fintype n] [DecidableEq n] {U : Matrix n
     _ = 1 := by rw [← Complex.ofReal_sum, h1, Complex.ofReal_one]
 
 /-- `η` is a unit vector. -/
-theorem dotProduct_restoredVec' [∀ i, Nonempty (loc i)] (hX : X ⊆ Λ) (Ω : Reg loc Λ → ℂ)
+theorem dotProduct_restoredVec' (hX : X ⊆ Λ) (Ω : Reg loc Λ → ℂ)
     (hΩ : star Ω ⬝ᵥ Ω = 1) : star (restoredVec hX Ω hΩ) ⬝ᵥ restoredVec hX Ω hΩ = 1 := by
   have hξ := dotProduct_schmidt (Unitary.coe_star_mul_self
     (marg Ω hΩ hX).psd.isHermitian.eigenvectorUnitary) (marg Ω hΩ hX).psd.eigenvalues_nonneg
@@ -500,10 +500,10 @@ theorem abs_qMutualInfo_sub_le {D E : Type*} [Fintype D] [DecidableEq D] [Nonemp
   have hd : (1 : ℝ) ≤ Fintype.card D := by exact_mod_cast Fintype.card_pos
   have he : 2 ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
   have hl : 0 ≤ Real.log (Real.exp 1 * Fintype.card D) := Real.log_nonneg (by nlinarith)
-  have hC : 2 * C_h ≤ 4 := by
+  have hC : 2 * binEntropyConst ≤ 4 := by
     have := (div_le_one (Real.exp_pos 1)).2 he
-    rw [C_h]; linarith
-  have hC0 : 0 ≤ 2 * C_h := by unfold C_h; positivity
+    rw [binEntropyConst]; linarith
+  have hC0 : 0 ≤ 2 * binEntropyConst := by unfold binEntropyConst; positivity
   -- `S(D|E)`
   have h₁ := (step_2_4_3 ρ τ).trans
     (step_2_4_4 (trDistance_nonneg ρ τ) (trDistance_le_one ρ τ) hd)
@@ -527,12 +527,15 @@ theorem abs_qMutualInfo_sub_le {D E : Type*} [Fintype D] [DecidableEq D] [Nonemp
     rw [qMutualInfo, qMutualInfo, qConditionalEnt, qConditionalEnt]; ring
   rw [e]
   refine (abs_sub _ _).trans ?_
-  have k₃ : 2 * C_h * Real.sqrt (TrDistance ρ τ) * Real.log (Real.exp 1 * Fintype.card D) ≤
+  have k₃ : 2 * binEntropyConst * Real.sqrt (TrDistance ρ τ) *
+      Real.log (Real.exp 1 * Fintype.card D) ≤
       4 * (Real.sqrt (TrDistance ρ τ) * Real.log (Real.exp 1 * Fintype.card D)) := by
     rw [mul_assoc]; exact k₁
-  have k₄ : 2 * C_h * Real.sqrt (TrDistance (ρ.traceRight.relabel (Equiv.prodPUnit.{1} D))
+  have k₄ : 2 * binEntropyConst *
+      Real.sqrt (TrDistance (ρ.traceRight.relabel (Equiv.prodPUnit.{1} D))
       (τ.traceRight.relabel (Equiv.prodPUnit.{1} D))) * Real.log (Real.exp 1 * Fintype.card D) ≤
-      2 * C_h * (Real.sqrt (TrDistance ρ τ) * Real.log (Real.exp 1 * Fintype.card D)) := by
+      2 * binEntropyConst *
+        (Real.sqrt (TrDistance ρ τ) * Real.log (Real.exp 1 * Fintype.card D)) := by
     rw [mul_assoc]; exact k₂
   linarith
 

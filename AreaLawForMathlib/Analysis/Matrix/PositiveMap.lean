@@ -35,18 +35,13 @@ def IsPositiveMap (E : Matrix n n ℂ →ₗ[ℂ] Matrix m m ℂ) : Prop :=
   ∀ X : Matrix n n ℂ, X.PosSemidef → (E X).PosSemidef
 
 /-- A positive matrix map, viewed as an order-preserving linear map. -/
-noncomputable def IsPositiveMap.toPositiveLinearMap [Finite m] [Finite n]
+noncomputable def IsPositiveMap.toPositiveLinearMap
     {E : Matrix n n ℂ →ₗ[ℂ] Matrix m m ℂ} (hE : IsPositiveMap E) :
-    Matrix n n ℂ →ₚ[ℂ] Matrix m m ℂ := by
-  classical
-  letI := Fintype.ofFinite m
-  letI := Fintype.ofFinite n
-  exact
-    { toLinearMap := E
-      monotone' := by
-        intro A B hAB
-        rw [Matrix.le_iff] at hAB ⊢
-        simpa [map_sub] using hE (B - A) hAB }
+    Matrix n n ℂ →ₚ[ℂ] Matrix m m ℂ where
+  toLinearMap := E
+  monotone' A B hAB := by
+    rw [Matrix.le_iff] at hAB ⊢
+    simpa [map_sub] using hE (B - A) hAB
 
 /-- Positive maps preserve adjoints. -/
 theorem IsPositiveMap.map_conjTranspose [Finite m] [Finite n]

@@ -3,7 +3,12 @@ version = "0.1.0"
 keywords = ["math"]
 defaultTargets = ["AreaLawForMathlib", "OpenAI", "AreaLaw", "Challenge", "Solution"]
 
-lintDriver = "batteries/runLinter"
+# `lake lint` runs Batteries' `runLinter` once per module, each in its own process
+# (scripts/lint/LintAll.lean), on the development only: `OpenAI.Statements` and `Challenge`
+# are the human-written contract (their `OpenAI.HasGlobalGap` has an unused `[Fintype ι]`
+# that may not be edited). The old lakefile linted only its default target `Arealaw`.
+lintDriver = "lintall/lintAll"
+lintDriverArgs = ["AreaLawForMathlib", "AreaLaw", "Solution"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -23,6 +28,10 @@ weak.linter.style.admit = true # the one `sorry` variant the set omits
 name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.33.0"
+
+[[require]]
+name = "lintall"
+path = "scripts/lint"
 
 [[require]]
 name = "Physlib"

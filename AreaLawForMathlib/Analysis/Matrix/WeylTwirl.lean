@@ -91,12 +91,15 @@ theorem sum_rootOfUnity_pow_eq {ζ : ℂ} (hζ : IsPrimitiveRoot ζ d) (i j : ZM
   · rw [if_neg h,
       if_neg (fun hc => h ((pow_mul_conj_pow_eq_one_iff hζ i j).1 hc))]
 
+/-- The Weyl shift matrix `X` on `ℂ^{ZMod d}`, the permutation matrix of `i ↦ i + 1`. -/
 def weylShift : Matrix (ZMod d) (ZMod d) ℂ :=
   (Equiv.addRight (1 : ZMod d)).permMatrix ℂ
 
+/-- The Weyl clock matrix `Z = diag(ζ^i)` on `ℂ^{ZMod d}`. -/
 noncomputable def weylClock (ζ : ℂ) : Matrix (ZMod d) (ZMod d) ℂ :=
   diagonal (fun i => ζ ^ i.val)
 
+/-- The Weyl (generalized Pauli) operator `W_{a,b} = X^a Z^b`. -/
 noncomputable def weyl (ζ : ℂ) (a b : ZMod d) : Matrix (ZMod d) (ZMod d) ℂ :=
   weylShift ^ a.val * weylClock ζ ^ b.val
 
@@ -268,6 +271,7 @@ section Reindexed
 variable {S C : Type*} [Fintype S] [DecidableEq S] [Fintype C] [DecidableEq C]
   {dC : ℕ} [NeZero dC]
 
+/-- The Weyl operator `W_{a,b}` transported to an index type `C ≃ ZMod dC`. -/
 noncomputable def reindexedWeyl (e : C ≃ ZMod dC) (ζ : ℂ) (a b : ZMod dC) :
     Matrix C C ℂ :=
   Matrix.reindex e.symm e.symm (weyl ζ a b)
@@ -345,6 +349,8 @@ theorem sum_kronecker_one_reindexedWeyl_conj (e : C ≃ ZMod dC) {ζ : ℂ}
         M.traceRight s₁ s₂ := rfl
   rw [htwirl, htrace, div_eq_mul_inv, mul_assoc]
 
+/-- The Weyl twirl on the second tensor factor:
+`M ↦ dC⁻² ∑_{a,b} (1 ⊗ W_{a,b}) M (1 ⊗ W_{a,b})ᴴ`. -/
 noncomputable def complementaryWeylTwirl (e : C ≃ ZMod dC) (ζ : ℂ)
     (M : Matrix (S × C) (S × C) ℂ) : Matrix (S × C) (S × C) ℂ :=
   ((dC : ℂ) ^ 2)⁻¹ • ∑ a : ZMod dC, ∑ b : ZMod dC,

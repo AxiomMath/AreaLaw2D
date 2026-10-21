@@ -137,8 +137,8 @@ structure Thresholds (D₀ Ctpl : ℝ) (nStar : ℕ) (CP CB : ℝ) : Prop where
   two_le_CB : 2 ≤ CB
   C₀_gt : 100 * (D₀ + 1) < L.C₀
   C₀_gt' : 4 * CB + 16 * D₀ + 8 < L.C₀
-  nStar_le : (nStar : ℝ) ≤ L.S_star
-  fine : ∀ u : ℕ, L.S_star ≤ u →
+  nStar_le : (nStar : ℝ) ≤ L.stopScale
+  fine : ∀ u : ℕ, L.stopScale ≤ u →
     2 * (beltScale CB u : ℝ) ^ β < 1 / 128 * (u : ℝ) ^ ρ₀ ∧ collarWidth (beltScale CB u) ≤ u
   layer : ∀ k, L.k₀ ≤ k → nStar ≤ 2 ^ k ∧ (primaryScale CP k : ℝ) ^ β ≤ 1 / 4 * t k ∧
     collarWidth (primaryScale CP k) ≤ 2 ^ k
@@ -331,7 +331,7 @@ theorem step_11_25_2_belt {k : ℕ} {w : Fin 2 → ℤ} {c : Fin 2} {z : ℤ × 
   have hn2' : 2 * (t k : ℝ) ≤ beltScale CB (t k) := by exact_mod_cast hn2
   have hhs : hs k ≤ t k := by
     rw [t_eq]; exact pow_le_pow_right₀ (by norm_num) (Nat.sub_le _ _)
-  have hSk : L.S_star ≤ t k := L.S_star_le.trans (Layout.t_le_t hk)
+  have hSk : L.stopScale ≤ t k := L.stopScale_le.trans (Layout.t_le_t hk)
   -- D11.22: the template
   have htmp : IsTemplate Ctpl (beltScale CB (t k)) (t k) (L.tmpl (.init (.belt k w c))) := by
     refine isTemplate_of_biUnion S _ hTe ⟨z, hzT⟩ (by omega) ht1' (fun i _ ↦ ?_) ?_ ?_
@@ -377,7 +377,7 @@ theorem step_11_25_3_belt {k : ℕ} {w : Fin 2 → ℤ} {c : Fin 2} {z : ℤ × 
       ∀ x ∈ L.tmpl (.init (.belt k w c)), ∀ y : ℤ × ℤ, latticePoint y ∈ L.repair.finalRegion b →
         c' ≤ dist x y := by
   obtain ⟨⟨hkI, -⟩, hfin, -⟩ := step_11_25_2_belt hT hZ hz
-  have hSk : L.S_star ≤ t k := L.S_star_le.trans (Layout.t_le_t (Finset.mem_Ico.1 hkI).1)
+  have hSk : L.stopScale ≤ t k := L.stopScale_le.trans (Layout.t_le_t (Finset.mem_Ico.1 hkI).1)
   refine ⟨1 / 128 * (t k : ℝ) ^ ρ₀, (hT.fine _ hSk).1, fun b _ hb hr hl x hx y hy ↦ ?_⟩
   rcases b with b' | ⟨m, c'⟩
   · -- D11.18: Lemma 11.5, belt half
@@ -432,7 +432,7 @@ theorem step_11_25_2_repl {m : Mark L.marks} {c : TileId InitId L.marks} {z : �
   classical
   obtain ⟨hm, hnt, i, hi, -⟩ := id hz
   have hu := half_eq hm
-  have hSu : L.S_star ≤ L.half m := by rw [hu]; exact hnt
+  have hSu : L.stopScale ≤ L.half m := by rw [hu]; exact hnt
   have hu1 : (1 : ℝ) ≤ L.half m := by
     linarith [((by norm_num : (1 : ℝ) ≤ 4).trans (le_max_left _ _)).trans L.Sstar_le]
   have hu1' : 1 ≤ L.half m := by exact_mod_cast hu1
@@ -509,7 +509,7 @@ theorem step_11_25_3_repl {m : Mark L.marks} {c : TileId InitId L.marks} {z : �
   obtain ⟨⟨hm, -⟩, hfin, -⟩ := step_11_25_2_repl hT hZ hz
   have hnt : L.repair.IsNonterminal m := hz.2.1
   have hu := half_eq hm
-  have hSu : L.S_star ≤ L.half m := by rw [hu]; exact hnt
+  have hSu : L.stopScale ≤ L.half m := by rw [hu]; exact hnt
   refine ⟨1 / 128 * (L.half m : ℝ) ^ ρ₀, (hT.fine _ hSu).1, fun b _ hb hr hl x hx y hy ↦ ?_⟩
   -- D11.18: Lemma 11.5, replacement half, `d(d(S))/2 > d(S)^{ρ₀}/4`
   have h := L.lemma_11_3.1.step_11_18_replacement hm hnt hb hl (birthGen_le_of_rank_le hr)
@@ -739,8 +739,8 @@ theorem prop_11_2 : TwoFamilyDecomposition := by
   let L : Layout :=
     { Z := cutSites Λ A, C₀ := C₀, k₀ := k₀, K := K
       a := fun k ↦ (step_11_9 o₂ (cutSites Λ A) C₀ k).choose
-      Z_nonempty := hZne, two_le_C₀ := hC₀2, lt_K := hK, S_star := S_star
-      Sstar_le := hSstar, S_star_le := (hk₀ k₀ le_rfl).1.2 }
+      Z_nonempty := hZne, two_le_C₀ := hC₀2, lt_K := hK, stopScale := S_star
+      Sstar_le := hSstar, stopScale_le := (hk₀ k₀ le_rfl).1.2 }
   have hsp : L.BeltSparse := fun k ↦ (step_11_9 o₂ (cutSites Λ A) C₀ k).choose_spec.1.trans
     (step_11_9 o₂ (cutSites Λ A) C₀ k).choose_spec.2
   have hT : L.Thresholds D₀' Ctpl' nStar CP CB :=

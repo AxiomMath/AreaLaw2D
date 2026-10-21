@@ -83,7 +83,7 @@ noncomputable def traceBilinForm (n : Type*) [Fintype n] :
     traceBilinForm n X Y = Matrix.trace (X * Y) := rfl
 
 /-- Projection of a finite matrix onto the traceless hyperplane along the identity. -/
-noncomputable def tracelessPart {d : ℕ} [NeZero d]
+noncomputable def tracelessPart {d : ℕ}
     (X : Matrix (Fin d) (Fin d) ℂ) : Matrix (Fin d) (Fin d) ℂ :=
   X - ((d : ℂ)⁻¹ * trace X) • 1
 

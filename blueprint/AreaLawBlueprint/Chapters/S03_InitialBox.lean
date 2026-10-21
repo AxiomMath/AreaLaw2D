@@ -353,7 +353,7 @@ _Used from._ {bpref "D3.11"}[D3.11], {bpref "D3.12"}[D3.12](a), {bpref "D3.13"}[
 
 :::
 
-:::definition "D3.15" (lean := "AreaLaw.F_box")
+:::definition "D3.15" (lean := "AreaLaw.boxEntropySup")
 *D3.15* — Def: $`F_{\rm box}(r)`
 
 Lines 588–594.
@@ -365,7 +365,7 @@ For an integer $`r\ge1`, $$`F_{\rm box}(r)=\sup S_\Omega(A\cap Q),` sup over adm
 :::proof "D3.15" (uses := "D3.3, D1.2, D1.3, D1.4")
 $`|A\cap Q|\le r^2`, $`S\le|A\cap Q|\log q`; larger $`r` allows more rectangles.
 
-_Formal route_ (RefactoringResult.md §5, D3.15): sup also over `D₀ > 2R+10` (`AreaLaw.F_box`, S03\_InitialBox.lean:165). Reason: the frozen `InitialBoxEstimate` puts `∃ C e₀` before `∀ D₀`, and `D₀` is real.
+_Formal route_ (RefactoringResult.md §5, D3.15): sup also over `D₀ > 2R+10` (`AreaLaw.boxEntropySup`, S03\_InitialBox.lean:165). Reason: the frozen `InitialBoxEstimate` puts `∃ C e₀` before `∀ D₀`, and `D₀` is real.
 
 _Used from._ {bpref "D3.3"}[D3.3], {bpref "D1.2"}[D1.2]–{bpref "D1.4"}[D1.4].
 

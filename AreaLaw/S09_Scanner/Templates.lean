@@ -24,6 +24,7 @@ parameters `(n, s₀)` is a nonempty finite `T = ⋃_{a ≤ N₀} (P_a ∩ ℤ²
 `≤ s₀` with all sides of slope `0, ∞, 1` or `-1`. `T` is separated from the cut if
 `dist_∞(T, Z) > 4 D₀ s₀` (`OpenAI.IsSeparatedFromCut`).
 2D only: the pieces are planar polygons with sides of slopes `0, ∞, ±1`. -/
+@[nolint defsWithUnderscore]
 abbrev def_9_3 (Ctpl : ℝ) (n s₀ : ℕ) (T : Finset (ℤ × ℤ)) : Prop := IsTemplate Ctpl n s₀ T
 
 /-! ## Template pieces as intersections of half-planes -/
@@ -506,7 +507,7 @@ If `F_box(r) ≤ C_e r^{1+e}` for `r ≥ 1`, `e > 0`, then
 `S_Ω(A ∩ Y) ≤ C_e (1 + 2/(2^e - 1)) B (2^K)^e`.
 2D only: `F_box` and safety are statements about rectangles of `ℤ²`. -/
 theorem step_9_18 {q R : ℕ} {J Δ e Ce D₀ : ℝ} (he : 0 < e) (hCe : 0 ≤ Ce)
-    (hD₀ : 2 * R + 10 < D₀) (hF : ∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e))
+    (hD₀ : 2 * R + 10 < D₀) (hF : ∀ r : ℕ, 1 ≤ r → boxEntropySup q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e))
     {Λ : Finset (ℤ × ℤ)}
     {Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (Qudits q) X) (Reg (Qudits q) X) ℂ}
     (hΦ : IsAdmissible Λ R J Φ) {Ω : Reg (Qudits q) Λ → ℂ} (hΩ : star Ω ⬝ᵥ Ω = 1) {E₀ : ℝ}
@@ -541,7 +542,7 @@ theorem step_9_18 {q R : ℕ} {J Δ e Ce D₀ : ℝ} (he : 0 < e) (hCe : 0 ≤ C
       push_cast
       exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left
         (pow_le_pow_right₀ (by norm_num) hcK) hD₀')
-    have := (le_F_box hD₀ hΦ hΩ hE hgap hA (isIntRect_dyadicSquare c.1 c.2) hsafe
+    have := (le_boxEntropySup hD₀ hΦ hΩ hE hgap hA (isIntRect_dyadicSquare c.1 c.2) hsafe
       (boxSize_dyadicSquare c.1 c.2).le).trans (hF _ Nat.one_le_two_pow)
     push_cast at this
     exact this
@@ -915,7 +916,7 @@ with an extra `n log q` after adding any part of the next row. `C'_e` depends on
 2D only: `F_box` and safe rectangles are planar. -/
 theorem step_9_21_2 (q R : ℕ) (J Δ e Ce : ℝ) (he : 0 < e) (hCe : 0 < Ce) :
     ∃ Ce' : ℝ, 0 < Ce' ∧ ∀ D₀ : ℝ, 2 * R + 10 < D₀ →
-      (∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) →
+      (∀ r : ℕ, 1 ≤ r → boxEntropySup q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) →
       ∀ (Λ : Finset (ℤ × ℤ))
         (Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (Qudits q) X) (Reg (Qudits q) X) ℂ),
         IsAdmissible Λ R J Φ →

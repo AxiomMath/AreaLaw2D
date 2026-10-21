@@ -261,6 +261,7 @@ def Step_5_2 : Prop :=
 /-- D5.4 (`eq:conditional-schatten`) with D5.6.2 (Hölder). Universal `c ≤ 1/8`, `C`: for a
 conditional pair `(ρ, Q)` with dimension `d` and `0 < a`, `a ℓ ≤ c`: `Z > 0`,
 `log Z ≤ 2a 𝔼L + C a² ℓ²`, and `Tr τ^{2a} K ≤ Z` for every `τ ≥ 0` with `Tr τ ≤ 1`. -/
+@[nolint defsWithUnderscore]
 def Step_5_4 : Prop :=
   ∃ c C : ℝ, 0 < c ∧ c ≤ 1 / 8 ∧ 0 < C ∧
     ∀ (n : Type u) [Fintype n] [DecidableEq n] (ρ Q : Matrix n n ℂ) (d : ℕ), IsCondPair ρ Q d →
@@ -272,6 +273,7 @@ def Step_5_4 : Prop :=
 /-- D5.6.2, D5.6.4 (`eq:conditional-overlap`), matrix level. For a conditional pair and
 `0 < a < 1/2`: `Tr K^r > 0`; for `τ ≥ 0`, `Tr τ^{2a} ξ^{[1-2a]} = Tr τ^{2a} K / Z`
 (`ξ^{[1-2a]} = K / Z`), and `Tr τ^{2a} K > 0` when `τ > 0`. -/
+@[nolint defsWithUnderscore]
 def Step_5_6 : Prop :=
   ∀ (n : Type u) [Fintype n] [DecidableEq n] (ρ Q : Matrix n n ℂ) (d : ℕ), IsCondPair ρ Q d →
     ∀ a : ℝ, 0 < a → a < 1 / 2 → 0 < trKr ρ Q a ∧
@@ -282,6 +284,7 @@ def Step_5_6 : Prop :=
 
 /-- D5.7 (`eq:conditional-hellinger`), matrix level. Universal `c, C`: for a conditional pair
 and `0 < a`, `a ℓ ≤ c`: `ξ` is a density matrix and `H² = ‖√ρ − √ξ‖₂² ≤ C a ℓ²`. -/
+@[nolint defsWithUnderscore]
 def Step_5_7_matrix : Prop :=
   ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     ∀ (n : Type u) [Fintype n] [DecidableEq n] (ρ Q : Matrix n n ℂ) (d : ℕ), IsCondPair ρ Q d →
@@ -294,6 +297,7 @@ def Step_5_7_matrix : Prop :=
 for a conditional pair `(ρ, Q)`, a density matrix `ξ`, `τ > 0` with `Tr τ ≤ 1`, `0 < a ≤ 1/4`,
 `λ ≥ 0` with `Tr τ^{2a} ξ^{[1-2a]} ≥ e^{-2λ}`, and real `u`:
 `‖(τ^{-iau} − Q^{-iau}) √ρ‖₂ ≤ C (1+|u|) (√λ + √a ℓ + ‖√ρ − √ξ‖₂)`. -/
+@[nolint defsWithUnderscore]
 def Step_5_9 : Prop :=
   ∃ C : ℝ, 0 < C ∧
     ∀ (n : Type u) [Fintype n] [DecidableEq n] (ρ Q ξ τ : Matrix n n ℂ) (d : ℕ),
@@ -311,6 +315,7 @@ def Step_5_9 : Prop :=
 /-- D5.2 at the region level, with (F1) for D5.6.2. For a unit `θ` and disjoint `X, E`:
 `(ρ_{XE}, I_X ⊗ ρ̂_E)` is a conditional pair with `d = dim X`, its `𝔼 L` is `-S(X|E)_θ`, and
 `‖τ^{[a]} ρ̂_E^{-a} θ‖² = Tr τ^{[2a]} K` for `τ ≥ 0`, `a > 0`. -/
+@[nolint defsWithUnderscore]
 def Step_5_2_region : Prop :=
   ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]
     [∀ i, DecidableEq (loc i)] (Λ X E : Finset σ) (hX : X ⊆ Λ) (hE : E ⊆ Λ), Disjoint X E →
@@ -326,6 +331,7 @@ def Step_5_2_region : Prop :=
           Kmat (marg θ (Finset.union_subset hX hE)) (Qmat θ hE X) a).trace.re
 
 /-- D5.5.A. For a unit `θ` on `P ⊔ X ⊔ U ⊔ F`: `I(X:F|U)_θ = S(X|P)_θ + S(X|U)_θ`. -/
+@[nolint defsWithUnderscore]
 def Step_5_5_A : Prop :=
   ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]
     [∀ i, DecidableEq (loc i)] (Λ P X U F : Finset σ) (hP : P ⊆ Λ) (hX : X ⊆ Λ) (hU : U ⊆ Λ)
@@ -349,6 +355,7 @@ def Step_5_9_1 : Prop :=
 
 /-- D5.5.3. `G` is entire, bounded on the closed strip `0 ≤ Re z ≤ 1`, and `G(1/2)` is the vector
 of Lemma 5.1, for `σ ≥ 0` on `XP`, `τ > 0` on `XU`. -/
+@[nolint defsWithUnderscore]
 def Step_5_5_3 : Prop :=
   ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]
     [∀ i, DecidableEq (loc i)] (Λ P X U : Finset σ) (hP : P ⊆ Λ) (hX : X ⊆ Λ) (hU : U ⊆ Λ)
@@ -396,6 +403,7 @@ def Step_5_10_1 : Prop :=
 
 /-- D5.10.3 (Lemma 2.1 with `D = X`, `E = P`, and D2.5). For unit `θ, θ'` and disjoint `X, P`:
 `|S(X|P)_{θ'} − S(X|P)_θ| ≤ 4 √‖θ' − θ‖ ℓ`, `ℓ = log(e dim X)`. -/
+@[nolint defsWithUnderscore]
 def Step_5_10_3 : Prop :=
   ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]
     [∀ i, DecidableEq (loc i)] (Λ X P : Finset σ) (hX : X ⊆ Λ) (hP : P ⊆ Λ), Disjoint X P →
@@ -406,6 +414,7 @@ def Step_5_10_3 : Prop :=
         ℓ (Fintype.card (Reg loc X))
 
 /-- D5.5.2. **Lemma 5.1** for faithful `τ` (`Lemma_5_1` with `τ > 0`). -/
+@[nolint defsWithUnderscore]
 def Lemma_5_1_faithful : Prop :=
   ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]

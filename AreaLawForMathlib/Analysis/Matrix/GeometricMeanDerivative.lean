@@ -67,7 +67,7 @@ namespace Matrix
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /-- The Hermitian matrices, the domain along which matrix means are differentiated. -/
-def hermitianSet (n : Type*) [Fintype n] : Set (Matrix n n ℂ) := {X | X.IsHermitian}
+def hermitianSet (n : Type*) : Set (Matrix n n ℂ) := {X | X.IsHermitian}
 
 /-- A real power of a matrix is Hermitian (the functional calculus returns a positive
 semidefinite matrix). -/
@@ -105,6 +105,7 @@ theorem posDef_of_norm_sub_lt {C X : Matrix n n ℂ} {c : ℝ}
   simpa using (PosDef.one.smul hr).add_posSemidef hXr
 
 set_option linter.unusedDecidableInType false in
+set_option linter.unusedFintypeInType false in
 /-- Hermitian matrices near a positive definite matrix are positive definite. -/
 theorem eventually_posDef_nhdsWithin {C : Matrix n n ℂ} (hC : C.PosDef) :
     ∀ᶠ X in 𝓝[hermitianSet n] C, X.PosDef := by

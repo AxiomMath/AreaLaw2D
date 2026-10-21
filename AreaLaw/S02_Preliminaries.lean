@@ -81,7 +81,7 @@ noncomputable abbrev traceDist {ι : Type*} [Fintype ι] (ρ τ : MState ι ℂ)
   ρ.toSubState.D₁ τ.toSubState
 
 /-- D2.4.4. `C_h = 1 + 2/e`, the constant of `h(u) ≤ C_h √u`. -/
-noncomputable def C_h : ℝ := 1 + 2 / Real.exp 1
+noncomputable def binEntropyConst : ℝ := 1 + 2 / Real.exp 1
 
 section Lemma21
 
@@ -95,7 +95,8 @@ variable {D E : Type*} [Fintype D] [DecidableEq D] [Fintype E] [DecidableEq E]
 /-- D2.4.4. For `0 ≤ δ ≤ 1` and `d ≥ 1`:
 `2δ log d + (1+δ) h(δ/(1+δ)) ≤ 2 C_h √δ log(e d)`, from `h(u) ≤ C_h √u`. -/
 theorem step_2_4_4 {δ d : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) (hd : 1 ≤ d) :
-    2 * δ * log d + (1 + δ) * binEntropy (δ / (1 + δ)) ≤ 2 * C_h * √δ * log (exp 1 * d) := by
+    2 * δ * log d + (1 + δ) * binEntropy (δ / (1 + δ)) ≤
+      2 * binEntropyConst * √δ * log (exp 1 * d) := by
   -- `-t log t ≤ 1/e`
   have hη (t : ℝ) (ht : 0 < t) : -(t * log t) ≤ (exp 1)⁻¹ := by
     have h := log_le_sub_one_of_pos (show 0 < t⁻¹ / exp 1 by positivity)
@@ -104,8 +105,8 @@ theorem step_2_4_4 {δ d : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) (hd : 1 ≤ 
       _ ≤ t * (t⁻¹ / exp 1) := mul_le_mul_of_nonneg_left (by linarith) ht.le
       _ = (exp 1)⁻¹ := by field_simp
   -- `h(u) ≤ C_h √u`
-  have hh (u : ℝ) (hu0 : 0 ≤ u) (hu1 : u ≤ 1) : binEntropy u ≤ C_h * √u := by
-    rw [binEntropy_eq_negMulLog_add_negMulLog_one_sub, C_h]
+  have hh (u : ℝ) (hu0 : 0 ≤ u) (hu1 : u ≤ 1) : binEntropy u ≤ binEntropyConst * √u := by
+    rw [binEntropy_eq_negMulLog_add_negMulLog_one_sub, binEntropyConst]
     have h₁ : negMulLog u ≤ 2 / exp 1 * √u := by
       rcases hu0.eq_or_lt with rfl | hu
       · simp
@@ -127,21 +128,22 @@ theorem step_2_4_4 {δ d : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) (hd : 1 ≤ 
   have hsq : √(δ / (1 + δ)) ≤ √δ := sqrt_le_sqrt hu1
   have hδsq : δ ≤ √δ := by
     nlinarith [mul_self_sqrt hδ0, sqrt_nonneg δ, sqrt_le_one.2 hδ1]
-  have hC : 1 ≤ C_h := by rw [C_h]; have := exp_pos 1; linarith [div_pos two_pos this]
+  have hC : 1 ≤ binEntropyConst := by
+    rw [binEntropyConst]; have := exp_pos 1; linarith [div_pos two_pos this]
   have hlog : 0 ≤ log d := log_nonneg hd
   have hH := hh _ hu0 (hu1.trans hδ1)
   have hc : 0 < 1 + δ := by linarith
-  have hA : (1 + δ) * binEntropy (δ / (1 + δ)) ≤ 2 * C_h * √δ :=
-    calc (1 + δ) * binEntropy (δ / (1 + δ)) ≤ (1 + δ) * (C_h * √(δ / (1 + δ))) :=
+  have hA : (1 + δ) * binEntropy (δ / (1 + δ)) ≤ 2 * binEntropyConst * √δ :=
+    calc (1 + δ) * binEntropy (δ / (1 + δ)) ≤ (1 + δ) * (binEntropyConst * √(δ / (1 + δ))) :=
           mul_le_mul_of_nonneg_left hH hc.le
-      _ ≤ 2 * (C_h * √δ) := mul_le_mul (by linarith)
+      _ ≤ 2 * (binEntropyConst * √δ) := mul_le_mul (by linarith)
           (mul_le_mul_of_nonneg_left hsq (by linarith)) (by positivity) (by norm_num)
-      _ = 2 * C_h * √δ := by ring
-  have hB : δ * log d ≤ C_h * √δ * log d := by
+      _ = 2 * binEntropyConst * √δ := by ring
+  have hB : δ * log d ≤ binEntropyConst * √δ * log d := by
     have h₁ := mul_le_mul_of_nonneg_right hδsq hlog
-    have h₂ : √δ * log d ≤ C_h * (√δ * log d) :=
+    have h₂ : √δ * log d ≤ binEntropyConst * (√δ * log d) :=
       le_mul_of_one_le_left (mul_nonneg (sqrt_nonneg δ) hlog) hC
-    linarith [show C_h * √δ * log d = C_h * (√δ * log d) by ring]
+    linarith [show binEntropyConst * √δ * log d = binEntropyConst * (√δ * log d) by ring]
   rw [log_mul (exp_pos 1).ne' (by linarith), log_exp]
   nlinarith [hA, hB]
 
@@ -257,9 +259,9 @@ theorem lemma_2_1 {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [∀ i, Fin
   refine ⟨h₁, h₁.trans (h₂.trans ?_)⟩
   -- D2.4.4: the paper's constant `2 C_h` is at most the statement's `4`
   have he : 2 ≤ exp 1 := by linarith [add_one_le_exp (1 : ℝ)]
-  have hC : 2 * C_h ≤ 4 := by
+  have hC : 2 * binEntropyConst ≤ 4 := by
     have := (div_le_one (exp_pos 1)).2 he
-    rw [C_h]; linarith
+    rw [binEntropyConst]; linarith
   have hl : 0 ≤ log (exp 1 * Fintype.card (Reg loc X)) := log_nonneg (by nlinarith)
   have := mul_le_mul_of_nonneg_right hC (mul_nonneg (sqrt_nonneg
     (TrDistance (unionState ρ hd hX hY) (unionState τ hd hX hY))) hl)
@@ -353,8 +355,7 @@ def IsAdmissible {loc : σ → Type*} [∀ i, Fintype (loc i)]
   ∀ X ⊆ Λ, (Φ X).IsHermitian ∧ ‖Φ X‖ ≤ J ∧ (X ∉ supports G Λ R → Φ X = 0)
 
 /-- The Hamiltonian `H = ∑_X h_X` of eq. (1.1), each term extended by the identity. -/
-noncomputable def hamiltonian {loc : σ → Type*} [∀ i, Fintype (loc i)]
-    [∀ i, DecidableEq (loc i)]
+noncomputable def hamiltonian {loc : σ → Type*} [∀ i, DecidableEq (loc i)]
     (Λ : Finset σ) (Φ : (X : Finset σ) → Matrix (Reg loc X) (Reg loc X) ℂ) :
     Matrix (Reg loc Λ) (Reg loc Λ) ℂ :=
   ∑ X ∈ Λ.powerset.attach, extendId (Finset.mem_powerset.1 X.2) (Φ X.1)

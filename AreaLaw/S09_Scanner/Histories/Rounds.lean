@@ -26,12 +26,12 @@ section PhysReg
 
 variable {τ : Type*} {Q P Y F : Finset τ}
 
-@[simp] theorem phys_mem_physReg {v : τ} : Site.phys v ∈ physReg Q ↔ v ∈ Q :=
+theorem phys_mem_physReg {v : τ} : Site.phys v ∈ physReg Q ↔ v ∈ Q :=
   Finset.mem_map' ⟨Site.phys, fun _ _ h => Site.phys.inj h⟩
 
-@[simp] theorem C_not_mem_physReg : Site.C ∉ physReg Q := by simp [physReg]
+theorem C_not_mem_physReg : Site.C ∉ physReg Q := by simp [physReg]
 
-@[simp] theorem R_not_mem_physReg : Site.R ∉ physReg Q := by simp [physReg]
+theorem R_not_mem_physReg : Site.R ∉ physReg Q := by simp [physReg]
 
 theorem physReg_subset_iff : physReg Q ⊆ physReg P ↔ Q ⊆ P := Finset.map_subset_map
 

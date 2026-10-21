@@ -100,7 +100,7 @@ hypotheses of Proposition 9.2 hold with this `e`: `scanner:test-geometry` (`|T| 
 depends only on `e`, `C_e`. 2D only: `F_box` is defined over planar safe rectangles. -/
 theorem step_9_21 (q R : ℕ) (J Δ e Ce : ℝ) (he : 0 < e) (hCe : 0 < Ce) :
     ∃ Ce' : ℝ, 0 < Ce' ∧ ∀ D₀ : ℝ, 2 * R + 10 < D₀ →
-      (∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) →
+      (∀ r : ℕ, 1 ≤ r → boxEntropySup q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) →
       ∀ (Λ : Finset (ℤ × ℤ))
         (Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (OpenAI.Qudits q) X) (Reg (OpenAI.Qudits q) X) ℂ),
         OpenAI.IsAdmissible Λ R J Φ →
@@ -148,7 +148,7 @@ theorem step_9_21 (q R : ℕ) (J Δ e Ce : ℝ) (he : 0 < e) (hCe : 0 < Ce) :
       mul_le_mul_of_nonneg_right hD₀1 (Nat.cast_nonneg _)
     linarith
   · -- D9.21.3: `S_Ω(A ∩ T) ≤ F_box(s₀) ≤ C_e s₀^{1+e} ≤ C_e n^{1+e}`
-    refine (le_F_box hD₀ hΦ hΩ hE hgap hA hT hsafe le_rfl).trans ((hF _ hs₀).trans ?_)
+    refine (le_boxEntropySup hD₀ hΦ hΩ hE hgap hA hT hsafe le_rfl).trans ((hF _ hs₀).trans ?_)
     gcongr
   · -- D9.21.2: the shell entropy, squares of side `≤ L` safe since `(D₀ + 1) L ≤ D₀ s₀`
     have hLs : (D₀ + 1) * (L' : ℝ) ≤ D₀ * boxSize T := by
@@ -376,6 +376,7 @@ open Comparators
 variable {σ : Type*} [Fintype σ] [DecidableEq σ] {nd : σ → ℕ} {Dt : PhysData nd}
   {X : Finset σ} {K' : ℕ} {St : Type*} [Fintype St] [DecidableEq St]
 
+omit [Fintype St] [DecidableEq St] in
 /-- D9.23 (`scanner:bootstrap-comparison`). Let the rough comparisons of Proposition 8.1 hold
 with `s = 1/4`, `W = aK = 4`, `0 < τ < 1/2`, and the constant `C ≥ 0` of the lower one; let the
 selected point have `E_def,k ≤ Ē + o_k(1)` for every `k ≥ 1`, with the relative loss
@@ -515,9 +516,9 @@ theorem step_9_24_5 {P : ℝ → Prop} {e₀ eS ℓ' : ℝ} (he₀ : 0 < e₀) (
 2D only: `F_box` is defined over planar safe rectangles. -/
 theorem step_9_24 (h92 : Prop_9_2.{0}) {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hΔ : 0 < Δ)
     {e₀ : ℝ} (he₀ : 0 < e₀) (he₀₁ : e₀ < 1) {e Ce : ℝ} (heS : Collar.eStar < e) (he : e ≤ e₀)
-    (hCe : 0 < Ce) (hF : ∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) :
+    (hCe : 0 < Ce) (hF : ∀ r : ℕ, 1 ≤ r → boxEntropySup q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) :
     ∃ C'' : ℝ, ∀ r : ℕ, 1 ≤ r →
-      F_box q R J Δ r ≤ C'' * (r : ℝ) ^ (1 + (1 - SmallBox.ℓ e₀) * e) := by
+      boxEntropySup q R J Δ r ≤ C'' * (r : ℝ) ^ (1 + (1 - SmallBox.ℓ e₀) * e) := by
   have : NeZero q := ⟨by omega⟩
   -- D9.20
   obtain ⟨-, -, -, hℓ, hℓ₁, hκ, hκμ, hμ, hν, -, hκS, hκe, hW1, -⟩ := step_9_20 he₀ he₀₁
@@ -730,7 +731,7 @@ theorem prop_9_5_of (h92 : Prop_9_2.{0}) : Prop_9_5 := by
   intro q R J Δ hq hJ hΔ
   -- D3.16 (Proposition 3.3): `e₀ ∈ (0, 1)` and `F_box(r) ≤ C r^{1+e₀}`
   obtain ⟨C₀, e₀, he₀, he₀₁, h33⟩ := prop_3_3 (R := R) hq hJ hΔ
-  have hF₀ : ∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ max C₀ 1 * (r : ℝ) ^ (1 + e₀) := fun r hr =>
+  have hF₀ : ∀ r : ℕ, 1 ≤ r → boxEntropySup q R J Δ r ≤ max C₀ 1 * (r : ℝ) ^ (1 + e₀) := fun r hr =>
     Real.sSup_le (fun s hs => by
       obtain ⟨D₀, hD₀, Λ, Φ, hΦ, Ω, hΩ, E₀, hE, hgap, A, hA, Q, hQ, hs, hQr, rfl⟩ := hs
       exact (h33 D₀ hD₀ Λ Φ hΦ Ω hΩ E₀ hE hgap A hA Q r hr hQ hs hQr).trans
@@ -738,7 +739,8 @@ theorem prop_9_5_of (h92 : Prop_9_2.{0}) : Prop_9_5 := by
   obtain ⟨-, -, -, hℓ, hℓ₁, -⟩ := step_9_20 he₀ he₀₁
   -- D9.19: if `e₀ ≤ e_*` done; else D9.20–D9.24 improve `e ↦ (1-ℓ)e`, D9.24.5 iterates
   obtain ⟨C, -, hC⟩ := step_9_24_5
-    (P := fun e => ∃ C : ℝ, 0 < C ∧ ∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ C * (r : ℝ) ^ (1 + e))
+    (P := fun e => ∃ C : ℝ, 0 < C ∧ ∀ r : ℕ, 1 ≤ r →
+      boxEntropySup q R J Δ r ≤ C * (r : ℝ) ^ (1 + e))
     he₀ hℓ hℓ₁ (by norm_num [Collar.eStar] : (0 : ℝ) < Collar.eStar)
     ⟨max C₀ 1, by positivity, hF₀⟩
     (fun e heS he ⟨Ce, hCe, hF⟩ => by

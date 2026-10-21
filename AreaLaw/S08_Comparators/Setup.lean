@@ -325,7 +325,7 @@ noncomputable def gpost (s : St) (g : Fin K) : ℝ :=
 
 /-- D8.8 (`comparator:rough-upper`), `s = 1/4`, `W = aK`:
 `-log N²/k ≤ 2 log d_* - log z + 2sW (2B_sh/z + 2B_exc) + o_k(1)`, uniformly in the tree. -/
-def RoughUpper [Fintype St] [DecidableEq St] (a : ℝ)
+def RoughUpper (a : ℝ)
     (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))) (Bsh Bexc : ℝ) : Prop :=
   ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ k : ℕ, 0 < k → ∀ T : Transport.MeanTree St,
     -Real.log (N2 D Γ E T a k (l k)) / k ≤
@@ -334,7 +334,7 @@ def RoughUpper [Fintype St] [DecidableEq St] (a : ℝ)
 /-- D8.8 (`comparator:rough-lower`), `h` the binary entropy:
 `-log N²/k ≥ 2sW [2S' - C(τ log d_* + h(τ)/a) - C (E_def/τ) S'] - o_k(1)`, uniformly in the
 tree. -/
-def RoughLower [Fintype St] [DecidableEq St] (C a τ : ℝ)
+def RoughLower (C a τ : ℝ)
     (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))) : Prop :=
   ∃ r : ℕ → ℝ, Tendsto r atTop (𝓝 0) ∧ ∀ k : ℕ, 0 < k → ∀ T : Transport.MeanTree St,
     2 * (1 / 4) * (a * K) * (2 * E.S' - C * (τ * Real.log E.d + Real.binEntropy τ / a) -

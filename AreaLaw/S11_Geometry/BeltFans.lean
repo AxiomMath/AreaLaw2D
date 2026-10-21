@@ -182,9 +182,9 @@ structure Layout where
   two_le_C₀ : 2 ≤ C₀
   lt_K : k₀ < K
   /-- The stopping scale `S_*` of the repair, at least `Sstar`. -/
-  S_star : ℝ
-  Sstar_le : Sstar ≤ S_star
-  S_star_le : S_star ≤ t k₀
+  stopScale : ℝ
+  Sstar_le : Sstar ≤ stopScale
+  stopScale_le : stopScale ≤ t k₀
 
 /-- D11.11. The raw pieces of the plane: the dummy tile `N_{k₀}`, the exterior tile outside
 `N_K`, the primary `j` of layer `k`, and the belt cell `w` of layer `k`. -/
@@ -320,7 +320,7 @@ lemma mem_D_lev {x : ℝ × ℝ} {k : ℕ} (h : L.lev x = k + 1) : pt x ∈ D o�
 
 lemma two_le_floor {k : ℕ} (hk : L.k₀ ≤ k) : 2 ≤ ⌊ζ * k⌋₊ := by
   have h4 : (4 : ℝ) ≤ 2 ^ ⌊ζ * L.k₀⌋₊ :=
-    (le_max_left _ _).trans (L.Sstar_le.trans (L.S_star_le.trans (t_eq _).le))
+    (le_max_left _ _).trans (L.Sstar_le.trans (L.stopScale_le.trans (t_eq _).le))
   by_contra h; push Not at h
   have : ⌊ζ * L.k₀⌋₊ ≤ 1 := by have := floor_zeta_mono hk; omega
   have : (2 : ℝ) ^ ⌊ζ * L.k₀⌋₊ ≤ 2 ^ 1 := pow_le_pow_right₀ (by norm_num) this

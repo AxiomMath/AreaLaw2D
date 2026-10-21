@@ -163,7 +163,7 @@ def boxEntropies (r : ℕ) : Set ℝ :=
 /-- D3.15. For an integer `r ≥ 1`, `F_box(r) = sup S_Ω(A ∩ Q)`, sup over admissible `H` (unique
 ground vector, gap `Δ`), domains `Λ`, cuts `A ⊆ Λ`, safe integer rectangles `Q` of size `≤ r`;
 `q, R, J, Δ` fixed. `F_box` nondecreasing, `0 ≤ F_box(r) ≤ r² log q`. -/
-noncomputable def F_box (r : ℕ) : ℝ := sSup (boxEntropies q R J Δ r)
+noncomputable def boxEntropySup (r : ℕ) : ℝ := sSup (boxEntropies q R J Δ r)
 
 variable {q R J Δ}
 
@@ -177,24 +177,25 @@ theorem le_of_mem_boxEntropies {r : ℕ} {s : ℝ} (hs : s ∈ boxEntropies q R 
   exact_mod_cast (card_le_card inter_subset_right).trans
     ((card_le_boxSize_sq Q).trans (Nat.pow_le_pow_left hQ 2))
 
-theorem F_box_nonneg (r : ℕ) : 0 ≤ F_box q R J Δ r :=
+theorem boxEntropySup_nonneg (r : ℕ) : 0 ≤ boxEntropySup q R J Δ r :=
   Real.sSup_nonneg fun _ hs => (le_of_mem_boxEntropies hs).1
 
-theorem le_F_box {D₀ : ℝ} (hD₀ : 2 * R + 10 < D₀) {Λ : Finset (ℤ × ℤ)}
+theorem le_boxEntropySup {D₀ : ℝ} (hD₀ : 2 * R + 10 < D₀) {Λ : Finset (ℤ × ℤ)}
     {Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (Qudits q) X) (Reg (Qudits q) X) ℂ}
     (hΦ : IsAdmissible Λ R J Φ) {Ω : Reg (Qudits q) Λ → ℂ} (hΩ : star Ω ⬝ᵥ Ω = 1) {E₀ : ℝ}
     (hE : hamiltonian Λ Φ *ᵥ Ω = (E₀ : ℂ) • Ω) (hgap : HasGlobalGap (hamiltonian Λ Φ) Ω E₀ Δ)
     {A : Finset (ℤ × ℤ)} (hA : A ⊆ Λ) {Q : Finset (ℤ × ℤ)} (hQ : IsIntRect Q)
     (hs : IsSafe D₀ Λ A Q) {r : ℕ} (hr : boxSize Q ≤ r) :
-    (pureState Ω hΩ).regionEntropy (inter_subset_left.trans hA : A ∩ Q ⊆ Λ) ≤ F_box q R J Δ r :=
+    (pureState Ω hΩ).regionEntropy (inter_subset_left.trans hA : A ∩ Q ⊆ Λ) ≤
+      boxEntropySup q R J Δ r :=
   le_csSup ⟨_, fun _ hs => (le_of_mem_boxEntropies hs).2⟩
     ⟨D₀, hD₀, Λ, Φ, hΦ, Ω, hΩ, E₀, hE, hgap, A, hA, Q, hQ, hs, hr, rfl⟩
 
-theorem F_box_mono : Monotone (F_box q R J Δ) := by
+theorem boxEntropySup_mono : Monotone (boxEntropySup q R J Δ) := by
   intro r r' hrr
-  refine Real.sSup_le (fun s hs => ?_) (F_box_nonneg r')
+  refine Real.sSup_le (fun s hs => ?_) (boxEntropySup_nonneg r')
   obtain ⟨D₀, hD₀, Λ, Φ, hΦ, Ω, hΩ, E₀, hE, hgap, A, hA, Q, hQ, hs, hQr, rfl⟩ := hs
-  exact le_F_box hD₀ hΦ hΩ hE hgap hA hQ hs (hQr.trans hrr)
+  exact le_boxEntropySup hD₀ hΦ hΩ hE hgap hA hQ hs (hQr.trans hrr)
 
 end D315
 
@@ -270,7 +271,7 @@ open Matrix
 noncomputable def p₀ (Cpad : ℕ) : ℝ := 1 / (2 * Cpad + 5 : ℝ) ^ 2
 
 /-- D3.16.2. `B_M = 4 (C_pad + 2) M`. -/
-def B_M (Cpad M : ℕ) : ℕ := 4 * (Cpad + 2) * M
+def noninteriorBound (Cpad M : ℕ) : ℕ := 4 * (Cpad + 2) * M
 
 /-- Telescoping chain rule along an order `π` of the children (child `i` sits at position `π i`). -/
 theorem step_3_16_3_chain {σ : Type*} [DecidableEq σ] {n : ℕ} (X : Fin n → Finset σ)
@@ -460,7 +461,8 @@ theorem step_3_16_3 (ρ : Arealaw.MState (Reg loc Λ) ℂ) (hA : A ⊆ Λ) (hab 
             (A ∩ ambientDilation Q₀ (Cpad * r)) \ (A ∩ Q₀) ⊆ Λ) ≤
       ρ.regionEntropy (inter_subset_left.trans hA : A ∩ Q₀ ⊆ Λ) / 2 + Cbuf * r) :
     ρ.regionEntropy (inter_subset_left.trans hA : A ∩ Icc a b ⊆ Λ) ≤
-      ((1 - p₀ Cpad / 2) * M ^ 2 + p₀ Cpad / 2 * B_M Cpad M) * F + Cbuf * M ^ 2 * r := by
+      ((1 - p₀ Cpad / 2) * M ^ 2 + p₀ Cpad / 2 * noninteriorBound Cpad M) * F +
+        Cbuf * M ^ 2 * r := by
   classical
   set nx := nChunks₁ a b r
   set ny := nChunks₂ a b r
@@ -538,7 +540,7 @@ theorem step_3_16_3 (ρ : Arealaw.MState (Reg loc Λ) ℂ) (hA : A ⊆ Λ) (hab 
   have hF0 : 0 ≤ F := (SubState.regionEntropy_nonneg _ _).trans (hF (Icc a a) ⟨a, a, le_rfl, rfl⟩
     (Icc_subset_Icc_right hab)
     (by rw [boxSize_Icc le_rfl]; simpa only [add_sub_cancel_left, Int.toNat_one, max_self]))
-  have hbad : #(univ \ G) ≤ B_M Cpad M := by
+  have hbad : #(univ \ G) ≤ noninteriorBound Cpad M := by
     have hsub : (univ \ G).map e.symm.toEmbedding ⊆
         (univ.filter fun i : Fin nx => ¬(Cpad ≤ i.val ∧ i.val + Cpad + 2 ≤ nx)) ×ˢ univ ∪
           univ ×ˢ univ.filter fun j : Fin ny => ¬(Cpad ≤ j.val ∧ j.val + Cpad + 2 ≤ ny) := by
@@ -550,7 +552,8 @@ theorem step_3_16_3 (ρ : Arealaw.MState (Reg loc Λ) ℂ) (hA : A ⊆ Λ) (hab 
       tauto
     rw [← card_map e.symm.toEmbedding]
     refine (card_le_card hsub).trans ((card_union_le _ _).trans ?_)
-    rw [card_product, card_product, card_univ, card_univ, Fintype.card_fin, Fintype.card_fin, B_M]
+    rw [card_product, card_product, card_univ, card_univ, Fintype.card_fin, Fintype.card_fin,
+      noninteriorBound]
     have := Nat.mul_le_mul (card_not_interior_le nx Cpad) hny
     have := Nat.mul_le_mul hnx (card_not_interior_le ny Cpad)
     nlinarith
@@ -568,17 +571,17 @@ theorem step_3_16_3 (ρ : Arealaw.MState (Reg loc Λ) ℂ) (hA : A ⊆ Λ) (hab 
   have hg := sum_le_card_nsmul G _ _ fun k _ => hXF k
   have hb := sum_le_card_nsmul (univ \ G) _ _ fun k _ => hXF k
   rw [nsmul_eq_mul] at hg hb
-  have hbad' : (#(univ \ G) : ℝ) ≤ B_M Cpad M := by exact_mod_cast hbad
+  have hbad' : (#(univ \ G) : ℝ) ≤ noninteriorBound Cpad M := by exact_mod_cast hbad
   have h1 : (1 - p₀ Cpad / 2) * ∑ k ∈ G, ρ.regionEntropy (hX k) ≤ (1 - p₀ Cpad / 2) * (#G * F) :=
     mul_le_mul_of_nonneg_left hg (by linarith)
   have h2 : (#G : ℝ) * (Cbuf * r) ≤ M ^ 2 * (Cbuf * r) :=
     mul_le_mul_of_nonneg_right (by linarith [(#(univ \ G)).cast_nonneg (α := ℝ)]) (by positivity)
   have hc1 : (1 - p₀ Cpad / 2) * (#G + #(univ \ G)) ≤ (1 - p₀ Cpad / 2) * M ^ 2 :=
     mul_le_mul_of_nonneg_left hcard (by linarith)
-  have hc2 : p₀ Cpad / 2 * #(univ \ G) ≤ p₀ Cpad / 2 * B_M Cpad M :=
+  have hc2 : p₀ Cpad / 2 * #(univ \ G) ≤ p₀ Cpad / 2 * noninteriorBound Cpad M :=
     mul_le_mul_of_nonneg_left hbad' (by linarith)
   have h3 : (1 - p₀ Cpad / 2) * (#G * F) + #(univ \ G) * F ≤
-      ((1 - p₀ Cpad / 2) * M ^ 2 + p₀ Cpad / 2 * B_M Cpad M) * F := by
+      ((1 - p₀ Cpad / 2) * M ^ 2 + p₀ Cpad / 2 * noninteriorBound Cpad M) * F := by
     rw [show (1 - p₀ Cpad / 2) * (#G * F) + #(univ \ G) * F = ((1 - p₀ Cpad / 2) *
       (#G + #(univ \ G)) + p₀ Cpad / 2 * #(univ \ G)) * F by ring]
     exact mul_le_mul_of_nonneg_right (by linarith) hF0
@@ -597,16 +600,17 @@ theorem prop_3_3 {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 <
   have hp : 0 < p ∧ p ≤ 1 / 25 := ⟨by simp only [p, p₀]; positivity, by
     simp only [p, p₀]; gcongr; nlinarith [(Cpad.cast_nonneg : (0 : ℝ) ≤ Cpad)]⟩
   -- D3.16.4 (eq:initial-box-recursion)
-  have hrec : ∀ M r, 1 ≤ r → F_box q R J Δ (M * r) ≤
-      ((1 - p / 2) * M ^ 2 + p / 2 * B_M Cpad M) * F_box q R J Δ r + c * M ^ 2 * r := by
+  have hrec : ∀ M r, 1 ≤ r → boxEntropySup q R J Δ (M * r) ≤
+      ((1 - p / 2) * M ^ 2 + p / 2 * noninteriorBound Cpad M) * boxEntropySup q R J Δ r +
+        c * M ^ 2 * r := by
     refine fun M r hr => Real.sSup_le (fun s hs => ?_) (add_nonneg (mul_nonneg (add_nonneg
       (mul_nonneg (by linarith) (by positivity)) (mul_nonneg (by linarith) (by positivity)))
-      (F_box_nonneg r)) (by positivity))
+      (boxEntropySup_nonneg r)) (by positivity))
     obtain ⟨D₀, hD₀, Λ, Φ, hΦ, Ω, hΩ, E₀, hE, hgap, A, hA, Q, ⟨a, b, hab, rfl⟩, hs, hQr, rfl⟩ := hs
     have hD₀' : 0 ≤ D₀ := by linarith [(by positivity : (0 : ℝ) ≤ 2 * R + 10)]
     exact step_3_16_3 (pureState Ω hΩ) hA hab hr (hQr.trans (by rw [mul_comm]))
       (fun Q₀ hQ₀ hsub hsz =>
-        le_F_box hD₀ hΦ hΩ hE hgap hA hQ₀ (IsSafe.subset' hs hD₀' hsub) hsz)
+        le_boxEntropySup hD₀ hΦ hΩ hE hgap hA hQ₀ (IsSafe.subset' hs hD₀' hsub) hsz)
       (le_max_right _ _) fun Q₀ hQ₀ hsz hdil =>
         (hbuf D₀ hD₀ Λ Φ hΦ Ω hΩ E₀ hE hgap A hA _ ⟨a, b, hab, rfl⟩ hs r hr Q₀
         hQ₀ hsz hdil).trans (by gcongr; exact le_max_left _ _)
@@ -615,19 +619,20 @@ theorem prop_3_3 {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 <
   set lam : ℝ := (1 - p / 4) * M ^ 2
   have hM : (32 : ℝ) ≤ M := by
     simp only [M]; push_cast; linarith [(Cpad.cast_nonneg : (0 : ℝ) ≤ Cpad)]
-  have hBM : (B_M Cpad M : ℝ) ≤ M ^ 2 / 4 := by
-    simp only [B_M, M]; push_cast; nlinarith [(Cpad.cast_nonneg : (0 : ℝ) ≤ Cpad)]
+  have hBM : (noninteriorBound Cpad M : ℝ) ≤ M ^ 2 / 4 := by
+    simp only [noninteriorBound, M]; push_cast; nlinarith [(Cpad.cast_nonneg : (0 : ℝ) ≤ Cpad)]
   have hMlam : (M : ℝ) < lam := by simp only [lam]; nlinarith
   have hlamM : lam < (M : ℝ) ^ 2 := by
     have : 0 < (M : ℝ) ^ 2 := by positivity
     simp only [lam]; nlinarith [hp.1]
-  have hrec' : ∀ r, 1 ≤ r → F_box q R J Δ (M * r) ≤ lam * F_box q R J Δ r + c * M ^ 2 * r := by
+  have hrec' : ∀ r, 1 ≤ r →
+      boxEntropySup q R J Δ (M * r) ≤ lam * boxEntropySup q R J Δ r + c * M ^ 2 * r := by
     refine fun r hr => (hrec M r hr).trans ?_
-    have := F_box_nonneg (q := q) (R := R) (J := J) (Δ := Δ) r
+    have := boxEntropySup_nonneg (q := q) (R := R) (J := J) (Δ := Δ) r
     gcongr
     simp only [lam]; nlinarith
   -- D3.16.6–D3.16.8
-  obtain ⟨C, hC⟩ := step_3_16_8 F_box_mono (by omega) hMlam (by positivity) hrec'
+  obtain ⟨C, hC⟩ := step_3_16_8 boxEntropySup_mono (by omega) hMlam (by positivity) hrec'
   -- D3.16.7: `1 + e₀ = log_M λ ∈ (1, 2)`
   have hlogM : 0 < Real.log M := Real.log_pos (by linarith)
   have h1 : Real.log M < Real.log lam := Real.log_lt_log (by linarith) hMlam
@@ -638,7 +643,7 @@ theorem prop_3_3 {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 <
     by rw [sub_lt_iff_lt_add, div_lt_iff₀ hlogM]; linarith,
     fun D₀ hD₀ Λ Φ hΦ Ω hΩ E₀ hE hgap A hA Q r hr hQ hs hQr => ?_⟩
   rw [add_sub_cancel]
-  exact (le_F_box hD₀ hΦ hΩ hE hgap hA hQ hs hQr).trans (hC r hr)
+  exact (le_boxEntropySup hD₀ hΦ hΩ hE hgap hA hQ hs hQr).trans (hC r hr)
 
 end D316
 

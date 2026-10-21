@@ -56,7 +56,7 @@ structure Repair (I M₀ : Type*) where
   /-- Closed birth region of an initial identifier. -/
   birth₀ : I → Set (ℝ × ℝ)
   /-- The stopping scale `S_*`. -/
-  S_star : ℝ
+  stopScale : ℝ
   /-- The star constant `a₀`. -/
   a₀ : ℝ
 
@@ -88,10 +88,10 @@ noncomputable def v (m : Mark M₀) : ℝ × ℝ := R.pathPos m.root m.path
 
 /-- D11.14. The active marks: initial marks, and children of marks `(v, S)` with
 `d(S) ≥ S_*`. -/
-def IsMark (m : Mark M₀) : Prop := m.path = [] ∨ R.S_star ≤ R.S m
+def IsMark (m : Mark M₀) : Prop := m.path = [] ∨ R.stopScale ≤ R.S m
 
 /-- D11.14. A mark is nonterminal when `d(S) ≥ S_*`. -/
-def IsNonterminal (m : Mark M₀) : Prop := R.S_star ≤ d (R.S m)
+def IsNonterminal (m : Mark M₀) : Prop := R.stopScale ≤ d (R.S m)
 
 /-- D11.14. The label: a replacement has the label opposite to its exterior sector. -/
 def label : TileId I M₀ → Fin 2
@@ -144,9 +144,9 @@ labels. -/
 structure Hyp : Prop where
   a₀_pos : 0 < R.a₀
   a₀_lt : R.a₀ < 1 / 2
-  two_le_S_star : 2 ≤ R.S_star
-  margin : ∀ S, R.S_star ≤ S → d S ≤ R.a₀ / 1000 * S
-  S_star_le_S₀ : ∀ r, R.S_star ≤ R.S₀ r
+  two_le_stopScale : 2 ≤ R.stopScale
+  margin : ∀ S, R.stopScale ≤ S → d S ≤ R.a₀ / 1000 * S
+  stopScale_le_S₀ : ∀ r, R.stopScale ≤ R.S₀ r
   sep₀ : ∀ r r', r ≠ r' → R.a₀ * max (R.S₀ r) (R.S₀ r') ≤ dist (R.v₀ r) (R.v₀ r')
   star₀ : ∀ r i, R.birth₀ i ∩ closedBall (R.v₀ r) (R.a₀ * R.S₀ r) =
     ⋃ (k : Fin 8) (_ : R.oct₀ r k = i), octantConeAt (R.v₀ r) k ∩
@@ -185,20 +185,20 @@ include hR
 lemma S_pos (m : Mark M₀) : 0 < R.S m := by
   unfold S
   rcases Nat.eq_zero_or_eq_succ_pred m.gen with h | h
-  · rw [h]; exact lt_of_lt_of_le (by linarith [hR.two_le_S_star]) (hR.S_star_le_S₀ m.root)
+  · rw [h]; exact lt_of_lt_of_le (by linarith [hR.two_le_stopScale]) (hR.stopScale_le_S₀ m.root)
   · rw [h, Function.iterate_succ_apply']; exact d_pos _
 
-lemma S_star_le_S {m : Mark M₀} (hm : R.IsMark m) : R.S_star ≤ R.S m := by
+lemma stopScale_le_S {m : Mark M₀} (hm : R.IsMark m) : R.stopScale ≤ R.S m := by
   rcases hm with h | h
-  · simpa [S, Mark.gen, h] using hR.S_star_le_S₀ m.root
+  · simpa [S, Mark.gen, h] using hR.stopScale_le_S₀ m.root
   · exact h
 
 lemma d_le {m : Mark M₀} (hm : R.IsMark m) : d (R.S m) ≤ R.a₀ / 1000 * R.S m :=
-  hR.margin _ (hR.S_star_le_S hm)
+  hR.margin _ (hR.stopScale_le_S hm)
 
 /-- D11.16.2. `d(S)` is a power of two, in particular an integer. -/
 lemma exists_d_eq_pow {m : Mark M₀} (hm : R.IsMark m) : ∃ n : ℕ, d (R.S m) = 2 ^ n :=
-  ⟨_, d_eq_two_pow (by linarith [hR.S_star_le_S hm, hR.two_le_S_star])⟩
+  ⟨_, d_eq_two_pow (by linarith [hR.stopScale_le_S hm, hR.two_le_stopScale])⟩
 
 lemma isMark_child_iff (m : Mark M₀) (o : Fin 3 × Fin 3) :
     R.IsMark (m.child o) ↔ R.IsMark m ∧ R.IsNonterminal m := by
@@ -210,9 +210,9 @@ lemma isMark_child_iff (m : Mark M₀) (o : Fin 3 × Fin 3) :
   have h1 := (step_11_14_1 hS).2
   rcases le_or_gt (R.S m) 1 with h2 | h2
   · have h3 : R.S m ^ ρ₀ ≤ 1 := rpow_le_one hS.le h2 ρ₀_pos.le
-    have h4 : R.S_star ≤ d (R.S m) := h
-    linarith [hR.two_le_S_star]
-  · calc R.S_star ≤ R.S m ^ ρ₀ := h.trans h1
+    have h4 : R.stopScale ≤ d (R.S m) := h
+    linarith [hR.two_le_stopScale]
+  · calc R.stopScale ≤ R.S m ^ ρ₀ := h.trans h1
       _ ≤ R.S m ^ (1 : ℝ) := rpow_le_rpow_of_exponent_le h2.le eq_exponent_gaps.2.2.2.2.2.le
       _ = R.S m := rpow_one _
 
@@ -269,8 +269,8 @@ theorem step_11_15_1 {m : Mark M₀} {o : Fin 3 × Fin 3} (hc : R.IsMark (m.chil
   rw [S_child, mem_closedBall] at hx
   have h1 := R.dist_v_child_le m o
   have h2 := hR.d_le hm
-  have h3 := hR.S_star_le_S hm
-  have h4 := hR.two_le_S_star
+  have h3 := hR.stopScale_le_S hm
+  have h4 := hR.two_le_stopScale
   have h5 := hR.a₀_pos
   have h6 := hR.a₀_lt
   have h7 := d_pos (R.S m)
@@ -368,7 +368,7 @@ theorem step_11_15_3 {m : Mark M₀} {o : Fin 3 × Fin 3} (hc : R.IsMark (m.chil
       ⋃ (k : Fin 8) (_ : R.markOct (m.child o) k = a), octantConeAt (R.v (m.child o)) k ∩
         closedBall (R.v (m.child o)) (R.a₀ * R.S (m.child o)) := by
   obtain ⟨hm, hnt⟩ := (hR.isMark_child_iff m o).1 hc
-  have hd : 2 ≤ d (R.S m) := hR.two_le_S_star.trans hnt
+  have hd : 2 ≤ d (R.S m) := hR.two_le_stopScale.trans hnt
   have ha0 := hR.a₀_pos
   have ha1 := hR.a₀_lt
   rw [inter_eq_iUnion_iff]
@@ -516,10 +516,10 @@ theorem step_11_15_6_marks {m : Mark M₀} (q : List (Fin 3 × Fin 3))
 /-- D11.15.7 (termination). The generations of the marks descended from an initial mark are
 bounded. -/
 theorem step_11_15_7 (r : M₀) : ∃ N : ℕ, ∀ m : Mark M₀, R.IsMark m → m.root = r → m.gen ≤ N := by
-  obtain ⟨C, -, hC⟩ := (step_11_19_1 (by linarith [hR.two_le_S_star] : 1 < R.S_star)).2
+  obtain ⟨C, -, hC⟩ := (step_11_19_1 (by linarith [hR.two_le_stopScale] : 1 < R.stopScale)).2
   refine ⟨⌈C + C * log (log (exp (exp 1) + R.S₀ r))⌉₊, fun m hm hr => ?_⟩
-  have h := hC _ (lt_of_lt_of_le (by linarith [hR.two_le_S_star]) (hR.S_star_le_S₀ r)) m.gen
-    (hr ▸ hR.S_star_le_S hm)
+  have h := hC _ (lt_of_lt_of_le (by linarith [hR.two_le_stopScale]) (hR.stopScale_le_S₀ r)) m.gen
+    (hr ▸ hR.stopScale_le_S hm)
   exact_mod_cast h.trans (Nat.le_ceil _)
 
 /-- D11.15 **Lemma 11.4** (uniform repair induction). For sufficiently small fixed `a₀` and
@@ -622,21 +622,22 @@ so the marks descended from an initial mark of scale `S` number
 theorem step_11_19_marks : ∃ C : ℝ, 0 < C ∧ ∀ r : M₀,
     ({m : Mark M₀ | R.IsMark m ∧ m.root = r}.ncard : ℝ) ≤ C * log (R.S₀ r + 2) ^ C := by
   classical
-  obtain ⟨C, hC, hcount⟩ := step_11_19_2 (by linarith [hR.two_le_S_star] : 1 < R.S_star)
+  obtain ⟨C, hC, hcount⟩ := step_11_19_2 (by linarith [hR.two_le_stopScale] : 1 < R.stopScale)
   refine ⟨C, hC, fun r => ?_⟩
   obtain ⟨N, hN⟩ := hR.step_11_15_7 r
-  have hP0 : R.S_star ≤ d^[0] (R.S₀ r) := hR.S_star_le_S₀ r
+  have hP0 : R.stopScale ≤ d^[0] (R.S₀ r) := hR.stopScale_le_S₀ r
   have hsub : {m : Mark M₀ | R.IsMark m ∧ m.root = r} ⊆
-      ↑(marksUpTo r (Nat.findGreatest (fun j => R.S_star ≤ d^[j] (R.S₀ r)) N)) := by
+      ↑(marksUpTo r (Nat.findGreatest (fun j => R.stopScale ≤ d^[j] (R.S₀ r)) N)) := by
     rintro m ⟨hm, hr⟩
     refine mem_marksUpTo hr (Nat.le_findGreatest (hN m hm hr) ?_)
-    simpa [S, hr] using hR.S_star_le_S hm
+    simpa [S, hr] using hR.stopScale_le_S hm
   calc ({m : Mark M₀ | R.IsMark m ∧ m.root = r}.ncard : ℝ)
-      ≤ (marksUpTo r (Nat.findGreatest (fun j => R.S_star ≤ d^[j] (R.S₀ r)) N)).card := by
+      ≤ (marksUpTo r (Nat.findGreatest (fun j => R.stopScale ≤ d^[j] (R.S₀ r)) N)).card := by
         rw [← ncard_coe_finset]; exact_mod_cast ncard_le_ncard hsub (Finset.finite_toSet _)
     _ ≤ _ := card_marksUpTo_le r _
-    _ ≤ C * log (R.S₀ r + 2) ^ C := hcount _ (by linarith [hR.two_le_S_star, hR.S_star_le_S₀ r]) _
-        (Nat.findGreatest_spec (P := fun j => R.S_star ≤ d^[j] (R.S₀ r)) (Nat.zero_le N)
+    _ ≤ C * log (R.S₀ r + 2) ^ C :=
+      hcount _ (by linarith [hR.two_le_stopScale, hR.stopScale_le_S₀ r]) _
+        (Nat.findGreatest_spec (P := fun j => R.stopScale ≤ d^[j] (R.S₀ r)) (Nat.zero_le N)
           hP0)
 
 variable {o : ℝ × ℝ} (hL : R.LatticeHyp o)
@@ -737,7 +738,7 @@ theorem step_11_18_replacement {m : Mark M₀} (hm : R.IsMark m) (hnt : R.IsNont
     {c a : TileId I M₀} (ha : a ≠ .repl m c) (hlabel : R.label a = R.label (.repl m c))
     (hgen : a.birthGen ≤ m.gen + 1) {x y : ℝ × ℝ} (hx : x ∈ R.birthRegion (.repl m c))
     (hy : y ∈ R.finalRegion a) : d (d (R.S m)) / 2 ≤ dist x y := by
-  have hd2 : 2 ≤ d (R.S m) := hR.two_le_S_star.trans hnt
+  have hd2 : 2 ≤ d (R.S m) := hR.two_le_stopScale.trans hnt
   have hdd : d (d (R.S m)) ≤ d (R.S m) := by nlinarith [hR.margin _ hnt, hR.a₀_lt, hR.a₀_pos]
   have hdS := hR.d_le hm
   have hfar : ∀ e, d (d (R.S m)) ≤ dist y (R.v m + d (R.S m) • childOffset e) := fun e => by

@@ -75,7 +75,7 @@ noncomputable def finTwoSumEquiv (α : Type*) : α × Fin 2 ≃ α ⊕ α :=
 
 /-- Two-positive maps are positive. -/
 theorem IsNPositiveMap.isPositiveMap_two
-    [Finite m] [Finite n]
+    [Finite n]
     {E : Matrix n n ℂ →ₗ[ℂ] Matrix m m ℂ}
     (h : IsNPositiveMap 2 E) : IsPositiveMap E := by
   intro X hX

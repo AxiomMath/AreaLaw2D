@@ -2407,57 +2407,57 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.condMutualInfo` | AreaLaw/S02_Preliminaries.lean:31 | def | D2.1 |
 | `AreaLaw.step_2_2` | AreaLaw/S02_Preliminaries.lean:56 | theorem | D2.2 |
 | `AreaLaw.traceDist` | AreaLaw/S02_Preliminaries.lean:80 | abbrev | D2.3 |
-| `AreaLaw.C_h` | AreaLaw/S02_Preliminaries.lean:84 | def | D2.4.4 |
+| `AreaLaw.binEntropyConst` | AreaLaw/S02_Preliminaries.lean:84 | def | D2.4.4 |
 | `AreaLaw.step_2_4_4` | AreaLaw/S02_Preliminaries.lean:97 | theorem | D2.4.4 |
-| `AreaLaw.step_2_4_3` | AreaLaw/S02_Preliminaries.lean:151 | theorem | D2.4.1 |
-| `AreaLaw.lemma_2_1` | AreaLaw/S02_Preliminaries.lean:238 | theorem | D2.4 |
-| `AreaLaw.step_2_5` | AreaLaw/S02_Preliminaries.lean:283 | theorem | D2.5 |
-| `AreaLaw.GraphDomain.domainEDist` | AreaLaw/S02_Preliminaries.lean:329 | def | D2.6 |
-| `AreaLaw.GraphDomain.domainEDiam` | AreaLaw/S02_Preliminaries.lean:333 | def | D2.6 |
-| `AreaLaw.GraphDomain.graphNbhd` | AreaLaw/S02_Preliminaries.lean:337 | def | D2.6 |
-| `AreaLaw.GraphDomain.ball` | AreaLaw/S02_Preliminaries.lean:341 | abbrev | D2.6 |
-| `AreaLaw.GraphDomain.supports` | AreaLaw/S02_Preliminaries.lean:345 | def | D2.6 |
-| `AreaLaw.GraphDomain.IsAdmissible` | AreaLaw/S02_Preliminaries.lean:350 | def | D2.6 |
-| `AreaLaw.GraphDomain.hamiltonian` | AreaLaw/S02_Preliminaries.lean:356 | def | D2.6 |
-| `AreaLaw.GraphDomain.edgeBoundary` | AreaLaw/S02_Preliminaries.lean:365 | def | D2.6 |
-| `AreaLaw.GraphDomain.cutEndpoints` | AreaLaw/S02_Preliminaries.lean:369 | def | D2.6 |
-| `AreaLaw.squareLattice` | AreaLaw/S02_Preliminaries.lean:375 | abbrev | D2.6 |
-| `AreaLaw.v` | AreaLaw/S02_Preliminaries.lean:380 | def | D2.7 |
-| `AreaLaw.v_two` | AreaLaw/S02_Preliminaries.lean:382 | theorem | D2.7 |
-| `AreaLaw.μ` | AreaLaw/S02_Preliminaries.lean:385 | def | D2.8 |
-| `AreaLaw.GraphDomain.mem_ball` | AreaLaw/S02_Preliminaries.lean:399 | theorem | D2.8 |
-| `AreaLaw.GraphDomain.mem_supports` | AreaLaw/S02_Preliminaries.lean:403 | theorem | D2.8 |
-| `AreaLaw.GraphDomain.domainEDist_eq` | AreaLaw/S02_Preliminaries.lean:407 | theorem | D2.8 |
-| `AreaLaw.GraphDomain.domainEDist_le_of_mem_supports` | AreaLaw/S02_Preliminaries.lean:413 | theorem | D2.8 |
-| `AreaLaw.GraphDomain.subset_ball_of_mem_supports` | AreaLaw/S02_Preliminaries.lean:420 | theorem | D2.8.1 |
-| `AreaLaw.sum_natAbs_le_length` | AreaLaw/S02_Preliminaries.lean:428 | theorem | D2.7.1 |
-| `AreaLaw.eq_ball_count` | AreaLaw/S02_Preliminaries.lean:444 | theorem | D2.7 |
-| `AreaLaw.natAbs_add_natAbs_le_length` | AreaLaw/S02_Preliminaries.lean:460 | theorem | D2.7.1 |
-| `AreaLaw.eq_ball_count_two` | AreaLaw/S02_Preliminaries.lean:474 | theorem | D2.7 |
-| `AreaLaw.step_2_8` | AreaLaw/S02_Preliminaries.lean:495 | theorem | D2.8 |
-| `AreaLaw.GraphDomain.exists_cutEndpoints_of_walk` | AreaLaw/S02_Preliminaries.lean:544 | theorem | D2.9.2 |
-| `AreaLaw.eq_crossing_count` | AreaLaw/S02_Preliminaries.lean:566 | theorem | D2.9 |
-| `AreaLaw.cutEquiv` | AreaLaw/S02_Preliminaries.lean:621 | def | D2.10.1 |
-| `AreaLaw.step_2_10` | AreaLaw/S02_Preliminaries.lean:630 | theorem | D2.10 |
-| `AreaLaw.extendId_glue_of_subset` | AreaLaw/S02_Preliminaries.lean:668 | theorem | D2.10 |
-| `AreaLaw.extendId_glue_of_subset_sdiff` | AreaLaw/S02_Preliminaries.lean:692 | theorem | D2.10 |
-| `AreaLaw.eq_smul_of_hasGlobalGap` | AreaLaw/S02_Preliminaries.lean:726 | theorem | D2.10 |
-| `AreaLaw.exists_hamiltonian_coeff` | AreaLaw/S02_Preliminaries.lean:751 | theorem | D2.12.3 |
-| `AreaLaw.regionEntropy_eq_zero_of_split` | AreaLaw/S02_Preliminaries.lean:784 | theorem | D2.12.3 |
-| `AreaLaw.lemma_2_2` | AreaLaw/S02_Preliminaries.lean:843 | theorem | D2.12 |
-| `AreaLaw.step_2_11` | AreaLaw/S02_Preliminaries.lean:872 | theorem | D2.11 |
-| `AreaLaw.domainEDist_eq_graph` | AreaLaw/S02_Preliminaries.lean:914 | theorem | D2.11 |
-| `AreaLaw.domainEDiam_eq_graph` | AreaLaw/S02_Preliminaries.lean:916 | theorem | D2.11 |
-| `AreaLaw.graphNbhd_eq_graph` | AreaLaw/S02_Preliminaries.lean:918 | theorem | D2.11 |
-| `AreaLaw.supports_eq_graph` | AreaLaw/S02_Preliminaries.lean:920 | theorem | D2.11 |
-| `AreaLaw.edgeBoundary_eq_graph` | AreaLaw/S02_Preliminaries.lean:922 | theorem | D2.11 |
-| `AreaLaw.cutEndpoints_eq_graph` | AreaLaw/S02_Preliminaries.lean:924 | theorem | D2.11 |
-| `AreaLaw.hamiltonian_eq_graph` | AreaLaw/S02_Preliminaries.lean:926 | theorem | D2.11 |
-| `AreaLaw.isAdmissible_iff_graph` | AreaLaw/S02_Preliminaries.lean:930 | theorem | D2.11 |
-| `AreaLaw.mem_supports` | AreaLaw/S02_Preliminaries.lean:934 | theorem | D2.11 |
-| `AreaLaw.domainEDist_eq` | AreaLaw/S02_Preliminaries.lean:938 | theorem | D2.11 |
-| `AreaLaw.domainEDist_le_of_mem_supports` | AreaLaw/S02_Preliminaries.lean:942 | theorem | D2.11 |
-| `AreaLaw.exists_cutEndpoints_of_walk` | AreaLaw/S02_Preliminaries.lean:946 | theorem | D2.11 |
+| `AreaLaw.step_2_4_3` | AreaLaw/S02_Preliminaries.lean:153 | theorem | D2.4.1 |
+| `AreaLaw.lemma_2_1` | AreaLaw/S02_Preliminaries.lean:240 | theorem | D2.4 |
+| `AreaLaw.step_2_5` | AreaLaw/S02_Preliminaries.lean:285 | theorem | D2.5 |
+| `AreaLaw.GraphDomain.domainEDist` | AreaLaw/S02_Preliminaries.lean:331 | def | D2.6 |
+| `AreaLaw.GraphDomain.domainEDiam` | AreaLaw/S02_Preliminaries.lean:335 | def | D2.6 |
+| `AreaLaw.GraphDomain.graphNbhd` | AreaLaw/S02_Preliminaries.lean:339 | def | D2.6 |
+| `AreaLaw.GraphDomain.ball` | AreaLaw/S02_Preliminaries.lean:343 | abbrev | D2.6 |
+| `AreaLaw.GraphDomain.supports` | AreaLaw/S02_Preliminaries.lean:347 | def | D2.6 |
+| `AreaLaw.GraphDomain.IsAdmissible` | AreaLaw/S02_Preliminaries.lean:352 | def | D2.6 |
+| `AreaLaw.GraphDomain.hamiltonian` | AreaLaw/S02_Preliminaries.lean:358 | def | D2.6 |
+| `AreaLaw.GraphDomain.edgeBoundary` | AreaLaw/S02_Preliminaries.lean:366 | def | D2.6 |
+| `AreaLaw.GraphDomain.cutEndpoints` | AreaLaw/S02_Preliminaries.lean:370 | def | D2.6 |
+| `AreaLaw.squareLattice` | AreaLaw/S02_Preliminaries.lean:376 | abbrev | D2.6 |
+| `AreaLaw.v` | AreaLaw/S02_Preliminaries.lean:381 | def | D2.7 |
+| `AreaLaw.v_two` | AreaLaw/S02_Preliminaries.lean:383 | theorem | D2.7 |
+| `AreaLaw.μ` | AreaLaw/S02_Preliminaries.lean:386 | def | D2.8 |
+| `AreaLaw.GraphDomain.mem_ball` | AreaLaw/S02_Preliminaries.lean:400 | theorem | D2.8 |
+| `AreaLaw.GraphDomain.mem_supports` | AreaLaw/S02_Preliminaries.lean:404 | theorem | D2.8 |
+| `AreaLaw.GraphDomain.domainEDist_eq` | AreaLaw/S02_Preliminaries.lean:408 | theorem | D2.8 |
+| `AreaLaw.GraphDomain.domainEDist_le_of_mem_supports` | AreaLaw/S02_Preliminaries.lean:414 | theorem | D2.8 |
+| `AreaLaw.GraphDomain.subset_ball_of_mem_supports` | AreaLaw/S02_Preliminaries.lean:421 | theorem | D2.8.1 |
+| `AreaLaw.sum_natAbs_le_length` | AreaLaw/S02_Preliminaries.lean:429 | theorem | D2.7.1 |
+| `AreaLaw.eq_ball_count` | AreaLaw/S02_Preliminaries.lean:445 | theorem | D2.7 |
+| `AreaLaw.natAbs_add_natAbs_le_length` | AreaLaw/S02_Preliminaries.lean:461 | theorem | D2.7.1 |
+| `AreaLaw.eq_ball_count_two` | AreaLaw/S02_Preliminaries.lean:475 | theorem | D2.7 |
+| `AreaLaw.step_2_8` | AreaLaw/S02_Preliminaries.lean:496 | theorem | D2.8 |
+| `AreaLaw.GraphDomain.exists_cutEndpoints_of_walk` | AreaLaw/S02_Preliminaries.lean:545 | theorem | D2.9.2 |
+| `AreaLaw.eq_crossing_count` | AreaLaw/S02_Preliminaries.lean:567 | theorem | D2.9 |
+| `AreaLaw.cutEquiv` | AreaLaw/S02_Preliminaries.lean:622 | def | D2.10.1 |
+| `AreaLaw.step_2_10` | AreaLaw/S02_Preliminaries.lean:631 | theorem | D2.10 |
+| `AreaLaw.extendId_glue_of_subset` | AreaLaw/S02_Preliminaries.lean:669 | theorem | D2.10 |
+| `AreaLaw.extendId_glue_of_subset_sdiff` | AreaLaw/S02_Preliminaries.lean:693 | theorem | D2.10 |
+| `AreaLaw.eq_smul_of_hasGlobalGap` | AreaLaw/S02_Preliminaries.lean:727 | theorem | D2.10 |
+| `AreaLaw.exists_hamiltonian_coeff` | AreaLaw/S02_Preliminaries.lean:752 | theorem | D2.12.3 |
+| `AreaLaw.regionEntropy_eq_zero_of_split` | AreaLaw/S02_Preliminaries.lean:785 | theorem | D2.12.3 |
+| `AreaLaw.lemma_2_2` | AreaLaw/S02_Preliminaries.lean:844 | theorem | D2.12 |
+| `AreaLaw.step_2_11` | AreaLaw/S02_Preliminaries.lean:873 | theorem | D2.11 |
+| `AreaLaw.domainEDist_eq_graph` | AreaLaw/S02_Preliminaries.lean:915 | theorem | D2.11 |
+| `AreaLaw.domainEDiam_eq_graph` | AreaLaw/S02_Preliminaries.lean:917 | theorem | D2.11 |
+| `AreaLaw.graphNbhd_eq_graph` | AreaLaw/S02_Preliminaries.lean:919 | theorem | D2.11 |
+| `AreaLaw.supports_eq_graph` | AreaLaw/S02_Preliminaries.lean:921 | theorem | D2.11 |
+| `AreaLaw.edgeBoundary_eq_graph` | AreaLaw/S02_Preliminaries.lean:923 | theorem | D2.11 |
+| `AreaLaw.cutEndpoints_eq_graph` | AreaLaw/S02_Preliminaries.lean:925 | theorem | D2.11 |
+| `AreaLaw.hamiltonian_eq_graph` | AreaLaw/S02_Preliminaries.lean:927 | theorem | D2.11 |
+| `AreaLaw.isAdmissible_iff_graph` | AreaLaw/S02_Preliminaries.lean:931 | theorem | D2.11 |
+| `AreaLaw.mem_supports` | AreaLaw/S02_Preliminaries.lean:935 | theorem | D2.11 |
+| `AreaLaw.domainEDist_eq` | AreaLaw/S02_Preliminaries.lean:939 | theorem | D2.11 |
+| `AreaLaw.domainEDist_le_of_mem_supports` | AreaLaw/S02_Preliminaries.lean:943 | theorem | D2.11 |
+| `AreaLaw.exists_cutEndpoints_of_walk` | AreaLaw/S02_Preliminaries.lean:947 | theorem | D2.11 |
 
 ### `AreaLaw/S03_InitialBox/BufferDiscount.lean` (43)
 
@@ -2470,42 +2470,42 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.IsSafe.subset'` | AreaLaw/S03_InitialBox/BufferDiscount.lean:49 | theorem | D3.3 Safe rectangles, size, buffers |
 | `AreaLaw.m` | AreaLaw/S03_InitialBox/BufferDiscount.lean:61 | def | D3.5 |
 | `AreaLaw.d` | AreaLaw/S03_InitialBox/BufferDiscount.lean:64 | def | D3.5 |
-| `AreaLaw.Z_r` | AreaLaw/S03_InitialBox/BufferDiscount.lean:67 | def | D3.6 |
-| `AreaLaw.a` | AreaLaw/S03_InitialBox/BufferDiscount.lean:70 | def | D3.6 |
-| `AreaLaw.ℰ` | AreaLaw/S03_InitialBox/BufferDiscount.lean:73 | def | D3.6 |
-| `AreaLaw.eq_initial_harmonic_weights` | AreaLaw/S03_InitialBox/BufferDiscount.lean:80 | theorem | D3.6 |
-| `AreaLaw.X_j` | AreaLaw/S03_InitialBox/BufferDiscount.lean:150 | def | D3.5 |
-| `AreaLaw.rad` | AreaLaw/S03_InitialBox/BufferDiscount.lean:154 | def | D3.5 |
-| `AreaLaw.rad_add_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:156 | theorem | D3.5 |
-| `AreaLaw.rad_le_d` | AreaLaw/S03_InitialBox/BufferDiscount.lean:161 | theorem | D3.5 |
-| `AreaLaw.l1_le_of_mem_supports` | AreaLaw/S03_InitialBox/BufferDiscount.lean:165 | theorem | D3.5 |
-| `AreaLaw.IsSafe.not_near` | AreaLaw/S03_InitialBox/BufferDiscount.lean:174 | theorem | D3.5 |
-| `AreaLaw.subset_of_isSafe` | AreaLaw/S03_InitialBox/BufferDiscount.lean:192 | theorem | D3.5.2 |
-| `AreaLaw.mem_ambientDilation_Icc` | AreaLaw/S03_InitialBox/BufferDiscount.lean:204 | theorem | D3.5.2 |
-| `AreaLaw.mem_X_j` | AreaLaw/S03_InitialBox/BufferDiscount.lean:220 | theorem | D3.5.2 |
-| `AreaLaw.card_edgeBoundary_inter_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:230 | theorem | D3.5.3 |
-| `AreaLaw.rad_mono` | AreaLaw/S03_InitialBox/BufferDiscount.lean:271 | theorem | D3.5.3 |
-| `AreaLaw.ambientDilation_mono'` | AreaLaw/S03_InitialBox/BufferDiscount.lean:276 | theorem | D3.5.3 |
-| `AreaLaw.d_m_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:285 | theorem | D3.5.1 |
-| `AreaLaw.X_j_subset` | AreaLaw/S03_InitialBox/BufferDiscount.lean:292 | theorem | D3.5.1 |
-| `AreaLaw.step_3_5_1` | AreaLaw/S03_InitialBox/BufferDiscount.lean:304 | theorem | D3.5.1 |
-| `AreaLaw.step_3_5_2` | AreaLaw/S03_InitialBox/BufferDiscount.lean:320 | theorem | D3.5.2 |
-| `AreaLaw.step_3_5_3` | AreaLaw/S03_InitialBox/BufferDiscount.lean:337 | theorem | D3.5.3 |
-| `AreaLaw.step_3_5_4` | AreaLaw/S03_InitialBox/BufferDiscount.lean:355 | theorem | D3.5.4 |
-| `AreaLaw.C₂` | AreaLaw/S03_InitialBox/BufferDiscount.lean:377 | def | D3.5.5 |
-| `AreaLaw.step_3_5_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:381 | theorem | D3.5.5 |
-| `AreaLaw.step_3_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:418 | theorem | D3.5 |
-| `AreaLaw.step_3_8_2` | AreaLaw/S03_InitialBox/BufferDiscount.lean:454 | theorem | D3.8.2 |
-| `AreaLaw.step_3_8_3` | AreaLaw/S03_InitialBox/BufferDiscount.lean:481 | theorem | D3.8.3 |
-| `AreaLaw.cosh_sub_one_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:508 | theorem | D3.8.3 |
-| `AreaLaw.step_3_9_4` | AreaLaw/S03_InitialBox/BufferDiscount.lean:528 | theorem | D3.9.4 |
-| `AreaLaw.eq_initial_weight_range` | AreaLaw/S03_InitialBox/BufferDiscount.lean:600 | theorem | D3.10 |
-| `AreaLaw.step_3_11_4` | AreaLaw/S03_InitialBox/BufferDiscount.lean:674 | theorem | D3.11.4 |
-| `AreaLaw.neg_two_mul_le_log_one_sub` | AreaLaw/S03_InitialBox/BufferDiscount.lean:688 | theorem | D3.11.4 |
-| `AreaLaw.step_3_11_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:698 | theorem | D3.11.5 |
-| `AreaLaw.condEntropy_anti` | AreaLaw/S03_InitialBox/BufferDiscount.lean:733 | theorem | D3.11.5 |
-| `AreaLaw.step_3_14` | AreaLaw/S03_InitialBox/BufferDiscount.lean:744 | theorem | D3.14.1 |
-| `AreaLaw.step_3_14_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:769 | theorem | D3.14.5 |
+| `AreaLaw.harmonicSum` | AreaLaw/S03_InitialBox/BufferDiscount.lean:67 | def | D3.6 |
+| `AreaLaw.a` | AreaLaw/S03_InitialBox/BufferDiscount.lean:71 | def | D3.6 |
+| `AreaLaw.ℰ` | AreaLaw/S03_InitialBox/BufferDiscount.lean:74 | def | D3.6 |
+| `AreaLaw.eq_initial_harmonic_weights` | AreaLaw/S03_InitialBox/BufferDiscount.lean:81 | theorem | D3.6 |
+| `AreaLaw.bufferRegion` | AreaLaw/S03_InitialBox/BufferDiscount.lean:152 | def | D3.5 |
+| `AreaLaw.rad` | AreaLaw/S03_InitialBox/BufferDiscount.lean:156 | def | D3.5 |
+| `AreaLaw.rad_add_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:158 | theorem | D3.5 |
+| `AreaLaw.rad_le_d` | AreaLaw/S03_InitialBox/BufferDiscount.lean:163 | theorem | D3.5 |
+| `AreaLaw.l1_le_of_mem_supports` | AreaLaw/S03_InitialBox/BufferDiscount.lean:167 | theorem | D3.5 |
+| `AreaLaw.IsSafe.not_near` | AreaLaw/S03_InitialBox/BufferDiscount.lean:176 | theorem | D3.5 |
+| `AreaLaw.subset_of_isSafe` | AreaLaw/S03_InitialBox/BufferDiscount.lean:194 | theorem | D3.5.2 |
+| `AreaLaw.mem_ambientDilation_Icc` | AreaLaw/S03_InitialBox/BufferDiscount.lean:206 | theorem | D3.5.2 |
+| `AreaLaw.mem_bufferRegion` | AreaLaw/S03_InitialBox/BufferDiscount.lean:222 | theorem | D3.5.2 |
+| `AreaLaw.card_edgeBoundary_inter_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:232 | theorem | D3.5.3 |
+| `AreaLaw.rad_mono` | AreaLaw/S03_InitialBox/BufferDiscount.lean:273 | theorem | D3.5.3 |
+| `AreaLaw.ambientDilation_mono'` | AreaLaw/S03_InitialBox/BufferDiscount.lean:278 | theorem | D3.5.3 |
+| `AreaLaw.d_m_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:287 | theorem | D3.5.1 |
+| `AreaLaw.bufferRegion_subset` | AreaLaw/S03_InitialBox/BufferDiscount.lean:294 | theorem | D3.5.1 |
+| `AreaLaw.step_3_5_1` | AreaLaw/S03_InitialBox/BufferDiscount.lean:306 | theorem | D3.5.1 |
+| `AreaLaw.step_3_5_2` | AreaLaw/S03_InitialBox/BufferDiscount.lean:322 | theorem | D3.5.2 |
+| `AreaLaw.step_3_5_3` | AreaLaw/S03_InitialBox/BufferDiscount.lean:340 | theorem | D3.5.3 |
+| `AreaLaw.step_3_5_4` | AreaLaw/S03_InitialBox/BufferDiscount.lean:358 | theorem | D3.5.4 |
+| `AreaLaw.C₂` | AreaLaw/S03_InitialBox/BufferDiscount.lean:380 | def | D3.5.5 |
+| `AreaLaw.step_3_5_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:384 | theorem | D3.5.5 |
+| `AreaLaw.step_3_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:422 | theorem | D3.5 |
+| `AreaLaw.step_3_8_2` | AreaLaw/S03_InitialBox/BufferDiscount.lean:460 | theorem | D3.8.2 |
+| `AreaLaw.step_3_8_3` | AreaLaw/S03_InitialBox/BufferDiscount.lean:487 | theorem | D3.8.3 |
+| `AreaLaw.cosh_sub_one_le` | AreaLaw/S03_InitialBox/BufferDiscount.lean:514 | theorem | D3.8.3 |
+| `AreaLaw.step_3_9_4` | AreaLaw/S03_InitialBox/BufferDiscount.lean:534 | theorem | D3.9.4 |
+| `AreaLaw.eq_initial_weight_range` | AreaLaw/S03_InitialBox/BufferDiscount.lean:606 | theorem | D3.10 |
+| `AreaLaw.step_3_11_4` | AreaLaw/S03_InitialBox/BufferDiscount.lean:680 | theorem | D3.11.4 |
+| `AreaLaw.neg_two_mul_le_log_one_sub` | AreaLaw/S03_InitialBox/BufferDiscount.lean:694 | theorem | D3.11.4 |
+| `AreaLaw.step_3_11_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:704 | theorem | D3.11.5 |
+| `AreaLaw.condEntropy_anti` | AreaLaw/S03_InitialBox/BufferDiscount.lean:739 | theorem | D3.11.5 |
+| `AreaLaw.step_3_14` | AreaLaw/S03_InitialBox/BufferDiscount.lean:750 | theorem | D3.14.1 |
+| `AreaLaw.step_3_14_5` | AreaLaw/S03_InitialBox/BufferDiscount.lean:775 | theorem | D3.14.5 |
 
 ### `AreaLaw/S03_InitialBox/Filters.lean` (59)
 
@@ -2642,7 +2642,7 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.log_sq_le_of_mem_supports` | AreaLaw/S03_InitialBox/MarginalTails.lean:1115 | theorem | D3.2.2 |
 | `AreaLaw.step_3_2_3'` | AreaLaw/S03_InitialBox/MarginalTails.lean:1128 | theorem | D3.2.1 |
 | `AreaLaw.step_3_2_3` | AreaLaw/S03_InitialBox/MarginalTails.lean:1144 | theorem | D3.2.1 |
-| `AreaLaw.C_M` | AreaLaw/S03_InitialBox/MarginalTails.lean:1157 | def | D3.2.4 |
+| `AreaLaw.tailConst` | AreaLaw/S03_InitialBox/MarginalTails.lean:1157 | def | D3.2.4 |
 | `AreaLaw.step_3_2_4` | AreaLaw/S03_InitialBox/MarginalTails.lean:1161 | theorem | D3.2.4 |
 
 ### `AreaLaw/S03_InitialBox/ThreeLines.lean` (10)
@@ -2714,21 +2714,21 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.ambientDilation_child_subset` | AreaLaw/S03_InitialBox.lean:113 | theorem | D3.16.2 |
 | `AreaLaw.card_not_interior_le` | AreaLaw/S03_InitialBox.lean:129 | theorem | D3.16.2 |
 | `AreaLaw.boxEntropies` | AreaLaw/S03_InitialBox.lean:155 | def | D3.16.2 |
-| `AreaLaw.F_box` | AreaLaw/S03_InitialBox.lean:166 | def | D3.15 |
+| `AreaLaw.boxEntropySup` | AreaLaw/S03_InitialBox.lean:166 | def | D3.15 |
 | `AreaLaw.le_of_mem_boxEntropies` | AreaLaw/S03_InitialBox.lean:170 | theorem | D3.15 |
-| `AreaLaw.F_box_nonneg` | AreaLaw/S03_InitialBox.lean:180 | theorem | D3.15 |
-| `AreaLaw.le_F_box` | AreaLaw/S03_InitialBox.lean:183 | theorem | D3.15 |
-| `AreaLaw.F_box_mono` | AreaLaw/S03_InitialBox.lean:193 | theorem | D3.15 |
-| `AreaLaw.step_3_16_6` | AreaLaw/S03_InitialBox.lean:208 | theorem | D3.16.6 |
-| `AreaLaw.step_3_16_8` | AreaLaw/S03_InitialBox.lean:224 | theorem | D3.16.6 |
-| `AreaLaw.p₀` | AreaLaw/S03_InitialBox.lean:270 | def | D3.16.3 |
-| `AreaLaw.B_M` | AreaLaw/S03_InitialBox.lean:273 | def | D3.16.2 |
-| `AreaLaw.step_3_16_3_chain` | AreaLaw/S03_InitialBox.lean:276 | theorem | D3.16.2 |
-| `AreaLaw.step_3_16_3_count` | AreaLaw/S03_InitialBox.lean:305 | theorem | D3.16.2 |
-| `AreaLaw.step_3_16_4` | AreaLaw/S03_InitialBox.lean:352 | theorem | D3.16.3 |
-| `AreaLaw.card_near_le` | AreaLaw/S03_InitialBox.lean:434 | theorem | D3.16.3 |
-| `AreaLaw.step_3_16_3` | AreaLaw/S03_InitialBox.lean:450 | theorem | D3.16.1 |
-| `AreaLaw.prop_3_3` | AreaLaw/S03_InitialBox.lean:592 | theorem | D3.16 |
+| `AreaLaw.boxEntropySup_nonneg` | AreaLaw/S03_InitialBox.lean:180 | theorem | D3.15 |
+| `AreaLaw.le_boxEntropySup` | AreaLaw/S03_InitialBox.lean:183 | theorem | D3.15 |
+| `AreaLaw.boxEntropySup_mono` | AreaLaw/S03_InitialBox.lean:194 | theorem | D3.15 |
+| `AreaLaw.step_3_16_6` | AreaLaw/S03_InitialBox.lean:209 | theorem | D3.16.6 |
+| `AreaLaw.step_3_16_8` | AreaLaw/S03_InitialBox.lean:225 | theorem | D3.16.6 |
+| `AreaLaw.p₀` | AreaLaw/S03_InitialBox.lean:271 | def | D3.16.3 |
+| `AreaLaw.noninteriorBound` | AreaLaw/S03_InitialBox.lean:274 | def | D3.16.2 |
+| `AreaLaw.step_3_16_3_chain` | AreaLaw/S03_InitialBox.lean:277 | theorem | D3.16.2 |
+| `AreaLaw.step_3_16_3_count` | AreaLaw/S03_InitialBox.lean:306 | theorem | D3.16.2 |
+| `AreaLaw.step_3_16_4` | AreaLaw/S03_InitialBox.lean:353 | theorem | D3.16.3 |
+| `AreaLaw.card_near_le` | AreaLaw/S03_InitialBox.lean:435 | theorem | D3.16.3 |
+| `AreaLaw.step_3_16_3` | AreaLaw/S03_InitialBox.lean:451 | theorem | D3.16.1 |
+| `AreaLaw.prop_3_3` | AreaLaw/S03_InitialBox.lean:595 | theorem | D3.16 |
 
 ### `AreaLaw/S04_Quasilocal/CenteredFilter.lean` (13)
 
@@ -2801,10 +2801,10 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.GraphDomain.domainEDist_lt_card` | AreaLaw/S04_Quasilocal/Positive.lean:114 | theorem | D4.6.6 |
 | `AreaLaw.GraphDomain.graphNbhd_eq_component` | AreaLaw/S04_Quasilocal/Positive.lean:124 | theorem | D4.6.6 |
 | `AreaLaw.GraphDomain.isSupportedOn_component_of_tail` | AreaLaw/S04_Quasilocal/Positive.lean:136 | theorem | D4.6.9 |
-| `AreaLaw.smul_le_smul_of_le` | AreaLaw/S04_Quasilocal/Positive.lean:166 | theorem | D4.6.9 |
-| `AreaLaw.isHermitian_E` | AreaLaw/S04_Quasilocal/Positive.lean:177 | theorem | D4.6.9 |
-| `AreaLaw.prop_4_3` | AreaLaw/S04_Quasilocal/Positive.lean:192 | theorem | D4.6 |
-| `AreaLaw.positiveReplacement_complex` | AreaLaw/S04_Quasilocal/Positive.lean:338 | theorem | D4.6 |
+| `AreaLaw.smul_le_smul_of_le` | AreaLaw/S04_Quasilocal/Positive.lean:164 | theorem | D4.6.9 |
+| `AreaLaw.isHermitian_E` | AreaLaw/S04_Quasilocal/Positive.lean:175 | theorem | D4.6.9 |
+| `AreaLaw.prop_4_3` | AreaLaw/S04_Quasilocal/Positive.lean:190 | theorem | D4.6 |
+| `AreaLaw.positiveReplacement_complex` | AreaLaw/S04_Quasilocal/Positive.lean:336 | theorem | D4.6 |
 
 ### `AreaLaw/S04_Quasilocal/Propagation.lean` (16)
 
@@ -2948,7 +2948,7 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Lemma_5_1` | AreaLaw/S05_Conditional/Defs.lean:294 | def | D5.5 |
 | `AreaLaw.Lemma_5_2` | AreaLaw/S05_Conditional/Defs.lean:317 | def | D5.12 |
 | `AreaLaw.Conditional.f` | AreaLaw/S05_Conditional/Defs.lean:340 | def | D5.15 |
-| `AreaLaw.Lemma_5_3` | AreaLaw/S05_Conditional/Defs.lean:354 | def | D5.15 |
+| `AreaLaw.Lemma_5_3` | AreaLaw/S05_Conditional/Defs.lean:355 | def | D5.15 |
 
 ### `AreaLaw/S05_Conditional/Faithful52.lean` (19)
 
@@ -3030,8 +3030,8 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 
 | Declaration | File:line | Kind | Anchor |
 |---|---|---|---|
-| `AreaLaw.Lemma_5_2_faithful` | AreaLaw/S05_Conditional/Interfaces.lean:22 | def | D5.12.1 |
-| `AreaLaw.Step_5_16` | AreaLaw/S05_Conditional/Interfaces.lean:43 | def | D5.16 |
+| `AreaLaw.Lemma_5_2_faithful` | AreaLaw/S05_Conditional/Interfaces.lean:23 | def | D5.12.1 |
+| `AreaLaw.Step_5_16` | AreaLaw/S05_Conditional/Interfaces.lean:45 | def | D5.16 |
 
 ### `AreaLaw/S05_Conditional/Interpolation.lean` (4)
 
@@ -3233,18 +3233,18 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Conditional.Gfun` | AreaLaw/S05_Conditional/Movement/Setup.lean:216 | def | D5.5.3 |
 | `AreaLaw.ArakiLiebThirring` | AreaLaw/S05_Conditional/Movement/Setup.lean:236 | def | D5.4.2 |
 | `AreaLaw.Step_5_2` | AreaLaw/S05_Conditional/Movement/Setup.lean:246 | def | D5.2 |
-| `AreaLaw.Step_5_4` | AreaLaw/S05_Conditional/Movement/Setup.lean:264 | def | D5.4 |
-| `AreaLaw.Step_5_6` | AreaLaw/S05_Conditional/Movement/Setup.lean:275 | def | D5.6.2 |
-| `AreaLaw.Step_5_7_matrix` | AreaLaw/S05_Conditional/Movement/Setup.lean:285 | def | D5.7 |
-| `AreaLaw.Step_5_9` | AreaLaw/S05_Conditional/Movement/Setup.lean:297 | def | D5.9 |
-| `AreaLaw.Step_5_2_region` | AreaLaw/S05_Conditional/Movement/Setup.lean:314 | def | D5.2 |
-| `AreaLaw.Step_5_5_A` | AreaLaw/S05_Conditional/Movement/Setup.lean:329 | def | D5.5 |
-| `AreaLaw.Step_5_9_1` | AreaLaw/S05_Conditional/Movement/Setup.lean:340 | def | D5.9.1 |
-| `AreaLaw.Step_5_5_3` | AreaLaw/S05_Conditional/Movement/Setup.lean:352 | def | D5.5.3 |
-| `AreaLaw.Step_5_6_1` | AreaLaw/S05_Conditional/Movement/Setup.lean:366 | def | D5.6.1 |
-| `AreaLaw.Step_5_10_1` | AreaLaw/S05_Conditional/Movement/Setup.lean:381 | def | D5.10.1 |
-| `AreaLaw.Step_5_10_3` | AreaLaw/S05_Conditional/Movement/Setup.lean:399 | def | D5.10.3 |
-| `AreaLaw.Lemma_5_1_faithful` | AreaLaw/S05_Conditional/Movement/Setup.lean:409 | def | D5.5.2 |
+| `AreaLaw.Step_5_4` | AreaLaw/S05_Conditional/Movement/Setup.lean:265 | def | D5.4 |
+| `AreaLaw.Step_5_6` | AreaLaw/S05_Conditional/Movement/Setup.lean:277 | def | D5.6.2 |
+| `AreaLaw.Step_5_7_matrix` | AreaLaw/S05_Conditional/Movement/Setup.lean:288 | def | D5.7 |
+| `AreaLaw.Step_5_9` | AreaLaw/S05_Conditional/Movement/Setup.lean:301 | def | D5.9 |
+| `AreaLaw.Step_5_2_region` | AreaLaw/S05_Conditional/Movement/Setup.lean:319 | def | D5.2 |
+| `AreaLaw.Step_5_5_A` | AreaLaw/S05_Conditional/Movement/Setup.lean:335 | def | D5.5 |
+| `AreaLaw.Step_5_9_1` | AreaLaw/S05_Conditional/Movement/Setup.lean:346 | def | D5.9.1 |
+| `AreaLaw.Step_5_5_3` | AreaLaw/S05_Conditional/Movement/Setup.lean:359 | def | D5.5.3 |
+| `AreaLaw.Step_5_6_1` | AreaLaw/S05_Conditional/Movement/Setup.lean:373 | def | D5.6.1 |
+| `AreaLaw.Step_5_10_1` | AreaLaw/S05_Conditional/Movement/Setup.lean:388 | def | D5.10.1 |
+| `AreaLaw.Step_5_10_3` | AreaLaw/S05_Conditional/Movement/Setup.lean:407 | def | D5.10.3 |
+| `AreaLaw.Lemma_5_1_faithful` | AreaLaw/S05_Conditional/Movement/Setup.lean:418 | def | D5.5.2 |
 
 ### `AreaLaw/S05_Conditional/Movement/StateMovement.lean` (11)
 
@@ -4716,16 +4716,16 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | Declaration | File:line | Kind | Anchor |
 |---|---|---|---|
 | `AreaLaw.Comparators.Step_8_1` | AreaLaw/S08_Comparators/Interfaces.lean:22 | def | D8.1 |
-| `AreaLaw.Comparators.Step_8_10` | AreaLaw/S08_Comparators/Interfaces.lean:38 | def | D8.10 |
-| `AreaLaw.Comparators.Step_8_11` | AreaLaw/S08_Comparators/Interfaces.lean:54 | def | D8.11 |
-| `AreaLaw.Comparators.Step_8_12` | AreaLaw/S08_Comparators/Interfaces.lean:66 | def | D8.12 |
-| `AreaLaw.Comparators.Step_8_13` | AreaLaw/S08_Comparators/Interfaces.lean:74 | def | D8.13 |
-| `AreaLaw.Comparators.Step_8_15` | AreaLaw/S08_Comparators/Interfaces.lean:91 | def | D8.15 |
-| `AreaLaw.Comparators.Step_8_16` | AreaLaw/S08_Comparators/Interfaces.lean:104 | def | D8.16 |
-| `AreaLaw.Comparators.Step_8_20` | AreaLaw/S08_Comparators/Interfaces.lean:122 | def | D8.20 |
-| `AreaLaw.Comparators.Step_8_22` | AreaLaw/S08_Comparators/Interfaces.lean:131 | def | D8.22 |
-| `AreaLaw.Comparators.Step_8_31` | AreaLaw/S08_Comparators/Interfaces.lean:145 | def | D8.31 |
-| `AreaLaw.Comparators.Step_8_35` | AreaLaw/S08_Comparators/Interfaces.lean:166 | def | D8.35 |
+| `AreaLaw.Comparators.Step_8_10` | AreaLaw/S08_Comparators/Interfaces.lean:39 | def | D8.10 |
+| `AreaLaw.Comparators.Step_8_11` | AreaLaw/S08_Comparators/Interfaces.lean:56 | def | D8.11 |
+| `AreaLaw.Comparators.Step_8_12` | AreaLaw/S08_Comparators/Interfaces.lean:69 | def | D8.12 |
+| `AreaLaw.Comparators.Step_8_13` | AreaLaw/S08_Comparators/Interfaces.lean:78 | def | D8.13 |
+| `AreaLaw.Comparators.Step_8_15` | AreaLaw/S08_Comparators/Interfaces.lean:96 | def | D8.15 |
+| `AreaLaw.Comparators.Step_8_16` | AreaLaw/S08_Comparators/Interfaces.lean:110 | def | D8.16 |
+| `AreaLaw.Comparators.Step_8_20` | AreaLaw/S08_Comparators/Interfaces.lean:129 | def | D8.20 |
+| `AreaLaw.Comparators.Step_8_22` | AreaLaw/S08_Comparators/Interfaces.lean:139 | def | D8.22 |
+| `AreaLaw.Comparators.Step_8_31` | AreaLaw/S08_Comparators/Interfaces.lean:154 | def | D8.31 |
+| `AreaLaw.Comparators.Step_8_35` | AreaLaw/S08_Comparators/Interfaces.lean:176 | def | D8.35 |
 
 ### `AreaLaw/S08_Comparators/Labels.lean` (71)
 
@@ -4886,9 +4886,9 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Comparators.S'_nonneg` | AreaLaw/S08_Comparators/Lower.lean:1062 | theorem | D8.23.1 |
 | `AreaLaw.Comparators.lower_of_pin` | AreaLaw/S08_Comparators/Lower.lean:1078 | theorem | D8.35.1 |
 | `AreaLaw.Comparators.log_d_nonneg` | AreaLaw/S08_Comparators/Lower.lean:1141 | theorem | D8.35.1 |
-| `AreaLaw.Comparators.roughLower_of_pin` | AreaLaw/S08_Comparators/Lower.lean:1146 | theorem | D8.35 |
-| `AreaLaw.Comparators.sharpLower_of_pin` | AreaLaw/S08_Comparators/Lower.lean:1194 | theorem | D8.35 |
-| `AreaLaw.Comparators.step_8_35` | AreaLaw/S08_Comparators/Lower.lean:1287 | theorem | D8.35 |
+| `AreaLaw.Comparators.roughLower_of_pin` | AreaLaw/S08_Comparators/Lower.lean:1148 | theorem | D8.35 |
+| `AreaLaw.Comparators.sharpLower_of_pin` | AreaLaw/S08_Comparators/Lower.lean:1196 | theorem | D8.35 |
+| `AreaLaw.Comparators.step_8_35` | AreaLaw/S08_Comparators/Lower.lean:1289 | theorem | D8.35 |
 
 ### `AreaLaw/S08_Comparators/Merge.lean` (104)
 
@@ -5509,8 +5509,8 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Scanner.up` | AreaLaw/S09_Scanner/Interfaces.lean:68 | def | D9.3 |
 | `AreaLaw.Scanner.up_subset` | AreaLaw/S09_Scanner/Interfaces.lean:71 | theorem | D9.3 |
 | `AreaLaw.Scanner.Prop_9_2` | AreaLaw/S09_Scanner/Interfaces.lean:97 | def | D9.9 |
-| `AreaLaw.Scanner.Lemma_9_4` | AreaLaw/S09_Scanner/Interfaces.lean:168 | def | D9.15 |
-| `AreaLaw.Scanner.Prop_9_5` | AreaLaw/S09_Scanner/Interfaces.lean:207 | def | D9.19 |
+| `AreaLaw.Scanner.Lemma_9_4` | AreaLaw/S09_Scanner/Interfaces.lean:169 | def | D9.15 |
+| `AreaLaw.Scanner.Prop_9_5` | AreaLaw/S09_Scanner/Interfaces.lean:209 | def | D9.19 |
 
 ### `AreaLaw/S09_Scanner/Planar.lean` (11)
 
@@ -5644,12 +5644,12 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Scanner.continuous_splitEta` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:236 | theorem | D9.10 |
 | `AreaLaw.Scanner.splitEta_nonneg` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:241 | theorem | D9.10 |
 | `AreaLaw.Scanner.splitAt` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:247 | def | D9.10 |
-| `AreaLaw.Scanner.step_9_10` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:257 | def | D9.10 |
-| `AreaLaw.Scanner.step_9_10_nonneg` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:263 | theorem | D9.10 |
-| `AreaLaw.Scanner.entropyGain_nonneg` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:273 | theorem | D9.11.1 |
-| `AreaLaw.Scanner.step_9_11_pointwise` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:293 | theorem | D9.11.2 |
-| `AreaLaw.Scanner.gain_ge_step_9_10` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:344 | theorem | D9.11.1 |
-| `AreaLaw.Scanner.step_9_11` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:378 | theorem | D9.11 |
+| `AreaLaw.Scanner.step_9_10` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:258 | def | D9.10 |
+| `AreaLaw.Scanner.step_9_10_nonneg` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:264 | theorem | D9.10 |
+| `AreaLaw.Scanner.entropyGain_nonneg` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:274 | theorem | D9.11.1 |
+| `AreaLaw.Scanner.step_9_11_pointwise` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:294 | theorem | D9.11.2 |
+| `AreaLaw.Scanner.gain_ge_step_9_10` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:345 | theorem | D9.11.1 |
+| `AreaLaw.Scanner.step_9_11` | AreaLaw/S09_Scanner/Scanner/Entropy.lean:379 | theorem | D9.11 |
 
 ### `AreaLaw/S09_Scanner/Scanner/Selection.lean` (11)
 
@@ -5675,14 +5675,14 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Scanner.logDim_physReg` | AreaLaw/S09_Scanner/Scanner.lean:40 | theorem | Log-dimensions of physical regions |
 | `AreaLaw.Scanner.logDim_mono` | AreaLaw/S09_Scanner/Scanner.lean:46 | theorem | Log-dimensions of physical regions |
 | `AreaLaw.Scanner.up_subtype_eq` | AreaLaw/S09_Scanner/Scanner.lean:65 | theorem | Regions of the domain type |
-| `AreaLaw.Scanner.up_mono` | AreaLaw/S09_Scanner/Scanner.lean:68 | theorem | Regions of the domain type |
-| `AreaLaw.Scanner.typicalSet_log_d_le` | AreaLaw/S09_Scanner/Scanner.lean:80 | theorem | D8.2 |
-| `AreaLaw.Scanner.termsOn` | AreaLaw/S09_Scanner/Scanner.lean:105 | def | D8.2 |
-| `AreaLaw.Scanner.Hbar_termsOn` | AreaLaw/S09_Scanner/Scanner.lean:111 | theorem | D8.2 |
-| `AreaLaw.Scanner.delta_le` | AreaLaw/S09_Scanner/Scanner.lean:123 | theorem | D9.12.6 |
-| `AreaLaw.Scanner.edef_le` | AreaLaw/S09_Scanner/Scanner.lean:168 | theorem | D9.13.4 |
-| `AreaLaw.Scanner.prop_9_2` | AreaLaw/S09_Scanner/Scanner.lean:269 | theorem | D9.9 |
-| `AreaLaw.Scanner.prop_9_2'` | AreaLaw/S09_Scanner/Scanner.lean:761 | theorem | D9.9 |
+| `AreaLaw.Scanner.up_mono` | AreaLaw/S09_Scanner/Scanner.lean:69 | theorem | Regions of the domain type |
+| `AreaLaw.Scanner.typicalSet_log_d_le` | AreaLaw/S09_Scanner/Scanner.lean:81 | theorem | D8.2 |
+| `AreaLaw.Scanner.termsOn` | AreaLaw/S09_Scanner/Scanner.lean:106 | def | D8.2 |
+| `AreaLaw.Scanner.Hbar_termsOn` | AreaLaw/S09_Scanner/Scanner.lean:112 | theorem | D8.2 |
+| `AreaLaw.Scanner.delta_le` | AreaLaw/S09_Scanner/Scanner.lean:124 | theorem | D9.12.6 |
+| `AreaLaw.Scanner.edef_le` | AreaLaw/S09_Scanner/Scanner.lean:169 | theorem | D9.13.4 |
+| `AreaLaw.Scanner.prop_9_2` | AreaLaw/S09_Scanner/Scanner.lean:270 | theorem | D9.9 |
+| `AreaLaw.Scanner.prop_9_2'` | AreaLaw/S09_Scanner/Scanner.lean:762 | theorem | D9.9 |
 
 ### `AreaLaw/S09_Scanner/SmallBox.lean` (16)
 
@@ -5700,54 +5700,54 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Scanner.step_9_20` | AreaLaw/S09_Scanner/SmallBox.lean:65 | theorem | D9.20 |
 | `AreaLaw.Scanner.step_9_21` | AreaLaw/S09_Scanner/SmallBox.lean:101 | theorem | D9.21 |
 | `AreaLaw.Scanner.step_9_22` | AreaLaw/S09_Scanner/SmallBox.lean:168 | theorem | D9.22 |
-| `AreaLaw.Scanner.step_9_23` | AreaLaw/S09_Scanner/SmallBox.lean:385 | theorem | D9.23 |
-| `AreaLaw.Scanner.step_9_24_5` | AreaLaw/S09_Scanner/SmallBox.lean:491 | theorem | D9.24.5 |
-| `AreaLaw.Scanner.step_9_24` | AreaLaw/S09_Scanner/SmallBox.lean:516 | theorem | D9.24 |
-| `AreaLaw.Scanner.prop_9_5_of` | AreaLaw/S09_Scanner/SmallBox.lean:729 | theorem | D9.19 |
+| `AreaLaw.Scanner.step_9_23` | AreaLaw/S09_Scanner/SmallBox.lean:386 | theorem | D9.23 |
+| `AreaLaw.Scanner.step_9_24_5` | AreaLaw/S09_Scanner/SmallBox.lean:492 | theorem | D9.24.5 |
+| `AreaLaw.Scanner.step_9_24` | AreaLaw/S09_Scanner/SmallBox.lean:517 | theorem | D9.24 |
+| `AreaLaw.Scanner.prop_9_5_of` | AreaLaw/S09_Scanner/SmallBox.lean:730 | theorem | D9.19 |
 
 ### `AreaLaw/S09_Scanner/Templates.lean` (39)
 
 | Declaration | File:line | Kind | Anchor |
 |---|---|---|---|
-| `AreaLaw.Scanner.def_9_3` | AreaLaw/S09_Scanner/Templates.lean:27 | abbrev | D9.14 |
-| `AreaLaw.Scanner.halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:32 | def | D9.14 |
-| `AreaLaw.Scanner.convex_halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:35 | theorem | D9.14 |
-| `AreaLaw.Scanner.hasTemplateSlope_perp` | AreaLaw/S09_Scanner/Templates.lean:43 | theorem | D9.14 |
-| `AreaLaw.Scanner.hasTemplateSlope_neg` | AreaLaw/S09_Scanner/Templates.lean:53 | theorem | D9.14 |
-| `AreaLaw.Scanner.mem_convexHull_of_sum` | AreaLaw/S09_Scanner/Templates.lean:58 | theorem | D9.14 |
-| `AreaLaw.Scanner.triangle_eq_halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:65 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.rectangle_eq_halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:115 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.exists_halfPlanes_of_isTemplatePiece` | AreaLaw/S09_Scanner/Templates.lean:181 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.exists_int_le_iff` | AreaLaw/S09_Scanner/Templates.lean:190 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.exists_int_halfPlane` | AreaLaw/S09_Scanner/Templates.lean:205 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.exists_octagon` | AreaLaw/S09_Scanner/Templates.lean:229 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.ambientDilation_zero` | AreaLaw/S09_Scanner/Templates.lean:247 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.ambientDilation_succ` | AreaLaw/S09_Scanner/Templates.lean:257 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.ambientDilation_biUnion` | AreaLaw/S09_Scanner/Templates.lean:272 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.ambientDilation_empty` | AreaLaw/S09_Scanner/Templates.lean:280 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.card_interedges_le` | AreaLaw/S09_Scanner/Templates.lean:284 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.mem_ambientDilation_one_of_adj` | AreaLaw/S09_Scanner/Templates.lean:303 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.hasDiam_of_ediam` | AreaLaw/S09_Scanner/Templates.lean:313 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.hasDiam_ambientDilation` | AreaLaw/S09_Scanner/Templates.lean:323 | theorem | D9.16.1 |
-| `AreaLaw.Scanner.step_9_16` | AreaLaw/S09_Scanner/Templates.lean:337 | theorem | D9.16 |
-| `AreaLaw.Scanner.exists_pieces` | AreaLaw/S09_Scanner/Templates.lean:378 | theorem | D9.16 |
-| `AreaLaw.Scanner.card_biUnion_le_real` | AreaLaw/S09_Scanner/Templates.lean:394 | theorem | D9.16 |
-| `AreaLaw.Scanner.step_9_17` | AreaLaw/S09_Scanner/Templates.lean:403 | theorem | D9.17 |
-| `AreaLaw.Scanner.ambientEDist_mono` | AreaLaw/S09_Scanner/Templates.lean:463 | theorem | D9.17 |
-| `AreaLaw.Scanner.ofReal_lt_ambientEDist_dilation` | AreaLaw/S09_Scanner/Templates.lean:468 | theorem | D9.17 |
-| `AreaLaw.Scanner.isIntRect_dyadicSquare` | AreaLaw/S09_Scanner/Templates.lean:485 | theorem | D9.17 |
-| `AreaLaw.Scanner.boxSize_dyadicSquare` | AreaLaw/S09_Scanner/Templates.lean:490 | theorem | D9.17 |
-| `AreaLaw.Scanner.rpow_two_pow_comm` | AreaLaw/S09_Scanner/Templates.lean:498 | theorem | D9.17 |
-| `AreaLaw.Scanner.step_9_18` | AreaLaw/S09_Scanner/Templates.lean:508 | theorem | D9.18 |
-| `AreaLaw.Scanner.ambientDilation_one` | AreaLaw/S09_Scanner/Templates.lean:614 | theorem | D9.18 |
-| `AreaLaw.Scanner.ambientDilation_add_one` | AreaLaw/S09_Scanner/Templates.lean:618 | theorem | D9.18 |
-| `AreaLaw.Scanner.template_geometry` | AreaLaw/S09_Scanner/Templates.lean:624 | theorem | D9.15 |
-| `AreaLaw.Scanner.not_mem_cutEndpoints_of_mem_dilation` | AreaLaw/S09_Scanner/Templates.lean:667 | theorem | D9.15 |
-| `AreaLaw.Scanner.edgeBoundary_inter_subset` | AreaLaw/S09_Scanner/Templates.lean:679 | theorem | D9.18.6 |
-| `AreaLaw.Scanner.lemma_9_4` | AreaLaw/S09_Scanner/Templates.lean:701 | theorem | D9.15 |
-| `AreaLaw.Scanner.isStaircase_ambientDilation` | AreaLaw/S09_Scanner/Templates.lean:892 | theorem | D9.15 |
-| `AreaLaw.Scanner.ambientDilation_Icc` | AreaLaw/S09_Scanner/Templates.lean:902 | theorem | D9.15 |
-| `AreaLaw.Scanner.step_9_21_2` | AreaLaw/S09_Scanner/Templates.lean:916 | theorem | D9.21.2 |
+| `AreaLaw.Scanner.def_9_3` | AreaLaw/S09_Scanner/Templates.lean:28 | abbrev | D9.14 |
+| `AreaLaw.Scanner.halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:33 | def | D9.14 |
+| `AreaLaw.Scanner.convex_halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:36 | theorem | D9.14 |
+| `AreaLaw.Scanner.hasTemplateSlope_perp` | AreaLaw/S09_Scanner/Templates.lean:44 | theorem | D9.14 |
+| `AreaLaw.Scanner.hasTemplateSlope_neg` | AreaLaw/S09_Scanner/Templates.lean:54 | theorem | D9.14 |
+| `AreaLaw.Scanner.mem_convexHull_of_sum` | AreaLaw/S09_Scanner/Templates.lean:59 | theorem | D9.14 |
+| `AreaLaw.Scanner.triangle_eq_halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:66 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.rectangle_eq_halfPlanes` | AreaLaw/S09_Scanner/Templates.lean:116 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.exists_halfPlanes_of_isTemplatePiece` | AreaLaw/S09_Scanner/Templates.lean:182 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.exists_int_le_iff` | AreaLaw/S09_Scanner/Templates.lean:191 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.exists_int_halfPlane` | AreaLaw/S09_Scanner/Templates.lean:206 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.exists_octagon` | AreaLaw/S09_Scanner/Templates.lean:230 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.ambientDilation_zero` | AreaLaw/S09_Scanner/Templates.lean:248 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.ambientDilation_succ` | AreaLaw/S09_Scanner/Templates.lean:258 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.ambientDilation_biUnion` | AreaLaw/S09_Scanner/Templates.lean:273 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.ambientDilation_empty` | AreaLaw/S09_Scanner/Templates.lean:281 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.card_interedges_le` | AreaLaw/S09_Scanner/Templates.lean:285 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.mem_ambientDilation_one_of_adj` | AreaLaw/S09_Scanner/Templates.lean:304 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.hasDiam_of_ediam` | AreaLaw/S09_Scanner/Templates.lean:314 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.hasDiam_ambientDilation` | AreaLaw/S09_Scanner/Templates.lean:324 | theorem | D9.16.1 |
+| `AreaLaw.Scanner.step_9_16` | AreaLaw/S09_Scanner/Templates.lean:338 | theorem | D9.16 |
+| `AreaLaw.Scanner.exists_pieces` | AreaLaw/S09_Scanner/Templates.lean:379 | theorem | D9.16 |
+| `AreaLaw.Scanner.card_biUnion_le_real` | AreaLaw/S09_Scanner/Templates.lean:395 | theorem | D9.16 |
+| `AreaLaw.Scanner.step_9_17` | AreaLaw/S09_Scanner/Templates.lean:404 | theorem | D9.17 |
+| `AreaLaw.Scanner.ambientEDist_mono` | AreaLaw/S09_Scanner/Templates.lean:464 | theorem | D9.17 |
+| `AreaLaw.Scanner.ofReal_lt_ambientEDist_dilation` | AreaLaw/S09_Scanner/Templates.lean:469 | theorem | D9.17 |
+| `AreaLaw.Scanner.isIntRect_dyadicSquare` | AreaLaw/S09_Scanner/Templates.lean:486 | theorem | D9.17 |
+| `AreaLaw.Scanner.boxSize_dyadicSquare` | AreaLaw/S09_Scanner/Templates.lean:491 | theorem | D9.17 |
+| `AreaLaw.Scanner.rpow_two_pow_comm` | AreaLaw/S09_Scanner/Templates.lean:499 | theorem | D9.17 |
+| `AreaLaw.Scanner.step_9_18` | AreaLaw/S09_Scanner/Templates.lean:509 | theorem | D9.18 |
+| `AreaLaw.Scanner.ambientDilation_one` | AreaLaw/S09_Scanner/Templates.lean:615 | theorem | D9.18 |
+| `AreaLaw.Scanner.ambientDilation_add_one` | AreaLaw/S09_Scanner/Templates.lean:619 | theorem | D9.18 |
+| `AreaLaw.Scanner.template_geometry` | AreaLaw/S09_Scanner/Templates.lean:625 | theorem | D9.15 |
+| `AreaLaw.Scanner.not_mem_cutEndpoints_of_mem_dilation` | AreaLaw/S09_Scanner/Templates.lean:668 | theorem | D9.15 |
+| `AreaLaw.Scanner.edgeBoundary_inter_subset` | AreaLaw/S09_Scanner/Templates.lean:680 | theorem | D9.18.6 |
+| `AreaLaw.Scanner.lemma_9_4` | AreaLaw/S09_Scanner/Templates.lean:702 | theorem | D9.15 |
+| `AreaLaw.Scanner.isStaircase_ambientDilation` | AreaLaw/S09_Scanner/Templates.lean:893 | theorem | D9.15 |
+| `AreaLaw.Scanner.ambientDilation_Icc` | AreaLaw/S09_Scanner/Templates.lean:903 | theorem | D9.15 |
+| `AreaLaw.Scanner.step_9_21_2` | AreaLaw/S09_Scanner/Templates.lean:917 | theorem | D9.21.2 |
 
 ### `AreaLaw/S09_Scanner/Truncation.lean` (42)
 
@@ -5766,35 +5766,35 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Scanner.term_siteTerms` | AreaLaw/S09_Scanner/Truncation.lean:162 | theorem | D3.1 |
 | `AreaLaw.Scanner.Hx_eq` | AreaLaw/S09_Scanner/Truncation.lean:184 | theorem | D3.1 |
 | `AreaLaw.Scanner.Hbar_eq` | AreaLaw/S09_Scanner/Truncation.lean:191 | theorem | D8.8 |
-| `AreaLaw.Scanner.mem_up` | AreaLaw/S09_Scanner/Truncation.lean:205 | theorem | D8.8 |
-| `AreaLaw.Scanner.subtype_inter_nonempty_iff` | AreaLaw/S09_Scanner/Truncation.lean:213 | theorem | D8.8 |
-| `AreaLaw.Scanner.subtype_sdiff_nonempty_iff` | AreaLaw/S09_Scanner/Truncation.lean:224 | theorem | D8.8 |
-| `AreaLaw.Scanner.card_regionConfig_subtype` | AreaLaw/S09_Scanner/Truncation.lean:237 | theorem | D8.8 |
-| `AreaLaw.Scanner.restr_eq_iff` | AreaLaw/S09_Scanner/Truncation.lean:243 | theorem | D8.8 |
-| `AreaLaw.Scanner.subtypeEquiv` | AreaLaw/S09_Scanner/Truncation.lean:260 | def | D8.8 |
-| `AreaLaw.Scanner.localLift_subtype` | AreaLaw/S09_Scanner/Truncation.lean:268 | theorem | D8.8 |
-| `AreaLaw.Scanner.extendId_one_sub` | AreaLaw/S09_Scanner/Truncation.lean:278 | theorem | D8.8 |
-| `AreaLaw.Scanner.ptrace_extendId` | AreaLaw/S09_Scanner/Truncation.lean:284 | theorem | D8.8 |
-| `AreaLaw.Scanner.exists_op` | AreaLaw/S09_Scanner/Truncation.lean:291 | theorem | D8.8 |
-| `AreaLaw.Scanner.domainTerms` | AreaLaw/S09_Scanner/Truncation.lean:316 | def | D8.8 |
-| `AreaLaw.Scanner.term_domainTerms` | AreaLaw/S09_Scanner/Truncation.lean:332 | theorem | D8.8 |
-| `AreaLaw.Scanner.budget_domainTerms` | AreaLaw/S09_Scanner/Truncation.lean:336 | theorem | D8.8 |
-| `AreaLaw.Scanner.truncatedSupport_subset` | AreaLaw/S09_Scanner/Truncation.lean:359 | theorem | D8.8 |
-| `AreaLaw.Scanner.isSupportedOn_of_eq` | AreaLaw/S09_Scanner/Truncation.lean:366 | theorem | D8.8 |
-| `AreaLaw.Scanner.isSupportedOn_truncated` | AreaLaw/S09_Scanner/Truncation.lean:374 | theorem | D4.11 |
-| `AreaLaw.Scanner.card_S₀_le` | AreaLaw/S09_Scanner/Truncation.lean:386 | theorem | D9.3 |
-| `AreaLaw.Scanner.CutBudgetBound` | AreaLaw/S09_Scanner/Truncation.lean:411 | def | D4.14 |
-| `AreaLaw.Scanner.TruncatedSystem` | AreaLaw/S09_Scanner/Truncation.lean:423 | structure | D9.3 |
-| `AreaLaw.Scanner.step_9_3` | AreaLaw/S09_Scanner/Truncation.lean:463 | theorem | D9.3 |
-| `AreaLaw.Scanner.log_exp_mul_card_nonneg` | AreaLaw/S09_Scanner/Truncation.lean:542 | theorem | D9.3 |
-| `AreaLaw.Scanner.abs_condEntropy_sub_le` | AreaLaw/S09_Scanner/Truncation.lean:555 | theorem | D2.4 |
-| `AreaLaw.Scanner.abs_regionEntropy_sub_le` | AreaLaw/S09_Scanner/Truncation.lean:566 | theorem | D2.4 |
-| `AreaLaw.Scanner.abs_mutualInfo_sub_le` | AreaLaw/S09_Scanner/Truncation.lean:578 | theorem | D2.4 |
-| `AreaLaw.Scanner.four_root_le` | AreaLaw/S09_Scanner/Truncation.lean:593 | theorem | D2.4 |
-| `AreaLaw.Scanner.eventually_rpow_neg_le` | AreaLaw/S09_Scanner/Truncation.lean:603 | theorem | D2.4 |
-| `AreaLaw.Scanner.card_reg_fin` | AreaLaw/S09_Scanner/Truncation.lean:610 | theorem | D2.4 |
-| `AreaLaw.Scanner.log_card_up_le` | AreaLaw/S09_Scanner/Truncation.lean:615 | theorem | D2.4 |
-| `AreaLaw.Scanner.step_9_9_1` | AreaLaw/S09_Scanner/Truncation.lean:628 | theorem | D9.9.1 |
+| `AreaLaw.Scanner.mem_up` | AreaLaw/S09_Scanner/Truncation.lean:206 | theorem | D8.8 |
+| `AreaLaw.Scanner.subtype_inter_nonempty_iff` | AreaLaw/S09_Scanner/Truncation.lean:214 | theorem | D8.8 |
+| `AreaLaw.Scanner.subtype_sdiff_nonempty_iff` | AreaLaw/S09_Scanner/Truncation.lean:225 | theorem | D8.8 |
+| `AreaLaw.Scanner.card_regionConfig_subtype` | AreaLaw/S09_Scanner/Truncation.lean:238 | theorem | D8.8 |
+| `AreaLaw.Scanner.restr_eq_iff` | AreaLaw/S09_Scanner/Truncation.lean:244 | theorem | D8.8 |
+| `AreaLaw.Scanner.subtypeEquiv` | AreaLaw/S09_Scanner/Truncation.lean:261 | def | D8.8 |
+| `AreaLaw.Scanner.localLift_subtype` | AreaLaw/S09_Scanner/Truncation.lean:269 | theorem | D8.8 |
+| `AreaLaw.Scanner.extendId_one_sub` | AreaLaw/S09_Scanner/Truncation.lean:279 | theorem | D8.8 |
+| `AreaLaw.Scanner.ptrace_extendId` | AreaLaw/S09_Scanner/Truncation.lean:285 | theorem | D8.8 |
+| `AreaLaw.Scanner.exists_op` | AreaLaw/S09_Scanner/Truncation.lean:292 | theorem | D8.8 |
+| `AreaLaw.Scanner.domainTerms` | AreaLaw/S09_Scanner/Truncation.lean:317 | def | D8.8 |
+| `AreaLaw.Scanner.term_domainTerms` | AreaLaw/S09_Scanner/Truncation.lean:333 | theorem | D8.8 |
+| `AreaLaw.Scanner.budget_domainTerms` | AreaLaw/S09_Scanner/Truncation.lean:337 | theorem | D8.8 |
+| `AreaLaw.Scanner.truncatedSupport_subset` | AreaLaw/S09_Scanner/Truncation.lean:360 | theorem | D8.8 |
+| `AreaLaw.Scanner.isSupportedOn_of_eq` | AreaLaw/S09_Scanner/Truncation.lean:367 | theorem | D8.8 |
+| `AreaLaw.Scanner.isSupportedOn_truncated` | AreaLaw/S09_Scanner/Truncation.lean:375 | theorem | D4.11 |
+| `AreaLaw.Scanner.card_S₀_le` | AreaLaw/S09_Scanner/Truncation.lean:387 | theorem | D9.3 |
+| `AreaLaw.Scanner.CutBudgetBound` | AreaLaw/S09_Scanner/Truncation.lean:412 | def | D4.14 |
+| `AreaLaw.Scanner.TruncatedSystem` | AreaLaw/S09_Scanner/Truncation.lean:424 | structure | D9.3 |
+| `AreaLaw.Scanner.step_9_3` | AreaLaw/S09_Scanner/Truncation.lean:464 | theorem | D9.3 |
+| `AreaLaw.Scanner.log_exp_mul_card_nonneg` | AreaLaw/S09_Scanner/Truncation.lean:543 | theorem | D9.3 |
+| `AreaLaw.Scanner.abs_condEntropy_sub_le` | AreaLaw/S09_Scanner/Truncation.lean:556 | theorem | D2.4 |
+| `AreaLaw.Scanner.abs_regionEntropy_sub_le` | AreaLaw/S09_Scanner/Truncation.lean:567 | theorem | D2.4 |
+| `AreaLaw.Scanner.abs_mutualInfo_sub_le` | AreaLaw/S09_Scanner/Truncation.lean:579 | theorem | D2.4 |
+| `AreaLaw.Scanner.four_root_le` | AreaLaw/S09_Scanner/Truncation.lean:594 | theorem | D2.4 |
+| `AreaLaw.Scanner.eventually_rpow_neg_le` | AreaLaw/S09_Scanner/Truncation.lean:604 | theorem | D2.4 |
+| `AreaLaw.Scanner.card_reg_fin` | AreaLaw/S09_Scanner/Truncation.lean:611 | theorem | D2.4 |
+| `AreaLaw.Scanner.log_card_up_le` | AreaLaw/S09_Scanner/Truncation.lean:616 | theorem | D2.4 |
+| `AreaLaw.Scanner.step_9_9_1` | AreaLaw/S09_Scanner/Truncation.lean:629 | theorem | D9.9.1 |
 
 ### `AreaLaw/S09_Scanner.lean` (2)
 
@@ -5912,9 +5912,9 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.dotProduct_restoredVec'` | AreaLaw/S10_Amplification/Information.lean:458 | theorem | D10.6.2 |
 | `AreaLaw.trDistance_relabel` | AreaLaw/S10_Amplification/Information.lean:484 | theorem | D10.6.2 |
 | `AreaLaw.abs_qMutualInfo_sub_le` | AreaLaw/S10_Amplification/Information.lean:496 | theorem | D10.15.4 |
-| `AreaLaw.qMutualInfo_unionState` | AreaLaw/S10_Amplification/Information.lean:540 | theorem | D10.15.4 |
-| `AreaLaw.mutualInfo_le_of_subset` | AreaLaw/S10_Amplification/Information.lean:548 | theorem | D10.15.7 |
-| `AreaLaw.step_10_15` | AreaLaw/S10_Amplification/Information.lean:564 | theorem | D10.15 |
+| `AreaLaw.qMutualInfo_unionState` | AreaLaw/S10_Amplification/Information.lean:543 | theorem | D10.15.4 |
+| `AreaLaw.mutualInfo_le_of_subset` | AreaLaw/S10_Amplification/Information.lean:551 | theorem | D10.15.7 |
+| `AreaLaw.step_10_15` | AreaLaw/S10_Amplification/Information.lean:567 | theorem | D10.15 |
 
 ### `AreaLaw/S10_Amplification/Lemma101.lean` (41)
 
@@ -6509,7 +6509,7 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Geometry.Repair.dist_v_child_le` | AreaLaw/S11_Geometry/RepairRegions.lean:169 | lemma | D11.13 |
 | `AreaLaw.Geometry.Repair.d_le_dist_v_child` | AreaLaw/S11_Geometry/RepairRegions.lean:174 | lemma | D11.13 |
 | `AreaLaw.Geometry.Repair.Hyp.S_pos` | AreaLaw/S11_Geometry/RepairRegions.lean:185 | lemma | D11.13 |
-| `AreaLaw.Geometry.Repair.Hyp.S_star_le_S` | AreaLaw/S11_Geometry/RepairRegions.lean:191 | lemma | D11.13 |
+| `AreaLaw.Geometry.Repair.Hyp.stopScale_le_S` | AreaLaw/S11_Geometry/RepairRegions.lean:191 | lemma | D11.13 |
 | `AreaLaw.Geometry.Repair.Hyp.d_le` | AreaLaw/S11_Geometry/RepairRegions.lean:196 | lemma | D11.13 |
 | `AreaLaw.Geometry.Repair.Hyp.exists_d_eq_pow` | AreaLaw/S11_Geometry/RepairRegions.lean:200 | lemma | D11.16.2 |
 | `AreaLaw.Geometry.Repair.Hyp.isMark_child_iff` | AreaLaw/S11_Geometry/RepairRegions.lean:203 | lemma | D11.16.2 |
@@ -6537,11 +6537,11 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `AreaLaw.Geometry.Repair.LatticeHyp` | AreaLaw/S11_Geometry/RepairRegions.lean:599 | structure | D11.16 |
 | `AreaLaw.Geometry.Repair.Hyp.finite_isMark` | AreaLaw/S11_Geometry/RepairRegions.lean:612 | theorem | D11.15.7 |
 | `AreaLaw.Geometry.Repair.Hyp.step_11_19_marks` | AreaLaw/S11_Geometry/RepairRegions.lean:622 | theorem | D11.19.2 |
-| `AreaLaw.Geometry.Repair.Hyp.exists_v_eq` | AreaLaw/S11_Geometry/RepairRegions.lean:646 | lemma | D11.16.1 |
-| `AreaLaw.Geometry.Repair.Hyp.latticePoint_mem_ball_iff` | AreaLaw/S11_Geometry/RepairRegions.lean:661 | lemma | D11.16.3 |
-| `AreaLaw.Geometry.Repair.Hyp.step_11_16_unique` | AreaLaw/S11_Geometry/RepairRegions.lean:672 | theorem | D11.16 |
-| `AreaLaw.Geometry.Repair.Hyp.step_11_16_cover` | AreaLaw/S11_Geometry/RepairRegions.lean:705 | theorem | D11.16 |
-| `AreaLaw.Geometry.Repair.Hyp.step_11_18_replacement` | AreaLaw/S11_Geometry/RepairRegions.lean:736 | theorem | D11.18 |
+| `AreaLaw.Geometry.Repair.Hyp.exists_v_eq` | AreaLaw/S11_Geometry/RepairRegions.lean:647 | lemma | D11.16.1 |
+| `AreaLaw.Geometry.Repair.Hyp.latticePoint_mem_ball_iff` | AreaLaw/S11_Geometry/RepairRegions.lean:662 | lemma | D11.16.3 |
+| `AreaLaw.Geometry.Repair.Hyp.step_11_16_unique` | AreaLaw/S11_Geometry/RepairRegions.lean:673 | theorem | D11.16 |
+| `AreaLaw.Geometry.Repair.Hyp.step_11_16_cover` | AreaLaw/S11_Geometry/RepairRegions.lean:706 | theorem | D11.16 |
+| `AreaLaw.Geometry.Repair.Hyp.step_11_18_replacement` | AreaLaw/S11_Geometry/RepairRegions.lean:737 | theorem | D11.18 |
 
 ### `AreaLaw/S11_Geometry/RepairScales.lean` (18)
 
@@ -7159,29 +7159,29 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `Matrix.isHermitian_geomMean` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:78 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
 | `Matrix.rpowDeriv` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:88 | def | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
 | `Matrix.posDef_of_norm_sub_lt` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:93 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.eventually_posDef_nhdsWithin` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:109 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.hasFDerivWithinAt_rpow_Icc` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:120 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_id` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:139 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_rpowDeriv` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:146 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.rpowDeriv_self` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:156 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.sandwichL` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:167 | abbrev | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.sandwichL_apply` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:170 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_sandwichL` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:173 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.geomMeanDerivRight` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:182 | def | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.geomMeanDerivLeft` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:189 | def | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.hasFDerivWithinAt_geomMean_right` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:198 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.hasFDerivWithinAt_geomMean_left` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:218 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.geomMeanDerivRight_self` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:228 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.geomMeanDerivLeft_self` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:234 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_geomMeanDerivRight` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:240 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_geomMeanDerivLeft` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:251 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.normalizedDerivMap` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:262 | def | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.normalizedDerivMap_one` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:267 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_normalizedDerivMap` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:283 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.normalizedDerivMap_right_one` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:304 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.normalizedDerivMap_left_one` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:315 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_normalizedDerivMap_right` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:325 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
-| `Matrix.isNPositiveMap_normalizedDerivMap_left` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:336 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.eventually_posDef_nhdsWithin` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:110 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.hasFDerivWithinAt_rpow_Icc` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:121 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_id` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:140 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_rpowDeriv` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:147 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.rpowDeriv_self` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:157 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.sandwichL` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:168 | abbrev | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.sandwichL_apply` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:171 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_sandwichL` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:174 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.geomMeanDerivRight` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:183 | def | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.geomMeanDerivLeft` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:190 | def | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.hasFDerivWithinAt_geomMean_right` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:199 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.hasFDerivWithinAt_geomMean_left` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:219 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.geomMeanDerivRight_self` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:229 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.geomMeanDerivLeft_self` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:235 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_geomMeanDerivRight` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:241 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_geomMeanDerivLeft` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:252 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.normalizedDerivMap` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:263 | def | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.normalizedDerivMap_one` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:268 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_normalizedDerivMap` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:284 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.normalizedDerivMap_right_one` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:305 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.normalizedDerivMap_left_one` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:316 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_normalizedDerivMap_right` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:326 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
+| `Matrix.isNPositiveMap_normalizedDerivMap_left` | AreaLawForMathlib/Analysis/Matrix/GeometricMeanDerivative.lean:337 | theorem | `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean` |
 
 ### `AreaLawForMathlib/Analysis/Matrix/GeometricMeanPathDerivative.lean` (10)
 
@@ -7351,11 +7351,11 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 |---|---|---|---|
 | `IsPositiveMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:34 | def | `QuantumInfo/Channels/MatrixMap.lean` |
 | `IsPositiveMap.toPositiveLinearMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:38 | def | `QuantumInfo/Channels/MatrixMap.lean` |
-| `IsPositiveMap.map_conjTranspose` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:52 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
-| `isNPositiveMap_one_iff_isPositiveMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:64 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
-| `Matrix.PosSemidef.of_forall_trace_mul_nonneg` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:104 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
-| `traceAdjointMap_map_isHermitian_of_isPositiveMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:118 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
-| `IsPositiveMap.traceAdjointMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:140 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
+| `IsPositiveMap.map_conjTranspose` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:47 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
+| `isNPositiveMap_one_iff_isPositiveMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:59 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
+| `Matrix.PosSemidef.of_forall_trace_mul_nonneg` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:99 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
+| `traceAdjointMap_map_isHermitian_of_isPositiveMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:113 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
+| `IsPositiveMap.traceAdjointMap` | AreaLawForMathlib/Analysis/Matrix/PositiveMap.lean:135 | theorem | `QuantumInfo/Channels/MatrixMap.lean` |
 
 ### `AreaLawForMathlib/Analysis/Matrix/PowerDerivative.lean` (27)
 
@@ -7612,33 +7612,33 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `Matrix.starRingEnd_eq_inv_of_isPrimitiveRoot` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:55 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
 | `Matrix.pow_mul_conj_pow_eq_one_iff` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:64 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
 | `Matrix.sum_rootOfUnity_pow_eq` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:73 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylShift` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:94 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylClock` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:97 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weyl` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:100 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylClock_pow` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:103 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.addRight_one_pow` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:111 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylShift_pow` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:122 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylClock_pow_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:130 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.sum_weylClock_pow_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:140 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylShift_pow_conj_diagonal` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:155 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.sum_weylShift_pow_conj_diagonal` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:170 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:185 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.sum_weyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:192 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylShift_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:230 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weylClock_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:238 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.weyl_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:257 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.reindexedWeyl` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:271 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.sum_reindexedWeyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:275 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.kronecker_one_conj_block` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:304 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.sum_kronecker_one_reindexedWeyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:328 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.complementaryWeylTwirl` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:348 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.complementaryWeylTwirl_eq_traceRight_kronecker` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:354 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.complementaryWeylTwirl_eq_smul_traceRight_kronecker_one` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:360 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.reindexedWeyl_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:368 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.one_kronecker_reindexedWeyl_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:394 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.norm_complementaryWeylTwirl_le` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:401 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.inv_sq_smul_sum_sum_const` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:440 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
-| `Matrix.norm_sub_complementaryWeylTwirl_le` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:449 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylShift` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:95 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylClock` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:99 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weyl` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:103 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylClock_pow` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:106 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.addRight_one_pow` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:114 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylShift_pow` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:125 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylClock_pow_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:133 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.sum_weylClock_pow_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:143 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylShift_pow_conj_diagonal` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:158 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.sum_weylShift_pow_conj_diagonal` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:173 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:188 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.sum_weyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:195 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylShift_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:233 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weylClock_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:241 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.weyl_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:260 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.reindexedWeyl` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:275 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.sum_reindexedWeyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:279 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.kronecker_one_conj_block` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:308 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.sum_kronecker_one_reindexedWeyl_conj` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:332 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.complementaryWeylTwirl` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:354 | def | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.complementaryWeylTwirl_eq_traceRight_kronecker` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:360 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.complementaryWeylTwirl_eq_smul_traceRight_kronecker_one` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:366 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.reindexedWeyl_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:374 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.one_kronecker_reindexedWeyl_mem_unitary` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:400 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.norm_complementaryWeylTwirl_le` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:407 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.inv_sq_smul_sum_sum_const` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:446 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
+| `Matrix.norm_sub_complementaryWeylTwirl_le` | AreaLawForMathlib/Analysis/Matrix/WeylTwirl.lean:455 | theorem | `Mathlib.LinearAlgebra.Matrix.Kronecker` |
 
 ### `AreaLawForMathlib/Analysis/MeanInequalitiesCubic.lean` (3)
 
@@ -7675,24 +7675,24 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `LiebRobinson.norm_exp_commutator_eq` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:170 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
 | `LiebRobinson.norm_exp_commutator_le_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:200 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
 | `LiebRobinson.norm_exp_commutator_le_sum_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:217 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.supportedCommutatorMap` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:257 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.supportedCommutatorMap_apply` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:263 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.continuous_supportedCommutatorMap` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:270 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.supportedCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:278 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.norm_commutator_le_supportedCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:283 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.supportedCommutatorNorm_le_sum_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:295 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergEvolution` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:359 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergEvolution_def` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:363 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:368 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergCommutatorNorm_neg_time` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:372 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.norm_heisenberg_commutator_le_heisenbergCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:378 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergCommutatorNorm_nonneg` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:385 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergCommutatorNorm_le_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:392 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.continuous_heisenbergCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:445 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergCommutatorNorm_zero_le` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:451 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.heisenbergCommutatorNorm_zero_of_commute` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:462 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.le_mul_exp_of_le_const_add_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:482 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
-| `LiebRobinson.finite_volterra_le_weight_mul_exp` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:525 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.supportedCommutatorMap` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:258 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.supportedCommutatorMap_apply` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:264 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.continuous_supportedCommutatorMap` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:271 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.supportedCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:281 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.norm_commutator_le_supportedCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:286 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.supportedCommutatorNorm_le_sum_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:298 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergEvolution` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:362 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergEvolution_def` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:366 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:371 | def | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergCommutatorNorm_neg_time` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:375 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.norm_heisenberg_commutator_le_heisenbergCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:381 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergCommutatorNorm_nonneg` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:388 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergCommutatorNorm_le_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:395 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.continuous_heisenbergCommutatorNorm` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:448 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergCommutatorNorm_zero_le` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:454 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.heisenbergCommutatorNorm_zero_of_commute` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:465 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.le_mul_exp_of_le_const_add_integral` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:485 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
+| `LiebRobinson.finite_volterra_le_weight_mul_exp` | AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:528 | theorem | `Mathlib/Analysis/ODE/Gronwall.lean` |
 
 ### `AreaLawForMathlib/Analysis/RCLike/ToComplex.lean` (39)
 
@@ -9266,11 +9266,11 @@ Every declaration of `AreaLaw/` (3574) and `AreaLawForMathlib/` (1866), grouped 
 | `Matrix.norm_apply_le_one_of_mem_unitaryGroup` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:31 | theorem | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
 | `Matrix.isCompact_unitaryGroup` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:46 | theorem | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
 | `(anonymous instance, line 54)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:54 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
-| `(anonymous instance, line 57)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:57 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
-| `(anonymous instance, line 59)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:59 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
-| `Matrix.unitaryHaar` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:62 | def | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
-| `(anonymous instance, line 65)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:65 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
-| `(anonymous instance, line 68)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:68 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
+| `Matrix.instMeasurableSpaceUnitaryGroup` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:57 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
+| `(anonymous instance, line 60)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:60 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
+| `Matrix.unitaryHaar` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:63 | def | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
+| `(anonymous instance, line 66)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:66 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
+| `(anonymous instance, line 69)` | AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryHaar.lean:69 | instance | `Mathlib/LinearAlgebra/UnitaryGroup.lean` and `Mathlib/MeasureTheory/Measure/Haar/Basic.lean` |
 
 ### `AreaLawForMathlib/RepresentationTheory/SchurWeyl/UnitaryTwirl.lean` (14)
 

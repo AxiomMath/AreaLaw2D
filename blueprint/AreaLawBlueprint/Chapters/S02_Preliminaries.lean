@@ -51,7 +51,7 @@ _Used from._ {bpref "D2.1"}[D2.1].
 
 :::
 
-:::definition "D2.3" (lean := "AreaLaw.traceDist, AreaLaw.C_h")
+:::definition "D2.3" (lean := "AreaLaw.traceDist, AreaLaw.binEntropyConst")
 *D2.3* — Def: Binary entropy and trace distance
 
 Lines 27–31.

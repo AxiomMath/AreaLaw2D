@@ -396,7 +396,7 @@ def repair : Repair InitId L.marks where
   oct₀ v k := L.tile (octPt v.1 (L.markScale v) k)
   label₀ := L.label
   birth₀ i := closure (interior {x | L.tile x = i})
-  S_star := L.S_star
+  stopScale := L.stopScale
   a₀ := starA₀
 
 /-- D11.13.4. Distinct marks `v, w` satisfy `‖v - w‖_∞ ≥ a₀ max(S_v, S_w)`: marks of layers
@@ -512,13 +512,13 @@ theorem lemma_11_3 : L.repair.Hyp ∧ L.repair.LatticeHyp (o₂ 0, o₂ 1) := by
   refine ⟨⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ⟨isIrrationalOrigin_o₂, ?_, ?_, ?_⟩⟩
   · change (0 : ℝ) < starA₀; norm_num [starA₀]
   · change starA₀ < 1 / 2; norm_num [starA₀]
-  · change (2 : ℝ) ≤ L.S_star
+  · change (2 : ℝ) ≤ L.stopScale
     exact ((by norm_num : (2 : ℝ) ≤ 4).trans (le_max_left _ _)).trans L.Sstar_le
   · intro S hS
     exact (eq_trim_margins (by norm_num [starA₀] : (0 : ℝ) < starA₀)
       (((show (1000 / starA₀) ^ (1 - ρ₀)⁻¹ ≤ Sstar from le_max_right _ _).trans L.Sstar_le).trans
         hS)).2.2
-  · exact fun r ↦ L.S_star_le.trans (t_le_t (L.marks_markLayer r).1)
+  · exact fun r ↦ L.stopScale_le.trans (t_le_t (L.marks_markLayer r).1)
   · -- D11.13.4
     exact L.step_11_13_4
   · -- D11.13.1–3: the star

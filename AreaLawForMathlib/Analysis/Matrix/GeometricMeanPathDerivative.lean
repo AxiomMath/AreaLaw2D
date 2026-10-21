@@ -52,7 +52,7 @@ theorem PosDef.hasDerivAt_rpow_exponent {C : Matrix n n ℂ} (hC : C.PosDef) (p 
   simp_rw [hC.rpow_eq_exp_smul_log]
   exact hasDerivAt_exp_smul_const (𝕂 := ℝ) (CFC.log C) p
 
-omit [DecidableEq n] in
+omit [Fintype n] [DecidableEq n] in
 /-- Derivatives within the Hermitian matrices are unique: every matrix is `H₁ + i H₂` with
 `H₁, H₂` Hermitian. -/
 theorem uniqueDiffWithinAt_hermitianSet {A : Matrix n n ℂ} (hA : A.IsHermitian) :

@@ -1141,6 +1141,8 @@ omit [∀ v, NeZero (n v)] in
 private theorem log_d_nonneg (E : TypicalSet D X) : 0 ≤ Real.log E.d :=
   Real.log_nonneg (by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne E.d))
 
+set_option linter.unusedFintypeInType false in
+set_option linter.unusedDecidableInType false in
 /-- D8.35 (rough): from the rough lower pin of D8.31 with constant `C₃₁`, the rough lower bound
 with constant `max C₃₁ 2`. -/
 private theorem roughLower_of_pin (h1 : Step_8_1.{u, v}) (h13 : Step_8_13.{u, v})

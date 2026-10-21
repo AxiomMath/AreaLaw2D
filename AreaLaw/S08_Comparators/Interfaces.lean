@@ -35,6 +35,7 @@ fixed finite system with `log Tr ρ^{1-u} ≤ u S + C₀ 𝓑 u²` for `|u| ≤ 
 label observable: for `0 ≤ u ≤ c/√𝓑`,
 `log E exp{± u (F - k S)} ≤ 2 C₀ k 𝓑 u² + O(log(k + 1))`; only the `O(log(k + 1))` term depends
 on the system. -/
+@[nolint defsWithUnderscore]
 def Step_8_10 : Prop :=
   ∀ C₀ c₀ : ℝ, 0 < C₀ → 0 < c₀ → ∃ c : ℝ, 0 < c ∧
     ∀ {Ω : Type u} [Fintype Ω] [DecidableEq Ω] (ρ : Matrix Ω Ω ℂ) (hρ : ρ.PosSemidef),
@@ -51,6 +52,7 @@ def Step_8_10 : Prop :=
 eigenbasis of `ρ_X`, `p_i ≥ 0`, `∑ p_i = 1`); `w_i` ignores the `X`-part, and the `w_i` with
 `p_i > 0` are orthonormal on `X^c` (sums over all physical configurations count each
 `X^c`-configuration `dim 𝓗_X` times). -/
+@[nolint defsWithUnderscore]
 def Step_8_11 : Prop :=
   ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} (D : PhysData n) (X : Finset σ),
     (∀ x : SiteConfig n, D.Ω x = ∑ i, (Real.sqrt (D.p X i) : ℂ) *
@@ -63,6 +65,7 @@ def Step_8_11 : Prop :=
     (∀ i, 0 ≤ D.p X i) ∧ ∑ i, D.p X i = 1
 
 /-- D8.12 (`comparator:high-label`). Every typical set has a high label sequence. -/
+@[nolint defsWithUnderscore]
 def Step_8_12 : Prop :=
   ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] {D : PhysData n}
     {X : Finset σ} (E : TypicalSet D X), ∃ l, HighLabel E l
@@ -71,6 +74,7 @@ def Step_8_12 : Prop :=
 eigenvector of `\overline{H̃}` of eigenvalue `Ẽ₀` (`k ≥ 1`) with label `λ_k` on `C` and on `R`,
 and every `A_{j,g}` (hence every root `𝓜`) commutes with the label projectors `π^{λ_k}_C`,
 `π^{λ_k}_R`. -/
+@[nolint defsWithUnderscore]
 def Step_8_13 : Prop :=
   ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
     {X : Finset σ} (E : TypicalSet D X) (l : ∀ k : ℕ, IrrepLabel (Equiv.Perm (Fin k))),
@@ -88,6 +92,7 @@ def Step_8_13 : Prop :=
 
 /-- D8.15 (`comparator:pin-norm`).
 `N² ≥ (z/d_*²)^k ‖𝓜^{-s} π^λ_R post_k‖²` for every tree, label and `k`. -/
+@[nolint defsWithUnderscore]
 def Step_8_15 : Prop :=
   ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
     {X : Finset σ} (E : TypicalSet D X) {K : ℕ} {St : Type v} [Fintype St] [DecidableEq St]
@@ -101,6 +106,7 @@ def Step_8_15 : Prop :=
 (`φ ∈ 𝒮_k`, `𝖯 φ = φ`) `A_{j,g}` acts as `Ã_{j,g} = (W_U^{-1} W_{UY}^{-1} W_Y)²`, which is positive
 definite, preserves the pinned symmetric range, commutes with the other bands' `Ã` of the same
 leaf, and has `log Ã_{j,g} = a (F_U + F_{UY} - F_Y) + O(log(k + 1))` in operator norm. -/
+@[nolint defsWithUnderscore]
 def Step_8_16 : Prop :=
   ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] {D : PhysData n}
     {X : Finset σ} (E : TypicalSet D X) {K : ℕ} {St : Type v} (Γ : Statuses σ K St X),
@@ -119,6 +125,7 @@ def Step_8_16 : Prop :=
         C * Real.log ((k : ℝ) + 2)
 
 /-- D8.20 (`comparator:rough-upper`). -/
+@[nolint defsWithUnderscore]
 def Step_8_20 : Prop :=
   ∃ a₀ : ℝ, 0 < a₀ ∧
     ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
@@ -128,6 +135,7 @@ def Step_8_20 : Prop :=
       ∀ a : ℝ, 0 < a → a ≤ a₀ → RoughUpper D Γ E a l Bsh Bexc
 
 /-- D8.22 (`comparator:sharp-upper`). -/
+@[nolint defsWithUnderscore]
 def Step_8_22 : Prop :=
   ∀ C₀ c₀ : ℝ, 0 < C₀ → 0 < c₀ → ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     ∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
@@ -142,6 +150,7 @@ low-defect projection `Π` on the auxiliary sector of a high label sequence:
 `L_{j,g} = 2S' - C(τ log d_* + h(τ)/a)` (rough, `C` universal) and
 `L_{j,g} = 2S' + (1 - τ) g^pre_{j,g} - C(τ log d_* + h(τ)/a + a 𝓑)` (sharp, `C` depending on
 `C₀, c₀`). -/
+@[nolint defsWithUnderscore]
 def Step_8_31 : Prop :=
   ∃ a₀ C : ℝ, 0 < a₀ ∧ 0 < C ∧
     (∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)
@@ -163,6 +172,7 @@ def Step_8_31 : Prop :=
             k * δ k) • lowProj D E.d τ k (l k) ≤ Γ.bandA n E.d (a / 2) k s g
 
 /-- D8.35 (`comparator:rough-lower`, `comparator:sharp-lower`). -/
+@[nolint defsWithUnderscore]
 def Step_8_35 : Prop :=
   ∃ a₀ C : ℝ, 0 < a₀ ∧ 0 < C ∧
     (∀ {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ} [∀ v, NeZero (n v)] (D : PhysData n)

@@ -161,9 +161,7 @@ section Prop43
 
 open GraphDomain
 
-set_option linter.unusedDecidableInType false in
-set_option linter.unusedFintypeInType false in
-theorem smul_le_smul_of_le {n : Type*} [Fintype n] [DecidableEq n] {A B : Matrix n n ℂ}
+theorem smul_le_smul_of_le {n : Type*} {A B : Matrix n n ℂ}
     (h : A ≤ B) {c : ℂ} (hc : 0 ≤ c) : c • A ≤ c • B := by
   rw [Matrix.le_iff] at h ⊢
   rw [← smul_sub]

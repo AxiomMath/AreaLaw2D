@@ -65,6 +65,7 @@ variable {σ : Type*} [DecidableEq σ] {Λ : Finset σ}
 theorem up_subtype_eq {S : Finset σ} (h : S ⊆ Λ) : up (S.subtype (· ∈ Λ)) = S := by
   rw [up, subtype_map, filter_true_of_mem h]
 
+omit [DecidableEq σ] in
 theorem up_mono {Q Q' : Finset Λ} (h : Q ⊆ Q') : up Q ⊆ up Q' := Finset.map_subset_map.2 h
 
 end Regions

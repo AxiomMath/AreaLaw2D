@@ -179,18 +179,18 @@ theorem lemma_3_2 {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 
     step_3_5 hq hA hQ hs hRD₀ hr hQ₀ hQ₀r hDR hC hQ₀Q
   obtain ⟨n, hn⟩ : ∃ n, n = m Cpad r D := ⟨_, rfl⟩
   rw [← hn] at hm1 hsplit hcnt
-  have hX0 : X_j A Q₀ r D 0 = A ∩ Q₀ := if_pos rfl
-  have hXjA : ∀ k, X_j A Q₀ r D k ⊆ A := fun k ↦ by
-    unfold X_j; split_ifs <;> exact inter_subset_left
+  have hX0 : bufferRegion A Q₀ r D 0 = A ∩ Q₀ := if_pos rfl
+  have hXjA : ∀ k, bufferRegion A Q₀ r D k ⊆ A := fun k ↦ by
+    unfold bufferRegion; split_ifs <;> exact inter_subset_left
   have hXU : A ∩ Q₀ ⊆ Λ := inter_subset_left.trans hA
-  set Tj : ℕ → Finset (ℤ × ℤ) := fun j ↦ X_j A Q₀ r D (j + 1) \ (A ∩ Q₀) with hTjdef
-  have hU : ∀ j, A ∩ Q₀ ∪ Tj j = X_j A Q₀ r D (j + 1) := fun j ↦
+  set Tj : ℕ → Finset (ℤ × ℤ) := fun j ↦ bufferRegion A Q₀ r D (j + 1) \ (A ∩ Q₀) with hTjdef
+  have hU : ∀ j, A ∩ Q₀ ∪ Tj j = bufferRegion A Q₀ r D (j + 1) := fun j ↦
     union_sdiff_of_subset (hX0 ▸ hnest 0 (j + 1) (Nat.zero_le _))
   have hTU : ∀ j, Tj j ⊆ Λ := fun j ↦ sdiff_subset.trans ((hXjA _).trans hA)
   have hTmono : ∀ j, Tj j ⊆ Tj (j + 1) := fun j ↦
     sdiff_subset_sdiff (hnest _ _ (by omega)) le_rfl
   -- D3.6: the weights `a_{j+1}` of the filters on `X_{j+1}`
-  have hZ : 0 < Z_r Cpad r D := by
+  have hZ : 0 < harmonicSum Cpad r D := by
     refine sum_pos (fun j _ ↦ one_div_pos.2 ?_) ⟨1, mem_Icc.2 ⟨le_rfl, hn ▸ hm1⟩⟩
     have : 0 < r + d r D j := by omega
     exact_mod_cast this
@@ -331,13 +331,13 @@ theorem lemma_3_2 {q R : ℕ} {J Δ : ℝ} (hq : 1 ≤ q) (hJ : 0 < J) (hΔ : 0 
       fun S h ↦ (dif_pos h).symm⟩
   set T := (A ∩ ambientDilation Q₀ (Cpad * r)) \ (A ∩ Q₀) with hTdef
   have hTΛ : T ⊆ Λ := sdiff_subset.trans (inter_subset_left.trans hA)
-  set Tj' : ℕ → Finset (ℤ × ℤ) := fun j ↦ X_j A Q₀ r D (min j n) \ (A ∩ Q₀) with hTj'def
+  set Tj' : ℕ → Finset (ℤ × ℤ) := fun j ↦ bufferRegion A Q₀ r D (min j n) \ (A ∩ Q₀) with hTj'def
   have hTT : ∀ j, Tj' j ⊆ T := fun j ↦ by
     simp only [hTj'def, hTdef]
     rcases Nat.eq_zero_or_pos (min j n) with h0 | h0
     · rw [h0, hX0, sdiff_self]; exact empty_subset _
     · refine sdiff_subset_sdiff ?_ le_rfl
-      simp only [X_j, if_neg h0.ne']
+      simp only [bufferRegion, if_neg h0.ne']
       refine inter_subset_inter_left (ambientDilation_mono' ?_)
       have h1 : d r D (min j n) ≤ d r D n := by unfold d; gcongr; exact min_le_right _ _
       exact h1.trans (hn ▸ d_m_le hC)

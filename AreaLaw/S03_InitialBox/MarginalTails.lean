@@ -1154,13 +1154,13 @@ theorem step_3_2_3 (Λ B : Finset (ℤ × ℤ)) (R q : ℕ) (hq : 1 ≤ q) :
   exact h2
 
 /-- D3.2.4. `C_M = 32 (M + 2) √((1 + ϑ) C₁)`. -/
-noncomputable def C_M (ϑ C₁ M : ℝ) : ℝ := 32 * (M + 2) * √((1 + ϑ) * C₁)
+noncomputable def tailConst (ϑ C₁ M : ℝ) : ℝ := 32 * (M + 2) * √((1 + ϑ) * C₁)
 
 /-- D3.2.4. If `𝓑 ≤ C₁ (1 + b')` and the tail of Lemma 3.1 at `w = C_M √(1 + b') log(n + 2)` is
 `P ≤ 2 e^{e/2} exp(-w / (32 √((1 + ϑ) 𝓑)))`, then `P ≤ (n + 2)^{-M}` for every `n ≥ 1`. -/
 theorem step_3_2_4 {ϑ 𝓑 C b M P : ℝ} {n : ℕ} (hn : 1 ≤ n) (hM : 0 ≤ M) (hϑ : 0 ≤ ϑ)
     (h𝓑 : 0 < 𝓑) (hb : 0 ≤ b) (h𝓑C : 𝓑 ≤ C * (1 + b))
-    (htail : P ≤ 2 * Real.exp (Real.exp 1 / 2) * Real.exp (-(C_M ϑ C M * √(1 + b) *
+    (htail : P ≤ 2 * Real.exp (Real.exp 1 / 2) * Real.exp (-(tailConst ϑ C M * √(1 + b) *
       Real.log (n + 2) / (32 * √((1 + ϑ) * 𝓑))))) :
     P ≤ ((n : ℝ) + 2) ^ (-M) := by
   set L := Real.log ((n : ℝ) + 2)
@@ -1171,8 +1171,8 @@ theorem step_3_2_4 {ϑ 𝓑 C b M P : ℝ} {n : ℕ} (hn : 1 ≤ n) (hM : 0 ≤ 
   have hst : √((1 + ϑ) * 𝓑) ≤ √((1 + ϑ) * C) * √(1 + b) := by
     rw [← Real.sqrt_mul (by nlinarith), mul_assoc]
     exact Real.sqrt_le_sqrt (by gcongr)
-  have hw : (M + 2) * L ≤ C_M ϑ C M * √(1 + b) * L / (32 * √((1 + ϑ) * 𝓑)) := by
-    rw [le_div_iff₀ (by positivity), C_M]
+  have hw : (M + 2) * L ≤ tailConst ϑ C M * √(1 + b) * L / (32 * √((1 + ϑ) * 𝓑)) := by
+    rw [le_div_iff₀ (by positivity), tailConst]
     have : 0 ≤ (M + 2) * L := by positivity
     nlinarith
   -- `2 e^{e/2} < 8 < 9 ≤ (n + 2)²`

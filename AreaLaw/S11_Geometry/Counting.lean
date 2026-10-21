@@ -19,27 +19,27 @@ noncomputable section
 /-- D11.19.3. Each initial mark of scale `S` spawns at most `C (log(S+2))^C` marks, with `C`
 depending on `S_*` only. -/
 theorem step_11_19_3 {S_star : ℝ} (hS : 1 < S_star) : ∃ C : ℝ, 0 < C ∧
-    ∀ {I M₀ : Type} (R : Repair I M₀), R.Hyp → R.S_star = S_star → ∀ r : M₀,
+    ∀ {I M₀ : Type} (R : Repair I M₀), R.Hyp → R.stopScale = S_star → ∀ r : M₀,
       ({m : Mark M₀ | R.IsMark m ∧ m.root = r}.ncard : ℝ) ≤ C * log (R.S₀ r + 2) ^ C := by
   classical
   obtain ⟨C, hC, hcount⟩ := step_11_19_2 hS
   refine ⟨C, hC, fun {I M₀} R hR hRS r => ?_⟩
   subst hRS
   obtain ⟨N, hN⟩ := hR.step_11_15_7 r
-  have hP0 : R.S_star ≤ d^[0] (R.S₀ r) := hR.S_star_le_S₀ r
-  set G := Nat.findGreatest (fun j => R.S_star ≤ d^[j] (R.S₀ r)) N
+  have hP0 : R.stopScale ≤ d^[0] (R.S₀ r) := hR.stopScale_le_S₀ r
+  set G := Nat.findGreatest (fun j => R.stopScale ≤ d^[j] (R.S₀ r)) N
   -- D11.19.1: the generations are bounded by the depth
   have hsub : {m : Mark M₀ | R.IsMark m ∧ m.root = r} ⊆ ↑(Repair.marksUpTo r G) := by
     rintro m ⟨hm, hr⟩
     refine Repair.mem_marksUpTo hr (Nat.le_findGreatest (hN m hm hr) ?_)
-    simpa [Repair.S, hr] using hR.S_star_le_S hm
+    simpa [Repair.S, hr] using hR.stopScale_le_S hm
   -- D11.19.2: at most nine children per mark
   calc ({m : Mark M₀ | R.IsMark m ∧ m.root = r}.ncard : ℝ) ≤ (Repair.marksUpTo r G).card := by
         rw [← ncard_coe_finset]; exact_mod_cast ncard_le_ncard hsub (Finset.finite_toSet _)
     _ ≤ _ := Repair.card_marksUpTo_le r G
     _ ≤ C * log (R.S₀ r + 2) ^ C :=
-        hcount _ (by linarith [hR.two_le_S_star, hR.S_star_le_S₀ r]) _
-          (Nat.findGreatest_spec (P := fun j => R.S_star ≤ d^[j] (R.S₀ r)) (Nat.zero_le N) hP0)
+        hcount _ (by linarith [hR.two_le_stopScale, hR.stopScale_le_S₀ r]) _
+          (Nat.findGreatest_spec (P := fun j => R.stopScale ≤ d^[j] (R.S₀ r)) (Nat.zero_le N) hP0)
 
 namespace Layout
 
@@ -90,7 +90,7 @@ replacements descended from it number `≤ C(log(S+2))^C`. For a mark from layer
 (`|Z| ≤ 2b`), `C'` depending on `C₀` and `S_*` only.
 2D only: at most nine children per mark and nine marks per belt cell (planar squares). -/
 theorem step_11_19 (C₀ : ℕ) {S_star : ℝ} (hS : 1 < S_star) : ∃ C : ℝ, 0 ≤ C ∧
-    ∀ L : Layout, L.C₀ = C₀ → L.S_star = S_star → L.BeltSparse →
+    ∀ L : Layout, L.C₀ = C₀ → L.stopScale = S_star → L.BeltSparse →
       (∑ k ∈ Finset.Ico L.k₀ L.K, ((beltIndex o₂ L.Z L.C₀ k (L.a k)).card : ℝ)) ≤
         C * L.Z.card ∧
       ({m : Mark L.marks | L.repair.IsMark m}.ncard : ℝ) ≤ C * L.Z.card := by
@@ -206,7 +206,7 @@ in terminal squares (sites overwritten by a replacement are not dummy sites). `|
 `C` depending on `C₀`, `k₀` and `S_*` only.
 2D only: the terminal squares are the planar removal squares of D11.14. -/
 theorem step_11_20_count (C₀ k₀ : ℕ) {S_star : ℝ} (hS : 1 < S_star) : ∃ C : ℝ, 0 ≤ C ∧
-    ∀ L : Layout, L.C₀ = C₀ → L.k₀ = k₀ → L.S_star = S_star → L.BeltSparse →
+    ∀ L : Layout, L.C₀ = C₀ → L.k₀ = k₀ → L.stopScale = S_star → L.BeltSparse →
     ∀ b : ℕ, L.Z.card ≤ 2 * b → ∀ D : Finset (ℤ × ℤ),
       (∀ z ∈ D, pt (latticePoint z) ∈ closure (N o₂ L.Z L.C₀ L.k₀) ∨
         ∃ m, L.repair.IsMark m ∧ ¬ L.repair.IsNonterminal m ∧
@@ -282,7 +282,7 @@ end Layout
 sum is `O(b)`. Here `≤ C|Z|`, `C` depending on `C₀` and `S_*` only.
 2D only: the retained identifiers are those of the planar construction. -/
 theorem step_11_25_4_count (C₀ : ℕ) {S_star : ℝ} (hS : 1 < S_star) : ∃ C : ℝ, 0 ≤ C ∧
-    ∀ L : Layout, L.C₀ = C₀ → L.S_star = S_star → L.BeltSparse →
+    ∀ L : Layout, L.C₀ = C₀ → L.stopScale = S_star → L.BeltSparse →
     ∀ (F : Finset (TileId InitId L.marks)) (n : TileId InitId L.marks → ℕ),
       (∀ a ∈ F, L.Retainable a ∧ 1 ≤ n a) →
       (∀ k j, TileId.init (.primary k j) ∈ F →

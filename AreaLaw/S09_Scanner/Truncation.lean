@@ -202,6 +202,7 @@ section Domain
 
 variable {σ : Type u} [DecidableEq σ] {Λ : Finset σ} {q : ℕ}
 
+omit [DecidableEq σ] in
 theorem mem_up {Q : Finset Λ} {x : σ} : x ∈ up Q ↔ ∃ h : x ∈ Λ, (⟨x, h⟩ : Λ) ∈ Q := by
   constructor
   · intro hx
@@ -371,7 +372,7 @@ theorem isSupportedOn_of_eq {loc : σ → Type*}
 
 omit [DecidableRel G.Adj] in
 /-- D4.11. The truncated constraint `h̃_i` is supported in the truncated support `X̃_i`. -/
-theorem isSupportedOn_truncated {q : ℕ} [NeZero q] {Λ S₀ : Finset σ} {r₀ : ℕ} {a : σ}
+theorem isSupportedOn_truncated {q : ℕ} {Λ S₀ : Finset σ} {r₀ : ℕ} {a : σ}
     {k : Matrix (Reg (fun _ : σ => Fin q) Λ) (Reg (fun _ : σ => Fin q) Λ) ℂ}
     (hk : OpenAI.IsSupportedOn (component_subset G Λ a) k) :
     OpenAI.IsSupportedOn (truncatedSupport_subset G Λ S₀ r₀ a) (truncated G Λ S₀ r₀ a k) := by

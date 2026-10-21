@@ -64,10 +64,11 @@ def m (Cpad r D : ℕ) : ℕ := (Cpad - 1) * r / D
 def d (r D j : ℕ) : ℕ := r + j * D
 
 /-- D3.6. `Z_r = ∑_{j=1}^m 1/(r + d_j)`. -/
-noncomputable def Z_r (Cpad r D : ℕ) : ℝ := ∑ j ∈ Icc 1 (m Cpad r D), 1 / ((r + d r D j : ℕ) : ℝ)
+noncomputable def harmonicSum (Cpad r D : ℕ) : ℝ :=
+  ∑ j ∈ Icc 1 (m Cpad r D), 1 / ((r + d r D j : ℕ) : ℝ)
 
 /-- D3.6. `a_j = 2 / (Z_r (r + d_j))`. -/
-noncomputable def a (Cpad r D j : ℕ) : ℝ := 2 / (Z_r Cpad r D * (r + d r D j : ℕ))
+noncomputable def a (Cpad r D j : ℕ) : ℝ := 2 / (harmonicSum Cpad r D * (r + d r D j : ℕ))
 
 /-- D3.6. `ℰ = ∑_j (r + d_j) a_j²`. -/
 noncomputable def ℰ (Cpad r D : ℕ) : ℝ :=
@@ -78,29 +79,30 @@ variable {Cpad r D : ℕ}
 /-- D3.6 (eq:initial-harmonic-weights, eq:initial-harmonic-lower). `∑_j a_j = 2`, `ℰ = 4/Z_r`,
 `ℰ = min{∑_j (r + d_j) b_j² : ∑_j b_j = 2}`, and `Z_r ≥ (1/D) log((C_pad + 1)/(2 + D))`. -/
 theorem eq_initial_harmonic_weights (hD : 0 < D) (hC : D + 1 < Cpad) (hr : 1 ≤ r) :
-    ∑ j ∈ Icc 1 (m Cpad r D), a Cpad r D j = 2 ∧ ℰ Cpad r D = 4 / Z_r Cpad r D ∧
+    ∑ j ∈ Icc 1 (m Cpad r D), a Cpad r D j = 2 ∧ ℰ Cpad r D = 4 / harmonicSum Cpad r D ∧
     (∀ b : ℕ → ℝ, ∑ j ∈ Icc 1 (m Cpad r D), b j = 2 →
       ℰ Cpad r D ≤ ∑ j ∈ Icc 1 (m Cpad r D), ((r + d r D j : ℕ) : ℝ) * b j ^ 2) ∧
-    1 / D * Real.log ((Cpad + 1) / (2 + D)) ≤ Z_r Cpad r D := by
+    1 / D * Real.log ((Cpad + 1) / (2 + D)) ≤ harmonicSum Cpad r D := by
   have hm : 1 ≤ m Cpad r D := (Nat.le_div_iff_mul_le hD).2 (by
     rw [one_mul]; exact (show D ≤ Cpad - 1 by omega).trans (Nat.le_mul_of_pos_right _ hr))
   have hc : ∀ j, (0 : ℝ) < ((r + d r D j : ℕ) : ℝ) := fun j => by unfold d; positivity
-  have hZ : 0 < Z_r Cpad r D :=
+  have hZ : 0 < harmonicSum Cpad r D :=
     sum_pos (fun j _ => one_div_pos.2 (hc j)) ⟨1, mem_Icc.2 ⟨le_rfl, hm⟩⟩
   -- D3.6.1
-  have ha : ∀ j, a Cpad r D j = 2 / Z_r Cpad r D * (1 / ((r + d r D j : ℕ) : ℝ)) := fun j => by
+  have ha : ∀ j, a Cpad r D j = 2 / harmonicSum Cpad r D * (1 / ((r + d r D j : ℕ) : ℝ)) :=
+    fun j => by
     simp only [a]; field_simp
   have hE : ∀ j, ((r + d r D j : ℕ) : ℝ) * a Cpad r D j ^ 2 =
-      4 / Z_r Cpad r D ^ 2 * (1 / ((r + d r D j : ℕ) : ℝ)) := fun j => by
+      4 / harmonicSum Cpad r D ^ 2 * (1 / ((r + d r D j : ℕ) : ℝ)) := fun j => by
     simp only [a]; field_simp [(hc j).ne']; ring
   have h1 : ∑ j ∈ Icc 1 (m Cpad r D), a Cpad r D j = 2 := by
-    simp only [ha, ← mul_sum]; rw [← Z_r]; field_simp
-  have h2 : ℰ Cpad r D = 4 / Z_r Cpad r D := by
-    simp only [ℰ, hE, ← mul_sum]; rw [← Z_r]; field_simp
+    simp only [ha, ← mul_sum]; rw [← harmonicSum]; field_simp
+  have h2 : ℰ Cpad r D = 4 / harmonicSum Cpad r D := by
+    simp only [ℰ, hE, ← mul_sum]; rw [← harmonicSum]; field_simp
   refine ⟨h1, h2, fun b hb => ?_, ?_⟩
   · -- D3.6.1: Cauchy–Schwarz, `4 = (∑ b)² ≤ (∑ (r + d_j) b_j²)(∑ 1/(r + d_j))`
     have := sq_sum_div_le_sum_sq_div (Icc 1 (m Cpad r D)) b fun j _ => one_div_pos.2 (hc j)
-    rw [hb, ← Z_r] at this
+    rw [hb, ← harmonicSum] at this
     simp only [div_div_eq_mul_div, div_one] at this
     rw [h2]
     exact (by norm_num : (4 : ℝ) = 2 ^ 2) ▸ this.trans_eq (sum_congr rfl fun _ _ => mul_comm _ _)
@@ -117,7 +119,7 @@ theorem eq_initial_harmonic_weights (hD : 0 < D) (hC : D + 1 < Cpad) (hr : 1 ≤
       | zero => simp
       | succ n ih => rw [sum_Icc_succ_top (by omega), ih]; ring
     have hsum := (htele (m Cpad r D)).symm.le.trans (sum_le_sum fun j _ => hstep j)
-    rw [← mul_sum, ← Z_r] at hsum
+    rw [← mul_sum, ← harmonicSum] at hsum
     have hmr : (Cpad + 1 : ℝ) * r ≤ 2 * r + (m Cpad r D + 1 : ℕ) * D := by
       unfold m
       have h' : (((Cpad - 1) * r : ℕ) : ℝ) < (((Cpad - 1) * r / D * D + D : ℕ) : ℝ) := by
@@ -147,7 +149,7 @@ open SimpleGraph
 variable {Λ A Q X : Finset (ℤ × ℤ)} {R : ℕ} {D₀ : ℝ}
 
 /-- D3.5. `X_0 = A ∩ Q₀`, `X_j = A ∩ Q₀^{+d_j}` for `j ≥ 1`. -/
-noncomputable def X_j (A Q₀ : Finset (ℤ × ℤ)) (r D j : ℕ) : Finset (ℤ × ℤ) :=
+noncomputable def bufferRegion (A Q₀ : Finset (ℤ × ℤ)) (r D j : ℕ) : Finset (ℤ × ℤ) :=
   if j = 0 then A ∩ Q₀ else A ∩ ambientDilation Q₀ (d r D j)
 
 /-- The dilation radius of `X_j`: `0` for `j = 0`, `d_j` otherwise. -/
@@ -217,10 +219,10 @@ theorem mem_ambientDilation_Icc {a b y : ℤ × ℤ} (hab : a ≤ b) {e : ℕ} :
     · rw [mem_Icc, Prod.le_def, Prod.le_def]; dsimp only; omega
     all_goals dsimp only; omega
 
-theorem mem_X_j {A : Finset (ℤ × ℤ)} {a b y : ℤ × ℤ} (hab : a ≤ b) {r D j : ℕ} :
-    y ∈ X_j A (Icc a b) r D j ↔ y ∈ A ∧ a.1 - rad r D j ≤ y.1 ∧ y.1 ≤ b.1 + rad r D j ∧
+theorem mem_bufferRegion {A : Finset (ℤ × ℤ)} {a b y : ℤ × ℤ} (hab : a ≤ b) {r D j : ℕ} :
+    y ∈ bufferRegion A (Icc a b) r D j ↔ y ∈ A ∧ a.1 - rad r D j ≤ y.1 ∧ y.1 ≤ b.1 + rad r D j ∧
       a.2 - rad r D j ≤ y.2 ∧ y.2 ≤ b.2 + rad r D j := by
-  unfold X_j rad
+  unfold bufferRegion rad
   split_ifs
   · simp [mem_Icc, Prod.le_def]; omega
   · rw [mem_inter, mem_ambientDilation_Icc hab]
@@ -289,14 +291,14 @@ theorem d_m_le (hC : D + 1 < Cpad) : d r D (m Cpad r D) ≤ Cpad * r := by
   unfold d; omega
 
 /-- D3.5.1. `X_j ⊆ Q₀^{+d_m} ⊆ Q` for `j ≤ m`. -/
-theorem X_j_subset (hab : a ≤ b) (hC : D + 1 < Cpad)
+theorem bufferRegion_subset (hab : a ≤ b) (hC : D + 1 < Cpad)
     (hQ₀Q : ambientDilation (Icc a b) (Cpad * r) ⊆ Q) {j : ℕ} (hj : j ≤ m Cpad r D) :
-    X_j A (Icc a b) r D j ⊆ ambientDilation (Icc a b) (d r D (m Cpad r D)) ∧
+    bufferRegion A (Icc a b) r D j ⊆ ambientDilation (Icc a b) (d r D (m Cpad r D)) ∧
       ambientDilation (Icc a b) (d r D (m Cpad r D)) ⊆ Q := by
   refine ⟨fun y hy => ?_, (ambientDilation_mono' (d_m_le hC)).trans hQ₀Q⟩
   have h1 := rad_le_d r D j
   have h2 : d r D j ≤ d r D (m Cpad r D) := by unfold d; gcongr
-  rw [mem_X_j hab] at hy
+  rw [mem_bufferRegion hab] at hy
   rw [mem_ambientDilation_Icc hab]
   omega
 
@@ -304,15 +306,15 @@ theorem X_j_subset (hab : a ≤ b) (hC : D + 1 < Cpad)
 theorem step_3_5_1 (hab : a ≤ b) (hr : 1 ≤ r) (hD : 0 < D) (hC : D + 1 < Cpad)
     (hQ₀Q : ambientDilation (Icc a b) (Cpad * r) ⊆ Q) :
     1 ≤ m Cpad r D ∧ m Cpad r D * D ≤ Cpad * r ∧
-      (∀ i j, i ≤ j → X_j A (Icc a b) r D i ⊆ X_j A (Icc a b) r D j) ∧
+      (∀ i j, i ≤ j → bufferRegion A (Icc a b) r D i ⊆ bufferRegion A (Icc a b) r D j) ∧
       ambientDilation (Icc a b) (d r D (m Cpad r D)) ⊆ Q := by
-  refine ⟨?_, ?_, fun i j hij y hy => ?_, (X_j_subset (A := A) hab hC hQ₀Q le_rfl).2⟩
+  refine ⟨?_, ?_, fun i j hij y hy => ?_, (bufferRegion_subset (A := A) hab hC hQ₀Q le_rfl).2⟩
   · have : D ≤ (Cpad - 1) * r :=
       (show D ≤ Cpad - 1 by omega).trans (Nat.le_mul_of_pos_right _ hr)
     exact (Nat.le_div_iff_mul_le hD).2 (by simpa using this)
   · have := d_m_le (r := r) hC; unfold d at this; omega
   · have := rad_mono (r := r) (D := D) hij
-    rw [mem_X_j hab] at hy ⊢
+    rw [mem_bufferRegion hab] at hy ⊢
     exact ⟨hy.1, by omega⟩
 
 /-- D3.5.2 (b). Every support meeting some `X_j` lies in `A`; no edge of `∂_Λ A` is incident
@@ -320,27 +322,28 @@ with any `X_j`. -/
 theorem step_3_5_2 (hab : a ≤ b) (hC : D + 1 < Cpad)
     (hQ₀Q : ambientDilation (Icc a b) (Cpad * r) ⊆ Q) (hs : IsSafe D₀ Λ A Q)
     (hRD₀ : (R : ℝ) < D₀) :
-    (∀ j ≤ m Cpad r D, ∀ X ∈ supports Λ R, (X ∩ X_j A (Icc a b) r D j).Nonempty → X ⊆ A) ∧
+    (∀ j ≤ m Cpad r D, ∀ X ∈ supports Λ R, (X ∩ bufferRegion A (Icc a b) r D j).Nonempty → X ⊆ A) ∧
       ∀ j ≤ m Cpad r D, ∀ e ∈ edgeBoundary Λ A,
-        e.1 ∉ X_j A (Icc a b) r D j ∧ e.2 ∉ X_j A (Icc a b) r D j := by
-  have hQ' : ∀ j ≤ m Cpad r D, X_j A (Icc a b) r D j ⊆ Q := fun j hj =>
-    (X_j_subset (A := A) hab hC hQ₀Q hj).1.trans (X_j_subset (A := A) hab hC hQ₀Q hj).2
+        e.1 ∉ bufferRegion A (Icc a b) r D j ∧ e.2 ∉ bufferRegion A (Icc a b) r D j := by
+  have hQ' : ∀ j ≤ m Cpad r D, bufferRegion A (Icc a b) r D j ⊆ Q := fun j hj =>
+    (bufferRegion_subset (A := A) hab hC hQ₀Q hj).1.trans
+      (bufferRegion_subset (A := A) hab hC hQ₀Q hj).2
   refine ⟨fun j hj X hX ⟨x, hx⟩ => ?_, fun j hj e he => ⟨fun h1 => ?_, fun h2 => ?_⟩⟩
   · exact subset_of_isSafe hs hRD₀ hX (mem_inter.1 hx).1
-      ((mem_X_j hab).1 (mem_inter.1 hx).2).1 (hQ' j hj (mem_inter.1 hx).2)
+      ((mem_bufferRegion hab).1 (mem_inter.1 hx).2).1 (hQ' j hj (mem_inter.1 hx).2)
   · exact IsSafe.not_near hs hRD₀ (hQ' j hj h1) (mem_union_left _ (mem_image_of_mem _ he))
       (by simp)
   · rcases e with ⟨x, y⟩
-    exact (mem_sdiff.1 ((mk_mem_interedges_iff _).1 he).2.1).2 ((mem_X_j hab).1 h2).1
+    exact (mem_sdiff.1 ((mk_mem_interedges_iff _).1 he).2.1).2 ((mem_bufferRegion hab).1 h2).1
 
 /-- D3.5.3 (c). `|∂_Λ X_j| ≤ 4 (r + 2 d_j)` for `1 ≤ j ≤ m`. -/
 theorem step_3_5_3 (hab : a ≤ b) (hQ₀r : boxSize (Icc a b) ≤ r) (hC : D + 1 < Cpad)
     (hQ₀Q : ambientDilation (Icc a b) (Cpad * r) ⊆ Q) (hs : IsSafe D₀ Λ A Q)
     (hRD₀ : (R : ℝ) < D₀) :
     ∀ j, 1 ≤ j → j ≤ m Cpad r D →
-      #(edgeBoundary Λ (X_j A (Icc a b) r D j)) ≤ 4 * (r + 2 * d r D j) := by
+      #(edgeBoundary Λ (bufferRegion A (Icc a b) r D j)) ≤ 4 * (r + 2 * d r D j) := by
   intro j hj1 hjm
-  have hX : X_j A (Icc a b) r D j = A ∩ ambientDilation (Icc a b) (d r D j) :=
+  have hX : bufferRegion A (Icc a b) r D j = A ∩ ambientDilation (Icc a b) (d r D j) :=
     if_neg (by omega)
   have hb := (step_3_5_2 hab hC hQ₀Q hs hRD₀).2 j hjm
   rw [hX] at hb ⊢
@@ -355,22 +358,22 @@ contained in `X_i` for every `i > j`. -/
 theorem step_3_5_4 (hab : a ≤ b) (hD : 2 * R + 2 < D) (hC : D + 1 < Cpad)
     (hQ₀Q : ambientDilation (Icc a b) (Cpad * r) ⊆ Q) (hs : IsSafe D₀ Λ A Q)
     (hRD₀ : (R : ℝ) < D₀) :
-    ∀ X ∈ supports Λ R, ∀ j ≤ m Cpad r D, (X ∩ X_j A (Icc a b) r D j).Nonempty →
-      (X \ X_j A (Icc a b) r D j).Nonempty →
-      (∀ i < j, Disjoint X (X_j A (Icc a b) r D i)) ∧
-        ∀ i, j < i → X ⊆ X_j A (Icc a b) r D i := by
+    ∀ X ∈ supports Λ R, ∀ j ≤ m Cpad r D, (X ∩ bufferRegion A (Icc a b) r D j).Nonempty →
+      (X \ bufferRegion A (Icc a b) r D j).Nonempty →
+      (∀ i < j, Disjoint X (bufferRegion A (Icc a b) r D i)) ∧
+        ∀ i, j < i → X ⊆ bufferRegion A (Icc a b) r D i := by
   intro X hX j hj ⟨p, hp⟩ ⟨p', hp'⟩
   have hXA := (step_3_5_2 hab hC hQ₀Q hs hRD₀).1 j hj X hX ⟨p, hp⟩
-  rw [mem_inter, mem_X_j hab] at hp
-  rw [mem_sdiff, mem_X_j hab] at hp'
+  rw [mem_inter, mem_bufferRegion hab] at hp
+  rw [mem_sdiff, mem_bufferRegion hab] at hp'
   refine ⟨fun i hi => disjoint_left.2 fun s hs hsi => hp'.2 ?_, fun i hi s hs => ?_⟩
   · have := l1_le_of_mem_supports hX hs hp'.1
     have := rad_add_le (r := r) (D := D) hi
-    rw [mem_X_j hab] at hsi
+    rw [mem_bufferRegion hab] at hsi
     exact ⟨hXA hp'.1, by omega⟩
   · have := l1_le_of_mem_supports hX hs hp.1
     have := rad_add_le (r := r) (D := D) hi
-    rw [mem_X_j hab]
+    rw [mem_bufferRegion hab]
     exact ⟨hXA hs, by omega⟩
 
 /-- D3.5.5. `C₂ = 1 + 16 v_R μ_R (1 + v_R log q)²`. -/
@@ -383,26 +386,27 @@ theorem step_3_5_5 {q : ℕ} (hq : 1 ≤ q) (hab : a ≤ b) (hr : 1 ≤ r)
     (hQ₀Q : ambientDilation (Icc a b) (Cpad * r) ⊆ Q) (hs : IsSafe D₀ Λ A Q)
     (hRD₀ : (R : ℝ) < D₀) :
     ∀ j, 1 ≤ j → j ≤ m Cpad r D →
-      (#{X ∈ supports Λ R | (X ∩ X_j A (Icc a b) r D j).Nonempty ∧
-          (X \ X_j A (Icc a b) r D j).Nonempty} : ℝ) ≤ 16 * v 2 R * μ (v 2) R * (r + d r D j) ∧
-        1 + ∑ X ∈ supports Λ R with (X ∩ X_j A (Icc a b) r D j).Nonempty ∧
-          (X \ X_j A (Icc a b) r D j).Nonempty,
+      (#{X ∈ supports Λ R | (X ∩ bufferRegion A (Icc a b) r D j).Nonempty ∧
+          (X \ bufferRegion A (Icc a b) r D j).Nonempty} : ℝ) ≤
+          16 * v 2 R * μ (v 2) R * (r + d r D j) ∧
+        1 + ∑ X ∈ supports Λ R with (X ∩ bufferRegion A (Icc a b) r D j).Nonempty ∧
+          (X \ bufferRegion A (Icc a b) r D j).Nonempty,
           Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2 ≤
           C₂ q R * (r + d r D j) := by
   intro j hj1 hjm
   have hc := step_3_5_3 hab hQ₀r hC hQ₀Q hs hRD₀ j hj1 hjm
-  have hcR : (#(edgeBoundary Λ (X_j A (Icc a b) r D j)) : ℝ) ≤ 4 * (r + 2 * d r D j) := by
+  have hcR : (#(edgeBoundary Λ (bufferRegion A (Icc a b) r D j)) : ℝ) ≤ 4 * (r + 2 * d r D j) := by
     exact_mod_cast hc
   have hrd : (1 : ℝ) ≤ r := by exact_mod_cast hr
   have hd0 : (0 : ℝ) ≤ d r D j := Nat.cast_nonneg _
   refine ⟨?_, ?_⟩
-  · have h1 : (#{X ∈ supports Λ R | (X ∩ X_j A (Icc a b) r D j).Nonempty ∧
-        (X \ X_j A (Icc a b) r D j).Nonempty} : ℝ) ≤
-        2 * v 2 R * μ (v 2) R * #(edgeBoundary Λ (X_j A (Icc a b) r D j)) := by
+  · have h1 : (#{X ∈ supports Λ R | (X ∩ bufferRegion A (Icc a b) r D j).Nonempty ∧
+        (X \ bufferRegion A (Icc a b) r D j).Nonempty} : ℝ) ≤
+        2 * v 2 R * μ (v 2) R * #(edgeBoundary Λ (bufferRegion A (Icc a b) r D j)) := by
       exact_mod_cast eq_crossing_count squareLattice (v 2) eq_ball_count_two Λ _ R
     have hK : (0 : ℝ) ≤ v 2 R * μ (v 2) R := by positivity
     nlinarith
-  · have h1 := step_3_2_3' Λ (X_j A (Icc a b) r D j) R q hq
+  · have h1 := step_3_2_3' Λ (bufferRegion A (Icc a b) r D j) R q hq
     have hK : (0 : ℝ) ≤ 2 * v 2 R * μ (v 2) R * (1 + v 2 R * Real.log q) ^ 2 := by positivity
     unfold C₂
     nlinarith [mul_le_mul_of_nonneg_left hcR hK, mul_nonneg hK hd0]
@@ -420,21 +424,23 @@ theorem step_3_5 {q R : ℕ} {D₀ : ℝ} {Λ A Q Q₀ : Finset (ℤ × ℤ)} {r
     (hQ₀ : IsIntRect Q₀) (hQ₀r : boxSize Q₀ ≤ r) (hD : 2 * R + 2 < D) (hC : D + 1 < Cpad)
     (hQ₀Q : ambientDilation Q₀ (Cpad * r) ⊆ Q) :
     (1 ≤ m Cpad r D ∧ m Cpad r D * D ≤ Cpad * r ∧
-      (∀ i j, i ≤ j → X_j A Q₀ r D i ⊆ X_j A Q₀ r D j) ∧
+      (∀ i j, i ≤ j → bufferRegion A Q₀ r D i ⊆ bufferRegion A Q₀ r D j) ∧
       ambientDilation Q₀ (d r D (m Cpad r D)) ⊆ Q) ∧
-    ((∀ j ≤ m Cpad r D, ∀ X ∈ supports Λ R, (X ∩ X_j A Q₀ r D j).Nonempty → X ⊆ A) ∧
+    ((∀ j ≤ m Cpad r D, ∀ X ∈ supports Λ R, (X ∩ bufferRegion A Q₀ r D j).Nonempty → X ⊆ A) ∧
       ∀ j ≤ m Cpad r D, ∀ e ∈ edgeBoundary Λ A,
-        e.1 ∉ X_j A Q₀ r D j ∧ e.2 ∉ X_j A Q₀ r D j) ∧
-    (∀ j, 1 ≤ j → j ≤ m Cpad r D → #(edgeBoundary Λ (X_j A Q₀ r D j)) ≤ 4 * (r + 2 * d r D j)) ∧
-    (∀ X ∈ supports Λ R, ∀ j ≤ m Cpad r D, (X ∩ X_j A Q₀ r D j).Nonempty →
-      (X \ X_j A Q₀ r D j).Nonempty →
-      (∀ i < j, Disjoint X (X_j A Q₀ r D i)) ∧
-        ∀ i, j < i → X ⊆ X_j A Q₀ r D i) ∧
+        e.1 ∉ bufferRegion A Q₀ r D j ∧ e.2 ∉ bufferRegion A Q₀ r D j) ∧
+    (∀ j, 1 ≤ j → j ≤ m Cpad r D →
+      #(edgeBoundary Λ (bufferRegion A Q₀ r D j)) ≤ 4 * (r + 2 * d r D j)) ∧
+    (∀ X ∈ supports Λ R, ∀ j ≤ m Cpad r D, (X ∩ bufferRegion A Q₀ r D j).Nonempty →
+      (X \ bufferRegion A Q₀ r D j).Nonempty →
+      (∀ i < j, Disjoint X (bufferRegion A Q₀ r D i)) ∧
+        ∀ i, j < i → X ⊆ bufferRegion A Q₀ r D i) ∧
     ∀ j, 1 ≤ j → j ≤ m Cpad r D →
-      (#{X ∈ supports Λ R | (X ∩ X_j A Q₀ r D j).Nonempty ∧ (X \ X_j A Q₀ r D j).Nonempty} : ℝ)
+      (#{X ∈ supports Λ R | (X ∩ bufferRegion A Q₀ r D j).Nonempty ∧
+          (X \ bufferRegion A Q₀ r D j).Nonempty} : ℝ)
           ≤ 16 * v 2 R * μ (v 2) R * (r + d r D j) ∧
-        1 + ∑ X ∈ supports Λ R with (X ∩ X_j A Q₀ r D j).Nonempty ∧
-          (X \ X_j A Q₀ r D j).Nonempty,
+        1 + ∑ X ∈ supports Λ R with (X ∩ bufferRegion A Q₀ r D j).Nonempty ∧
+          (X \ bufferRegion A Q₀ r D j).Nonempty,
           Real.log (Real.exp 1 * Fintype.card (Reg (Qudits q) X)) ^ 2 ≤
           C₂ q R * (r + d r D j) := by
   obtain ⟨a, b, hab, rfl⟩ := hQ₀
@@ -620,10 +626,10 @@ theorem eq_initial_weight_range (q R D : ℕ) (hD : 0 < D) {C J Δ : ℝ} (hΔ :
     simp only [Cpad]; push_cast; linarith
   obtain ⟨-, hE, -, hZ⟩ := eq_initial_harmonic_weights hD (by omega : D + 1 < Cpad) hr
   have hL₀ : 4 ≤ L₀ := le_max_left _ _
-  have hZ' : L₀ / D ≤ Z_r Cpad r D := by
+  have hZ' : L₀ / D ≤ harmonicSum Cpad r D := by
     refine le_trans ?_ hZ; rw [one_div_mul_eq_div]; gcongr
-  have hZpos : 0 < Z_r Cpad r D := lt_of_lt_of_le (by positivity) hZ'
-  have hDZ : L₀ ≤ D * Z_r Cpad r D := by rwa [div_le_iff₀ (by positivity), mul_comm] at hZ'
+  have hZpos : 0 < harmonicSum Cpad r D := lt_of_lt_of_le (by positivity) hZ'
+  have hDZ : L₀ ≤ D * harmonicSum Cpad r D := by rwa [div_le_iff₀ (by positivity), mul_comm] at hZ'
   refine ⟨?_, fun j hj => ?_⟩
   · -- D3.10.1 (i): `C ℰ / Δ ≤ 4 C D / (L₀ Δ) ≤ 1/4`
     rw [hE, div_le_iff₀ hΔ]
@@ -639,7 +645,7 @@ theorem eq_initial_weight_range (q R D : ℕ) (hD : 0 < D) {C J Δ : ℝ} (hΔ :
       have : D + 2 ≤ r + d r D j := by
         unfold d; have := Nat.le_mul_of_pos_left D (show 0 < j by simp at hj; omega); omega
       exact_mod_cast this
-    have hZs : 0 < Z_r Cpad r D * ((r + d r D j : ℕ) : ℝ) := by positivity
+    have hZs : 0 < harmonicSum Cpad r D * ((r + d r D j : ℕ) : ℝ) := by positivity
     -- D3.6.3 (ii): `a_j ≤ 2 / (Z_r (D + 2)) ≤ ½`
     have ha2 : a Cpad r D j ≤ 1 / 2 := by
       rw [a, div_le_div_iff₀ hZs (by norm_num)]
@@ -654,9 +660,9 @@ theorem eq_initial_weight_range (q R D : ℕ) (hD : 0 < D) {C J Δ : ℝ} (hΔ :
     have hsq : √(K * ((r + d r D j : ℕ) : ℝ)) ≤ √K * ((r + d r D j : ℕ) : ℝ) := by
       rw [Real.sqrt_mul hK.le]; gcongr
       exact Real.sqrt_le_iff.2 ⟨by linarith, by nlinarith⟩
-    have hKZ : 128 * √K ≤ Z_r Cpad r D :=
+    have hKZ : 128 * √K ≤ harmonicSum Cpad r D :=
       le_of_mul_le_mul_left (by linarith [h128.trans hDZ] :
-        (D : ℝ) * (128 * √K) ≤ D * Z_r Cpad r D) (by positivity)
+        (D : ℝ) * (128 * √K) ≤ D * harmonicSum Cpad r D) (by positivity)
     rw [show (1 + J / Δ) * (C₂ q R * (r + d r D j)) = K * ((r + d r D j : ℕ) : ℝ) by
       rw [hs']; ring, a, mul_div_assoc', le_div_iff₀ (by positivity), div_mul_eq_mul_div,
       div_le_iff₀ hZs]

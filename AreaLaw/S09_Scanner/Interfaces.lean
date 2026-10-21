@@ -65,10 +65,10 @@ structure TestGeometry (Λ A : Finset σ) (dep : σ → ℕ) (CT : ℝ) (n L r�
 end TestGeometry
 
 /-- The physical region `Q ⊆ Λ` of a region `Q` of the domain type `↥Λ`. -/
-def up {σ : Type u} [DecidableEq σ] {Λ : Finset σ} (Q : Finset Λ) : Finset σ :=
+def up {σ : Type u} {Λ : Finset σ} (Q : Finset Λ) : Finset σ :=
   Q.map (Function.Embedding.subtype (· ∈ Λ))
 
-theorem up_subset {σ : Type u} [DecidableEq σ] {Λ : Finset σ} (Q : Finset Λ) : up Q ⊆ Λ := by
+theorem up_subset {σ : Type u} {Λ : Finset σ} (Q : Finset Λ) : up Q ⊆ Λ := by
   intro x hx
   obtain ⟨y, -, rfl⟩ := Finset.mem_map.1 hx
   exact y.2
@@ -165,6 +165,7 @@ with an extra `n log q` holds for every prefix of all depth rows before one row 
 that row; the physical cuts of `X`, `Q_j`, `A ∩ T_j` (`j ≤ s₀`) have at most `C n` edges.
 `C'_e` depends only on `e`, `C_e`. 2D only: templates are unions of planar pieces of slopes
 `0, ∞, ±1`. -/
+@[nolint defsWithUnderscore]
 def Lemma_9_4 : Prop :=
   ∃ Ctpl₀ : ℝ, ∀ Ctpl : ℝ, Ctpl₀ ≤ Ctpl → ∃ C : ℝ, 0 < C ∧
     (∀ (n s₀ : ℕ) (T : Finset (ℤ × ℤ)), IsTemplate Ctpl n s₀ T →
@@ -174,7 +175,7 @@ def Lemma_9_4 : Prop :=
         (ambientDilation T j)) : ℝ) ≤ C * n) ∧
     ∀ (q R : ℕ) (J Δ e Ce : ℝ), 0 < e → e < 1 → 0 < Ce →
     ∃ Ce' : ℝ, 0 < Ce' ∧ ∀ D₀ : ℝ, 2 * R + 10 < D₀ →
-      (∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) →
+      (∀ r : ℕ, 1 ≤ r → boxEntropySup q R J Δ r ≤ Ce * (r : ℝ) ^ (1 + e)) →
       ∀ (Λ : Finset (ℤ × ℤ))
         (Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (OpenAI.Qudits q) X) (Reg (OpenAI.Qudits q) X) ℂ),
         OpenAI.IsAdmissible Λ R J Φ →
@@ -204,8 +205,9 @@ def Lemma_9_4 : Prop :=
 
 /-- D9.19 **Proposition 9.5** (improved safe-box estimate). There is `C` depending only on
 `q, R, J, Δ` with `F_box(r) ≤ C r^{1+e_*}` (`r ≥ 1`), `e_* = 2·10⁻⁶`. -/
+@[nolint defsWithUnderscore]
 def Prop_9_5 : Prop :=
   ∀ (q R : ℕ) (J Δ : ℝ), 1 ≤ q → 0 < J → 0 < Δ →
-    ∃ C : ℝ, ∀ r : ℕ, 1 ≤ r → F_box q R J Δ r ≤ C * (r : ℝ) ^ (1 + (2 / 1000000 : ℝ))
+    ∃ C : ℝ, ∀ r : ℕ, 1 ≤ r → boxEntropySup q R J Δ r ≤ C * (r : ℝ) ^ (1 + (2 / 1000000 : ℝ))
 
 end AreaLaw.Scanner

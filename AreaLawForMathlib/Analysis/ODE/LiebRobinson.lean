@@ -254,6 +254,7 @@ private theorem norm_exp_commutator_le_sum_integral
     (add_le_add le_rfl (mul_le_mul_of_nonneg_left hIntegral
       (mul_nonneg (by norm_num) (norm_nonneg A))))
 
+/-- The continuous linear map `A ↦ [e^{tK} A e^{-tK}, B]` restricted to a submodule `S`. -/
 noncomputable def supportedCommutatorMap
     {R : Type*} [NormedRing R] [NormedAlgebra ℂ R]
     (K B : R) (S : Submodule ℂ R) (t : ℝ) : S →L[ℂ] R :=
@@ -275,6 +276,8 @@ private theorem continuous_supportedCommutatorMap
   unfold supportedCommutatorMap
   fun_prop
 
+/-- The operator norm of `supportedCommutatorMap`: the best constant `c` with
+`‖[e^{tK} A e^{-tK}, B]‖ ≤ c ‖A‖` for `A ∈ S`. -/
 noncomputable def supportedCommutatorNorm
     {R : Type*} [NormedRing R] [NormedAlgebra ℂ R]
     (K B : R) (S : Submodule ℂ R) (t : ℝ) : ℝ :=

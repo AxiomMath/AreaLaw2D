@@ -19,6 +19,7 @@ universe u v
 that for every faithful density matrix `ρ_f` on `xUF` and real `u`,
 `‖(ρ̂_U^{-iu} ρ̂_{xU}^{iu} − ρ̂_{UF}^{-iu} ρ̂_{xUF}^{iu}) √ρ_f‖₂ ≤ C |sinh πu| 𝓡_η`,
 `η = I(x:F|U)_{ρ_f}`, `d = dim x`. -/
+@[nolint defsWithUnderscore]
 def Lemma_5_2_faithful : Prop :=
   ∃ C : ℝ, 0 < C ∧
     ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]
@@ -40,6 +41,7 @@ def Lemma_5_2_faithful : Prop :=
 /-- D5.16 (with D5.16.4–5 and `f(0) = p`). For the function `f` of **Lemma 5.3**: `f` is entire,
 `f(-z̄) = conj f(z)`, `0 ≤ f(iu) ≤ 1`, `|f(z)| ≤ d_h²` on `|Re z| ≤ 1/4`, and
 `f(0) = p = ⟨θ, hθ⟩`. -/
+@[nolint defsWithUnderscore]
 def Step_5_16 : Prop :=
     ∀ (σ : Type u) [DecidableEq σ] (loc : σ → Type v) [∀ i, Fintype (loc i)]
       [∀ i, DecidableEq (loc i)] (Λ P₀ P₁ X U F : Finset σ) (hP₀ : P₀ ⊆ Λ) (hP₁ : P₁ ⊆ Λ)
