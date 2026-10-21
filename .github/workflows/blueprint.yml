@@ -1,0 +1,39 @@
+name: Blueprint
+
+# The Verso blueprint (blueprint/, its own Lake package) next to the library build of
+# lean_action_ci.yaml. Its chapters name the library's declarations, so the library is
+# built first; blueprint/ shares the root's .lake/packages.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+jobs:
+  blueprint:
+    name: Build blueprint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+                      /opt/hostedtoolcache/CodeQL
+          df -h /
+      - uses: actions/checkout@v5
+
+      # `lake build` of the main package (Mathlib cache, Physlib, the library).
+      - uses: leanprover/lean-action@v1
+        with:
+          lint: "false"
+
+      - name: Build and render the blueprint
+        working-directory: blueprint
+        run: ./scripts/ci-pages.sh
+
+      - name: Upload the rendered site
+        uses: actions/upload-artifact@v4
+        with:
+          name: blueprint-site
+          path: blueprint/_out/site/html-multi

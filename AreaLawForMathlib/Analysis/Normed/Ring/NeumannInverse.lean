@@ -1,0 +1,97 @@
+/-
+Copyright (c) 2026 TNLean contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: TNLean contributors
+
+Ported from LionSR/QICLean commit
+5f76b263e3a1c418645102d90f7bef6b92f04cf3,
+`QICLean/Analysis/NeumannInverse.lean`.
+-/
+import Mathlib.Analysis.Normed.Ring.Units
+
+/-!
+# A quantitative Neumann inverse bound
+
+Extends `Mathlib/Analysis/Normed/Ring/Units.lean`.
+
+This file records quantitative Neumann bounds, both around the identity and around an
+arbitrary invertible base point.  The latter estimates control the inverse and its displacement
+under a relatively small perturbation.
+-/
+
+namespace NormedRing
+
+variable {R α : Type*} [NormedRing R] [HasSummableGeomSeries R]
+
+variable {R : Type*} [NormedRing R] [NormOneClass R] [HasSummableGeomSeries R]
+
+/-- Quantitative Neumann bound.  If \(\lVert t\rVert\le a<1\), then
+\(\lVert(1-t)^{-1}\rVert\le(1-a)^{-1}\). -/
+theorem norm_inverse_one_sub_le (t : R) {a : ℝ} (ht : ‖t‖ ≤ a) (ha : a < 1) :
+    ‖Ring.inverse (1 - t)‖ ≤ (1 - a)⁻¹ := by
+  have ht_one : ‖t‖ < 1 := ht.trans_lt ha
+  rw [inverse_one_sub t ht_one]
+  change ‖∑' n : ℕ, t ^ n‖ ≤ (1 - a)⁻¹
+  calc
+    ‖∑' n : ℕ, t ^ n‖ ≤ (1 - ‖t‖)⁻¹ := by
+      simpa using tsum_geometric_le_of_norm_lt_one t ht_one
+    _ ≤ (1 - a)⁻¹ := by
+      exact (inv_le_inv₀ (sub_pos.mpr ht_one) (sub_pos.mpr ha)).2 (by linarith)
+
+section perturbationSetup
+variable {R : Type*} [NormedRing R] [HasSummableGeomSeries R]
+
+/-- For an invertible \(K_0\) and a perturbation \(K\) with
+\(\lVert K_0^{-1}(K-K_0)\rVert\le a<1\), \(K\) is invertible and its inverse factors
+through the perturbation \(E:=K_0^{-1}(K-K_0)\).  Returns \(E\) and its norm bounds,
+that \(1+E\) is a unit, and the factorization \(K^{-1}=(1+E)^{-1}K_0^{-1}\). -/
+private lemma perturbation_setup {a : ℝ} (K₀ K : R) (hK₀ : IsUnit K₀)
+    (h : ‖Ring.inverse K₀ * (K - K₀)‖ ≤ a) (ha : a < 1) :
+    IsUnit K ∧
+    (∃ E : R, ‖E‖ ≤ a ∧ ‖E‖ < 1 ∧ IsUnit (1 - -E) ∧
+      Ring.inverse K = Ring.inverse (1 - -E) * Ring.inverse K₀) := by
+  let E := Ring.inverse K₀ * (K - K₀)
+  have hE_lt_one : ‖E‖ < 1 := h.trans_lt ha
+  have hbase : IsUnit (1 - -E) :=
+    isUnit_one_sub_of_norm_lt_one (by simpa using hE_lt_one)
+  have hfactor : K = K₀ * (1 - -E) := by
+    dsimp [E]
+    rw [sub_neg_eq_add, mul_add, mul_one, ← mul_assoc,
+      Ring.mul_inverse_cancel K₀ hK₀, one_mul]
+    abel
+  have hinverse : Ring.inverse K = Ring.inverse (1 - -E) * Ring.inverse K₀ := by
+    rw [hfactor, Ring.inverse_mul (Or.inl hK₀)]
+  have hK_unit : IsUnit K := by
+    rw [hfactor]
+    exact hK₀.mul hbase
+  refine ⟨hK_unit, E, h, hE_lt_one, hbase, hinverse⟩
+end perturbationSetup
+
+/-- If \(K_0\) is a unit and its relative perturbation toward \(K\) has norm at most
+\(a<1\), then \(K\) is a unit and its inverse norm is at most
+\((1-a)^{-1}\lVert K_0^{-1}\rVert\). -/
+theorem isUnit_and_norm_inverse_le_of_norm_inverse_mul_sub_le (K₀ K : R) {a : ℝ}
+    (hK₀ : IsUnit K₀) (h : ‖Ring.inverse K₀ * (K - K₀)‖ ≤ a) (ha : a < 1) :
+    IsUnit K ∧ ‖Ring.inverse K‖ ≤ (1 - a)⁻¹ * ‖Ring.inverse K₀‖ := by
+  obtain ⟨hK_unit, E, hE, _, _, hinverse⟩ :=
+    perturbation_setup K₀ K hK₀ h ha
+  constructor
+  · exact hK_unit
+  · rw [hinverse]
+    calc
+      ‖Ring.inverse (1 - -E) * Ring.inverse K₀‖ ≤
+          ‖Ring.inverse (1 - -E)‖ * ‖Ring.inverse K₀‖ := norm_mul_le _ _
+      _ ≤ (1 - a)⁻¹ * ‖Ring.inverse K₀‖ := by
+        gcongr
+        exact norm_inverse_one_sub_le (-E) (by simpa using hE) ha
+
+/-- A product-form version of
+`isUnit_and_norm_inverse_le_of_norm_inverse_mul_sub_le`.  This is convenient when the
+relative perturbation is estimated by submultiplicativity of the norm. -/
+theorem isUnit_and_norm_inverse_le_of_norm_mul_norm_sub_le (K₀ K : R) {a : ℝ}
+    (hK₀ : IsUnit K₀) (h : ‖Ring.inverse K₀‖ * ‖K - K₀‖ ≤ a) (ha : a < 1) :
+    IsUnit K ∧ ‖Ring.inverse K‖ ≤ (1 - a)⁻¹ * ‖Ring.inverse K₀‖ := by
+  apply isUnit_and_norm_inverse_le_of_norm_inverse_mul_sub_le K₀ K hK₀ _ ha
+  exact (norm_mul_le _ _).trans h
+
+end NormedRing
