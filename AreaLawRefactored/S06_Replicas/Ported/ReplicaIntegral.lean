@@ -99,10 +99,10 @@ theorem posDef_unitary_conj_diagonal (U : unitaryGroup (Fin d) ℂ) {y : Fin d �
   have := hD.conjTranspose_mul_mul_same hinj
   rwa [star_eq_conjTranspose, conjTranspose_conjTranspose] at this
 
-theorem specSample_rpow_posDef (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {x : Fin d → ℝ}
+theorem specSample_rpow_posDef (hd : 0 < d) {t : ℝ} {x : Fin d → ℝ}
     (hx : ∀ i, 0 < x i) (U : unitaryGroup (Fin d) ℂ) : (specSample x U ^ t).PosDef := by
   have hS : 0 < ∑ j, x j := sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
-  rw [specSample_rpow hd ht hx]
+  rw [specSample_rpow hd hx]
   exact posDef_unitary_conj_diagonal U fun i => Real.rpow_pos_of_pos (div_pos (hx i) hS) t
 
 /-- The compressed sample `τ = (E† σ^t E)^{1/t}` on the coordinates in the range of `j`. -/
@@ -115,20 +115,20 @@ section Sub
 variable {Ω' : Type*} [Fintype Ω'] [DecidableEq Ω'] (j : Ω' ↪ Fin d)
 
 omit [Fintype Ω'] [DecidableEq Ω'] in
-theorem compression_posDef (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {x : Fin d → ℝ}
+theorem compression_posDef (hd : 0 < d) {t : ℝ} {x : Fin d → ℝ}
     (hx : ∀ i, 0 < x i) (U : unitaryGroup (Fin d) ℂ) :
     ((specSample x U ^ t).submatrix j j).PosDef :=
-  (specSample_rpow_posDef hd ht hx U).submatrix j.injective
+  (specSample_rpow_posDef hd hx U).submatrix j.injective
 
-theorem subSample_posDef (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {x : Fin d → ℝ}
+theorem subSample_posDef (hd : 0 < d) {t : ℝ} {x : Fin d → ℝ}
     (hx : ∀ i, 0 < x i) (U : unitaryGroup (Fin d) ℂ) : (subSample j t (x, U)).PosDef :=
-  (compression_posDef j hd ht hx U).rpow _
+  (compression_posDef j hd hx U).rpow _
 
 theorem subSample_rpow (hd : 0 < d) {t : ℝ} (ht : 0 < t) {x : Fin d → ℝ}
     (hx : ∀ i, 0 < x i) (U : unitaryGroup (Fin d) ℂ) :
     subSample j t (x, U) ^ t = (specSample x U ^ t).submatrix j j := by
-  rw [subSample, (compression_posDef j hd ht.le hx U).rpow_rpow, one_div,
-    inv_mul_cancel₀ ht.ne', (compression_posDef j hd ht.le hx U).rpow_one]
+  rw [subSample, (compression_posDef j hd hx U).rpow_rpow, one_div,
+    inv_mul_cancel₀ ht.ne', (compression_posDef j hd hx U).rpow_one]
 
 /-- The compressed samples are subdensities: `Tr τ ≤ Tr σ = 1`. -/
 theorem re_trace_subSample_le (hd : 0 < d) {t : ℝ} (ht0 : 0 < t) (ht1 : t ≤ 1)
@@ -194,7 +194,7 @@ theorem exists_replicaMetric_integral [∀ f, Nonempty (ι f)] {t : ℝ} (ht0 : 
   refine ⟨(Fin d → ℝ) × unitaryGroup (Fin d) ℂ, inferInstance,
     (specMeasure d t).prod (unitaryHaar (Fin d)), inferInstance, subSample j t, ?_, ?_, ?_⟩
   · filter_upwards [ae_prod_pos] with ω hω
-    exact ⟨subSample_posDef j hd ht0.le hω ω.2, re_trace_subSample_le j hd ht0 ht1 hω ω.2⟩
+    exact ⟨subSample_posDef j hd hω ω.2, re_trace_subSample_le j hd ht0 ht1 hω ω.2⟩
   · exact fun k a b => ((integral_specSample_tensorPow hd ht0 (j ∘ a) (j ∘ b)).1).congr
       (hentry k a b).symm
   intro k

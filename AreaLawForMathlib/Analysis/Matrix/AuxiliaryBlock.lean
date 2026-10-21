@@ -148,7 +148,9 @@ section AuxBlock
 
 variable {A h : Matrix n n ℂ}
 
-theorem conjTranspose_sqrt (h : Matrix n n ℂ) : (CFC.sqrt h)ᴴ = CFC.sqrt h :=
+open scoped Classical in
+theorem conjTranspose_sqrt {m : Type*} [Fintype m] (h : Matrix m m ℂ) :
+    (CFC.sqrt h)ᴴ = CFC.sqrt h :=
   (CFC.sqrt_nonneg h).isSelfAdjoint.star_eq
 
 /-- `Y^* Z = A^{-1/2} h A^{1/2}` for every positive definite `B`. -/

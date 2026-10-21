@@ -16,6 +16,7 @@ namespace Matrix
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
+omit [DecidableEq n] in
 theorem mulVec_eq_smul_of_mul_self_mulVec {Y : Matrix n n ℂ} (hY : 0 ≤ Y) {c : ℝ}
     (hc : 0 ≤ c) {v : n → ℂ} (h : (Y * Y) *ᵥ v = ((c ^ 2 : ℝ) : ℂ) • v) :
     Y *ᵥ v = (c : ℂ) • v := by

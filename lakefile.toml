@@ -1,7 +1,7 @@
 name = "arealaw"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Arealaw"]
+defaultTargets = ["Arealaw", "OpenAI", "AreaLawForMathlib", "AreaLawRefactored", "Challenge", "Solution"]
 
 lintDriver = "batteries/runLinter"
 
@@ -34,6 +34,7 @@ name = "Arealaw"
 
 [[lean_lib]]
 name = "OpenAI"
+roots = ["OpenAI.Statements"]
 
 [[lean_lib]]
 name = "Challenge"

@@ -80,16 +80,18 @@ section PureMarg
 
 variable {G A B : Type*} [Fintype G] [DecidableEq G] [Fintype A] [DecidableEq A] [Fintype B]
 
+omit [Fintype A] in
 /-- A unitary acting on the traced factor only does not change the marginal: if
 `U (e⁻¹(a, b)) (e⁻¹(a', b')) = δ_{a a'} F b b'`, then
 `∑_b (Uψ)(a, b) conj (Uψ)(a', b) = ∑_b ψ(a, b) conj ψ(a', b)`. -/
-theorem sum_mulVec_mul_star_mulVec (e : G ≃ A × B) {U : Matrix G G ℂ} -- helper
+theorem sum_mulVec_mul_star_mulVec [Finite A] (e : G ≃ A × B) {U : Matrix G G ℂ} -- helper
     (hU : Uᴴ * U = 1)
     (F : B → B → ℂ) (hF : ∀ a a' b b', U (e.symm (a, b)) (e.symm (a', b')) =
       if a = a' then F b b' else 0) (ψ : G → ℂ) (a a' : A) :
     ∑ b, (U *ᵥ ψ) (e.symm (a, b)) * star ((U *ᵥ ψ) (e.symm (a', b))) =
       ∑ b, ψ (e.symm (a, b)) * star (ψ (e.symm (a', b))) := by
   classical
+  have := Fintype.ofFinite A
   have hv (a : A) (b : B) : (U *ᵥ ψ) (e.symm (a, b)) = ∑ b₁, F b b₁ * ψ (e.symm (a, b₁)) := by
     rw [mulVec, dotProduct, ← e.symm.sum_comp, Fintype.sum_prod_type]
     simp [hF]
@@ -211,9 +213,10 @@ theorem restr_glue_eq_iff (hJ : J ⊆ Λ \ N) (j j' : Reg loc J) (r r' : Reg loc
 
 omit [∀ i, DecidableEq (loc i)] in
 theorem conjTranspose_mul_self_submatrix_kronecker {m n : Type*} [Fintype m] -- helper
-    [DecidableEq m] [Fintype n] [DecidableEq n] {V : Matrix m m ℂ}
+    [DecidableEq m] [Finite n] [DecidableEq n] {V : Matrix m m ℂ}
     (hV : V ∈ unitary (Matrix m m ℂ)) {G : Type*} [Fintype G] [DecidableEq G] (f : G ≃ m × n) :
     ((V ⊗ₖ (1 : Matrix n n ℂ)).submatrix f f)ᴴ * (V ⊗ₖ (1 : Matrix n n ℂ)).submatrix f f = 1 := by
+  have := Fintype.ofFinite n
   rw [conjTranspose_submatrix, submatrix_mul_equiv, ← star_eq_conjTranspose,
     Unitary.star_mul_self_of_mem (kronecker_mem_unitary hV (one_mem _)), submatrix_one_equiv]
 

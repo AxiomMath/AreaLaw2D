@@ -57,6 +57,7 @@ namespace Round
 variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ} {K : ℕ} {H : Type*}
   [DecidableEq H] {C : H → Type*} [∀ h, DecidableEq (C h)] (R : Round V K H C)
 
+omit [DecidableEq H] [∀ h, DecidableEq (C h)] in
 theorem eval_map_choice (t : ℝ) (k : ℕ) (h : H) :
     ((R.choiceTree h).map fun c => (⟨h, some c⟩ : Leaf H C)).eval (R.input n t k) =
       R.choiceRoot n t k h :=
@@ -70,7 +71,7 @@ theorem posDef_choiceRoot [∀ v, NeZero (n v)] (hR : R.IsAdmissible) {t : ℝ} 
 def itree (T₀ : MeanTree H) (p : I) : MeanTree (Leaf H C) :=
   T₀.bind fun h => .node p (.leaf ⟨h, none⟩) ((R.choiceTree h).map fun c => ⟨h, some c⟩)
 
-omit [DecidableEq H] [∀ h, DecidableEq (C h)] in
+omit [Fintype V] [DecidableEq V] [DecidableEq H] [∀ h, DecidableEq (C h)] in
 theorem tree_eq_itree (p : I) : R.tree p = R.itree R.histTree p := rfl
 
 variable [Fintype H]
@@ -186,7 +187,8 @@ theorem step_7_15 [∀ v, NeZero (n v)] (hR : R.IsAdmissible) {t : ℝ} (ht : 0 
       rw [hkey, hstar]; simp only [Vh, Matrix.mul_assoc]
     -- finite dimension: `V_h` is unitary
     refine ⟨hVV, mul_eq_one_comm.mp hVV, hasDerivAt_geomMean_param hA hB p, hD2, ?_⟩
-    -- D7.15.3: perturbing `A` along `A^{1/2} (log C) A^{1/2}` gives `(1-p) A^{1/2} C^p log C A^{1/2}`
+    -- D7.15.3: perturbing `A` along `A^{1/2} (log C) A^{1/2}` gives
+    -- `(1-p) A^{1/2} C^p log C A^{1/2}`
     have hsl : geomMeanDerivLeft p A B (A ^ (1 / 2 : ℝ) * CFC.log Cr * A ^ (1 / 2 : ℝ)) =
         (1 - p) • (A ^ (1 / 2 : ℝ) * (Cr ^ p * CFC.log Cr) * A ^ (1 / 2 : ℝ)) :=
       geomMeanDerivLeft_sandwich_log hA hB (Ioo_subset_Icc_self hp)

@@ -189,9 +189,11 @@ theorem conjTranspose_tensorFamily (M : Fin k → Matrix Ω Ω ℂ) :
   ext x y
   simp [tensorFamily, conjTranspose_apply, star_prod]
 
-theorem posSemidef_tensorFamily [Fintype Ω] [DecidableEq Ω] {M : Fin k → Matrix Ω Ω ℂ}
+theorem posSemidef_tensorFamily [Finite Ω] {M : Fin k → Matrix Ω Ω ℂ}
     (hM : ∀ j, (M j).PosSemidef) :
     (tensorFamily M).PosSemidef := by
+  classical
+  have := Fintype.ofFinite Ω
   have hs : ∀ j, (CFC.sqrt (M j))ᴴ * CFC.sqrt (M j) = M j := fun j => by
     rw [← star_eq_conjTranspose, (CFC.sqrt_nonneg (M j)).isSelfAdjoint.star_eq,
       CFC.sqrt_mul_sqrt_self _ (hM j).nonneg]
@@ -225,16 +227,17 @@ theorem tensorPow_submatrix_equiv [DecidableEq Ω] {Ω' : Type*} [DecidableEq Ω
   simp [tensorPow_apply, Equiv.arrowCongr_apply]
 
 /-- `A^{⊗k}` is positive semidefinite for `A ≥ 0`. -/
-theorem posSemidef_tensorPow_of_posSemidef [Fintype Ω] [DecidableEq Ω] {A : Matrix Ω Ω ℂ}
+theorem posSemidef_tensorPow_of_posSemidef [Finite Ω] [DecidableEq Ω] {A : Matrix Ω Ω ℂ}
     (hA : A.PosSemidef) :
     (tensorPow (k := k) A).PosSemidef := by
   rw [tensorPow_eq_tensorFamily]
   exact posSemidef_tensorFamily fun _ => hA
 
 /-- `0 ≤ A ≤ B ⇒ A^{⊗k} ≤ B^{⊗k}`. -/
-theorem tensorPow_le_tensorPow [Fintype Ω] [DecidableEq Ω] {A B : Matrix Ω Ω ℂ}
+theorem tensorPow_le_tensorPow [Finite Ω] [DecidableEq Ω] {A B : Matrix Ω Ω ℂ}
     (hA : A.PosSemidef) (hAB : A ≤ B) :
     tensorPow (k := k) A ≤ tensorPow (k := k) B := by
+  have := Fintype.ofFinite Ω
   set D := B - A
   have hD : D.PosSemidef := Matrix.nonneg_iff_posSemidef.mp (sub_nonneg.mpr hAB)
   have hexp : tensorPow (k := k) B = ∑ s : Finset (Fin k),

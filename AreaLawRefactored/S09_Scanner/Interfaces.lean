@@ -84,8 +84,9 @@ Assume `scanner:scales` (`0 < ℓ < 1`, `0 < κ < μ < 1 - ℓ`), `scanner:test-
 `0 < e < 1`, `κ ≤ e`, `S_Ω(X) ≤ C_e n^{1+e}`, `S_Ω(Q_j) ≤ C_e (n L^e + n)` (`0 ≤ j ≤ L`),
 `ε = n^{-ν}`, `a (r₀+1)^{m₀}` small (`a r₀²` on `ℤ²`, D9.11.4: the split supports are
 `r₀`-balls, of `log`-dimension `≤ C (r₀+1)^{m₀}`). Then the truncated system `Ω̃` (D4.11), the
-auxiliary systems, the label sector and `pre` of Proposition 8.1 (width `w = n^{3/5}`) and the statuses of the scan
-satisfy: every entropy and mutual information of `Ω̃` is within `n^{-200}(1 + |Q|)` of that of
+auxiliary systems, the label sector and `pre` of Proposition 8.1 (width `w = n^{3/5}`) and the
+statuses of the scan satisfy: every entropy and mutual information of `Ω̃` is within
+`n^{-200}(1 + |Q|)` of that of
 `Ω` (D9.9.1); `z ≥ 1 - n^{-100}`; prefix data with `B_sh ≤ C(nL^e + n)`, `B_exc ≤ C n D`; marginal
 moment data with `𝓑 ≤ C n D (log n)^C`; `Λ \ S₀ ⊆ V` in every status (D9.28.2); all norm
 comparisons of Proposition 8.1; and for every `k ≥ 1` a point with

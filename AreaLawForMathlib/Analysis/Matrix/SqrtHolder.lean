@@ -47,6 +47,7 @@ namespace CFC
 
 variable {A : Type*} [CStarAlgebra A] [PartialOrder A] [StarOrderedRing A]
 
+omit [PartialOrder A] [StarOrderedRing A] in
 /-- Backport of the norm formula for a nonzero natural power in the non-unital functional
 calculus. -/
 theorem norm_cfcₙ_pow_real (a : A) (n : ℕ) (hn : n ≠ 0)

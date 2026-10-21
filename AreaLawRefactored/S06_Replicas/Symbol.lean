@@ -83,10 +83,12 @@ theorem f_univ {P₀ P₁ X U : Finset V} (hP : P₀ ∪ P₁ ⊆ Finset.univ)
     Conditional.f hP hY hPX (θ ∘ univEquiv) K (s : ℂ) =
       markedScalarSymbol s (P₀ ∪ P₁) (X ∪ U) (localLift (P₀ ∪ X) K) θ := by
   have hneg : -(s : ℂ) = ((-s : ℝ) : ℂ) := by push_cast; ring
-  rw [Conditional.f, hneg, marg_univ, marg_univ, bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
-    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _), bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
-    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _), extendId_univ, extendId_univ, extendId_univ,
-    extendId_univ, extendId_univ]
+  rw [Conditional.f, hneg, marg_univ, marg_univ,
+    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
+    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
+    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
+    bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _), extendId_univ, extendId_univ,
+    extendId_univ, extendId_univ, extendId_univ]
   simp only [submatrix_mul_equiv, submatrix_mulVec_equiv]
   simp only [markedScalarSymbol, regionPow, dotProduct, Function.comp_apply, Pi.star_apply,
 ]

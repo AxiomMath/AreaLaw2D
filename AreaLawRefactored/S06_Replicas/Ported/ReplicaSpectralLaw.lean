@@ -203,7 +203,7 @@ noncomputable def specSample (x : Fin d → ℝ) (U : unitaryGroup (Fin d) ℂ) 
   (U : Matrix (Fin d) (Fin d) ℂ) * diagonal (fun i => ((x i / ∑ j, x j : ℝ) : ℂ)) *
     star (U : Matrix (Fin d) (Fin d) ℂ)
 
-theorem specSample_rpow (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {x : Fin d → ℝ}
+theorem specSample_rpow (hd : 0 < d) {t : ℝ} {x : Fin d → ℝ}
     (hx : ∀ i, 0 < x i)
     (U : unitaryGroup (Fin d) ℂ) :
     specSample x U ^ t = (U : Matrix (Fin d) (Fin d) ℂ) *
@@ -253,10 +253,10 @@ noncomputable def sampleEntry (t : ℝ) {k : ℕ} (a b : Fin k → Fin d)
   ∏ m, ∑ c, (ω.2 : Matrix (Fin d) (Fin d) ℂ) (a m) c * (((ω.1 c / ∑ j, ω.1 j) ^ t : ℝ) : ℂ) *
     star ((ω.2 : Matrix (Fin d) (Fin d) ℂ) (b m) c)
 
-theorem tensorPow_specSample_rpow_apply (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {k : ℕ}
+theorem tensorPow_specSample_rpow_apply (hd : 0 < d) {t : ℝ} {k : ℕ}
     {x : Fin d → ℝ} (hx : ∀ i, 0 < x i) (U : unitaryGroup (Fin d) ℂ) (a b : Fin k → Fin d) :
     tensorPow (k := k) (specSample x U ^ t) a b = sampleEntry t a b (x, U) := by
-  rw [specSample_rpow hd ht hx, tensorPow_apply, sampleEntry]
+  rw [specSample_rpow hd hx, tensorPow_apply, sampleEntry]
   refine prod_congr rfl fun m _ => ?_
   rw [Matrix.mul_apply]
   simp only [Matrix.mul_diagonal, star_apply]
@@ -319,7 +319,7 @@ theorem labelProj_eq_zero_of_multiplicity {k : ℕ} {l : IrrepLabel (Equiv.Perm 
 
 /-- The average over the unitary eigenbasis is the twirl, a central label function with
 eigenvalue `χ_λ(y)/dim V_λ`. -/
-theorem integral_unitary_sampleEntry (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {k : ℕ}
+theorem integral_unitary_sampleEntry (hd : 0 < d) {t : ℝ} {k : ℕ}
     (a b : Fin k → Fin d) {x : Fin d → ℝ} (hx : ∀ i, 0 < x i) :
     ∫ U, sampleEntry t a b (x, U) ∂(unitaryHaar (Fin d)) =
       ∑ l, glChar d l (fun i => (((x i / ∑ j, x j) ^ t : ℝ) : ℂ)) /
@@ -330,7 +330,7 @@ theorem integral_unitary_sampleEntry (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {k : 
       (tensorPow (k := k) (U : Matrix (Fin d) (Fin d) ℂ) * A *
         tensorPow (k := k) (star U : Matrix (Fin d) (Fin d) ℂ)) a b := by
     intro U
-    rw [← tensorPow_specSample_rpow_apply hd ht hx U, specSample_rpow hd ht hx, tensorPow_mul,
+    rw [← tensorPow_specSample_rpow_apply hd hx U, specSample_rpow hd hx, tensorPow_mul,
       tensorPow_mul]
   simp only [hcongr]
   change unitaryTwirl A a b = _
@@ -428,7 +428,7 @@ theorem integral_specSample_tensorPow (hd : 0 < d) {t : ℝ} (ht : 0 < t) {k : �
   have heq : (fun ω : (Fin d → ℝ) × unitaryGroup (Fin d) ℂ =>
       tensorPow (k := k) (specSample ω.1 ω.2 ^ t) a b) =ᵐ[(specMeasure d t).prod
         (unitaryHaar (Fin d))] sampleEntry t a b :=
-    ae_prod_pos.mono fun ω hω => tensorPow_specSample_rpow_apply hd ht.le hω ω.2 a b
+    ae_prod_pos.mono fun ω hω => tensorPow_specSample_rpow_apply hd hω ω.2 a b
   have hint : Integrable (sampleEntry t a b) ((specMeasure d t).prod (unitaryHaar (Fin d))) :=
     Integrable.of_bound (measurable_sampleEntry t a b).aestronglyMeasurable ((d : ℝ) ^ k)
       (ae_prod_pos.mono fun ω hω => norm_sampleEntry_le hd ht.le a b hω)
@@ -437,7 +437,7 @@ theorem integral_specSample_tensorPow (hd : 0 < d) {t : ℝ} (ht : 0 < t) {k : �
   have hinner : ∀ᵐ x ∂(specMeasure d t), ∫ U, sampleEntry t a b (x, U) ∂(unitaryHaar (Fin d)) =
       ∑ l, glChar d l (fun i => (((x i / ∑ j, x j) ^ t : ℝ) : ℂ)) /
         multiplicity (copyPerm (Fin d) k) l * labelProj (copyPerm (Fin d) k) l a b :=
-    ae_specMeasure_pos.mono fun x hx => integral_unitary_sampleEntry hd ht.le a b hx
+    ae_specMeasure_pos.mono fun x hx => integral_unitary_sampleEntry hd a b hx
   rw [integral_congr_ae hinner, integral_finsetSum _ fun l _ =>
     (integral_specMeasure_label hd ht a b l).1]
   exact sum_congr rfl fun l _ => (integral_specMeasure_label hd ht a b l).2
