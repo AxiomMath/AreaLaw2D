@@ -15,6 +15,7 @@ import AreaLawForMathlib.Analysis.Matrix.CommutingProductLog
 import AreaLawForMathlib.Analysis.Matrix.CommutingProjectionProduct
 import AreaLawForMathlib.Analysis.Matrix.DiagonalJensen
 import AreaLawForMathlib.Analysis.Matrix.FilteredNorm
+import AreaLawForMathlib.Analysis.Matrix.FilteredNormFloor
 import AreaLawForMathlib.Analysis.Matrix.FiniteProductChannel
 import AreaLawForMathlib.Analysis.Matrix.GeometricMeanCongruence
 import AreaLawForMathlib.Analysis.Matrix.GeometricMeanDerivative
@@ -67,13 +68,17 @@ import AreaLawForMathlib.Analysis.SpecialFunctions.ResolventMellin
 import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Density
 import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Fourier
 import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Shift
+import AreaLawForMathlib.Data.Int.DyadicCover
 import AreaLawForMathlib.Data.Int.L1Ball
+import AreaLawForMathlib.Data.Int.Staircase
+import AreaLawForMathlib.Data.Int.StaircaseCount
 import AreaLawForMathlib.LinearAlgebra.Matrix.PiTensorOp
 import AreaLawForMathlib.LinearAlgebra.Matrix.TracePairing
 import AreaLawForMathlib.QuantumInfo.Entropy.ClassicalQuantum
 import AreaLawForMathlib.QuantumInfo.Entropy.Concavity
 import AreaLawForMathlib.QuantumInfo.Entropy.Subadditivity
 import AreaLawForMathlib.QuantumInfo.Region
+import AreaLawForMathlib.QuantumInfo.RegionRelabel
 import AreaLawForMathlib.QuantumInfo.RegionToComplex
 import AreaLawForMathlib.QuantumInfo.StateToComplex
 import AreaLawForMathlib.RepresentationTheory.PermutationRepresentation

@@ -60,6 +60,7 @@ theorem smul_one_le_bandMetric {π : PYF V} {t b : ℝ} (hb1 : b ≤ 1) (k : ℕ
 variable {K : ℕ} {H : Type*} [Fintype H] [DecidableEq H] {C : H → Type*} [∀ h, Fintype (C h)]
   [∀ h, DecidableEq (C h)] (R : Round V K H C)
 
+set_option linter.unusedFintypeInType false in
 /-- D9.12.2. A floor `b Π_k ≤ A_k` of every band metric of a partition gives the floor
 `b^K ≤ 𝓜(p)` of the root (Lemma 7.1 (5): mean trees preserve the floor). -/
 theorem smul_one_le_root (hR : R.IsAdmissible) {t b : ℝ} (ht : 0 ≤ t) (hb0 : 0 < b)
@@ -82,6 +83,7 @@ theorem smul_one_le_root (hR : R.IsAdmissible) {t b : ℝ} (ht : 0 ≤ t) (hb0 :
     (R.tree (projIcc (0 : ℝ) 1 zero_le_one p))
   rwa [← Real.rpow_sum_of_pos (pow_pos hb0 K), MeanTree.sum_weight, Real.rpow_one] at h
 
+set_option linter.unusedFintypeInType false in
 /-- D9.12.2. With the leaf floor `(k + 2)^{-C₀} Π_k ≤ A_k` (D6.9) and `‖pre‖ ≤ 1`:
 `log N(p)² ≤ (K/2) C₀ log(k + 2)`. -/
 theorem log_normSq_le_of_floor (hR : R.IsAdmissible) {t : ℝ} (ht : 0 ≤ t) {k : ℕ}

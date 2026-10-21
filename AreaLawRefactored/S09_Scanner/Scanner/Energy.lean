@@ -364,6 +364,7 @@ variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ} [∀ v, NeZero 
   {H : Type*} [Fintype H] [DecidableEq H] {C : H → Type*} [∀ h, Fintype (C h)]
   [∀ h, DecidableEq (C h)] (R : Round V K H C) {ι : Type*} [Fintype ι] (E : EnergyTerms V n ι)
 
+omit [Fintype V] in
 theorem log_card_le_logDim (x : Finset V) :
     Real.log (Fintype.card (Reg (fun v => Fin (n v)) x)) ≤ Transport.logDim (n := n) x := by
   have h1 := one_le_card_reg (n := n) x
@@ -371,6 +372,7 @@ theorem log_card_le_logDim (x : Finset V) :
     Real.log_exp]
   linarith
 
+omit [Fintype H] [∀ h, Fintype (C h)] [Fintype ι] in
 /-- D9.10. `η_{i,j} ≤ 2ℓ` for support-compatible terms whose split supports have `log(e dim) ≤ ℓ`:
 at most one band splits a term. -/
 theorem splitEta_le (hR : R.IsAdmissible) (hc : R.SupportCompatible E) {ℓ : ℝ} (hℓ : 0 ≤ ℓ)

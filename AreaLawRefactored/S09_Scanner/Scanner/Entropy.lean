@@ -172,7 +172,8 @@ theorem integral_m_mul_integral_mono (hR : R.IsAdmissible) (ht : 0 ≤ t)
     (hpre : pre ≠ 0) (hp0 : 0 < (p : ℝ)) (hp1 : (p : ℝ) < 1) (j : Round.Leaf H C)
     {f f' : Replicas.Sphere (fun v => Fin (n v)) → ℝ} (hf : Continuous f) (hf' : Continuous f')
     (hle : ∀ θ, f θ ≤ f' θ) :
-    ∫ u, Transport.m (1 / 4) u * ∫ θ, f θ ∂(Replicas.μ (fun v => Fin (n v)) k (R.state n t k pre p j u)) ≤
+    ∫ u, Transport.m (1 / 4) u *
+        ∫ θ, f θ ∂(Replicas.μ (fun v => Fin (n v)) k (R.state n t k pre p j u)) ≤
       ∫ u, Transport.m (1 / 4) u *
         ∫ θ, f' θ ∂(Replicas.μ (fun v => Fin (n v)) k (R.state n t k pre p j u)) := by
   refine integral_mono (integrable_m_mul_integral R hR ht hcomm hpreS hpre hp0 hp1 j hf)
@@ -253,13 +254,14 @@ the coherent probability measure (Lemma 6.4),
 `𝒬(p) = ∑_{h good} w_h ∫ m_s(u) ∫ ∑_{i split in h} η_{i,h}(θ) dμ_{σ_{h,u}}(θ) du`, where
 `η_{i,h} = S_θ(x|P) + S_θ(x|Y \ x)` with `x = Y ∩ X̃_i` for the near side (exchange `P, F` for
 the far side) in the unique splitting band; `0 ≤ η ≤ C (log n)^C`, `m_s(u) du` has mass `2s`. -/
-noncomputable def step_9_10 [Fintype H] [Fintype ι] (good : H → Prop) (t : ℝ) (k : ℕ) (pre : Transport.Config n k → ℂ)
-    (p : unitInterval) : ℝ :=
+noncomputable def step_9_10 [Fintype H] [Fintype ι] (good : H → Prop) (t : ℝ) (k : ℕ)
+    (pre : Transport.Config n k → ℂ) (p : unitInterval) : ℝ :=
   ∑ h ∈ univ.filter good, R.histTree.weight h * ∫ u, Transport.m (1 / 4) u *
     ∫ θ, (∑ i ∈ splitAt R E h, R.splitEta E i ⟨h, none⟩ θ.1)
       ∂(Replicas.μ (fun v => Fin (n v)) k (R.state n t k pre p ⟨h, none⟩ u))
 
-theorem step_9_10_nonneg [Fintype H] [Fintype ι] (hR : R.IsAdmissible) (good : H → Prop) (t : ℝ) (k : ℕ)
+theorem step_9_10_nonneg [Fintype H] [Fintype ι] (hR : R.IsAdmissible) (good : H → Prop)
+    (t : ℝ) (k : ℕ)
     (pre : Transport.Config n k → ℂ) (p : unitInterval) : 0 ≤ step_9_10 R E good t k pre p := by
   classical
   unfold step_9_10
