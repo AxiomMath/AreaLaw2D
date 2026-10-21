@@ -2,10 +2,6 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from `LionSR/QICLean`,
-`QICLean/Representation/HusimiIdentity.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 import AreaLawRefactored.S06_Replicas.Ported.CoherentResolution
 import QuantumInfo.ForMathlib.Matrix
@@ -74,7 +70,6 @@ theorem integral_coherent_pairing (k m : ℕ) (a : Ω)
         (reindex (splitCopies k m).symm (splitCopies k m).symm (σ ⊗ₖ G) *
           symProj (copyPerm Ω (k + m))).trace := by
   set M := reindex (splitCopies k m).symm (splitCopies k m).symm (σ ⊗ₖ G)
-  have hres := unitaryTwirl_coherentProj (k := k + m) a
   have hpair : ∀ U : unitaryGroup Ω ℂ,
       (M * (tensorPow (k := k + m) (U : Matrix Ω Ω ℂ) *
         coherentProj (k + m) (Pi.single a 1) *
@@ -87,20 +82,14 @@ theorem integral_coherent_pairing (k m : ℕ) (a : Ω)
     set θ := (U : Matrix Ω Ω ℂ) *ᵥ Pi.single a 1
     have hP : coherentProj (k + m) θ =
         reindex (splitCopies k m).symm (splitCopies k m).symm
-          (coherentProj k θ ⊗ₖ coherentProj m θ) := by
-      rw [← coherentProj_split k m θ]
-      simp
+          (coherentProj k θ ⊗ₖ coherentProj m θ) := by simp [← coherentProj_split k m θ]
     rw [← coherentProj_mulVec, hP]
     simp only [M, reindex_apply, Equiv.symm_symm]
     rw [submatrix_mul_equiv, ← mul_kronecker_mul, ← trace_kronecker]
-    have htrace := Matrix.trace_submatrix
-      ((σ * coherentProj k θ) ⊗ₖ (G * coherentProj m θ))
-      (splitCopies k m)
-    exact htrace
+    exact trace_submatrix _ (splitCopies k m)
   rw [← integral_congr_ae (Filter.Eventually.of_forall hpair),
     ← trace_mul_integral M _ (integrable_twirlIntegrand _) (fun _ _ => rfl)]
-  change (M * unitaryTwirl
-    (coherentProj (k + m) (Pi.single a 1))).trace = _
-  rw [hres, mul_smul_comm, trace_smul, smul_eq_mul]
+  change (M * unitaryTwirl (coherentProj (k + m) (Pi.single a 1))).trace = _
+  rw [unitaryTwirl_coherentProj, mul_smul_comm, trace_smul, smul_eq_mul]
 
 end TensorPower

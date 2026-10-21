@@ -10,26 +10,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Branching
 /-!
 # Splitting `m + r` copies into the first `m` and the last `r`
 
-On `(ℂ^q)^{⊗(m + r)} = (ℂ^q)^{⊗m} ⊗ (ℂ^q)^{⊗r}` the permutations of the first `m` copies act on
-the first factor and those of the last `r` copies on the second. This file records the
-operators of this splitting and computes the trace of a diagonal tensor power against the
-antisymmetrizer of the last `r` copies: on `Λ^r ℂ^q` the operator `diag(y)^{⊗r}` has trace
-`e_r(y)`. These are the ingredients of the vertical-strip Pieri rule for the characters of
-the multiplicity spaces, used for the Weyl character formula in the proof of Lemma 6.2 of
-the area-law paper (*A two-dimensional area law from a global spectral gap*,
-`05-replicas.tex`, lines 336–364).
-
-Ported from `LionSR/QICLean`, `QICLean/Representation/SplitCopies.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `TensorPower.leftCopies`, `TensorPower.rightCopies` — `S_m, S_r ⊆ S_{m+r}`.
-* `TensorPower.splitOp A B` — the operator `A ⊗ B` on `(ℂ^q)^{⊗(m + r)}`.
-* `TensorPower.groupAlgebraRep_leftCopies`, `TensorPower.groupAlgebraRep_rightCopies`,
-  `TensorPower.tensorPow_eq_splitOp`, `TensorPower.trace_splitOp`.
-* `TensorPower.antisym r` — the antisymmetrizer `(1/r!) ∑_τ sgn(τ) τ`.
-* `TensorPower.trace_antisym_mul_tensorPow` — `Tr(A_r diag(y)^{⊗r}) = e_r(y)`.
+The operators of `(ℂ^q)^{⊗(m + r)} = (ℂ^q)^{⊗m} ⊗ (ℂ^q)^{⊗r}` and the exterior power
+character `Tr(A_r diag(y)^{⊗r}) = e_r(y)` (`05-replicas.tex`, lines 336–364).
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra
@@ -158,34 +140,6 @@ theorem trace_splitOp (A : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ)
   rw [sum_append, sum_mul_sum]
   exact sum_congr rfl fun x _ => sum_congr rfl fun z _ => splitOp_append A B x x z z
 
-theorem splitOp_add_left (A A' : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ)
-    (B : Matrix (Fin r → Fin q) (Fin r → Fin q) ℂ) :
-    splitOp (A + A') B = splitOp A B + splitOp A' B := by
-  ext x y; simp [splitOp, add_mul]
-
-theorem splitOp_add_right (A : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ)
-    (B B' : Matrix (Fin r → Fin q) (Fin r → Fin q) ℂ) :
-    splitOp A (B + B') = splitOp A B + splitOp A B' := by
-  ext x y; simp [splitOp, mul_add]
-
-theorem splitOp_smul_left (c : ℂ) (A : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ)
-    (B : Matrix (Fin r → Fin q) (Fin r → Fin q) ℂ) :
-    splitOp (c • A) B = c • splitOp A B := by
-  ext x y; simp [splitOp, mul_assoc]
-
-theorem splitOp_smul_right (c : ℂ) (A : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ)
-    (B : Matrix (Fin r → Fin q) (Fin r → Fin q) ℂ) :
-    splitOp A (c • B) = c • splitOp A B := by
-  ext x y; simp [splitOp, mul_left_comm]
-
-theorem splitOp_zero_left (B : Matrix (Fin r → Fin q) (Fin r → Fin q) ℂ) :
-    splitOp (0 : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ) B = 0 := by
-  ext x y; simp [splitOp]
-
-theorem splitOp_zero_right (A : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ) :
-    splitOp A (0 : Matrix (Fin r → Fin q) (Fin r → Fin q) ℂ) = 0 := by
-  ext x y; simp [splitOp]
-
 theorem append_eq_append_iff {x x' : Fin m → Fin q} {z z' : Fin r → Fin q} :
     Fin.append x z = Fin.append x' z' ↔ x = x' ∧ z = z' := by
   constructor
@@ -218,22 +172,22 @@ theorem groupAlgebraRep_leftCopies (b : MonoidAlgebra ℂ (Equiv.Perm (Fin m))) 
       splitOp (groupAlgebraRep (copyPerm (Fin q) m) b) 1 := by
   rw [← groupAlgebraRep_comp]
   induction b using MonoidAlgebra.induction_linear with
-  | zero => simp [splitOp_zero_left]
-  | add a b ha hb => rw [map_add, map_add, ha, hb, splitOp_add_left]
+  | zero => ext; simp [splitOp]
+  | add a b ha hb => rw [map_add, map_add, ha, hb]; ext; simp [splitOp, add_mul]
   | single σ c =>
-    rw [groupAlgebraRep_single, groupAlgebraRep_single, splitOp_smul_left, permOp_comp,
-      permOp_leftCopies]
+    rw [groupAlgebraRep_single, groupAlgebraRep_single, permOp_comp, permOp_leftCopies]
+    ext; simp [splitOp, mul_assoc]
 
 theorem groupAlgebraRep_rightCopies (b : MonoidAlgebra ℂ (Equiv.Perm (Fin r))) :
     groupAlgebraRep (copyPerm (Fin q) (m + r)) (IrrepLabel.restrictHom (rightCopies m r) b) =
       splitOp 1 (groupAlgebraRep (copyPerm (Fin q) r) b) := by
   rw [← groupAlgebraRep_comp]
   induction b using MonoidAlgebra.induction_linear with
-  | zero => simp [splitOp_zero_right]
-  | add a b ha hb => rw [map_add, map_add, ha, hb, splitOp_add_right]
+  | zero => ext; simp [splitOp]
+  | add a b ha hb => rw [map_add, map_add, ha, hb]; ext; simp [splitOp, mul_add]
   | single τ c =>
-    rw [groupAlgebraRep_single, groupAlgebraRep_single, splitOp_smul_right, permOp_comp,
-      permOp_rightCopies]
+    rw [groupAlgebraRep_single, groupAlgebraRep_single, permOp_comp, permOp_rightCopies]
+    ext; simp [splitOp, mul_left_comm]
 
 theorem tensorPow_eq_splitOp (A : Matrix (Fin q) (Fin q) ℂ) :
     tensorPow (k := m + r) A = splitOp (tensorPow A) (tensorPow A) := by
@@ -284,19 +238,9 @@ theorem sum_sign_fix (z : Fin r → Fin q) :
     if copyPerm (Fin q) r τ z = z then (Equiv.Perm.sign τ : ℂ) else 0
   change ∑ τ, F τ = _
   split_ifs with hz
-  · rw [sum_eq_single 1]
-    · simp [F]
-    · intro τ _ hτ
-      change (if _ then _ else _) = _
-      rw [if_neg]
-      intro h
-      apply hτ
-      have key : ∀ j, τ⁻¹ j = j := fun j => by
-        have : z (τ⁻¹ j) = z j := congrFun h j
-        exact hz this
-      have : τ⁻¹ = 1 := Equiv.ext key
-      exact inv_eq_one.mp this
-    · simp
+  · rw [sum_eq_single (f := F) 1 (fun τ _ hτ => if_neg fun h => hτ (inv_eq_one.mp
+      (Equiv.ext fun j => hz (congrFun h j : z (τ⁻¹ j) = z j)))) (by simp)]
+    simp [F]
   · obtain ⟨i, j, hij, hne⟩ : ∃ i j, z i = z j ∧ i ≠ j := by
       by_contra h
       push Not at h

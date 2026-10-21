@@ -2,10 +2,6 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from `LionSR/QICLean`,
-`QICLean/Representation/CoherentSymbolFunction.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 import AreaLawRefactored.S06_Replicas.Ported.CoherentSymbolLimit
 import AreaLawRefactored.S06_Replicas.Ported.RegionPowerSymbol
@@ -14,26 +10,11 @@ import Mathlib.Topology.ContinuousMap.Weierstrass
 /-!
 # Continuous functions of sequences with coherent symbols
 
-The last step of the proof of Lemma 6.4 of the area-law paper (*A two-dimensional area law
-from a global spectral gap*, `05-replicas.tex`, lines 832–840) passes from the symbol
-`|f_θ|²` of `O_k^† O_k` to the symbol `|f_θ|` of `|O_k|`: "Uniform polynomial approximation of
-the square root on that interval gives symbols `|f_θ|` for `|O_k|` and `|O_k^†|`, with
-arbitrarily small uniform expectation errors. This argument applies whether or not `O_k` is
-normal." This file proves the general form: a continuous function of a Hermitian sequence with
-a coherent symbol and uniformly bounded spectra has the composed symbol.
+A continuous function of a Hermitian sequence with a coherent symbol and uniformly bounded
+spectra has the composed symbol; in particular `|O_k|` has symbol `|f_θ|`.
 
-## Main declarations
-
-* `TensorPower.HasCoherentSymbol.pow`, `TensorPower.HasCoherentSymbol.aeval`,
-  `TensorPower.HasCoherentSymbol.symProj_mul`.
-* `TensorPower.HasCoherentSymbol.cfc` — continuous functions of Hermitian sequences.
-* `Matrix.IsHermitian.abs_eigenvalues_le` — eigenvalues are bounded by the operator norm.
-
-## References
-
-* OpenAI, *A two-dimensional area law from a global spectral gap*, September 24, 2026,
-  Lemma 6.4 (`lem:symbol`), section file `05-replicas.tex`, lines 832–840.
-  Source revision: `openai/math@adc7f1241b42e322a6451854ab7e4b4c146bf78a`.
+Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
+`05-replicas.tex`, lines 832–840.
 -/
 
 open Matrix PermutationRepresentation Polynomial Filter
@@ -60,8 +41,7 @@ namespace TensorPower
 variable {Ω : Type*} [Fintype Ω] [DecidableEq Ω]
   {X : ∀ k, Matrix (Fin k → Ω) (Fin k → Ω) ℂ} {f : (Ω → ℂ) → ℂ}
 
-/-- The skew operator `𝒟 = |X Π| + |X^† Π| - X - X^†`, with the absolute values taken on the
-symmetric subspace (`05-replicas.tex`, line 627). -/
+/-- The skew operator `|X Π| + |X^† Π| - X - X^†` on the symmetric subspace. -/
 noncomputable def skewOperator (k : ℕ) (Z : Matrix (Fin k → Ω) (Fin k → Ω) ℂ) :
     Matrix (Fin k → Ω) (Fin k → Ω) ℂ :=
   _root_.cfc Real.sqrt (symProj (copyPerm Ω k) * (Zᴴ * Z)) +
@@ -82,21 +62,13 @@ theorem aeval (hX : HasCoherentSymbol X f) (p : ℝ[X]) :
   induction p using Polynomial.induction_on' with
   | add p q hp hq => simpa using hp.add hq
   | monomial n c =>
-    have e1 : ∀ k, Polynomial.aeval (X k) (Polynomial.monomial n c) = (c : ℂ) • X k ^ n :=
-        fun k => by
-      rw [aeval_monomial, Algebra.algebraMap_eq_smul_one, smul_one_mul, Complex.coe_smul]
-    have e2 : ∀ θ, Polynomial.aeval (f θ) (Polynomial.monomial n c) = (c : ℂ) • f θ ^ n :=
-        fun θ => by
-      rw [aeval_monomial, Algebra.algebraMap_eq_smul_one, smul_one_mul, Complex.coe_smul]
-    simp only [e1, e2]
-    exact (hX.pow n).smul (c : ℂ)
+    simpa [aeval_monomial, Algebra.algebraMap_eq_smul_one, Complex.coe_smul]
+      using (hX.pow n).smul (c : ℂ)
 
 /-- Compressing by `Π_k` does not change the coherent symbol. -/
 theorem symProj_mul (hX : HasCoherentSymbol X f) :
     HasCoherentSymbol (fun k => symProj (copyPerm Ω k) * X k) f where
-  commute k := by
-    have hc := hX.commute k
-    exact (Commute.refl _).mul_right hc
+  commute k := (Commute.refl _).mul_right (hX.commute k)
   bounded := by
     obtain ⟨M, hM⟩ := hX.bounded
     refine ⟨M, fun k => ?_⟩
@@ -119,10 +91,7 @@ theorem symProj_mul (hX : HasCoherentSymbol X f) :
     exact (l2_opNorm_mul _ _).trans ((mul_le_of_le_one_left (norm_nonneg _)
       l2_opNorm_symProj_le).trans hk)
 
-/-- **Continuous functions of Hermitian sequences** (`05-replicas.tex`, lines 832–837): if
-`X_k` is Hermitian with eigenvalues in `[a, b]`, has coherent symbol `f` with real values in
-`[a, b]` on unit vectors, and `φ` is continuous on `[a, b]`, then `φ(X_k)` has coherent
-symbol `φ ∘ f`. -/
+/-- `φ(X_k)` has coherent symbol `φ ∘ f` for a Hermitian `X_k` with bounded spectra. -/
 theorem cfc (hX : HasCoherentSymbol X f) (hH : ∀ k, (X k).IsHermitian) {a b : ℝ}
     (hspec : ∀ k i, (hH k).eigenvalues i ∈ Set.Icc a b)
     (hf : ∀ θ ∈ unitSphere, f θ = ((f θ).re : ℂ) ∧ (f θ).re ∈ Set.Icc a b) {φ : ℝ → ℝ}
@@ -151,32 +120,20 @@ theorem cfc (hX : HasCoherentSymbol X f) (hH : ∀ k, (X k).IsHermitian) {a b : 
         rw [abs_sub_comm]
         exact (hp _ (hspec k i)).le
 
-/-- **The absolute value** (`05-replicas.tex`, lines 832–837): if `X_k` has coherent symbol
-`f`, then the absolute value `|X_k Π_k| = √(Π_k X_k^† X_k)` has coherent symbol `|f|`. -/
+/-- `|X_k Π_k| = √(Π_k X_k^† X_k)` has coherent symbol `|f|`. -/
 theorem abs (hX : HasCoherentSymbol X f) :
     HasCoherentSymbol (fun k => _root_.cfc Real.sqrt (symProj (copyPerm Ω k) * ((X k)ᴴ * X k)))
       (fun θ => (‖f θ‖ : ℂ)) := by
   set A := fun k => symProj (copyPerm Ω k) * ((X k)ᴴ * X k)
   have hA : HasCoherentSymbol A (fun θ => star (f θ) * f θ) :=
     (hX.conjTranspose.mul hX).symProj_mul
-  have hcX : ∀ k, Commute (symProj (copyPerm Ω k)) (X k)ᴴ := fun k => by
-    have h : (symProj (copyPerm Ω k) * X k)ᴴ = (X k * symProj (copyPerm Ω k))ᴴ := by
-      rw [(hX.commute k).eq]
-    rw [conjTranspose_mul, conjTranspose_mul, isHermitian_symProj.eq] at h
-    exact h.symm
-  have hAeq : ∀ k, A k = (X k * symProj (copyPerm Ω k))ᴴ * (X k * symProj (copyPerm Ω k)) := by
-    intro k
+  have hAeq : ∀ k, A k = (X k * symProj (copyPerm Ω k))ᴴ * (X k * symProj (copyPerm Ω k)) :=
+    fun k => by
     have hc2 : Commute (symProj (copyPerm Ω k)) ((X k)ᴴ * X k) :=
-      (hcX k).mul_right (hX.commute k)
-    simp only [A]
-    rw [conjTranspose_mul, isHermitian_symProj.eq]
-    calc symProj (copyPerm Ω k) * ((X k)ᴴ * X k)
-        = symProj (copyPerm Ω k) * (symProj (copyPerm Ω k) * ((X k)ᴴ * X k)) := by
-          rw [← Matrix.mul_assoc (symProj (copyPerm Ω k)) (symProj (copyPerm Ω k)),
-            symProj_mul_symProj]
-      _ = symProj (copyPerm Ω k) * (((X k)ᴴ * X k) * symProj (copyPerm Ω k)) := by
-          rw [hc2.eq]
-      _ = _ := by simp only [Matrix.mul_assoc]
+      (hX.conjTranspose.commute k).mul_right (hX.commute k)
+    rw [conjTranspose_mul, isHermitian_symProj.eq, Matrix.mul_assoc, ← Matrix.mul_assoc _ (X k),
+      ← hc2.eq, ← Matrix.mul_assoc (symProj (copyPerm Ω k)) (symProj (copyPerm Ω k)),
+      symProj_mul_symProj]
   have hH : ∀ k, (A k).IsHermitian := fun k => by
     rw [hAeq]
     exact isHermitian_conjTranspose_mul_self _
@@ -204,9 +161,7 @@ theorem abs (hX : HasCoherentSymbol X f) :
   convert h using 2 with θ
   rw [hsym, Complex.ofReal_re, Real.sqrt_sq (norm_nonneg _)]
 
-/-- **The skew operator** (`05-replicas.tex`, lines 627–631 and 837–838):
-`𝒟_k = |X_k| + |X_k^†| - X_k - X_k^†` on the symmetric subspace has coherent symbol
-`2(|f| - Re f)`. -/
+/-- The skew operator has coherent symbol `2(|f| - Re f)`. -/
 theorem skew (hX : HasCoherentSymbol X f) :
     HasCoherentSymbol (fun k => skewOperator k (X k))
       (fun θ => ((2 * (‖f θ‖ - (f θ).re) : ℝ) : ℂ)) := by

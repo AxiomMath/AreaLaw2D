@@ -48,15 +48,13 @@ theorem embed_eq_submatrix (e : Fin m ↪ Fin k) (G : Matrix (Config ι m) (Conf
 omit [Fintype I] [DecidableEq I] [∀ f, Fintype (ι f)] [∀ f, DecidableEq (ι f)] in
 /-- D6.14. Splitting the copies along `e` is injective. -/
 theorem injective_split (e : Fin m ↪ Fin k) :
-    Function.Injective (fun x : Config ι k => (x ∘ e, rest e x)) := by
-  intro x y h
+    Function.Injective (fun x : Config ι k => (x ∘ e, rest e x)) := fun x y h => by
   simp only [Prod.mk.injEq] at h
   funext j
   by_cases hj : ∃ a, e a = j
   · obtain ⟨a, rfl⟩ := hj
     exact congrFun h.1 a
-  · push Not at hj
-    exact congrFun h.2 ⟨j, hj⟩
+  · exact congrFun h.2 ⟨j, not_exists.mp hj⟩
 
 /-- D6.14. `‖G^{(e)}‖ ≤ ‖G‖`. -/
 theorem norm_embed_le (e : Fin m ↪ Fin k) (G : Matrix (Config ι m) (Config ι m) ℂ) :
@@ -70,8 +68,7 @@ theorem norm_embed_le (e : Fin m ↪ Fin k) (G : Matrix (Config ι m) (Config ι
 theorem norm_T_le (G : Matrix (Config ι m) (Config ι m) ℂ) : ‖T (ι := ι) k m G‖ ≤ ‖G‖ := by
   rw [T]
   rcases Nat.eq_zero_or_pos (Fintype.card (Fin m ↪ Fin k)) with hN | hN
-  · rw [hN, Nat.cast_zero, _root_.inv_zero, zero_smul, norm_zero]
-    exact norm_nonneg _
+  · simp [hN]
   refine (norm_smul_le _ _).trans ?_
   rw [norm_inv, Complex.norm_natCast]
   calc (Fintype.card (Fin m ↪ Fin k) : ℝ)⁻¹ * ‖∑ e : Fin m ↪ Fin k, embed e G‖
@@ -103,13 +100,9 @@ theorem norm_tensorCopies_le (G : Matrix (Config ι m) (Config ι m) ℂ)
     (H : Matrix (Config ι n) (Config ι n) ℂ) : ‖tensorCopies G H‖ ≤ ‖G‖ * ‖H‖ := by
   have hinj : Function.Injective (fun x : Config ι (m + n) =>
       ((fun a => x (Fin.castAdd n a) : Config ι m),
-        (fun b => x (Fin.natAdd m b) : Config ι n))) := by
-    intro x y h
+        (fun b => x (Fin.natAdd m b) : Config ι n))) := fun x y h => by
     simp only [Prod.mk.injEq] at h
-    funext c
-    refine Fin.addCases (fun a => ?_) (fun b => ?_) c
-    · exact congrFun h.1 a
-    · exact congrFun h.2 b
+    exact funext fun c => Fin.addCases (fun a => congrFun h.1 a) (fun b => congrFun h.2 b) c
   exact (Arealaw.l2_opNorm_submatrix_le _ hinj hinj).trans (Arealaw.l2_opNorm_kronecker_le G H)
 
 /-- D6.15.2. Disjoint images: if `e, e'` are the restrictions of an injection `l` of `m + n`
@@ -121,7 +114,6 @@ theorem embed_castAdd_mul_embed_natAdd (l : Fin (m + n) ↪ Fin k)
   have hne : ∀ a b, l (Fin.castAdd n a) ≠ l (Fin.natAdd m b) := fun a b h => by
     have := congrArg Fin.val (l.injective h)
     simp only [Fin.val_castAdd, Fin.val_natAdd] at this
-    have := a.isLt
     omega
   ext x y
   set z₀ : Config ι k := fun i => if ∃ a, l (Fin.castAdd n a) = i then y i else x i with hz₀
@@ -135,39 +127,26 @@ theorem embed_castAdd_mul_embed_natAdd (l : Fin (m + n) ↪ Fin k)
   · simp only [embed, tensorCopies_apply, Function.Embedding.trans_apply, Fin.castAddEmb_apply,
       Fin.natAddEmb_apply, Function.comp_def, hz₀ι, hz₀κ]
     have h2 : (∀ i, (∀ b, l (Fin.natAdd m b) ≠ i) → z₀ i = y i) ↔
-        ∀ i, (∀ c, l c ≠ i) → x i = y i := by
-      constructor
-      · intro h i hi
-        rw [h1 i fun a => hi _]
-        exact h i fun b => hi _
-      · intro h i hi
+        ∀ i, (∀ c, l c ≠ i) → x i = y i :=
+      ⟨fun h i hi => (h1 i fun a => hi _).trans (h i fun b => hi _), fun h i hi => by
         by_cases hι : ∃ a, l (Fin.castAdd n a) = i
         · rw [hz₀]; exact if_pos hι
         · push Not at hι
-          rw [← h1 i hι]
-          refine h i fun c => ?_
-          refine Fin.addCases (fun a => ?_) (fun b => ?_) c
-          · exact hι a
-          · exact hi b
-    rw [if_pos h1]
-    by_cases hc : ∀ i, (∀ c, l c ≠ i) → x i = y i
-    · rw [if_pos (h2.mpr hc), if_pos hc]
-    · rw [if_neg (fun h => hc (h2.mp h)), if_neg hc, mul_zero]
+          exact (h1 i hι).symm.trans (h i fun c => Fin.addCases hι hi c)⟩
+    simp only [if_pos h1, h2]
+    split_ifs <;> simp
   · intro z _ hz
     simp only [embed, Function.Embedding.trans_apply, Fin.castAddEmb_apply, Fin.natAddEmb_apply]
-    by_cases hx : ∀ i, (∀ a, l (Fin.castAdd n a) ≠ i) → x i = z i
-    · by_cases hy : ∀ i, (∀ b, l (Fin.natAdd m b) ≠ i) → z i = y i
-      · exfalso
-        refine hz (funext fun i => ?_)
-        by_cases hι : ∃ a, l (Fin.castAdd n a) = i
-        · obtain ⟨a, rfl⟩ := hι
-          rw [hz₀ι]
-          exact hy _ fun b => (hne a b).symm
-        · push Not at hι
-          rw [← hx i hι, hz₀]
-          exact (if_neg fun ⟨a, ha⟩ => hι a ha).symm
-      · rw [if_neg hy, mul_zero]
-    · rw [if_neg hx, zero_mul]
+    split_ifs with hx hy
+    · refine absurd (funext fun i => ?_) hz
+      by_cases hι : ∃ a, l (Fin.castAdd n a) = i
+      · obtain ⟨a, rfl⟩ := hι
+        rw [hz₀ι]
+        exact hy _ fun b => (hne a b).symm
+      · push Not at hι
+        rw [← hx i hι, hz₀]
+        exact (if_neg fun ⟨a, ha⟩ => hι a ha).symm
+    all_goals simp
   · simp
 
 variable (k m n) in
@@ -191,45 +170,24 @@ theorem sum_filter_not_overlapPairs {β : Type*} [AddCommMonoid β]
     intro a b h
     have := congrArg Fin.val (l.injective h)
     simp only [Fin.val_castAdd, Fin.val_natAdd] at this
-    have := a.isLt
     omega
   · intro l _ l' _ h
     simp only [Prod.mk.injEq] at h
     ext c
-    refine Fin.addCases (fun a => ?_) (fun b => ?_) c
-    · exact congrArg Fin.val (DFunLike.congr_fun h.1 a)
-    · exact congrArg Fin.val (DFunLike.congr_fun h.2 b)
+    exact Fin.addCases (fun a => congrArg Fin.val (DFunLike.congr_fun h.1 a))
+      (fun b => congrArg Fin.val (DFunLike.congr_fun h.2 b)) c
   · rintro ⟨e, e'⟩ hp
     simp only [Finset.mem_filter, Finset.mem_univ, true_and, not_exists] at hp
-    have hdisj : Disjoint (Set.range e) (Set.range e') :=
-      Set.disjoint_range_iff.mpr fun a b => hp a b
-    refine ⟨Fin.Embedding.append hdisj, Finset.mem_univ _, ?_⟩
-    simp only [Prod.mk.injEq]
-    constructor
-    · ext a
-      simp [Fin.Embedding.append]
-    · ext b
-      simp [Fin.Embedding.append]
+    refine ⟨Fin.Embedding.append (Set.disjoint_range_iff.mpr hp), Finset.mem_univ _, ?_⟩
+    exact Prod.ext (by ext a; simp [Fin.Embedding.append]) (by ext b; simp [Fin.Embedding.append])
 
 /-- The injections sending `a` to a fixed `c` form a fraction `1 / |α|` of all injections. -/
 theorem card_filter_apply_eq_mul {α : Type*} [Fintype α] [DecidableEq α] (a : Fin m) (c : α) :
     #{e : Fin m ↪ α | e a = c} * Fintype.card α = Fintype.card (Fin m ↪ α) := by
-  have hfib : ∀ c c' : α, #{e : Fin m ↪ α | e a = c} = #{e : Fin m ↪ α | e a = c'} := by
-    intro c c'
-    refine Finset.card_bij' (fun e _ => e.trans (Equiv.swap c c').toEmbedding)
-      (fun e _ => e.trans (Equiv.swap c c').toEmbedding) ?_ ?_ ?_ ?_
-    · intro e he
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at he ⊢
-      simp [he]
-    · intro e he
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at he ⊢
-      simp [he]
-    · intro e _
-      ext i
-      simp
-    · intro e _
-      ext i
-      simp
+  have hfib : ∀ c c' : α, #{e : Fin m ↪ α | e a = c} = #{e : Fin m ↪ α | e a = c'} := fun c c' =>
+    Finset.card_bij' (fun e _ => e.trans (Equiv.swap c c').toEmbedding)
+      (fun e _ => e.trans (Equiv.swap c c').toEmbedding) (fun e he => by simp_all)
+      (fun e he => by simp_all) (fun e _ => by ext; simp) (fun e _ => by ext; simp)
   have hsum := Finset.card_eq_sum_card_fiberwise (f := fun e : Fin m ↪ α => e a)
     (s := Finset.univ) (t := Finset.univ) (fun _ _ => Finset.mem_univ _)
   rw [Finset.card_univ] at hsum
@@ -243,16 +201,10 @@ theorem card_filter_apply_eq_apply_mul (a : Fin m) (b : Fin n) :
       Fintype.card (Fin m ↪ Fin k) * Fintype.card (Fin n ↪ Fin k) := by
   have hcard : #({p | p.1 a = p.2 b} : Finset ((Fin m ↪ Fin k) × (Fin n ↪ Fin k))) =
       ∑ e : Fin m ↪ Fin k, #({e' | e' b = e a} : Finset (Fin n ↪ Fin k)) := by
-    rw [Finset.card_filter, Fintype.sum_prod_type]
-    refine Finset.sum_congr rfl fun e _ => ?_
-    rw [Finset.card_filter]
-    exact Finset.sum_congr rfl fun e' _ => by simp only [eq_comm]
-  rw [hcard, Finset.sum_mul]
-  have h1 : ∀ e : Fin m ↪ Fin k,
-      #({e' | e' b = e a} : Finset (Fin n ↪ Fin k)) * k = Fintype.card (Fin n ↪ Fin k) := by
-    intro e
-    simpa using card_filter_apply_eq_mul b (e a)
-  rw [Finset.sum_congr rfl fun e _ => h1 e, Finset.sum_const, Finset.card_univ, smul_eq_mul]
+    simp only [Finset.card_filter, Fintype.sum_prod_type, eq_comm]
+  rw [hcard, Finset.sum_mul, Finset.sum_congr rfl fun e _ => by
+    simpa only [Fintype.card_fin] using card_filter_apply_eq_mul b (e a),
+    Finset.sum_const, Finset.card_univ, smul_eq_mul]
 
 /-- D6.15.2. Intersecting images have probability `p ≤ mn / k`. -/
 theorem card_overlapPairs_mul_le :
@@ -260,12 +212,8 @@ theorem card_overlapPairs_mul_le :
       m * n * (Fintype.card (Fin m ↪ Fin k) * Fintype.card (Fin n ↪ Fin k)) := by
   have hsub : overlapPairs k m n ⊆ Finset.univ.biUnion fun a : Fin m =>
       Finset.univ.biUnion fun b : Fin n =>
-        ({p | p.1 a = p.2 b} : Finset ((Fin m ↪ Fin k) × (Fin n ↪ Fin k))) := by
-    intro p hp
-    simp only [overlapPairs, Finset.mem_filter, Finset.mem_univ, true_and] at hp
-    obtain ⟨a, b, h⟩ := hp
-    simp only [Finset.mem_biUnion, Finset.mem_univ, Finset.mem_filter, true_and]
-    exact ⟨a, b, h⟩
+        ({p | p.1 a = p.2 b} : Finset ((Fin m ↪ Fin k) × (Fin n ↪ Fin k))) := fun p hp => by
+    simpa [overlapPairs] using hp
   calc #(overlapPairs k m n) * k
       ≤ (∑ a : Fin m, ∑ b : Fin n,
           #({p | p.1 a = p.2 b} : Finset ((Fin m ↪ Fin k) × (Fin n ↪ Fin k)))) * k := by
@@ -336,8 +284,7 @@ theorem eq_replicas_injection_product (hk : 0 < k) (G : Matrix (Config ι m) (Co
   rcases Nat.eq_zero_or_pos (Nm * Nn) with h0 | hpos
   · have hNmn : Nmn = 0 := by omega
     have : ((Nm : ℂ) * Nn) = 0 := by exact_mod_cast h0
-    rw [this, hNmn, Nat.cast_zero, _root_.inv_zero, zero_smul, zero_smul, sub_zero, norm_zero]
-    exact hrhs
+    simpa [this, hNmn] using hrhs
   have hposR : (0 : ℝ) < Nm * Nn := by exact_mod_cast hpos
   have hdiff : ((Nm : ℂ) * Nn)⁻¹ • (S + O) - (Nmn : ℂ)⁻¹ • S =
       (((Nm : ℂ) * Nn)⁻¹ - (Nmn : ℂ)⁻¹) • S + ((Nm : ℂ) * Nn)⁻¹ • O := by
@@ -359,25 +306,19 @@ theorem eq_replicas_injection_product (hk : 0 < k) (G : Matrix (Config ι m) (Co
       · rw [sub_nonpos]
         exact inv_anti₀ hpR (by linarith [(Nat.cast_nonneg B : (0 : ℝ) ≤ B)])
   have hB : (B : ℝ) * k ≤ m * n * (Nm * Nn) := by exact_mod_cast hov
+  have h2 : B / ((Nm : ℝ) * Nn) ≤ m * n / k := by
+    rw [div_le_div_iff₀ hposR (by exact_mod_cast hk)]; linarith
   rw [hdiff]
-  calc ‖(((Nm : ℂ) * Nn)⁻¹ - (Nmn : ℂ)⁻¹) • S + ((Nm : ℂ) * Nn)⁻¹ • O‖
-      ≤ ‖(((Nm : ℂ) * Nn)⁻¹ - (Nmn : ℂ)⁻¹)‖ * (Nmn * (‖G‖ * ‖H‖)) +
-          ‖((Nm : ℂ) * Nn)⁻¹‖ * (B * (‖G‖ * ‖H‖)) := by
-        refine (norm_add_le _ _).trans (add_le_add ?_ ?_)
-        · exact (norm_smul_le _ _).trans (by gcongr)
-        · exact (norm_smul_le _ _).trans (by gcongr)
+  calc _ ≤ ‖(((Nm : ℂ) * Nn)⁻¹ - (Nmn : ℂ)⁻¹)‖ * (Nmn * (‖G‖ * ‖H‖)) +
+          ‖((Nm : ℂ) * Nn)⁻¹‖ * (B * (‖G‖ * ‖H‖)) :=
+        (norm_add_le _ _).trans (add_le_add ((norm_smul_le _ _).trans (by gcongr))
+          ((norm_smul_le _ _).trans (by gcongr)))
     -- D6.15.2 intersecting terms and renormalisation each cost `≤ p ‖G‖ ‖H‖`
-    _ ≤ B / ((Nm : ℝ) * Nn) * (‖G‖ * ‖H‖) + B / ((Nm : ℝ) * Nn) * (‖G‖ * ‖H‖) := by
-        refine add_le_add ?_ (le_of_eq ?_)
-        · rw [← mul_assoc]
-          exact mul_le_mul_of_nonneg_right hcoef hGH
-        · rw [norm_inv, norm_mul, Complex.norm_natCast, Complex.norm_natCast]
-          ring
-    _ = 2 * (B / ((Nm : ℝ) * Nn)) * (‖G‖ * ‖H‖) := by ring
-    _ ≤ 2 * ((m * n : ℝ) / k) * (‖G‖ * ‖H‖) := by
-        refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ (by norm_num)) hGH
-        rw [div_le_div_iff₀ hposR (by exact_mod_cast hk)]
-        linarith
-    _ = 2 * m * n * ‖G‖ * ‖H‖ / k := by ring
+    _ = ‖(((Nm : ℂ) * Nn)⁻¹ - (Nmn : ℂ)⁻¹)‖ * Nmn * (‖G‖ * ‖H‖) +
+          B / ((Nm : ℝ) * Nn) * (‖G‖ * ‖H‖) := by
+        rw [norm_inv, norm_mul, Complex.norm_natCast, Complex.norm_natCast]; ring
+    _ ≤ 2 * m * n * ‖G‖ * ‖H‖ / k := by
+        rw [show (2 : ℝ) * m * n * ‖G‖ * ‖H‖ / k = 2 * (m * n / k * (‖G‖ * ‖H‖)) by ring]
+        linarith [mul_le_mul_of_nonneg_right hcoef hGH, mul_le_mul_of_nonneg_right h2 hGH]
 
 end AreaLaw.Replicas

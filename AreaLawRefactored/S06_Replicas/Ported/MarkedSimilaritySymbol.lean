@@ -2,10 +2,6 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from `LionSR/QICLean`,
-`QICLean/Representation/MarkedSimilaritySymbol.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaSimilarity
 import AreaLawRefactored.S06_Replicas.Ported.RegionPowerSymbol
@@ -17,31 +13,12 @@ import Mathlib.Topology.ContinuousMap.Weierstrass
 /-!
 # The coherent symbol of the similarity transform
 
-Let `V = ⨂_v ℂ^{n_v}`, let `P, Y, F` be disjoint subsystems, `0 < t < 1/2`, and let `h` be a
-one-copy operator supported on `P ∪ Y`. Lemma 6.4 of the area-law paper (*A two-dimensional
-area law from a global spectral gap*, `05-replicas.tex`, lines 615–638 and 663–836) shows that
-`O_k = A_k^{-1/2} hbar A_k^{1/2}` has, on the symmetric subspace, the scalar symbol
-
+For disjoint `P, Y, F`, `0 < t < 1/2` and `h` supported on `P ∪ Y`,
+`O_k = A_k^{-1/2} hbar A_k^{1/2}` has, on the symmetric subspace, the coherent symbol
 `f_θ = ⟨θ, ρ_P^t ρ_Y^{-t} h ρ_P^{-t} ρ_Y^t θ⟩`.
 
-The proof replaces the marked ratios by polynomials in star operators (lines 693–708),
-computes the symbols of these polynomial words (lines 776–812), and removes the clipping on the
-one-copy side (lines 813–826). This file assembles these steps into
-`TensorPower.exists_polyWord_approx` (D6.13 (b)) and
-`TensorPower.hasCoherentSymbol_markedSimilarity`.
-
-## Main declarations
-
-* `TensorPower.norm_sandwich_approx_le`, `TensorPower.norm_pairing_approx_le` — the
-  perturbation estimates.
-* `TensorPower.exists_polyWord_approx` — compressed polynomial words approximate `O_k`.
-* `TensorPower.hasCoherentSymbol_markedSimilarity` — `O_k` has coherent symbol `f_θ`.
-
-## References
-
-* OpenAI, *A two-dimensional area law from a global spectral gap*, September 24, 2026,
-  Lemma 6.4 (`lem:symbol`), section file `05-replicas.tex`, lines 615–638 and 663–836.
-  Source revision: `openai/math@adc7f1241b42e322a6451854ab7e4b4c146bf78a`.
+Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
+`05-replicas.tex`, lines 615–638 and 663–836.
 -/
 
 open Matrix PermutationRepresentation Polynomial Filter Entropy
@@ -55,9 +32,7 @@ section Perturbation
 
 variable {X : Type*} [Fintype X] [DecidableEq X]
 
-/-- **A sandwiched vector under perturbation**: if `‖R - P‖ ≤ e_R`, `‖R⁻¹ z‖ ≤ C_I ‖z‖`,
-`‖(R⁻¹ - Q) z‖ ≤ e_I ‖z‖` and `‖P‖ ≤ C_P`, then
-`‖R a R⁻¹ z - P a Q z‖ ≤ ‖a‖ (e_R C_I + C_P e_I) ‖z‖`. -/
+/-- `‖R a R⁻¹ z - P a Q z‖ ≤ ‖a‖ (e_R C_I + C_P e_I) ‖z‖`. -/
 theorem norm_sandwich_approx_le (R Ri P Q a : Matrix X X ℂ) (z : X → ℂ) {eR eI CI CP : ℝ}
     (hR : ‖R - P‖ ≤ eR) (hRi : ‖(EuclideanSpace.equiv X ℂ).symm (Ri *ᵥ z)‖ ≤
       CI * ‖(EuclideanSpace.equiv X ℂ).symm z‖)
@@ -78,8 +53,7 @@ theorem norm_sandwich_approx_le (R Ri P Q a : Matrix X X ℂ) (z : X → ℂ) {e
     _ = _ := by ring
 
 omit [DecidableEq X] in
-/-- **A pairing under perturbation**: `|⟨y, x⟩ - ⟨y', x'⟩| ≤ e_y M_x + M_y e_x` when
-`‖y - y'‖ ≤ e_y`, `‖x‖ ≤ M_x`, `‖y'‖ ≤ M_y` and `‖x - x'‖ ≤ e_x`. -/
+/-- `|⟨y, x⟩ - ⟨y', x'⟩| ≤ e_y M_x + M_y e_x`. -/
 theorem norm_pairing_approx_le (x x' y y' : X → ℂ) {ex ey Mx My : ℝ}
     (hx : ‖(EuclideanSpace.equiv X ℂ).symm (x - x')‖ ≤ ex)
     (hMx : ‖(EuclideanSpace.equiv X ℂ).symm x‖ ≤ Mx)
@@ -96,23 +70,15 @@ end Perturbation
 /-- For `r > 0` and `s > 0` there is `δ ∈ (0, 1)` with `δ^r ≤ s`. -/
 theorem exists_rpow_le {r s : ℝ} (hr : 0 < r) (hs : 0 < s) :
     ∃ δ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ^ r ≤ s := by
-  have h : Tendsto (fun δ : ℝ => δ ^ r) (nhdsWithin 0 (Set.Ioi 0)) (nhds 0) := by
-    have := (Real.continuousAt_rpow_const 0 r (Or.inr hr.le)).tendsto
-    rw [Real.zero_rpow hr.ne'] at this
-    exact this.mono_left nhdsWithin_le_nhds
-  have hev : ∀ᶠ δ in nhdsWithin (0 : ℝ) (Set.Ioi 0), δ ^ r ≤ s ∧ 0 < δ ∧ δ < 1 :=
-    (h.eventually (ge_mem_nhds hs)).and (Filter.eventually_of_mem self_mem_nhdsWithin
-      (fun x hx => hx) |>.and (Filter.eventually_of_mem
-        (inter_mem_nhdsWithin _ (Iio_mem_nhds one_pos)) fun x hx => hx.2))
-  obtain ⟨δ, h1, h2, h3⟩ := hev.exists
-  exact ⟨δ, h2, h3, h1⟩
+  refine ⟨min (1 / 2) (s ^ r⁻¹), by positivity, by linarith [min_le_left (1 / 2 : ℝ) (s ^ r⁻¹)],
+    (Real.rpow_le_rpow (by positivity) (min_le_right _ _) hr.le).trans_eq ?_⟩
+  rw [← Real.rpow_mul hs.le, inv_mul_cancel₀ hr.ne', Real.rpow_one]
 
 /-! ### The polynomial words and their symbols -/
 
 variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ}
 
-/-- The commutation pattern `P^t Y^{-t} (b a) P^{-t} Y^t = (Y^{-t} b Y^t)(P^t a P^{-t})`
-(`05-replicas.tex`, lines 668–683). -/
+/-- `P^t Y^{-t} (b a) P^{-t} Y^t = (Y^{-t} b Y^t)(P^t a P^{-t})`. -/
 theorem sandwich_rearrange {X : Type*} [Fintype X]
     {Pt Pm Yt Ym b a : Matrix X X ℂ} (h1 : Commute Pt Ym) (h2 : Commute Pt b)
     (h3 : Commute Yt Pm) (h4 : Commute Yt a) (h5 : Commute Pt Yt) :
@@ -139,10 +105,7 @@ noncomputable def polyWordSymbol (P Y : Finset V) {N : ℕ}
   ∑ i, (aeval (margLift Y θ) q * b i * aeval (margLift Y θ) p) *
     (aeval (margLift P θ) p * a i * aeval (margLift P θ) q)
 
-/-- **Removing the clipping on the one-copy side** (`05-replicas.tex`, lines 813–826): if
-`|p - u_+^t| ≤ s` and `|q - max(u, δ)^{-t}| ≤ s` on `[-1, 1]` and `√(d_Q δ^{1-2t}) ≤ s` for
-`Q = P, Y`, then `|f_θ - ⟨θ, F(θ) θ⟩| ≤ s K ∑_i ‖a_i‖ ‖b_i‖` on unit vectors, where `F` is the
-symbol of the polynomial word. -/
+/-- Removing the clipping: `|f_θ - ⟨θ, F(θ) θ⟩| ≤ s K ∑_i ‖a_i‖ ‖b_i‖`. -/
 theorem norm_markedScalarSymbol_sub_le [∀ v, NeZero (n v)] {t δ s : ℝ} (ht0 : 0 < t)
     (ht1 : t < 1 / 2)
     (hδ : 0 < δ) (hs0 : 0 ≤ s) (hs1 : s ≤ 1) {P Y : Finset V} (hPY : Disjoint P Y)
@@ -203,8 +166,7 @@ theorem norm_markedScalarSymbol_sub_le [∀ v, NeZero (n v)] {t δ s : ℝ} (ht0
           aeval (margLift Q θ) p *ᵥ (c *ᵥ (aeval (margLift Q θ) q *ᵥ θ)))‖ ≤
         s * ‖c‖ * (√(Fintype.card (RegionConfig n Q) : ℝ) + 4) ∧
       ‖(EuclideanSpace.equiv _ ℂ).symm (regionPow Q t θ *ᵥ (c *ᵥ (regionPow Q (-t) θ *ᵥ θ)))‖ ≤
-        ‖c‖ * √(Fintype.card (RegionConfig n Q) : ℝ) := by
-    intro Q c hd
+        ‖c‖ * √(Fintype.card (RegionConfig n Q) : ℝ) := fun Q c hd => by
     have hdn : 0 ≤ √(Fintype.card (RegionConfig n Q) : ℝ) := Real.sqrt_nonneg _
     have hc := norm_nonneg c
     refine ⟨(norm_regionPow_sandwich_sub_le ht0 ht1 hδ hs0 Q hθ c hp hq).trans ?_, ?_⟩
@@ -230,16 +192,11 @@ theorem norm_markedScalarSymbol_sub_le [∀ v, NeZero (n v)] {t δ s : ℝ} (ht0
     rw [hsplit, map_sub]
     have hb0 := norm_nonneg (b i)
     have hdY0 : 0 ≤ dY := Real.sqrt_nonneg _
-    calc _ ≤ ‖b i‖ * dY + s * ‖b i‖ * (dY + 4) := (norm_sub_le _ _).trans (add_le_add hMyY hyY)
-      _ ≤ ‖b i‖ * dY + 1 * ‖b i‖ * (dY + 4) := by gcongr
-      _ = ‖b i‖ * (2 * dY + 4) := by ring
-  refine (norm_pairing_approx_le _ _ _ _ hxP hMxP hyY hMy').trans ?_
-  have := mul_nonneg (norm_nonneg (a i)) (norm_nonneg (b i))
-  apply le_of_eq
-  ring
+    nlinarith [(norm_sub_le _ _).trans (add_le_add hMyY hyY),
+      mul_nonneg hb0 (by linarith : 0 ≤ dY + 4)]
+  exact (norm_pairing_approx_le _ _ _ _ hxP hMxP hyY hMy').trans_eq (by ring)
 
-/-- The polynomial word on `m + 1` copies:
-`∑_i (q(J_Y) b_i^{(k)} p(J_Y))(p(J_P) a_i^{(k)} q(J_P))` (`05-replicas.tex`, lines 693–702). -/
+/-- The polynomial word `∑_i (q(J_Y) b_i^{(k)} p(J_Y))(p(J_P) a_i^{(k)} q(J_P))`. -/
 noncomputable def polyWord (P Y : Finset V) {N : ℕ}
     (a b : Fin N → Matrix (SiteConfig n) (SiteConfig n) ℂ) (p q : ℝ[X]) (m : ℕ) :
     Matrix (Fin (m + 1) → SiteConfig n) (Fin (m + 1) → SiteConfig n) ℂ :=
@@ -248,8 +205,7 @@ noncomputable def polyWord (P Y : Finset V) {N : ℕ}
     (aeval (starOp (subsystemPerm (m + 1) (fun v => Fin (n v)) P)) p *
       siteOp (Fin.last m) (a i) * aeval (starOp (subsystemPerm (m + 1) (fun v => Fin (n v)) P)) q)
 
-/-- **The symbol of a polynomial word** (`05-replicas.tex`, lines 776–812): stars are replaced
-by the corresponding marginals. -/
+/-- The symbol of a polynomial word: stars are replaced by marginals. -/
 theorem hasMarkedSymbol_polyWord (P Y : Finset V) {N : ℕ}
     (a b : Fin N → Matrix (SiteConfig n) (SiteConfig n) ℂ) (p q : ℝ[X]) :
     HasMarkedSymbol (polyWord P Y a b p q) (polyWordSymbol P Y a b p q) := by
@@ -279,10 +235,7 @@ theorem isHermitian_markedRatio_inv {t : ℝ} (ht : 0 ≤ t) (m : ℕ) (Q : Fins
   rw [markedRatio_inv_eq_hom _ ht]
   exact (isOrthogonalResolution_branch m Q).isHermitian_hom (isHermitian_branch _ m Q) _
 
-/-- **The operator-side approximation** (`05-replicas.tex`, lines 693–708): if, at `m + 1`
-copies and for `Q = P, Y`, `‖R_Q - p(J_Q)‖ ≤ 2s`, `‖p(J_Q)‖ ≤ 2`, `‖R_Q‖ ≤ C_R`, and on
-symmetric vectors `‖R_Q^{-1} z‖ ≤ C_I ‖z‖` and `‖(R_Q^{-1} - q(J_Q)) z‖ ≤ 3s ‖z‖`, then
-`‖(O_{m+1} - Π W Π) Π‖ ≤ s K ∑_i ‖a_i‖ ‖b_i‖` for the polynomial word `W`. -/
+/-- The operator-side estimate `‖(O_{m+1} - Π W Π) Π‖ ≤ s K ∑_i ‖a_i‖ ‖b_i‖`. -/
 theorem norm_markedSimilarity_sub_polyWord_le {t s CR CI : ℝ} (ht0 : 0 ≤ t) (m : ℕ)
     (hs0 : 0 ≤ s) (hs1 : s ≤ 1) (hCR : 0 ≤ CR) (hCI : 0 ≤ CI)
     {P Y F : Finset V} (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
@@ -337,22 +290,17 @@ theorem norm_markedSimilarity_sub_polyWord_le {t s CR CI : ℝ} (ht0 : 0 ≤ t) 
           aeval (J Q) p *ᵥ (siteOp (Fin.last m) c *ᵥ (aeval (J Q) q *ᵥ w)))‖ ≤
         s * (2 * CI + 6) * ‖c‖ * ‖(EuclideanSpace.equiv _ ℂ).symm w‖ ∧
       ‖(EuclideanSpace.equiv _ ℂ).symm (R Q *ᵥ (siteOp (Fin.last m) c *ᵥ ((R Q)⁻¹ *ᵥ w)))‖ ≤
-        CR * ‖c‖ * CI * ‖(EuclideanSpace.equiv _ ℂ).symm w‖ := by
-    intro Q hQ c w hw
+        CR * ‖c‖ * CI * ‖(EuclideanSpace.equiv _ ℂ).symm w‖ := fun Q hQ c w hw => by
     have hc : ‖siteOp (Fin.last m) c‖ ≤ ‖c‖ := l2_opNorm_siteOp_le _ _
     have hw0 := norm_nonneg ((EuclideanSpace.equiv _ ℂ).symm w)
     refine ⟨(norm_sandwich_approx_le _ _ _ _ _ w (hR Q hQ) (hRi Q hQ w hw) (hI Q hQ w hw)
       (hp Q hQ)).trans ?_, ?_⟩
-    · calc ‖siteOp (Fin.last m) c‖ * (2 * s * CI + 2 * (3 * s)) *
-            ‖(EuclideanSpace.equiv _ ℂ).symm w‖
-          ≤ ‖c‖ * (2 * s * CI + 2 * (3 * s)) * ‖(EuclideanSpace.equiv _ ℂ).symm w‖ := by gcongr
-        _ = _ := by ring
+    · linarith [mul_le_mul_of_nonneg_right hc
+        (by positivity : 0 ≤ (2 * s * CI + 2 * (3 * s)) * ‖(EuclideanSpace.equiv _ ℂ).symm w‖)]
     · calc _ ≤ ‖R Q‖ * (‖siteOp (Fin.last m) c‖ * (CI * ‖(EuclideanSpace.equiv _ ℂ).symm w‖)) :=
             (hmv _ _).trans (mul_le_mul_of_nonneg_left ((hmv _ _).trans
               (mul_le_mul_of_nonneg_left (hRi Q hQ w hw) (norm_nonneg _))) (norm_nonneg _))
-        _ ≤ CR * (‖c‖ * (CI * ‖(EuclideanSpace.equiv _ ℂ).symm w‖)) := by
-            gcongr
-            exact hRn Q hQ
+        _ ≤ CR * (‖c‖ * (CI * ‖(EuclideanSpace.equiv _ ℂ).symm w‖)) := by gcongr; exact hRn Q hQ
         _ = _ := by ring
   have hO := star_dotProduct_markedSimilarity_eq_sum (F := F) ht0 m hPY hPF hYF hh ha hb hdec
     hu hz
@@ -389,24 +337,15 @@ theorem norm_markedSimilarity_sub_polyWord_le {t s CR CI : ℝ} (ht0 : 0 ≤ t) 
   have hMy' : ‖(EuclideanSpace.equiv _ ℂ).symm (aeval (J Y) p *ᵥ
       (siteOp (Fin.last m) (b i)ᴴ *ᵥ (aeval (J Y) q *ᵥ u)))‖ ≤
       (CR * CI + 2 * CI + 6) * ‖b i‖ * ‖(EuclideanSpace.equiv _ ℂ).symm u‖ := by
-    have hsplit : aeval (J Y) p *ᵥ (siteOp (Fin.last m) (b i)ᴴ *ᵥ (aeval (J Y) q *ᵥ u)) =
-        R Y *ᵥ (siteOp (Fin.last m) (b i)ᴴ *ᵥ ((R Y)⁻¹ *ᵥ u)) -
-        (R Y *ᵥ (siteOp (Fin.last m) (b i)ᴴ *ᵥ ((R Y)⁻¹ *ᵥ u)) -
-          aeval (J Y) p *ᵥ (siteOp (Fin.last m) (b i)ᴴ *ᵥ (aeval (J Y) q *ᵥ u))) := by abel
-    rw [hsplit, map_sub]
-    calc _ ≤ CR * ‖b i‖ * CI * ‖(EuclideanSpace.equiv _ ℂ).symm u‖ +
-          s * (2 * CI + 6) * ‖b i‖ * ‖(EuclideanSpace.equiv _ ℂ).symm u‖ :=
-          (norm_sub_le _ _).trans (add_le_add hMy hy)
-      _ ≤ CR * ‖b i‖ * CI * ‖(EuclideanSpace.equiv _ ℂ).symm u‖ +
-          1 * (2 * CI + 6) * ‖b i‖ * ‖(EuclideanSpace.equiv _ ℂ).symm u‖ := by gcongr
-      _ = _ := by ring
+    refine (norm_le_norm_add_norm_sub ((EuclideanSpace.equiv _ ℂ).symm
+      (R Y *ᵥ (siteOp (Fin.last m) (b i)ᴴ *ᵥ ((R Y)⁻¹ *ᵥ u)))) _).trans ?_
+    rw [← map_sub]
+    nlinarith [add_le_add hMy hy, mul_le_mul_of_nonneg_right hs1
+      (by positivity : (0 : ℝ) ≤ (2 * CI + 6) * ‖b i‖ * ‖(EuclideanSpace.equiv _ ℂ).symm u‖)]
   refine (norm_pairing_approx_le _ _ _ _ hx hMx hy hMy').trans (le_of_eq ?_)
   ring
 
-/-- **The polynomial-word approximation of `O_k`** (D6.13.6–D6.13.8): for every `ε > 0` there
-are a product decomposition `h = ∑ b_i a_i` (`a_i` on `P`, `b_i` on `Y`) and polynomials `p, q`
-such that the symbol of the polynomial word is `ε`-close to `f_θ` on the unit sphere and the
-compressed words `B_k = Π_k W_k Π_k` satisfy `‖(O_k - B_k) Π_k‖ ≤ ε` for large `k`. -/
+/-- Compressed polynomial words approximate `O_k` and their symbols `f_θ`. -/
 theorem exists_polyWord_approx {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2)
     {P Y F : Finset V} (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
     {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) {ε : ℝ}
@@ -507,46 +446,27 @@ theorem exists_polyWord_approx {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2)
   refine (norm_markedSimilarity_sub_polyWord_le (F := F) ht0.le m hs0.le hs1 hCR hCI hPY hPF
     hYF hh ha hb hdec ?_ ?_ ?_ ?_ ?_).trans (hsK Kop hKop (by linarith))
   · intro Q _
-    calc _ ≤ ‖markedRatio ι t m Q - cfc (fun x : ℝ => max x 0 ^ t)
-            (starOp (subsystemPerm (m + 1) ι Q))‖ +
-          ‖cfc (fun x : ℝ => max x 0 ^ t) (starOp (subsystemPerm (m + 1) ι Q)) -
-            aeval (starOp (subsystemPerm (m + 1) ι Q)) p‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
-      _ ≤ s + s := add_le_add ((hC₁ m Q).trans (hK₂ m hm2))
-          (l2_opNorm_cfc_starOp_sub_aeval_le m Q _ p hs0.le hp')
-      _ = 2 * s := by ring
+    exact (norm_sub_le_norm_sub_add_norm_sub _ (cfc (fun x : ℝ => max x 0 ^ t)
+      (starOp (subsystemPerm (m + 1) ι Q))) _).trans ((add_le_add ((hC₁ m Q).trans (hK₂ m hm2))
+        (l2_opNorm_cfc_starOp_sub_aeval_le m Q _ p hs0.le hp')).trans_eq (two_mul s).symm)
   · intro Q _
     refine l2_opNorm_aeval_starOp_le m Q p (by norm_num) fun x hx => ?_
-    have h1 := hp' x hx
-    have h2 := hfJ x hx
-    calc |p.eval x| = |max x 0 ^ t - (max x 0 ^ t - p.eval x)| := by ring_nf
-      _ ≤ |max x 0 ^ t| + |max x 0 ^ t - p.eval x| := abs_sub _ _
-      _ ≤ 2 := by linarith
+    linarith [hp' x hx, hfJ x hx, abs_sub_comm (max x 0 ^ t) (p.eval x),
+      abs_sub_abs_le_abs_sub (p.eval x) (max x 0 ^ t)]
   · intro Q _
     exact (hCR₀ m Q).trans (le_max_left _ _)
   · intro Q _ z hz
     exact (hCI₀ m Q z hz).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _))
   · intro Q _ z hz
-    have hsplit : (markedRatio ι t m Q)⁻¹ *ᵥ z - aeval (starOp (subsystemPerm (m + 1) ι Q)) q *ᵥ z =
-        ((markedRatio ι t m Q)⁻¹ - cfc (fun x : ℝ => max x δ ^ (-t))
-          (starOp (subsystemPerm (m + 1) ι Q))) *ᵥ z +
-        (cfc (fun x : ℝ => max x δ ^ (-t)) (starOp (subsystemPerm (m + 1) ι Q)) -
-          aeval (starOp (subsystemPerm (m + 1) ι Q)) q) *ᵥ z := by
-      rw [sub_mulVec, sub_mulVec]; abel
-    rw [hsplit, map_add]
+    rw [← sub_mulVec, ← sub_add_sub_cancel _ (cfc (fun x : ℝ => max x δ ^ (-t))
+      (starOp (subsystemPerm (m + 1) ι Q))), add_mulVec, map_add]
     have hz0 := norm_nonneg ((EuclideanSpace.equiv _ ℂ).symm z)
-    calc _ ≤ (C₂ * δ ^ r + s) * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ +
-          s * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ :=
-          (norm_add_le _ _).trans (add_le_add (hK₁ m hm1 Q z hz) ((hmv _ _).trans
-            (mul_le_mul_of_nonneg_right (l2_opNorm_cfc_starOp_sub_aeval_le m Q _ q hs0.le hq')
-              hz0)))
-      _ ≤ (s + s) * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ +
-          s * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ := by gcongr
-      _ = 3 * s * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ := by ring
+    refine (norm_add_le _ _).trans ?_
+    nlinarith [hK₁ m hm1 Q z hz, (hmv _ _).trans (mul_le_mul_of_nonneg_right
+      (l2_opNorm_cfc_starOp_sub_aeval_le m Q _ q hs0.le hq') hz0),
+      mul_le_mul_of_nonneg_right hclip hz0]
 
-/-- **Lemma 6.4, the coherent symbol** (`05-replicas.tex`, lines 615–638 and 663–836): for
-disjoint `P, Y, F`, `0 < t < 1/2` and `h` supported on `P ∪ Y`, the similarity transforms
-`O_k = A_k^{-1/2} hbar A_k^{1/2}` have, on the symmetric subspace, the coherent symbol
-`f_θ = ⟨θ, ρ_P^t ρ_Y^{-t} h ρ_P^{-t} ρ_Y^t θ⟩`. -/
+/-- `O_k` has, on the symmetric subspace, the coherent symbol `f_θ`. -/
 theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2)
     {P Y F : Finset V} (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
     {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) :
@@ -572,13 +492,8 @@ theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 
     have hPv : ‖(EuclideanSpace.equiv _ ℂ).symm (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ ≤
         ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
       (hmv _ _).trans (mul_le_of_le_one_left (norm_nonneg _) l2_opNorm_symProj_le)
-    calc _ ≤ Cb * ‖(EuclideanSpace.equiv _ ℂ).symm (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ :=
-          hCb k _ (symProj_mulVec_mem _ v)
-      _ ≤ max Cb 0 * ‖(EuclideanSpace.equiv _ ℂ).symm
-            (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ :=
-          mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _)
-      _ ≤ max Cb 0 * ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
-          mul_le_mul_of_nonneg_left hPv (le_max_right _ _)
+    exact (hCb k _ (symProj_mulVec_mem _ v)).trans (mul_le_mul (le_max_left _ _) hPv
+      (norm_nonneg _) (le_max_right _ _))
   obtain ⟨N, a, b, p, q, -, -, -, hsym, hev⟩ :=
     exists_polyWord_approx (F := F) ht0 ht1 hPY hPF hYF hh hε
   exact ⟨_, _, (hasMarkedSymbol_polyWord P Y a b p q).hasCoherentSymbol_compress, hsym, hev⟩

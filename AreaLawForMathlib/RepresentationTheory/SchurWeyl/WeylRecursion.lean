@@ -8,21 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HookRecursion
 /-!
 # The Pieri recursion for the Weyl dimension formula
 
-Ported from `LionSR/QICLean`, `QICLean/Representation/WeylRecursion.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-For a partition `λ` padded to length `q` with shifted parts `l_i = λ_i + q - 1 - i`, let
-`W_λ = ∏_{i<j} (l_i - l_j)/(j - i)` be the right-hand side of the Weyl dimension formula of
-the area-law paper (*A two-dimensional area law from a global spectral gap*,
-`05-replicas.tex`, equation `replicas:dimensions`). Adding a box to row `i` multiplies `W_λ`
-by `∏_{j ≠ i} (l_i + 1 - l_j)/(l_i - l_j)`, and the interpolation identity
-`∑_i ∏_{j ≠ i} (t_i + 1 - t_j)/(t_i - t_j) = q` gives the Pieri recursion
-`∑_i W_{λ + e_i} = q W_λ` (`05-replicas.tex`, lines 237–241: `V_ν ⊗ ℂ^q = ⊕ V_{ν + e_i}`).
-
-## Main declarations
-
-* `Partition.sum_prod_add_one_div_eq_card` — the interpolation identity.
-* `Partition.weylFormula_update_add_mul`, `Partition.sum_weylFormula_add`.
+`∑_i W_{λ + e_i} = q W_λ` (*A two-dimensional area law from a global spectral gap*,
+`05-replicas.tex`, lines 237–241).
 -/
 
 open Finset Polynomial
@@ -37,18 +24,13 @@ theorem weylFormula_eq_vand (p : Fin q → ℕ) :
   rw [weylFormula, prod_div_distrib, vand]
 
 theorem rowPairs_denom_pos : (0 : ℝ) < ∏ ij ∈ rowPairs q, ((ij.2 : ℝ) - ij.1) :=
-  prod_pos fun ij hij => by
-    have : (ij.1 : ℕ) < ij.2 := (mem_filter.mp hij).2
-    have : ((ij.1 : ℕ) : ℝ) < (ij.2 : ℕ) := by exact_mod_cast this
-    linarith
+  prod_pos fun ij hij => sub_pos.mpr (by exact_mod_cast (mem_filter.mp hij).2)
 
 /-- The Weyl dimension formula of the empty partition is one. -/
 theorem weylFormula_zero : weylFormula (0 : Fin q → ℕ) = 1 := by
   refine prod_eq_one fun ij hij => ?_
   have hlt : (ij.1 : ℕ) < ij.2 := (mem_filter.mp hij).2
-  have hne : ((ij.2 : ℝ) - ij.1) ≠ 0 := by
-    have : ((ij.1 : ℕ) : ℝ) < (ij.2 : ℕ) := by exact_mod_cast hlt
-    linarith
+  have hne : ((ij.2 : ℝ) - ij.1) ≠ 0 := sub_ne_zero.mpr (by exact_mod_cast hlt.ne')
   rw [div_eq_one_iff_eq hne]
   simp only [shiftedPart, Pi.zero_apply, zero_add]
   have e : ∀ a : ℕ, a < q → ((q - 1 - a : ℕ) : ℝ) = q - 1 - a := fun a ha => by
@@ -72,10 +54,7 @@ theorem weylFormula_update_add_mul (p : Fin q → ℕ) (i : Fin q) :
     rw [shiftedPart_update]
     funext j
     by_cases hij : j = i
-    · subst hij
-      simp only [Function.update_self, L, shiftedPart]
-      push_cast
-      ring
+    · subst hij; simp only [Function.update_self, L, shiftedPart]; push_cast; ring
     · simp [hij, L]
   rw [weylFormula_eq_vand, weylFormula_eq_vand, hsh, div_mul_eq_mul_div, vand_update_mul,
     div_mul_eq_mul_div]

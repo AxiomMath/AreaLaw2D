@@ -2,44 +2,21 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-file `QICLean/Representation/ReplicaRatio.lean`.
 -/
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaWeight
 
 /-!
 # Asymptotics of the marked replica ratio
 
-Fix `d ≥ 1` and `0 < t < 1`. The marked ratio of the replica label function on a removable
-branch with `k` copies and shifted part `l` is (`05-replicas.tex`, equation
-`replicas:ratio-eigenvalue`, lines 403–409)
-
-`r(k, l) = Γ(c + t(k - 1))/Γ(c + t k) · Γ(1 + t l)/Γ(1 + t(l - 1))`.
-
-The area-law paper (*A two-dimensional area law from a global spectral gap*, lines 410–417)
-states that gamma ratios give `r ≍ ((l + 1)/k)^t`, and that `r` converges to
-`max((l - d)/k, 0)^t` uniformly; `(l - d)/k` is the eigenvalue `(λ_i - i)/k` of the star
-operator on the branch. This file proves both assertions for `1 ≤ l ≤ k + d`, the range of
-the shifted parts of the labels with at most `d` rows, with the explicit uniform rate
-`O(k^(-t))`.
-
-The proof is written from the paper; no Lean source was adapted.
-
-## Main declarations
-
-* `Real.abs_rpow_sub_rpow_le` — `|a^t - b^t| ≤ |a - b|^t` for `a, b ≥ 0`, `0 ≤ t ≤ 1`.
-* `Partition.exists_replicaRatio_bounds` — `C⁻¹ (l/k)^t ≤ r(k, l) ≤ C`.
-* `Partition.exists_abs_replicaRatio_sub_le` — `|r(k, l) - max((l - d)/k, 0)^t| ≤ C k^(-t)`.
+`r(k, l) ≍ (l/k)^t` and `|r(k, l) - max((l - d)/k, 0)^t| = O(k^(-t))` on `1 ≤ l ≤ k + d`
+(`05-replicas.tex`, lines 403–417).
 -/
 
 open Real
 
 namespace Real
 
-/-- Hölder continuity of `x ↦ x^t` on `[0, ∞)`: `|a^t - b^t| ≤ |a - b|^t` for
-`0 ≤ t ≤ 1`. -/
+/-- `|a^t - b^t| ≤ |a - b|^t` for `a, b ≥ 0` and `0 ≤ t ≤ 1`. -/
 theorem abs_rpow_sub_rpow_le {a b t : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (ht0 : 0 ≤ t)
     (ht1 : t ≤ 1) : |a ^ t - b ^ t| ≤ |a - b| ^ t := by
   wlog hab : b ≤ a generalizing a b
@@ -47,8 +24,7 @@ theorem abs_rpow_sub_rpow_le {a b t : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (ht0 : 
     exact this hb ha (le_of_not_ge hab)
   have h := rpow_add_le_add_rpow (sub_nonneg.mpr hab) hb ht0 ht1
   rw [sub_add_cancel] at h
-  have hmono : b ^ t ≤ a ^ t := rpow_le_rpow hb hab ht0
-  rw [abs_of_nonneg (sub_nonneg.mpr hmono), abs_of_nonneg (sub_nonneg.mpr hab)]
+  rw [abs_of_nonneg (sub_nonneg.mpr (rpow_le_rpow hb hab ht0)), abs_of_nonneg (sub_nonneg.mpr hab)]
   linarith
 
 end Real
@@ -57,21 +33,8 @@ namespace Partition
 
 variable {d : ℕ} {t : ℝ}
 
-/-- The marked ratio as a quotient of two Wendel ratios:
-`r(k, l) = (Γ(x + t)/Γ(x)) / (Γ(y + t)/Γ(y))` with `x = 1 + t(l - 1)` and
-`y = c + t(k - 1)`. -/
-theorem replicaRatio_eq_div (k l : ℝ) :
-    replicaRatio d t k l =
-      (Gamma (1 + t * (l - 1) + t) / Gamma (1 + t * (l - 1))) /
-        (Gamma (replicaConst d t + t * (k - 1) + t) / Gamma (replicaConst d t + t * (k - 1))) := by
-  unfold replicaRatio
-  have e1 : 1 + t * (l - 1) + t = 1 + t * l := by ring
-  have e2 : replicaConst d t + t * (k - 1) + t = replicaConst d t + t * k := by ring
-  rw [e1, e2, div_div_eq_mul_div, div_mul_eq_mul_div, mul_comm]
-
-/-- Two-sided Wendel bounds for the marked ratio: with `x = 1 + t(l - 1)` and
-`y = c + t(k - 1)`, `(1 - t)(x/y)^t ≤ r(k, l) ≤ (x/y)^t / (1 - t)` and
-`|r(k, l) - (x/y)^t| ≤ t (1 + (x/y)^t/(1 - t)) / y^t`. -/
+/-- Wendel bounds: with `x = 1 + t(l - 1)`, `y = c + t(k - 1)`,
+`(1 - t)(x/y)^t ≤ r ≤ (x/y)^t / (1 - t)` and `|r - (x/y)^t| ≤ t (1 + (x/y)^t/(1 - t)) / y^t`. -/
 theorem replicaRatio_wendel (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) {k l : ℝ} (hk : 1 ≤ k)
     (hl : 1 ≤ l) :
     let x := 1 + t * (l - 1)
@@ -94,7 +57,10 @@ theorem replicaRatio_wendel (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) {k l : ℝ}
   have hN2 : x ^ t - t ≤ N := rpow_sub_le_Gamma_add_div_Gamma hx1 ht0.le ht1.le
   have hD1 : D ≤ y ^ t := Gamma_add_div_Gamma_le_rpow hy0 ht0.le ht1.le
   have hD2 : y ^ t - t ≤ D := rpow_sub_le_Gamma_add_div_Gamma hy1 ht0.le ht1.le
-  have hr : replicaRatio d t k l = N / D := replicaRatio_eq_div k l
+  have hr : replicaRatio d t k l = N / D := by
+    simp only [replicaRatio, N, D, x, y, show 1 + t * (l - 1) + t = 1 + t * l by ring,
+      show replicaConst d t + t * (k - 1) + t = replicaConst d t + t * k by ring]
+    rw [div_div_eq_mul_div, div_mul_eq_mul_div, mul_comm]
   have hyt0 : 0 < y ^ t := by linarith
   have hDlo : (1 - t) * y ^ t ≤ D := by nlinarith
   have hD0 : 0 < D := lt_of_lt_of_le (by nlinarith) hDlo
@@ -142,8 +108,7 @@ theorem replicaRatio_wendel (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) {k l : ℝ}
         div_le_div_of_nonneg_right (by nlinarith) hyt0.le
       linarith
 
-/-- Elementary comparisons on the admissible range `1 ≤ k`, `1 ≤ l ≤ k + d`:
-`t k ≤ y`, `x ≤ (1 + d) y`, `t l ≤ x` and `y ≤ (c + t) k`. -/
+/-- `t k ≤ y`, `x ≤ (1 + d) y`, `t l ≤ x` and `y ≤ (c + t) k` for `1 ≤ k`, `l ≤ k + d`. -/
 private theorem admissible_bounds (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) {k l : ℝ}
     (hk : 1 ≤ k) (hlk : l ≤ k + d) :
     t * k ≤ replicaConst d t + t * (k - 1) ∧
@@ -162,9 +127,7 @@ private theorem admissible_bounds (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) {k l 
   have h4 : t * d ≤ d := by nlinarith
   nlinarith
 
-/-- **Lemma 6.2, size of the marked ratio** (`05-replicas.tex`, line 410:
-`r_{λ,i} ≍_{d,t} ((l_i + 1)/k)^t`): on the admissible range `1 ≤ k`, `1 ≤ l ≤ k + d`, there is
-`C ≥ 1` with `C⁻¹ (l/k)^t ≤ r(k, l) ≤ C`. -/
+/-- Lemma 6.2: `C⁻¹ (l/k)^t ≤ r(k, l) ≤ C` for `1 ≤ k`, `1 ≤ l ≤ k + d`. -/
 theorem exists_replicaRatio_bounds (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) :
     ∃ C, 1 ≤ C ∧ ∀ k l : ℕ, 1 ≤ k → 1 ≤ l → l ≤ k + d →
       C⁻¹ * ((l : ℝ) / k) ^ t ≤ replicaRatio d t k l ∧ replicaRatio d t k l ≤ C := by
@@ -215,10 +178,7 @@ theorem exists_replicaRatio_bounds (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) :
       _ ≤ β := div_le_div_of_nonneg_right hpow h1t.le
       _ ≤ max β α⁻¹ := le_max_left _ _
 
-/-- **Lemma 6.2, uniform convergence of the marked ratio** (`05-replicas.tex`,
-lines 410–417): on the admissible range `1 ≤ k`, `1 ≤ l ≤ k + d`,
-`|r(k, l) - max((l - d)/k, 0)^t| ≤ C k^(-t)`. The eigenvalue of the star operator on the
-branch is `(l - d)/k`, so this is the scalar content of `‖R_{Q,k} - (J_{Q,k})_+^t‖ → 0`. -/
+/-- Lemma 6.2: `|r(k, l) - max((l - d)/k, 0)^t| ≤ C k^(-t)` for `1 ≤ k`, `1 ≤ l ≤ k + d`. -/
 theorem exists_abs_replicaRatio_sub_le (hd : 0 < d) (ht0 : 0 < t) (ht1 : t < 1) :
     ∃ C, ∀ k l : ℕ, 1 ≤ k → 1 ≤ l → l ≤ k + d →
       |replicaRatio d t k l - (max (((l : ℝ) - d) / k) 0) ^ t| ≤ C * (k : ℝ) ^ (-t) := by

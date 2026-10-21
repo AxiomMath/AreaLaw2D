@@ -8,16 +8,9 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.GroupedCopies
 /-!
 # §6 Schur–Weyl labels (D6.2) and Lemma 6.1 (D6.4)
 
-Digest `digest/06-replicas.md` D6.2, D6.4; paper `paper/sections/05-replicas.tex` lines 47–275.
-
-The Schur labels are the Wedderburn labels `IrrepLabel (Equiv.Perm (Fin k))` of `ℂ[S_k]`; the
-partition `λ ⊢ k` of a label `l` is `TensorPower.labelPart l : ℕ → ℕ` (rows indexed from `0`,
-`λ_{i+1} = labelPart l i`), padded to length `q` it is `TensorPower.part q l : Fin q → ℕ`, and the
-shifted parts `l_i = λ_i + q - i` are `Partition.shiftedPart (part q l)`. The multiplicity space
-`V_λ^{(q)}` has dimension
-`PermutationRepresentation.multiplicity (TensorPower.copyPerm (Fin q) k) l`.
-Every statement is over an arbitrary finite family `I` of tensor factors (`Map.md`, Dimension:
-`any d`).
+Paper `paper/sections/05-replicas.tex` lines 47–275. The partition of a label `l` is
+`labelPart l` (rows from `0`), padded to length `q` it is `part q l`, with shifted parts
+`Partition.shiftedPart (part q l)`.
 -/
 
 namespace AreaLaw.Replicas
@@ -43,15 +36,10 @@ theorem eq_replicas_schur_decomposition (q : ℕ) :
       (l.dim * PermutationRepresentation.multiplicity (TensorPower.copyPerm (Fin q) k) l : ℕ) := by
   refine ⟨labelShape_bijective, fun l => ?_, sum_labelProj _, trace_labelProj _⟩
   rw [labelProj_ne_zero_iff]
-  constructor
-  · intro h a ha
-    simp only [labelPart]
-    split_ifs with hak
-    · exact h ⟨a, hak⟩ ha
-    · rfl
-  · intro h i hi
-    have := h i hi
-    simpa [labelPart, i.2] using this
+  refine ⟨fun h a ha => ?_, fun h i hi => by simpa [labelPart, i.2] using h i hi⟩
+  simp only [labelPart]
+  split_ifs with hak
+  exacts [h ⟨a, hak⟩ ha, rfl]
 
 /-! ## D6.4 Lemma 6.1 -/
 

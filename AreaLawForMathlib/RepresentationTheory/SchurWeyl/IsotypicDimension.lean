@@ -2,10 +2,6 @@
 Copyright (c) 2026 TNLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: TNLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Representation/IsotypicDimension.lean`.
 -/
 import AreaLawForMathlib.RepresentationTheory.PermutationRepresentation
 
@@ -15,10 +11,7 @@ import Mathlib.LinearAlgebra.Trace
 /-!
 # Isotypic components of a permutation representation
 
-For a permutation action `φ` of a finite group and a label `λ`, the images of the
-matrix units `e^λ_{ij} ∈ ℂ[G]` act on the `λ`-isotypic subspace `range π^λ`.
-Every nonzero invariant subspace has dimension at least `d_λ`, and
-`tr π^λ = d_λ · m_λ` for the representation multiplicity `m_λ`.
+Nonzero invariant subspaces of `range π^λ` have dimension at least `d_λ`, and `tr π^λ = d_λ · m_λ`.
 -/
 
 open MonoidAlgebra Matrix Module
@@ -71,20 +64,17 @@ theorem dim_le_finrank_of_invariant (l : IrrepLabel G) {W : Submodule ℂ (X →
   obtain ⟨w, hwW, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
   obtain ⟨i, hi⟩ : ∃ i, matrixUnitOp φ l i i *ᵥ w ≠ 0 := by
     by_contra! h
-    apply hw0
-    rw [← hl w hwW, ← sum_matrixUnitOp_diag, sum_mulVec]
-    exact Finset.sum_eq_zero fun i _ => h i
+    exact hw0 (by
+      rw [← hl w hwW, ← sum_matrixUnitOp_diag, sum_mulVec]; exact Finset.sum_eq_zero fun i _ => h i)
   let v : Fin l.dim → W := fun j =>
     ⟨matrixUnitOp φ l j i *ᵥ w, groupAlgebraRep_mulVec_mem φ hW _ hwW⟩
   have hv : LinearIndependent ℂ v := by
-    rw [Fintype.linearIndependent_iff]
-    intro c hc k
+    refine Fintype.linearIndependent_iff.mpr fun c hc k => ?_
     have h1 := congrArg (fun x : W => matrixUnitOp φ l i k *ᵥ (x : X → ℂ)) hc
     simp only [Submodule.coe_sum, Submodule.coe_smul, v, mulVec_sum, mulVec_smul,
       mulVec_mulVec, matrixUnitOp_mul_matrixUnitOp, Submodule.coe_zero, mulVec_zero] at h1
     rw [Finset.sum_eq_single k] at h1
-    · simp only [ite_true] at h1
-      exact (smul_eq_zero.mp h1).resolve_right hi
+    · simp only [ite_true] at h1; exact (smul_eq_zero.mp h1).resolve_right hi
     · intro j _ hj; simp [Ne.symm hj]
     · simp
   simpa using hv.fintype_card_le_finrank
@@ -106,8 +96,7 @@ theorem trace_eq_finrank_range_of_mul_self {M : Matrix X X ℂ} (hM : M * M = M)
 theorem trace_labelProj (l : IrrepLabel G) :
     (labelProj φ l).trace = (l.dim * multiplicity φ l : ℕ) := by
   set o : Fin l.dim := ⟨0, l.dim_pos⟩
-  have hdiag : ∀ i, (matrixUnitOp φ l i i).trace = (matrixUnitOp φ l o o).trace := by
-    intro i
+  have hdiag : ∀ i, (matrixUnitOp φ l i i).trace = (matrixUnitOp φ l o o).trace := fun i => by
     rw [← matrixUnitOp_mul_matrixUnitOp_self φ l i o i, trace_mul_comm,
       matrixUnitOp_mul_matrixUnitOp_self]
   rw [← sum_matrixUnitOp_diag, trace_sum, Finset.sum_congr rfl fun i _ => hdiag i,

@@ -2,10 +2,6 @@
 Copyright (c) 2026 TNLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: TNLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-file `QICLean/Representation/SchurLabelCommutation.lean`.
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TensorPowerAction
 
@@ -46,8 +42,7 @@ theorem groupAlgebraRep_mulVec_eq_of_eq_mul [Finite G] (φ χ ψ : G →* Equiv.
     (hinv : ∀ g, a.coeff g⁻¹ = a.coeff g) {v : X → ℂ} (hv : v ∈ invariantSubspace ψ) :
     groupAlgebraRep φ a *ᵥ v = groupAlgebraRep χ a *ᵥ v := by
   have := Fintype.ofFinite G
-  have key : ∀ g, permOp χ g *ᵥ v = permOp φ g⁻¹ *ᵥ v := by
-    intro g
+  have key : ∀ g, permOp χ g *ᵥ v = permOp φ g⁻¹ *ᵥ v := fun g => by
     have h1 := hv g
     rw [permOp_of_eq_mul φ χ ψ hψ g, ← mulVec_mulVec] at h1
     calc permOp χ g *ᵥ v = permOp φ g⁻¹ *ᵥ (permOp φ g *ᵥ (permOp χ g *ᵥ v)) := by
@@ -55,8 +50,7 @@ theorem groupAlgebraRep_mulVec_eq_of_eq_mul [Finite G] (φ χ ψ : G →* Equiv.
       _ = permOp φ g⁻¹ *ᵥ v := by rw [h1]
   rw [groupAlgebraRep_eq_sum, groupAlgebraRep_eq_sum, sum_mulVec, sum_mulVec]
   simp_rw [smul_mulVec, key]
-  refine Fintype.sum_equiv (Equiv.inv G) _ _ (fun g => ?_)
-  rw [Equiv.inv_apply, inv_inv, hinv]
+  exact Fintype.sum_equiv (Equiv.inv G) _ _ fun g => by rw [Equiv.inv_apply, inv_inv, hinv]
 
 end PermutationRepresentation
 
@@ -70,9 +64,8 @@ variable {F : Type*} [DecidableEq F] (ι : F → Type*) [∀ f, Fintype (ι f)]
 theorem commute_groupAlgebraRep_subsystemPerm_of_disjoint {Q Q' : Finset F}
     (h : Disjoint Q Q') (a b : MonoidAlgebra ℂ (Equiv.Perm (Fin k))) :
     Commute (groupAlgebraRep (subsystemPerm k ι Q) a)
-      (groupAlgebraRep (subsystemPerm k ι Q') b) := by
-  exact commute_groupAlgebraRep_of_commute _ _
-    (commute_subsystemPerm_of_disjoint k ι h) a b
+      (groupAlgebraRep (subsystemPerm k ι Q') b) :=
+  commute_groupAlgebraRep_of_commute _ _ (commute_subsystemPerm_of_disjoint k ι h) a b
 
 theorem commute_groupAlgebraRep_subsystemPerm_of_subset {Q Q' : Finset F} (h : Q ⊆ Q')
     {a : MonoidAlgebra ℂ (Equiv.Perm (Fin k))}
@@ -87,21 +80,7 @@ theorem commute_groupAlgebraRep_subsystemPerm_of_subset {Q Q' : Finset F} (h : Q
 
 theorem commute_labelProj_subsystemPerm_of_disjoint {Q Q' : Finset F} (h : Disjoint Q Q')
     (l l' : IrrepLabel (Equiv.Perm (Fin k))) :
-    Commute (labelProj (subsystemPerm k ι Q) l) (labelProj (subsystemPerm k ι Q') l') := by
-  exact commute_groupAlgebraRep_subsystemPerm_of_disjoint ι k h _ _
-
-end TensorPower
-
-namespace TensorPower
-
-open Matrix PermutationRepresentation
-open scoped BigOperators
-
-section ComplementarySubsystemLabels
-
-variable {F : Type*} [Fintype F] [DecidableEq F]
-  (ι : F → Type*) [∀ f, Fintype (ι f)] [∀ f, DecidableEq (ι f)] (k : ℕ)
-
-end ComplementarySubsystemLabels
+    Commute (labelProj (subsystemPerm k ι Q) l) (labelProj (subsystemPerm k ι Q') l') :=
+  commute_groupAlgebraRep_subsystemPerm_of_disjoint ι k h _ _
 
 end TensorPower

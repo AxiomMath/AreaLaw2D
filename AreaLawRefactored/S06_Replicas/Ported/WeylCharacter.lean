@@ -9,38 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.WeylDimension
 /-!
 # The Weyl character formula for the multiplicity spaces
 
-For a label `λ` of `S_k` with at most `q` rows, let `χ_λ(y) = Tr(E^λ_{00} diag(y)^{⊗k})` be the
-character of the multiplicity space `V_λ ⊆ (ℂ^q)^{⊗k}`, so that
-`Tr(π^λ diag(y)^{⊗k}) = d_λ χ_λ(y)`. The area-law paper (*A two-dimensional area law from a
-global spectral gap*, `05-replicas.tex`, proof of Lemma 6.2, lines 336–364) uses the Weyl
-character formula
-
-`Δ(y) χ_λ(y) = det [y_i ^ {l_j}]`, `l_j = λ_j + q - 1 - j`,
-
-with `Δ(y) = det [y_i ^ {q - 1 - j}]` the Vandermonde determinant ("the Weyl denominator cancels
-`Δ(s^t)` in the density").
-
-## Method
-
-The idempotent `e^μ_{00} ⊗ A_r` of `ℂ[S_{m+r}]` has trace `χ_μ(y) e_r(y)` against
-`diag(y)^{⊗(m+r)}`, and decomposes over the labels `λ` of `S_{m+r}` with multiplicities at
-most one, supported on vertical strips `λ = μ + 1_S` (`ExteriorPieri.lean`). Comparing
-dimensions with the Weyl dimension formula and the dimension form of the alternant Pieri rule
-shows that every vertical strip occurs: `χ_μ e_r = ∑_{λ/μ vertical r-strip} χ_λ`. The
-alternants satisfy the same rule, with the summands outside the vertical strips vanishing.
-Removing the first column of `λ` and inducting on `k`, then downward on the number of rows,
-gives the formula.
-
-Ported from `LionSR/QICLean`, `QICLean/Representation/WeylCharacter.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `TensorPower.glChar q λ y` — the character `χ_λ(y)`.
-* `TensorPower.trace_mul_tensorPow_eq_sum` — `Tr(ρ(a) diag(y)^{⊗k}) = ∑_λ tr(W_λ(a)) χ_λ(y)`.
-* `TensorPower.glChar_mul_elemSymm` — **the vertical-strip Pieri rule for the characters**.
-* `TensorPower.alternant_mul_glChar` — **the Weyl character formula**.
-* `TensorPower.trace_labelProj_mul_tensorPow` — `Tr(π^λ diag(y)^{⊗k}) = d_λ χ_λ(y)`.
+`Δ(y) χ_λ(y) = det [y_i ^ {l_j}]` for the character `χ_λ(y) = Tr(E^λ_{00} diag(y)^{⊗k})`, via
+the vertical-strip Pieri rule (`05-replicas.tex`, proof of Lemma 6.2, lines 336–364).
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra
@@ -106,14 +76,10 @@ theorem trace_mul_labelProj_eq {M : Matrix (Fin k → Fin q) (Fin k → Fin q) �
     sum_congr rfl fun i _ => by rw [trace_mul_matrixUnitOp _ hM, if_pos rfl]]
   simp only [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]
 
-theorem commute_permOp_tensorPow (y : Fin q → ℂ) (g : Equiv.Perm (Fin k)) :
-    Commute (permOp (copyPerm (Fin q) k) g) (tensorPow (diagonal y)) :=
-  commute_permOp_copyPerm_tensorPow _ g
-
 /-- `Tr(π^λ diag(y)^{⊗k}) = d_λ χ_λ(y)`. -/
 theorem trace_labelProj_mul_tensorPow (l : IrrepLabel (Equiv.Perm (Fin k))) (y : Fin q → ℂ) :
     (labelProj (copyPerm (Fin q) k) l * tensorPow (diagonal y)).trace = l.dim * glChar q l y := by
-  rw [trace_mul_comm, trace_mul_labelProj_eq (commute_permOp_tensorPow y), glChar,
+  rw [trace_mul_comm, trace_mul_labelProj_eq (commute_permOp_copyPerm_tensorPow _), glChar,
     trace_mul_comm]
 
 /-- **Label decomposition of a trace**: `Tr(ρ(a) diag(y)^{⊗k}) = ∑_λ tr(W_λ(a)) χ_λ(y)`. -/
@@ -122,7 +88,7 @@ theorem trace_mul_tensorPow_eq_sum (a : MonoidAlgebra ℂ (Equiv.Perm (Fin k)))
     (groupAlgebraRep (copyPerm (Fin q) k) a * tensorPow (diagonal y)).trace =
       ∑ l, (IrrepLabel.block l a).trace * glChar q l y := by
   set M := tensorPow (k := k) (diagonal y)
-  have hM := commute_permOp_tensorPow (k := k) y
+  have hM : ∀ g, Commute (permOp (copyPerm (Fin q) k) g) M := commute_permOp_copyPerm_tensorPow _
   have hsum : (groupAlgebraRep (copyPerm (Fin q) k) a * M).trace =
       ∑ l, (M * (groupAlgebraRep (copyPerm (Fin q) k) a *
         labelProj (copyPerm (Fin q) k) l)).trace := by
@@ -171,14 +137,10 @@ theorem exists_part_eq {p : Fin q → ℕ} (hp : Antitone p) (hsum : ∑ a, p a 
     by_contra hne
     have hle : ∀ b : Fin q, b ≤ a → 1 ≤ p b := fun b hb => (Nat.one_le_iff_ne_zero.mpr hne).trans
       (hp hb)
-    have : (a : ℕ) + 1 ≤ ∑ b, p b := by
-      calc (a : ℕ) + 1 = ∑ b ∈ univ.filter (fun b : Fin q => b ≤ a), 1 := by
-            rw [sum_const, smul_eq_mul, mul_one]
-            rw [show univ.filter (fun b : Fin q => b ≤ a) = Iic a by ext; simp]
-            simp
-        _ ≤ ∑ b ∈ univ.filter (fun b : Fin q => b ≤ a), p b :=
-            sum_le_sum fun b hb => hle b (mem_filter.mp hb).2
-        _ ≤ ∑ b, p b := sum_le_sum_of_subset (filter_subset _ _)
+    have : (a : ℕ) + 1 ≤ ∑ b, p b :=
+      calc (a : ℕ) + 1 = ∑ b ∈ Iic a, 1 := by simp
+        _ ≤ ∑ b ∈ Iic a, p b := sum_le_sum fun b hb => hle b (mem_Iic.mp hb)
+        _ ≤ ∑ b, p b := sum_le_sum_of_subset (subset_univ _)
     omega
   set μ : Fin k → ℕ := fun i => if h : (i : ℕ) < q then p ⟨i, h⟩ else 0
   have hμ : μ ∈ Partition.padded k k := by
@@ -237,13 +199,6 @@ theorem exists_shiftedPart_eq_of_not_antitone {p : Fin q → ℕ} (hp : Antitone
     simp only [Partition.shiftedPart, Pi.add_apply, Partition.indic, Fin.val_castSucc,
       Fin.val_succ]
     split_ifs at hi ⊢ with h1 h2 h2 <;> omega
-
-theorem weylFormula_eq_zero_of_shiftedPart_eq {p : Fin q → ℕ} {a b : Fin q} (hab : a ≠ b)
-    (h : Partition.shiftedPart p a = Partition.shiftedPart p b) : Partition.weylFormula p = 0 := by
-  rw [Partition.weylFormula]
-  rcases lt_or_gt_of_ne hab with hlt | hlt
-  · exact prod_eq_zero (i := (a, b)) (by simp [Partition.rowPairs, hlt]) (by simp [h])
-  · exact prod_eq_zero (i := (b, a)) (by simp [Partition.rowPairs, hlt]) (by simp [h])
 
 open scoped Classical in
 /-- The labels `λ = μ + 1_S` of `S_{m + r}` with at most `q` rows, `|S| = r`. -/
@@ -345,7 +300,9 @@ theorem sum_pieriSet_multiplicity {μ : IrrepLabel (Equiv.Perm (Fin m))} (hμ : 
     multiplicity_eq_weylFormula μ hμ]
   rw [sum_pieriSet hμ Partition.weylFormula fun S hS => by
     obtain ⟨a, b, hab, h⟩ := exists_shiftedPart_eq_of_not_antitone (antitone_part μ) hS
-    exact weylFormula_eq_zero_of_shiftedPart_eq hab h]
+    rcases lt_or_gt_of_ne hab with hlt | hlt
+    exacts [Partition.weylFormula_eq_zero_of_shiftedPart_eq _ hlt h,
+      Partition.weylFormula_eq_zero_of_shiftedPart_eq _ hlt h.symm]]
   exact Partition.sum_weylFormula_add_indic _ r
 
 /-- Every vertical strip occurs in `V_μ ⊗ Λ^r` exactly once. -/
@@ -391,10 +348,7 @@ theorem pieriRank_eq_one {μ : IrrepLabel (Equiv.Perm (Fin m))} (hμ : HasRows q
   have heq := (sum_eq_sum_iff_of_le hle).mp hsplit l hl
   have hpos : (0 : ℝ) < multiplicity (copyPerm (Fin q) (m + r)) l := by
     exact_mod_cast multiplicity_pos (mem_pieriSet.mp hl).1
-  have : (pieriRank μ l : ℝ) = 1 := by
-    have := mul_right_cancel₀ hpos.ne' (heq.trans (one_mul _).symm)
-    exact this
-  exact_mod_cast this
+  exact_mod_cast mul_right_cancel₀ hpos.ne' (heq.trans (one_mul _).symm)
 
 /-- **The vertical-strip Pieri rule for the characters**: `χ_μ e_r = ∑_{λ/μ vertical} χ_λ`. -/
 theorem glChar_mul_elemSymm {μ : IrrepLabel (Equiv.Perm (Fin m))} (hμ : HasRows q μ)
@@ -413,7 +367,6 @@ theorem glChar_mul_elemSymm {μ : IrrepLabel (Equiv.Perm (Fin m))} (hμ : HasRow
         exact (mem_compl.mp hl) ((pieriRank_hasRows_eq_zero_or_mem hμ hr).2 hne)
       simp [h0]
     · simp [glChar_eq_zero_of_not_hasRows hr]
-
 
 /-! ### The Weyl character formula -/
 
@@ -495,9 +448,7 @@ theorem alternant_mul_glChar : ∀ {k : ℕ} {l : IrrepLabel (Equiv.Perm (Fin k)
   by_cases h0 : rowSet q l = ∅
   · have hp : part q l = 0 := funext fun a => by
       by_contra h
-      have : a ∈ rowSet q l := mem_rowSet.mpr h
-      rw [h0] at this
-      exact absurd this (Finset.notMem_empty a)
+      simpa [h0] using mem_rowSet.mpr h
     rw [glChar_of_part_eq_zero hl hp, mul_one, hp]
   -- remove the first column
   set S0 := rowSet q l with hS0
@@ -571,4 +522,3 @@ theorem alternant_mul_glChar : ∀ {k : ℕ} {l : IrrepLabel (Equiv.Perm (Fin k)
   exact add_right_cancel hfinal
 
 end TensorPower
-

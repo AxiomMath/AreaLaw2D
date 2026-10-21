@@ -79,10 +79,6 @@ theorem norm_toLp_comp_equiv {X Y : Type*} [Fintype X] [Fintype Y] (e : X ≃ Y)
   simp only [EuclideanSpace.norm_eq, Function.comp_apply]
   rw [e.sum_comp (fun y => ‖u y‖ ^ 2)]
 
-theorem dotProduct_comp_equiv_comp {X Y : Type*} [Fintype X] [Fintype Y] (e : X ≃ Y)
-    (u w : Y → ℂ) : (u ∘ e) ⬝ᵥ (w ∘ e) = u ⬝ᵥ w := by
-  simp only [dotProduct, Function.comp_apply]
-  exact e.sum_comp (fun y => u y * w y)
 
 /-- If `θ` is a vector of the §2 encoding and `ρ_D` its marginal, then
 `(ρ_D^t ρ̂_D^{-t} ⊗ 1) θ = θ`: `θ` lies in `supp ρ_D ⊗ 𝒱_{D^c}`. -/
@@ -104,7 +100,7 @@ theorem localLift_rpow_mul_hatPow_mulVec (D : Finset V)
     rw [localLift_eq_extendId, submatrix_mulVec_equiv]
     simp only [Equiv.symm_symm, Function.comp_assoc, Equiv.symm_comp_self, Function.comp_id]
     rw [show star (θ ∘ univEquiv.symm) = star θ ∘ univEquiv.symm from rfl,
-      dotProduct_comp_equiv_comp, dotProduct_mulVec, dotProduct_comm, ← trace_vecMulVec,
+      comp_equiv_dotProduct_comp_equiv, dotProduct_mulVec, dotProduct_comm, ← trace_vecMulVec,
       ← vecMulVec_mul, ← (trace_ptrace_mul (Finset.subset_univ D) (vecMulVec θ (star θ)) K)]
     change (ρ * K).trace = 0
     rw [mul_cfc_kernel hρ, trace_zero]
@@ -254,8 +250,7 @@ theorem lemma_6_3 :
       simp only [θs, Equiv.symm_symm, Function.comp_assoc, Equiv.symm_comp_self,
         Function.comp_id]
     have hℓ : 0 < ℓx := by
-      have hd : (1 : ℝ) ≤ Fintype.card (Reg (fun v => Fin (n v)) x) := by
-        exact_mod_cast Fintype.card_pos
+      have hd : (1 : ℝ) ≤ Fintype.card (Reg (fun v => Fin (n v)) x) := mod_cast Fintype.card_pos
       exact Real.log_pos (by nlinarith [Real.exp_one_gt_d9])
     have hone := H V (fun v => Fin (n v)) Finset.univ P x Y₀ F hP hX hU hF hcov.symm hPx hPY
       hPF hxY hxF hYF θ hθ (2 * t) (by positivity) hsmall (σ ω) (τ ω') hω.1.posSemidef hω.2
@@ -268,21 +263,17 @@ theorem lemma_6_3 :
           refine pow_le_pow_left₀ (norm_nonneg _) ?_ k
           rw [hop]
           change ‖(WithLp.toLp 2 (_ ∘ _) : EuclideanSpace ℂ (SiteConfig n))‖ ≤ _
-          rw [norm_toLp_comp_equiv]
           rw [← Complex.ofReal_neg] at hone
-          exact hone
-      _ = E := by
-          rw [← Real.exp_nat_mul]
+          rwa [norm_toLp_comp_equiv]
+      _ = E := by rw [← Real.exp_nat_mul]
   -- D6.10.3 the compensators
   have hTP : ‖Wp⁻¹ * tP‖ ≤ ((k : ℝ) + 2) ^ Cc := Hcomp k P ρP (hρ hP).1 (hρ hP).2
   have hTY : ‖Wy⁻¹ * tY‖ ≤ ((k : ℝ) + 2) ^ Cc := Hcomp k Y₀ ρY (hρ hU).1 (hρ hU).2
   have hMz : ‖(EuclideanSpace.equiv _ ℂ).symm (moveWord n t k P x Y₀ *ᵥ z)‖ ≤
       ((k : ℝ) + 2) ^ Cc * (((k : ℝ) + 2) ^ Cc * E) := by
     rw [hM]
-    refine (norm_mulVec_le _ _).trans ?_
-    refine mul_le_mul hTP ?_ (norm_nonneg _) (by positivity)
-    refine (norm_mulVec_le _ _).trans ?_
-    exact mul_le_mul hTY hWW (norm_nonneg _) (by positivity)
+    exact (norm_mulVec_le _ _).trans (mul_le_mul hTP ((norm_mulVec_le _ _).trans
+      (mul_le_mul hTY hWW (norm_nonneg _) (by positivity))) (norm_nonneg _) (by positivity))
   -- D6.10.1–D6.10.2 inverse Cauchy–Schwarz and the norm identity
   have key := norm_star_dotProduct_sq_le_moveWord ht0.le k hmove z w
   have hre : 0 ≤ (star w ⬝ᵥ (relativeMetric n t k P x Y₀ F *ᵥ w)).re :=

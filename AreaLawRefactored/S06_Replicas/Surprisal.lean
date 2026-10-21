@@ -39,6 +39,22 @@ theorem dotProduct_cfc_mulVec {ρ : Matrix X X ℂ} (hρ : ρ.IsHermitian) (f : 
   simp only [dotProduct, mulVec_diagonal, Function.comp_apply, Pi.star_apply]
   exact Finset.sum_congr rfl fun i _ => by rw [mul_left_comm]; rfl
 
+/-- In the eigenbasis of `A`, an eigenvector of `A` has no component off its eigenvalue. -/
+theorem star_eigenvectorUnitary_mulVec_eq_zero {A : Matrix X X ℂ} (hA : A.IsHermitian)
+    {w : X → ℂ} {c : ℝ} (hw : A *ᵥ w = (c : ℂ) • w) {i : X} (hi : hA.eigenvalues i ≠ c) :
+    (star (hA.eigenvectorUnitary : Matrix X X ℂ) *ᵥ w) i = 0 := by
+  set V := (hA.eigenvectorUnitary : Matrix X X ℂ)
+  have hspec : star V * A = diagonal (fun i => (hA.eigenvalues i : ℂ)) * star V := by
+    conv_lhs => rw [hA.spectral_theorem]
+    rw [Unitary.conjStarAlgAut_apply, ← mul_assoc, ← mul_assoc, Unitary.coe_star_mul_self,
+      one_mul]
+    rfl
+  have h := congrFun (congrArg (star V *ᵥ ·) hw) i
+  rw [mulVec_mulVec, hspec, ← mulVec_mulVec, mulVec_diagonal, mulVec_smul, Pi.smul_apply,
+    smul_eq_mul] at h
+  have : ((hA.eigenvalues i : ℂ) - c) * (star V *ᵥ w) i = 0 := by rw [sub_mul, h, sub_self]
+  exact (mul_eq_zero.mp this).resolve_left (sub_ne_zero.mpr (mod_cast hi))
+
 omit [DecidableEq X] in
 /-- An eigenvalue `u` with `d` linearly independent eigenvectors satisfies `d u ≤ Tr ρ`. -/
 theorem card_mul_le_trace {ρ : Matrix X X ℂ} (hρ : ρ.PosSemidef) {d : ℕ} {u : ℝ}
@@ -55,18 +71,8 @@ theorem card_mul_le_trace {ρ : Matrix X X ℂ} (hρ : ρ.PosSemidef) {d : ℕ} 
   set V := (hρ.1.eigenvectorUnitary : Matrix X X ℂ)
   set z' : Fin d → X → ℂ := fun j => star V *ᵥ z j
   have hVV : V * star V = 1 := Unitary.coe_mul_star_self _
-  have hspec : star V * ρ = diagonal (fun i => (ev i : ℂ)) * star V := by
-    conv_lhs => rw [hρ.1.spectral_theorem]
-    rw [Unitary.conjStarAlgAut_apply, ← mul_assoc, ← mul_assoc, Unitary.coe_star_mul_self,
-      one_mul]
-    rfl
-  have hz' : ∀ j i, ev i ≠ u → z' j i = 0 := by
-    intro j i hi
-    have h := congrFun (congrArg (star V *ᵥ ·) (heig j)) i
-    rw [mulVec_mulVec, hspec, ← mulVec_mulVec, mulVec_diagonal, mulVec_smul, Pi.smul_apply,
-      smul_eq_mul] at h
-    have : ((ev i : ℂ) - u) * z' j i = 0 := by rw [sub_mul, h, sub_self]
-    exact (mul_eq_zero.mp this).resolve_left (sub_ne_zero.mpr (by exact_mod_cast hi))
+  have hz' : ∀ j i, ev i ≠ u → z' j i = 0 := fun j i hi =>
+    star_eigenvectorUnitary_mulVec_eq_zero hρ.1 (heig j) hi
   set S := {i // ev i = u}
   have hr : LinearIndependent ℂ (fun j (i : S) => z' j i) := by
     rw [Fintype.linearIndependent_iff]
@@ -81,8 +87,8 @@ theorem card_mul_le_trace {ρ : Matrix X X ℂ} (hρ : ρ.PosSemidef) {d : ℕ} 
       simp_rw [this, ← mulVec_smul, ← mulVec_sum, h1, mulVec_zero]
     exact Fintype.linearIndependent_iff.mp hz c h2
   have hcard : d ≤ (Finset.univ.filter fun i => ev i = u).card := by
-    have := hr.fintype_card_le_finrank
-    simpa [Module.finrank_fintype_fun_eq_card, Fintype.card_subtype, S] using this
+    simpa [Module.finrank_fintype_fun_eq_card, Fintype.card_subtype, S] using
+      hr.fintype_card_le_finrank
   rw [htr]
   calc (d : ℝ) * u ≤ (Finset.univ.filter fun i => ev i = u).card * u := by gcongr
     _ = ∑ i ∈ Finset.univ.filter (fun i => ev i = u), ev i := by
@@ -96,23 +102,13 @@ theorem cfc_mulVec_of_mulVec_eq {A : Matrix X X ℂ} (hA : A.IsHermitian) (f : �
     {w : X → ℂ} {c : ℝ} (hw : A *ᵥ w = (c : ℂ) • w) : cfc f A *ᵥ w = (f c : ℂ) • w := by
   set V := (hA.eigenvectorUnitary : Matrix X X ℂ)
   have hVV : V * star V = 1 := Unitary.coe_mul_star_self _
-  have hspec : star V * A = diagonal (fun i => (hA.eigenvalues i : ℂ)) * star V := by
-    conv_lhs => rw [hA.spectral_theorem]
-    rw [Unitary.conjStarAlgAut_apply, ← mul_assoc, ← mul_assoc, Unitary.coe_star_mul_self,
-      one_mul]
-    rfl
   have hD : diagonal (RCLike.ofReal ∘ f ∘ hA.eigenvalues) *ᵥ (star V *ᵥ w) =
       (f c : ℂ) • (star V *ᵥ w) := by
     funext i
-    have h := congrFun (congrArg (star V *ᵥ ·) hw) i
-    rw [mulVec_mulVec, hspec, ← mulVec_mulVec, mulVec_diagonal, mulVec_smul, Pi.smul_apply,
-      smul_eq_mul] at h
     rw [mulVec_diagonal, Pi.smul_apply, smul_eq_mul]
     by_cases hi : hA.eigenvalues i = c
     · simp [hi]
-    · have : ((hA.eigenvalues i : ℂ) - c) * (star V *ᵥ w) i = 0 := by rw [sub_mul, h, sub_self]
-      rw [(mul_eq_zero.mp this).resolve_left (sub_ne_zero.mpr (by exact_mod_cast hi))]
-      simp
+    · simp [V, star_eigenvectorUnitary_mulVec_eq_zero hA hw hi]
   rw [hA.cfc_eq, IsHermitian.cfc, Unitary.conjStarAlgAut_apply, ← mulVec_mulVec,
     ← mulVec_mulVec, hD, mulVec_smul, mulVec_mulVec, hVV, one_mulVec]
 
@@ -153,11 +149,9 @@ theorem dim_mul_le_trace {ρ : Matrix (Config ι k) (Config ι k) ℂ} (hρ : ρ
   have key : ∀ M v, Commute M ρ → ρ *ᵥ (M *ᵥ v) = M *ᵥ (ρ *ᵥ v) := fun M v h => by
     rw [mulVec_mulVec, mulVec_mulVec, h.eq]
   obtain ⟨i₀, hi₀⟩ : ∃ i₀, e i₀ i₀ *ᵥ w ≠ 0 := by
-    by_contra h
-    push Not at h
-    apply hw
+    contrapose! hw
     rw [← hπ, hsum, sum_mulVec]
-    exact Finset.sum_eq_zero fun i _ => h i
+    exact Finset.sum_eq_zero fun i _ => hw i
   set w₀ := e i₀ i₀ *ᵥ w
   set z : Fin l.dim → Config ι k → ℂ := fun j => e j i₀ *ᵥ w₀
   have hez : ∀ j j', e i₀ j' *ᵥ z j = if j' = j then w₀ else 0 := by
@@ -208,8 +202,8 @@ theorem dotProduct_L_sub_log_dim_nonneg {ρ : Matrix (Config ι k) (Config ι k)
         ← Complex.coe_smul, mulVec_smul]
     · rw [mulVec_mulVec, show Pl * Pl = Pl from labelProj_mul_self _ l]
   have hlog : Real.log l.dim ≤ -Real.log (ev i) := by
-    have := Real.log_le_log (mul_pos (by exact_mod_cast l.dim_pos) hpos) hd
-    rw [Real.log_mul (by exact_mod_cast l.dim_pos.ne') hpos.ne', Real.log_one] at this
+    have := Real.log_le_log (mul_pos (mod_cast l.dim_pos) hpos) hd
+    rw [Real.log_mul (mod_cast l.dim_pos.ne') hpos.ne', Real.log_one] at this
     linarith
   have : ((-Real.log (ev i) : ℝ) : ℂ) * (star zi * zi) -
       (Real.log l.dim : ℂ) * (((if ev i = 0 then 0 else 1 : ℝ)) * (star zi * zi)) =
@@ -331,7 +325,7 @@ theorem trace_mul_exp_le_sum_dim {ρ : Matrix (Config ι k) (Config ι k) ℂ} (
     have hsre : 0 ≤ (s i l).re := (Complex.nonneg_iff.mp (hs0 i l)).1
     by_cases hw : π ι k Finset.univ l *ᵥ bv i = 0
     · simp [hs i l, hw]
-    have hd : (0 : ℝ) < l.dim := by exact_mod_cast l.dim_pos
+    have hd : (0 : ℝ) < l.dim := mod_cast l.dim_pos
     rw [div_eq_inv_mul]
     refine mul_le_mul_of_nonneg_right ?_ hsre
     by_cases h0 : ev i = 0
@@ -363,9 +357,8 @@ theorem trace_mul_exp_le_sum_dim {ρ : Matrix (Config ι k) (Config ι k) ℂ} (
   rw [htrG]
   simp only [htrπ, Complex.re_sum, Finset.sum_div]
   rw [Finset.sum_comm]
-  refine Finset.sum_le_sum fun l _ => Finset.sum_le_sum fun i _ => ?_
-  rw [Complex.re_ofReal_mul]
-  exact hterm i l
+  exact Finset.sum_le_sum fun l _ => Finset.sum_le_sum fun i _ =>
+    (Complex.re_ofReal_mul _ _).symm ▸ hterm i l
 
 /-! ### Counting copies of the Specht modules -/
 
@@ -412,15 +405,12 @@ theorem finrank_commutant_le :
         else 0
       map_add' := fun T T' => by
         funext c
-        by_cases h : ∃ p, cnt p = c
-        · simp only [dif_pos h, Submodule.coe_add, Matrix.add_apply, Pi.add_apply]
-        · simp only [dif_neg h, Pi.add_apply, add_zero]
+        simp only [Pi.add_apply, Submodule.coe_add, Matrix.add_apply]
+        split_ifs <;> simp
       map_smul' := fun a T => by
         funext c
-        by_cases h : ∃ p, cnt p = c
-        · simp only [dif_pos h, Submodule.coe_smul, Matrix.smul_apply, Pi.smul_apply,
-            RingHom.id_apply]
-        · simp only [dif_neg h, Pi.smul_apply, smul_zero, RingHom.id_apply] }
+        simp only [Pi.smul_apply, Submodule.coe_smul, Matrix.smul_apply, RingHom.id_apply]
+        split_ifs <;> simp }
   have hΛ : Function.Injective Λ := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     intro T hT
@@ -525,7 +515,7 @@ theorem sum_trace_π_div_le :
     intro l
     have hid : IsIdempotentElem (Matrix.toLin' (eU ι k l (i0 l) (i0 l))) := by
       rw [IsIdempotentElem, Module.End.mul_eq_comp, ← Matrix.toLin'_mul, hE]
-    have hd : (l.dim : ℝ) ≠ 0 := by exact_mod_cast l.dim_pos.ne'
+    have hd : (l.dim : ℝ) ≠ 0 := mod_cast l.dim_pos.ne'
     rw [trace_π_eq ι k l (i0 l), ← Matrix.trace_toLin'_eq,
       (LinearMap.IsIdempotentElem.isProj_range _ hid).trace]
     simp only [Complex.natCast_re, Complex.mul_re, Complex.natCast_im, zero_mul, sub_zero]
@@ -537,9 +527,7 @@ theorem sum_trace_π_div_le :
     by_cases h : eU ι k l (i0 l) (i0 l) = 0
     · exact ⟨0, by simp, fun h' => absurd h h'⟩
     obtain ⟨a, b, hab⟩ : ∃ a b, eU ι k l (i0 l) (i0 l) a b ≠ 0 := by
-      by_contra hc
-      push Not at hc
-      exact h (Matrix.ext hc)
+      contrapose! h; exact Matrix.ext h
     refine ⟨Pi.single a 1 ᵥ* eU ι k l (i0 l) (i0 l), by rw [vecMul_vecMul, hE],
       fun _ hy0 => hab ?_⟩
     simpa [vecMul, dotProduct, Pi.single_apply] using congrFun hy0 b
@@ -591,9 +579,8 @@ theorem sum_trace_π_div_le :
       · rw [← hR μ _ (r μ).2, hE0, zero_mulVec]; rfl
       · exact absurd h (hy2 μ hE0)
   rw [Finset.sum_congr rfl fun l _ => hterm l]
-  have := LinearMap.finrank_le_finrank_of_injective hΦ
-  rw [Module.finrank_pi_fintype] at this
-  exact_mod_cast this
+  exact_mod_cast Module.finrank_pi_fintype (R := ℂ) (ι := IrrepLabel (Equiv.Perm (Fin k)))
+    (M := fun l => R l) ▸ LinearMap.finrank_le_finrank_of_injective hΦ
 
 /-- D6.4.16. Block `λ`, eigenvalue `u` contributes `d_λ·u·(u d_λ)^{-b} = (u d_λ)^{1-b} ≤ 1`
 (`1 - b ≥ 0`). So `Tr ρ e^{b(L_ρ - F_Q)} = ∑_λ ∑_{u>0} (u d_λ)^{1-b} ≤ ∑_λ dim V_λ ≤ poly(k)`;

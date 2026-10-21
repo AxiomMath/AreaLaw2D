@@ -2,32 +2,14 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Representation/SubsystemTransport.lean`.
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelEstimates
 
 /-!
 # Transporting labels between subsystems and tensor powers
 
-The label projectors of the copy permutations of a subsystem `Q` of
-`V = ⨂_{f ∈ F} ℂ^{ι f}` are those of the copy permutations of `Q^{⊗k}`, tensored with the
-identity on the other factors. This file proves the transport along equivalences of
-permutation actions and along a trivial second factor, and deduces that a label occurring
-on a subsystem of dimension `d_Q` has at most `d_Q` rows (`05-replicas.tex`, lines 51–64:
-`(ℂ^q)^{⊗k} = ⨁_{ℓ(λ) ≤ q} [λ] ⊗ V_λ^{(q)}`, applied to `Q^{⊗k}`).
-
-## Main declarations
-
-* `PermutationRepresentation.groupAlgebraRep_of_intertwine`,
-  `PermutationRepresentation.labelProj_of_intertwine` — transport along `e : X ≃ Y`.
-* `PermutationRepresentation.prodLeft`, `PermutationRepresentation.labelProj_prodLeft` —
-  an action on the first factor of `X × Z`.
-* `TensorPower.labelProj_subsystemPerm_eq` — `π^λ_{Q,k}` is `π^λ` of `Q^{⊗k}` tensored with
-  the identity.
-* `TensorPower.labelPart_eq_zero_of_subsystemPerm` — at most `d_Q` rows.
+Subsystem label projectors are those of `Q^{⊗k}` tensored with the identity (*A two-dimensional area
+law from a global spectral gap*, `05-replicas.tex`, lines 51–64).
 -/
 
 open Matrix
@@ -44,9 +26,7 @@ theorem permOp_of_intertwine (e : X ≃ Y) {φ : G →* Equiv.Perm X} {ψ : G �
     permOp ψ g = reindex e e (permOp φ g) := by
   ext y y'
   simp only [permOp_apply_apply, reindex_apply, submatrix_apply]
-  have hy := h g (e.symm y')
-  rw [Equiv.apply_symm_apply] at hy
-  rw [hy]
+  rw [show ψ g y' = e (φ g (e.symm y')) by simpa using h g (e.symm y')]
   congr 1
   exact propext ⟨fun h' => by rw [← h', Equiv.symm_apply_apply], fun h' => by
     rw [h', Equiv.apply_symm_apply]⟩
@@ -121,13 +101,8 @@ def splitEquiv (Q : Finset F) :
     Config k ι ≃ (Fin k → SubConfig ι Q) × (Fin k → ComplConfig ι Q) where
   toFun x := (fun j f => x j f, fun j f => x j f)
   invFun p := fun j f => if h : f ∈ Q then p.1 j ⟨f, h⟩ else p.2 j ⟨f, h⟩
-  left_inv x := by
-    ext j f
-    by_cases h : f ∈ Q <;> simp [h]
-  right_inv p := by
-    ext j f
-    · simp [f.2]
-    · simp [f.2]
+  left_inv x := by ext j f; by_cases h : f ∈ Q <;> simp [h]
+  right_inv p := by ext j f <;> simp [f.2]
 
 omit [Fintype F] [∀ f, Fintype (ι f)] [∀ f, DecidableEq (ι f)] in
 /-- Under `splitEquiv`, the copy permutations of `Q` act on the first factor only. -/
@@ -158,19 +133,15 @@ theorem labelProj_copyPerm_equiv {Ω : Type*} [Fintype Ω] [DecidableEq Ω] {q :
 omit [Fintype F] in
 private theorem eq_zero_of_reindex_eq_zero {m n : Type*} (e : m ≃ n) {A : Matrix m m ℂ}
     (h : reindex e e A = 0) : A = 0 := by
-  have := congrArg (reindex e e).symm h
-  simpa using this
+  simpa using congrArg (reindex e e).symm h
 
 /-- A label occurring on a subsystem occurs on the tensor power of its one-copy space. -/
 theorem labelProj_copyPerm_ne_zero_of_subsystemPerm (Q : Finset F)
     {l : IrrepLabel (Equiv.Perm (Fin k))} (h : labelProj (subsystemPerm k ι Q) l ≠ 0) :
-    labelProj (copyPerm (Fin (Fintype.card (SubConfig ι Q))) k) l ≠ 0 := by
-  intro h0
+    labelProj (copyPerm (Fin (Fintype.card (SubConfig ι Q))) k) l ≠ 0 := fun h0 => by
   rw [labelProj_copyPerm_equiv k (Fintype.equivFin (SubConfig ι Q))] at h0
-  have h1 := eq_zero_of_reindex_eq_zero _ h0
-  apply h
-  refine eq_zero_of_reindex_eq_zero (splitEquiv ι k Q) ?_
-  rw [labelProj_subsystemPerm_eq, h1, zero_kronecker]
+  refine h (eq_zero_of_reindex_eq_zero (splitEquiv ι k Q) ?_)
+  rw [labelProj_subsystemPerm_eq, eq_zero_of_reindex_eq_zero _ h0, zero_kronecker]
 
 /-- **Rows of a subsystem label** (`05-replicas.tex`, lines 51–64): a label occurring on a
 subsystem `Q` has at most `d_Q` rows. -/
@@ -187,8 +158,7 @@ theorem card_subConfig_le [∀ f, Nonempty (ι f)] (Q : Finset F) :
   refine Fintype.card_le_of_injective
     (fun y f => if h : f ∈ Q then y ⟨f, h⟩ else Classical.arbitrary _) fun y y' hy => ?_
   funext f
-  have := congrFun hy f
-  simpa [f.2] using this
+  simpa [f.2] using congrFun hy f
 
 end TensorPower
 

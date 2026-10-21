@@ -11,20 +11,8 @@ import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 /-!
 # The integral representation in lifted form
 
-On `V = ⨂_v ℂ^{n_v}` a one-copy operator `M` on a region `Q` acts on `V` as its local lift
-`M ⊗ 1`, and on `V^{⊗k}` as `(M ⊗ 1)^{⊗k}`. This file rewrites the integral representation of
-the replica metrics (`05-replicas.tex`, equation `replicas:W-integral`) in this form,
-`W_{Q,k} = ∫ ((τ^t ⊗ 1)^{⊗k}) dζ_Q(τ)`, as used in the proof of Lemma 6.3 (lines 553–559), and
-records the norm of a tensor-power vector, `‖v^{⊗k}‖ = ‖v‖^k`.
-
-Ported from `LionSR/QICLean`, `QICLean/Representation/ReplicaLift.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `TensorPower.reindex_tensorPow_localLift` — `(M ⊗ 1)^{⊗k} = M^{⊗k} ⊗ 1` after `splitEquiv`.
-* `TensorPower.exists_replicaMetric_integral_localLift`.
-* `TensorPower.norm_tensorVec` — `‖v^{⊗k}‖ = ‖v‖^k`.
+The integral representation `W_{Q,k} = ∫ ((τ^t ⊗ 1)^{⊗k}) dζ_Q(τ)` of the replica metrics
+(`05-replicas.tex`, equation `replicas:W-integral`), and `‖v^{⊗k}‖ = ‖v‖^k`.
 -/
 
 open MeasureTheory Matrix Finset PermutationRepresentation Entropy
@@ -33,33 +21,6 @@ open scoped MatrixOrder ComplexOrder Kronecker
 namespace TensorPower
 
 variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ}
-
-theorem localLift_splitEquiv_apply (Q : Finset V)
-    (M : Matrix (RegionConfig n Q) (RegionConfig n Q) ℂ)
-    (a b : RegionConfig n Q) (c c' : (v : {v // v ∉ Q}) → Fin (n v)) :
-    localLift Q M
-        ((Equiv.piEquivPiSubtypeProd (· ∈ Q) fun v => Fin (n v)).symm (a, c))
-        ((Equiv.piEquivPiSubtypeProd (· ∈ Q) fun v => Fin (n v)).symm (b, c')) =
-      M a b * if c = c' then 1 else 0 := by
-  let e : SiteConfig n ≃ RegionConfig n Q × ((v : {v // v ∉ Q}) → Fin (n v)) :=
-    Equiv.piEquivPiSubtypeProd (· ∈ Q) fun v => Fin (n v)
-  change localLift Q M (e.symm (a, c)) (e.symm (b, c')) =
-    M a b * if c = c' then 1 else 0
-  by_cases h : c = c'
-  · subst c'
-    have hout : ∀ v ∉ Q, e.symm (a, c) v = e.symm (b, c) v := by
-      intro v hv
-      simp [e, Equiv.piEquivPiSubtypeProd, hv]
-    have ha : (fun v : {v // v ∈ Q} => e.symm (a, c) v.1) = a := by
-      funext v
-      simp [e, Equiv.piEquivPiSubtypeProd]
-    have hb : (fun v : {v // v ∈ Q} => e.symm (b, c) v.1) = b := by
-      funext v
-      simp [e, Equiv.piEquivPiSubtypeProd]
-    rw [localLift_apply, if_pos hout, ha, hb, if_pos rfl, mul_one]
-  · rw [localLift_apply, if_neg h, mul_zero, if_neg]
-    obtain ⟨v, hv⟩ := Function.ne_iff.mp h
-    exact fun h' => hv (by simpa [e, Equiv.piEquivPiSubtypeProd, v.2] using h' v.1 v.2)
 
 omit [Fintype V] in
 theorem splitEquiv_symm_apply_eq (k : ℕ) (Q : Finset V)
@@ -77,13 +38,8 @@ theorem reindex_tensorPow_localLift (k : ℕ) (Q : Finset V)
       tensorPow (k := k) M ⊗ₖ (1 : Matrix (Fin k → (v : {v // v ∉ Q}) → Fin (n v))
         (Fin k → (v : {v // v ∉ Q}) → Fin (n v)) ℂ) := by
   ext p p'
-  simp only [reindex_apply, submatrix_apply, kroneckerMap_apply, tensorPow_apply,
-    splitEquiv_symm_apply_eq, localLift_splitEquiv_apply, prod_mul_distrib, one_apply]
-  congr 1
-  by_cases h : p.2 = p'.2
-  · simp [h]
-  · obtain ⟨j, hj⟩ := Function.ne_iff.mp h
-    rw [if_neg h, prod_eq_zero (mem_univ j) (if_neg hj)]
+  simp [tensorPow_apply, splitEquiv_symm_apply_eq, localLift_eq_reindex_kronecker, one_apply,
+    prod_ite_zero, ← funext_iff]
 
 /-- **The integral representation in lifted form** (`05-replicas.tex`, equation
 `replicas:W-integral`): `W_{Q,k} = ∫ ((τ^t ⊗ 1)^{⊗k}) dζ_Q(τ)` on `V^{⊗k}`, for
@@ -106,20 +62,15 @@ theorem exists_replicaMetric_integral_localLift [∀ v, NeZero (n v)] {t : ℝ} 
         tensorPow (k := k) (τ ω ^ t) (splitEquiv _ k Q x).1 (splitEquiv _ k Q y).1 *
           (1 : Matrix (Fin k → (v : {v // v ∉ Q}) → Fin (n v))
             (Fin k → (v : {v // v ∉ Q}) → Fin (n v)) ℂ) (splitEquiv _ k Q x).2
-              (splitEquiv _ k Q y).2 := by
-    intro k x y ω
-    have h := congrFun (congrFun (reindex_tensorPow_localLift k Q (τ ω ^ t))
-      (splitEquiv _ k Q x)) (splitEquiv _ k Q y)
-    simpa [reindex_apply, kroneckerMap_apply] using h
+              (splitEquiv _ k Q y).2 := fun k x y ω => by
+    simpa [reindex_apply, kroneckerMap_apply] using congrFun (congrFun
+      (reindex_tensorPow_localLift k Q (τ ω ^ t)) (splitEquiv _ k Q x)) (splitEquiv _ k Q y)
   refine ⟨Ω, inferInstance, P, hP, τ, hτ, fun k x y => ?_, fun k x y => ?_⟩
-  · simp only [hentry]
-    exact (hint k _ _).mul_const _
+  · simpa only [hentry] using (hint k _ _).mul_const _
   · have h := congrFun (congrFun (heq k) (splitEquiv _ k Q x)) (splitEquiv _ k Q y)
     simp only [reindex_apply, submatrix_apply, Equiv.symm_apply_apply, kroneckerMap_apply,
       of_apply] at h
-    rw [h]
-    simp only [hentry]
-    rw [integral_mul_const]
+    simp only [h, hentry, integral_mul_const]
 
 /-! ### Tensor-power vectors -/
 
@@ -160,11 +111,8 @@ theorem norm_of_integral_mulVec_le {Ω' : Type*} [MeasurableSpace Ω'] {P : Meas
     rw [eval_integral_piLp hF]
     change ((Matrix.of fun x y => ∫ ω, G ω x y ∂P) *ᵥ u) x = ∫ ω, (G ω *ᵥ u) x ∂P
     simp only [mulVec, dotProduct, of_apply]
-    rw [integral_finsetSum _ fun y _ => (hG x y).mul_const _]
-    exact sum_congr rfl fun y _ => (integral_mul_const _ _).symm
-  rw [heq]
-  have h := norm_integral_le_of_norm_le_const (μ := P) (f := F) hB
-  rwa [probReal_univ, mul_one] at h
+    simp only [integral_finsetSum _ fun y _ => (hG x y).mul_const _, integral_mul_const]
+  simpa [heq] using norm_integral_le_of_norm_le_const (μ := P) (f := F) hB
 
 omit [DecidableEq Ω] in
 theorem mul_of_integral {Ω' : Type*} [MeasurableSpace Ω'] {P : Measure Ω'} (A : Matrix Ω Ω ℂ)
@@ -172,8 +120,7 @@ theorem mul_of_integral {Ω' : Type*} [MeasurableSpace Ω'] {P : Measure Ω'} (A
     A * Matrix.of (fun x y => ∫ ω, H ω x y ∂P) = Matrix.of fun x y => ∫ ω, (A * H ω) x y ∂P := by
   ext x y
   simp only [Matrix.mul_apply, of_apply]
-  rw [integral_finsetSum _ fun z _ => (hH z y).const_mul _]
-  exact sum_congr rfl fun z _ => (integral_const_mul _ _).symm
+  simp only [integral_finsetSum _ fun z _ => (hH z y).const_mul _, integral_const_mul]
 
 end Vectors
 

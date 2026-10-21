@@ -2,13 +2,6 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from LionSR/QICLean commit e44381d9054ba5c42c720624cb690b251ad21533,
-`QICLean/Representation/ReplicaSymmetricMetricFloor.lean` (Apache 2.0).
-Only `exists_replicaMetric_symProj_inverse_bound_and_floor` and
-`exists_replicaMetric_symProj_isometric_floor` are ported; the source's
-`exists_replicaMetric_symmetric_floor` is left out (it needs
-`QICLean.Representation.ReplicaSymmetricSupport`, which is not ported).
 -/
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaWholeInverse
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaDisjointMetricPositivity
@@ -19,18 +12,8 @@ import AreaLawRefactored.S06_Replicas.Ported.InverseCompressionLowerPin
 /-!
 # A polynomial floor on simultaneous symmetric copies
 
-The partition metric is the literal squared product of the three replica
-metrics. On the simultaneous symmetric space its inverse is bounded by a
-polynomial in the copy number, and the metric itself has the reciprocal floor;
-both bounds pass to every isometry onto that space.
-
-## References
-
-OpenAI, *A two-dimensional area law from a global spectral gap*, September
-24, 2026, revision `adc7f1241b42e322a6451854ab7e4b4c146bf78a`:
-`05-replicas.tex`, Lemma 6.1(2–3), lines 99–115; Lemma 6.2,
-equation `replicas:W-comparison`, lines 305–316; equation
-`replicas:leaf-metric`; and `07-comparators.tex`, lines 454–476 and 603–615.
+On the simultaneous symmetric space the inverse partition metric is bounded by a polynomial in
+the copy number, and the metric has the reciprocal floor (`07-comparators.tex`, lines 603–615).
 -/
 
 open Matrix PermutationRepresentation
@@ -42,14 +25,8 @@ variable {V : Type*} [Fintype V] [DecidableEq V]
   (ι : V → Type*) [∀ v, Fintype (ι v)] [∀ v, DecidableEq (ι v)]
   [∀ v, Nonempty (ι v)]
 
-section IsometricFloor
-
-open scoped Matrix.Norms.L2Operator
-
-/-- The actual inverse squared metric has a polynomial bound on the full
-simultaneous symmetric space, and the original metric has the reciprocal
-floor there. The three regions form an arbitrary disjoint cover, including
-empty regions and zero copies. Source: `07-comparators.tex`, lines 603--615. -/
+/-- Polynomial bound for the inverse partition metric on the symmetric space, and the
+reciprocal floor for the metric. -/
 theorem exists_replicaMetric_symProj_inverse_bound_and_floor
     {t : ℝ} (ht : 0 < t) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (k : ℕ) (P Y F : Finset V),
@@ -61,8 +38,8 @@ theorem exists_replicaMetric_symProj_inverse_bound_and_floor
       Q * A⁻¹ * Q ≤ ((k : ℝ) + 2) ^ C • Q ∧
         ((k : ℝ) + 2) ^ (-C) • Q ≤ A := by
   obtain ⟨C, hC, hwhole⟩ := exists_replicaMetric_inv_square_le_exp ι ht
-  refine ⟨C, hC, ?_⟩
-  intro k P Y F hPY hPF hYF hcover Q W A
+  refine ⟨C, hC, fun k P Y F hPY hPF hYF hcover => ?_⟩
+  intro Q W A
   have hcover' : Y ∪ (P ∪ F) = Finset.univ := by
     rw [← hcover, Finset.union_left_comm, Finset.union_assoc]
   let L := fun S => labelEntropy (subsystemPerm k ι S)
@@ -70,7 +47,6 @@ theorem exists_replicaMetric_symProj_inverse_bound_and_floor
   let p : ℝ := ((k : ℝ) + 2) ^ C
   have hp : 0 < p := Real.rpow_pos_of_pos (by positivity) C
   have hQ : IsStarProjection Q := isStarProjection_symProj _
-  have hQH : Q.IsHermitian := hQ.isSelfAdjoint.isHermitian
   have hG : G.IsHermitian :=
     ((isHermitian_labelObservable _ _).add (isHermitian_labelObservable _ _)).sub
       (isHermitian_labelObservable _ _)
@@ -84,20 +60,15 @@ theorem exists_replicaMetric_symProj_inverse_bound_and_floor
         (by simpa only [zero_smul] using hsupport.2) (show 0 ≤ 2 * t by positivity)
   have hinv : A⁻¹ ≤ p • NormedSpace.exp ((-(2 * t)) • G) := by
     simpa only [Complex.coe_smul] using hwhole k P Y F hPY hPF hYF
-  have hcompressed : Q * A⁻¹ * Q ≤
-      p • (Q * NormedSpace.exp ((-(2 * t)) • G) * Q) := by
-    apply Matrix.le_iff.mpr
-    simpa only [hQH.eq, Matrix.mul_sub, Matrix.sub_mul,
+  have hbound : Q * A⁻¹ * Q ≤ p • Q := (show Q * A⁻¹ * Q ≤
+      p • (Q * NormedSpace.exp ((-(2 * t)) • G) * Q) from Matrix.le_iff.mpr (by
+    simpa only [hQ.isSelfAdjoint.isHermitian.eq, Matrix.mul_sub, Matrix.sub_mul,
       Matrix.mul_smul, Matrix.smul_mul] using
-      (Matrix.le_iff.mp hinv).conjTranspose_mul_mul_same Q
-  have hbound : Q * A⁻¹ * Q ≤ p • Q :=
-    hcompressed.trans (smul_le_smul_of_nonneg_left hexp hp.le)
-  have hA : A.PosDef :=
-    posDef_replicaMetric_disjoint_inv_mul_inv_mul_sq ι ht.le k hPF hPY hYF.symm
+      (Matrix.le_iff.mp hinv).conjTranspose_mul_mul_same Q)).trans
+    (smul_le_smul_of_nonneg_left hexp hp.le)
   refine ⟨hbound, ?_⟩
   simpa only [p, Real.rpow_neg (by positivity : 0 ≤ (k : ℝ) + 2)] using
-    hA.inv_smul_projection_le_of_compression_inv_le hQ hp hbound
-
-end IsometricFloor
+    (posDef_replicaMetric_disjoint_inv_mul_inv_mul_sq ι ht.le k hPF hPY
+      hYF.symm).inv_smul_projection_le_of_compression_inv_le hQ hp hbound
 
 end TensorPower

@@ -46,9 +46,8 @@ def rotate (V : unitaryGroup Ω ℂ) (θ : Sphere ι) : Sphere ι :=
       mem_unitaryGroup_iff'.mp V.2, one_mulVec, dotProduct_comm, h]⟩
 
 theorem rotate_sphereMap (V W : unitaryGroup Ω ℂ) (a : Ω) :
-    rotate ι V (sphereMap ι a W) = sphereMap ι a (V * W) := by
-  apply Subtype.ext
-  exact mulVec_mulVec _ _ _
+    rotate ι V (sphereMap ι a W) = sphereMap ι a (V * W) :=
+  Subtype.ext (mulVec_mulVec _ _ _)
 
 theorem continuous_rotate (V : unitaryGroup Ω ℂ) : Continuous (rotate ι V) :=
   (continuous_const.matrix_mulVec continuous_subtype_val).subtype_mk _
@@ -198,18 +197,6 @@ theorem eq_replicas_husimi {σ : Matrix (Config ι k) (Config ι k) ℂ} (hσp :
   refine ⟨?_⟩
   rw [← ENNReal.ofReal_toReal (measure_ne_top _ _), ← measureReal_def, h1, ENNReal.ofReal_one]
 
-/-- The uniform trace limit of a sequence with coherent symbol `f`, against `μ_σ`:
-`Tr σ X_k - ∫ f dμ_σ → 0` uniformly in densities `σ` on `𝒮_k`. -/
-theorem eventually_norm_trace_sub_integral_μ_le
-    {X : ∀ k, Matrix (Config ι k) (Config ι k) ℂ} {f : (Ω → ℂ) → ℂ}
-    (hX : TensorPower.HasCoherentSymbol X f) {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ k in Filter.atTop, ∀ σ : Matrix (Config ι k) (Config ι k) ℂ, σ.PosSemidef →
-      σ.trace = 1 → (∀ π, U ι k Finset.univ π * σ = σ) →
-        ‖(σ * X k).trace - ∫ θ, f θ.1 ∂μ ι k σ‖ ≤ ε := by
-  filter_upwards [hX.eventually_norm_trace_sub_le hε] with k hk σ hσp hσt hσ
-  rw [← coherentIntegral_eq_integral_μ ι k hσp (Classical.arbitrary _) hX.continuousOn]
-  exact hk _ σ hσp hσt fun π => by rw [← U_univ_eq]; exact hσ π
-
 /-! ## D6.14 The coherent measure on a fixed number of copies -/
 
 variable {ι k} {m : ℕ}
@@ -238,12 +225,10 @@ theorem T_eq_injectionAverage (G : Matrix (Config ι m) (Config ι m) ℂ) :
   ext x y
   rw [TensorPower.placeOp_apply, embed]
   have : (TensorPower.placeSplit e x).2 = (TensorPower.placeSplit e y).2 ↔
-      ∀ j, (∀ a, e a ≠ j) → x j = y j := by
-    refine ⟨fun h j hj => congrFun h ⟨j, fun ⟨a, ha⟩ => hj a ha⟩, fun h => funext fun j => ?_⟩
-    exact h j fun a ha => j.2 ⟨a, ha⟩
-  by_cases h : ∀ j, (∀ a, e a ≠ j) → x j = y j
-  · rw [if_pos h, if_pos (this.mpr h), mul_one]
-  · rw [if_neg h, if_neg (fun h' => h (this.mp h')), mul_zero]
+      ∀ j, (∀ a, e a ≠ j) → x j = y j :=
+    ⟨fun h j hj => congrFun h ⟨j, fun ⟨a, ha⟩ => hj a ha⟩,
+      fun h => funext fun j => h j fun a ha => j.2 ⟨a, ha⟩⟩
+  simp only [this, mul_ite, mul_one, mul_zero]
 
 omit [∀ f, Nonempty (ι f)] in
 /-- D6.1. `𝒮_k` is the invariant subspace of the whole-copy permutations. -/
@@ -278,8 +263,8 @@ theorem trace_mul_placeOp_first (hm : m ≤ k) (σ : Matrix (Config ι k) (Confi
     (G : Matrix (Config ι m) (Config ι m) ℂ) :
     (σ * TensorPower.placeOp (Fin.castLEEmb hm) G).trace = (marginal hm σ * G).trace := by
   set e : Config ι k ≃ _ := TensorPower.placeSplit (Fin.castLEEmb hm)
-  rw [marginal, ← trace_mul_kron_one_right, TensorPower.placeOp]
-  rw [← Matrix.trace_submatrix (σ * reindex e.symm e.symm _) e.symm]
+  rw [marginal, ← trace_mul_kron_one_right, TensorPower.placeOp,
+    ← Matrix.trace_submatrix (σ * reindex e.symm e.symm _) e.symm]
   simp only [reindex_apply, Equiv.symm_symm]
   rw [← submatrix_mul_equiv _ _ _ e.symm, submatrix_submatrix, Equiv.self_comp_symm,
     submatrix_id_id]
@@ -387,7 +372,7 @@ theorem projS_mul_mul_projS_mulVec (B : Matrix (Config ι k) (Config ι k) ℂ)
     {z : Config ι k → ℂ} (hz : z ∈ S ι k) :
     (projS ι k * B * projS ι k) *ᵥ z = Tk k B *ᵥ z := by
   have hz' : ∀ π, permOp (TensorPower.copyPerm Ω k) π *ᵥ z = z := by
-    have := hz; rwa [S_eq, mem_invariantSubspace] at this
+    rwa [S_eq, mem_invariantSubspace] at hz
   have hP : projS ι k *ᵥ z = z := by
     rw [projS_eq]; exact symProj_mulVec_of_mem _ (S_eq (ι := ι) (k := k) ▸ hz)
   have hPU : projS ι k = ((k.factorial : ℕ) : ℂ)⁻¹ • ∑ π, U ι k Finset.univ π := by
@@ -470,9 +455,10 @@ theorem eq_replicas_injection_product_symbol (w w' : FreeAlgebra ℂ (Letter n))
   refine ⟨h, h.conjTranspose, h.mul h', fun ε hε => ?_⟩
   -- D6.15.4 several words, D6.15.6 multiplicativity
   filter_upwards [(Filter.tendsto_add_atTop_nat 1).eventually
-    (eventually_norm_trace_sub_integral_μ_le _ h hε)] with k hk
-  rw [projS_eq]
-  exact hk
+    (h.eventually_norm_trace_sub_le hε)] with k hk σ hσp hσt hσ
+  rw [projS_eq, ← coherentIntegral_eq_integral_μ _ _ hσp (Classical.arbitrary _)
+    (φ := scalarSymbol w) h.continuousOn]
+  exact hk _ σ hσp hσt fun π => by rw [← U_univ_eq]; exact hσ π
 
 end Words
 

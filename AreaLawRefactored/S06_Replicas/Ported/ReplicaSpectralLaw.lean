@@ -10,29 +10,8 @@ import AreaLawForMathlib.Analysis.Matrix.CfcConjugation
 /-!
 # The spectral law of the replica metrics
 
-Fix `d ≥ 1` and `t > 0`. The proof of Lemma 6.2 of the area-law paper (*A two-dimensional area
-law from a global spectral gap*, `05-replicas.tex`, lines 336–347) chooses the eigenvalues `s`
-of a density matrix on `ℂ^d` with density proportional to `Δ(s) Δ(s^t)` on the simplex and an
-independent Haar-distributed unitary eigenbasis. Here the eigenvalues are `x/∑ x` for `x` in
-the positive orthant with density proportional to `a_δ(x) a_δ(x^t) e^{-∑ x}`; since
-`a_δ(x) a_δ(x^t)` is homogeneous, this is the same law of `s`.
-
-This file defines the law and its samples `σ = U diag(x/∑x) U†`, and proves that
-`∫ (σ^t)^{⊗k}` is the label observable of the common label function on `(ℂ^d)^{⊗k}`:
-
-* the integral over the unitary is the twirl of `diag(s^t)^{⊗k}`, a central label function with
-  eigenvalue `χ_λ(s^t)/dim V_λ`;
-* by the Weyl character formula, `a_δ(x^t) χ_λ(x^t) = a_l(x^t)`, so the average of the
-  eigenvalue is the normalized gamma integral, which is `w_k(λ)`.
-
-Ported from `LionSR/QICLean`, `QICLean/Representation/ReplicaSpectralLaw.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `TensorPower.specDensity`, `TensorPower.specNorm`, `TensorPower.specMeasure`.
-* `TensorPower.specSample` — `σ = U diag(x/∑ x) U†`.
-* `TensorPower.integral_specSample_tensorPow` — `∫ (σ^t)^{⊗k} = ∑_λ w_k(λ) π^λ`.
+The samples `σ = U diag(x/∑ x) U†`, with `x` of density `a_δ(x) a_δ(x^t) e^{-∑ x}` on the
+orthant and `U` Haar, satisfy `∫ (σ^t)^{⊗k} = ∑_λ w_k(λ) π^λ` (`05-replicas.tex`, l. 336–364).
 -/
 
 open MeasureTheory Matrix Finset PermutationRepresentation Partition
@@ -59,36 +38,9 @@ theorem gammaIntegrand_zero (t : ℝ) (x : Fin d → ℝ) :
 theorem specNorm_eq_integral (t : ℝ) : specNorm d t = ∫ x, specDensity d t x ∂(orthant d) := by
   simp only [specNorm, gammaIntegral, gammaIntegrand_zero]
 
-theorem continuous_alternant (α : Fin d → ℕ) : Continuous (alternant (R := ℝ) α) := by
-  unfold alternant
-  fun_prop
-
-theorem measurable_specDensity {t : ℝ} (ht : 0 ≤ t) : Measurable (specDensity d t) := by
-  have h1 := continuous_alternant (d := d) (delta d)
-  have h2 : Continuous fun x : Fin d → ℝ => alternant (delta d) (fun i => x i ^ t) :=
-    h1.comp (continuous_pi fun i => (Real.continuous_rpow_const ht).comp (continuous_apply i))
-  unfold specDensity
-  exact ((h1.mul h2).mul (Real.continuous_exp.comp
-    (continuous_finsetSum _ fun i _ => continuous_apply i).neg)).measurable
-
 theorem specDensity_nonneg {t : ℝ} (ht : 0 ≤ t) {x : Fin d → ℝ} (hx : ∀ i, 0 < x i) :
     0 ≤ specDensity d t x :=
   mul_nonneg (alternant_delta_mul_rpow_nonneg ht hx) (Real.exp_pos _).le
-
-theorem integrable_specDensity (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) :
-    Integrable (specDensity d t) (orthant d) := by
-  have h := integrable_gammaIntegrand hd ht (delta d) le_rfl (by
-    have : (0 : ℝ) < d := by exact_mod_cast hd
-    positivity)
-  simpa only [gammaIntegrand_zero] using h
-
-theorem delta_injective : Function.Injective (fun i : Fin d => ((delta d i : ℕ) : ℝ)) := by
-  intro i j h
-  have h' : delta d i = delta d j := by
-    have h'' : ((delta d i : ℕ) : ℝ) = delta d j := h
-    exact_mod_cast h''
-  simp only [shiftedPart, Pi.zero_apply, zero_add] at h'
-  exact Fin.ext (by have := i.2; have := j.2; omega)
 
 theorem specNorm_pos (hd : 0 < d) {t : ℝ} (ht : 0 < t) : 0 < specNorm d t := by
   have hnn : 0 ≤ specNorm d t := by
@@ -103,7 +55,11 @@ theorem specNorm_pos (hd : 0 < d) {t : ℝ} (ht : 0 < t) : 0 < specNorm d t := b
   have hG : (0 : ℝ) < ∏ j, Real.Gamma (1 + t * ((delta d j : ℕ) : ℝ)) :=
     prod_pos fun j _ => Real.Gamma_pos_of_pos (by positivity)
   have hf : (d.factorial : ℝ) ≠ 0 := by exact_mod_cast d.factorial_ne_zero
-  have := alternant_delta_ne_zero (delta_injective (d := d))
+  have := alternant_delta_ne_zero (y := fun i : Fin d => ((delta d i : ℕ) : ℝ)) fun i j h => by
+    have h'' : ((delta d i : ℕ) : ℝ) = delta d j := h
+    have h' : delta d i = delta d j := by exact_mod_cast h''
+    simp only [shiftedPart, Pi.zero_apply, zero_add] at h'
+    exact Fin.ext (by have := i.2; have := j.2; omega)
   exact (mul_ne_zero (mul_ne_zero (mul_ne_zero hf (pow_ne_zero _ ht.ne')) hG.ne') this) h.symm
 
 /-- The normalized spectral density, as a nonnegative function. -/
@@ -115,7 +71,8 @@ noncomputable def specMeasure (d : ℕ) (t : ℝ) : Measure (Fin d → ℝ) :=
   (orthant d).withDensity fun x => (specWeight d t x : ℝ≥0∞)
 
 theorem measurable_specWeight {t : ℝ} (ht : 0 ≤ t) : Measurable (specWeight d t) :=
-  ((measurable_specDensity ht).div_const _).real_toNNReal
+  ((by unfold specDensity alternant; fun_prop (disch := assumption) :
+    Continuous (specDensity d t)).measurable.div_const _).real_toNNReal
 
 theorem coe_specWeight_ae (hd : 0 < d) {t : ℝ} (ht : 0 < t) :
     ∀ᵐ x ∂(orthant d), (specWeight d t x : ℝ) = specDensity d t x / specNorm d t := by
@@ -126,9 +83,12 @@ theorem isProbabilityMeasure_specMeasure (hd : 0 < d) {t : ℝ} (ht : 0 < t) :
     IsProbabilityMeasure (specMeasure d t) := by
   constructor
   rw [specMeasure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
-  have hint : Integrable (fun x => (specWeight d t x : ℝ)) (orthant d) :=
-    ((integrable_specDensity hd ht.le).div_const (specNorm d t)).congr
+  have hint : Integrable (fun x => (specWeight d t x : ℝ)) (orthant d) := by
+    refine (Integrable.div_const ?_ (specNorm d t)).congr
       ((coe_specWeight_ae hd ht).mono fun x hx => hx.symm)
+    simpa only [gammaIntegrand_zero] using integrable_gammaIntegrand hd ht.le (delta d) le_rfl
+      (by have : (0 : ℝ) < d := by exact_mod_cast hd
+          positivity)
   rw [lintegral_coe_eq_integral _ hint, integral_congr_ae (coe_specWeight_ae hd ht),
     integral_div, ← specNorm_eq_integral, div_self (specNorm_pos hd ht).ne', ENNReal.ofReal_one]
 
@@ -145,30 +105,14 @@ theorem ae_specMeasure_pos {t : ℝ} :
 
 /-! ### Characters at real diagonal matrices -/
 
-theorem tensorPow_smul {Ω : Type*} [DecidableEq Ω] {k : ℕ} (c : ℂ)
-    (A : Matrix Ω Ω ℂ) : tensorPow (k := k) (c • A) = c ^ k • tensorPow A := by
-  ext x y
-  simp [tensorPow_apply, prod_mul_distrib, prod_const]
-
 theorem glChar_mul_left {q k : ℕ} (l : IrrepLabel (Equiv.Perm (Fin k))) (c : ℂ)
     (y : Fin q → ℂ) : glChar q l (fun i => c * y i) = c ^ k * glChar q l y := by
   have : diagonal (fun i => c * y i) = c • diagonal y := by
     rw [← diagonal_smul]; rfl
+  have tensorPow_smul : tensorPow (k := k) (c • diagonal y) = c ^ k • tensorPow (diagonal y) := by
+    ext x y
+    simp [tensorPow_apply, prod_mul_distrib, prod_const]
   rw [glChar, glChar, this, tensorPow_smul, mul_smul_comm, trace_smul, smul_eq_mul]
-
-theorem alternant_ofReal (α : Fin d → ℕ) (y : Fin d → ℝ) :
-    alternant α (fun i => (y i : ℂ)) = (alternant (R := ℝ) α y : ℂ) := by
-  simp only [alternant_eq_sum]
-  push_cast
-  rfl
-
-/-- The Weyl character formula at real points. -/
-theorem alternant_mul_glChar_ofReal {k : ℕ} {l : IrrepLabel (Equiv.Perm (Fin k))}
-    (hl : HasRows d l) (y : Fin d → ℝ) :
-    (alternant (R := ℝ) (delta d) y : ℂ) * glChar d l (fun i => (y i : ℂ)) =
-      (alternant (R := ℝ) (shiftedPart (part d l)) y : ℂ) := by
-  rw [← alternant_ofReal, ← alternant_ofReal]
-  exact alternant_mul_glChar hl _
 
 /-- The spectral density times the eigenvalue of the twirl is the gamma integrand. -/
 theorem specDensity_mul_glChar {t : ℝ} {k : ℕ} {l : IrrepLabel (Equiv.Perm (Fin k))}
@@ -185,7 +129,11 @@ theorem specDensity_mul_glChar {t : ℝ} {k : ℕ} {l : IrrepLabel (Equiv.Perm (
     push_cast
     ring
   rw [hy, glChar_mul_left]
-  have hw := alternant_mul_glChar_ofReal hl (fun i => x i ^ t)
+  have alternant_ofReal (α : Fin d → ℕ) (y : Fin d → ℝ) :
+      alternant α (fun i => (y i : ℂ)) = (alternant (R := ℝ) α y : ℂ) := by
+    simp only [alternant_eq_sum]; push_cast; rfl
+  have hw := alternant_mul_glChar hl (fun i => ((x i ^ t : ℝ) : ℂ))
+  rw [alternant_ofReal, alternant_ofReal] at hw
   have hpow : ((S ^ (-t) : ℝ) : ℂ) ^ k = ((S ^ (-(t * k)) : ℝ) : ℂ) := by
     rw [← Complex.ofReal_pow, ← Real.rpow_natCast, ← Real.rpow_mul hS.le]
     congr 2
@@ -209,8 +157,7 @@ theorem specSample_rpow (hd : 0 < d) {t : ℝ} {x : Fin d → ℝ}
     specSample x U ^ t = (U : Matrix (Fin d) (Fin d) ℂ) *
       diagonal (fun i => (((x i / ∑ j, x j) ^ t : ℝ) : ℂ)) *
         star (U : Matrix (Fin d) (Fin d) ℂ) := by
-  have hS : 0 < ∑ j, x j := by
-    exact sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
+  have hS : 0 < ∑ j, x j := sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
   have hD : (diagonal (fun i => ((x i / ∑ j, x j : ℝ) : ℂ))).PosSemidef :=
     PosSemidef.diagonal fun i => Complex.zero_le_real.mpr (div_nonneg (hx i).le hS.le)
   rw [specSample, rpow_conj_unitary hD t U, CFC.rpow_eq_cfc_real hD.nonneg]
@@ -226,8 +173,7 @@ theorem specSample_rpow (hd : 0 < d) {t : ℝ} {x : Fin d → ℝ}
 theorem specSample_posDef (hd : 0 < d) {x : Fin d → ℝ} (hx : ∀ i, 0 < x i)
     (U : unitaryGroup (Fin d) ℂ) :
     (specSample x U).PosDef := by
-  have hS : 0 < ∑ j, x j := by
-    exact sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
+  have hS : 0 < ∑ j, x j := sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
   have hD : (diagonal (fun i => ((x i / ∑ j, x j : ℝ) : ℂ))).PosDef :=
     posDef_diagonal_iff.mpr fun i => Complex.zero_lt_real.mpr (div_pos (hx i) hS)
   have hinj : Function.Injective (star (U : Matrix (Fin d) (Fin d) ℂ)).mulVec := by
@@ -240,10 +186,9 @@ theorem specSample_posDef (hd : 0 < d) {x : Fin d → ℝ} (hx : ∀ i, 0 < x i)
 theorem trace_specSample (hd : 0 < d) {x : Fin d → ℝ} (hx : ∀ i, 0 < x i)
     (U : unitaryGroup (Fin d) ℂ) :
     (specSample x U).trace = 1 := by
-  have hS : 0 < ∑ j, x j := by
-    exact sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
-  rw [specSample, trace_mul_cycle, mem_unitaryGroup_iff'.mp U.2, Matrix.one_mul, trace_diagonal]
-  rw [← Complex.ofReal_sum, ← sum_div, div_self hS.ne', Complex.ofReal_one]
+  have hS : 0 < ∑ j, x j := sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
+  rw [specSample, trace_mul_cycle, mem_unitaryGroup_iff'.mp U.2, Matrix.one_mul, trace_diagonal,
+    ← Complex.ofReal_sum, ← sum_div, div_self hS.ne', Complex.ofReal_one]
 
 /-! ### The full-dimensional integral -/
 
@@ -278,44 +223,19 @@ theorem norm_sampleEntry_le (hd : 0 < d) {t : ℝ} (ht : 0 ≤ t) {k : ℕ} (a b
   have hS : 0 < ∑ j, ω.1 j := sum_pos (fun j _ => hx j) ⟨⟨0, hd⟩, mem_univ _⟩
   unfold sampleEntry
   rw [norm_prod]
-  calc ∏ m, ‖∑ c, (ω.2 : Matrix (Fin d) (Fin d) ℂ) (a m) c *
-        (((ω.1 c / ∑ j, ω.1 j) ^ t : ℝ) : ℂ) * star ((ω.2 : Matrix (Fin d) (Fin d) ℂ) (b m) c)‖
-      ≤ ∏ _m : Fin k, (d : ℝ) := by
-        refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun m _ => ?_)
-        refine (norm_sum_le _ _).trans ?_
-        calc ∑ c, ‖(ω.2 : Matrix (Fin d) (Fin d) ℂ) (a m) c *
-              (((ω.1 c / ∑ j, ω.1 j) ^ t : ℝ) : ℂ) *
-              star ((ω.2 : Matrix (Fin d) (Fin d) ℂ) (b m) c)‖ ≤ ∑ _c : Fin d, (1 : ℝ) := by
-              refine sum_le_sum fun c _ => ?_
-              rw [norm_mul, norm_mul, norm_star, Complex.norm_real, Real.norm_eq_abs]
-              have h1 := norm_apply_le_one_of_mem_unitaryGroup ω.2.2 (a m) c
-              have h2 := norm_apply_le_one_of_mem_unitaryGroup ω.2.2 (b m) c
-              have hq : 0 ≤ ω.1 c / ∑ j, ω.1 j := div_nonneg (hx c).le hS.le
-              have hq1 : ω.1 c / ∑ j, ω.1 j ≤ 1 := by
-                rw [div_le_one hS]
-                exact single_le_sum (fun j _ => (hx j).le) (mem_univ c)
-              have h3 : |(ω.1 c / ∑ j, ω.1 j) ^ t| ≤ 1 := by
-                rw [abs_of_nonneg (Real.rpow_nonneg hq t)]
-                exact Real.rpow_le_one hq hq1 ht
-              calc ‖(ω.2 : Matrix (Fin d) (Fin d) ℂ) (a m) c‖ * |(ω.1 c / ∑ j, ω.1 j) ^ t| *
-                    ‖(ω.2 : Matrix (Fin d) (Fin d) ℂ) (b m) c‖ ≤ 1 * 1 * 1 := by gcongr
-                _ = 1 := by ring
-          _ = d := by simp
-    _ = (d : ℝ) ^ k := by simp
+  refine (prod_le_prod (fun _ _ => norm_nonneg _) fun m _ => (norm_sum_le _ _).trans
+    ((sum_le_sum fun c _ => ?_).trans (by simp : ∑ _c : Fin d, (1 : ℝ) = d).le)).trans (by simp)
+  have hq : 0 ≤ ω.1 c / ∑ j, ω.1 j := div_nonneg (hx c).le hS.le
+  rw [norm_mul, norm_mul, norm_star, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Real.rpow_nonneg hq t)]
+  exact mul_le_one₀ (mul_le_one₀ (norm_apply_le_one_of_mem_unitaryGroup ω.2.2 (a m) c)
+    (Real.rpow_nonneg hq t) (Real.rpow_le_one hq ((div_le_one hS).2
+      (single_le_sum (fun j _ => (hx j).le) (mem_univ c))) ht)) (norm_nonneg _)
+    (norm_apply_le_one_of_mem_unitaryGroup ω.2.2 (b m) c)
 
 theorem ae_prod_pos {t : ℝ} :
     ∀ᵐ ω ∂((specMeasure d t).prod (unitaryHaar (Fin d))), ∀ i, 0 < ω.1 i := by
   exact Measure.quasiMeasurePreserving_fst.ae ae_specMeasure_pos
-
-theorem labelProj_eq_zero_of_multiplicity {k : ℕ} {l : IrrepLabel (Equiv.Perm (Fin k))}
-    (h : multiplicity (copyPerm (Fin d) k) l = 0) : labelProj (copyPerm (Fin d) k) l = 0 := by
-  have htr := trace_labelProj (copyPerm (Fin d) k) l
-  rw [h, mul_zero, Nat.cast_zero, trace_eq_finrank_range_of_mul_self (labelProj_mul_self _ l)]
-    at htr
-  have h0 : LinearMap.range (toLin' (labelProj (copyPerm (Fin d) k) l)) = ⊥ :=
-    Submodule.finrank_eq_zero.mp (by exact_mod_cast htr)
-  rw [LinearMap.range_eq_bot] at h0
-  exact toLin'.injective (by rw [h0, map_zero])
 
 /-- The average over the unitary eigenbasis is the twirl, a central label function with
 eigenvalue `χ_λ(y)/dim V_λ`. -/
@@ -340,7 +260,14 @@ theorem integral_unitary_sampleEntry (hd : 0 < d) {t : ℝ} {k : ℕ}
   refine sum_congr rfl fun l _ => ?_
   rw [Matrix.smul_apply, smul_eq_mul]
   by_cases hm : multiplicity (copyPerm (Fin d) k) l = 0
-  · rw [labelProj_eq_zero_of_multiplicity hm]; simp
+  · have htr := trace_labelProj (copyPerm (Fin d) k) l
+    rw [hm, mul_zero, Nat.cast_zero, trace_eq_finrank_range_of_mul_self (labelProj_mul_self _ l)]
+      at htr
+    have h0 : LinearMap.range (toLin' (labelProj (copyPerm (Fin d) k) l)) = ⊥ :=
+      Submodule.finrank_eq_zero.mp (by exact_mod_cast htr)
+    rw [LinearMap.range_eq_bot] at h0
+    simp [toLin'.injective (by rw [h0, map_zero] : toLin' (labelProj (copyPerm (Fin d) k) l) =
+      toLin' 0)]
   · congr 1
     have h1 := hctr l
     rw [trace_labelProj, trace_labelProj_mul_tensorPow] at h1
@@ -413,9 +340,7 @@ theorem integral_specMeasure_label (hd : 0 < d) {t : ℝ} (ht : 0 < t) {k : ℕ}
       (antitone_part l), hsum]
     rfl
 
-/-- **The full-dimensional integral representation** (`05-replicas.tex`, Lemma 6.2, equation
-`replicas:W-integral`, lines 336–364): for the samples `σ = U diag(x/∑ x) U†` of the spectral
-law with a Haar-distributed unitary `U`, `∫ (σ^t)^{⊗k} = ∑_λ w_k(λ) π^λ` on `(ℂ^d)^{⊗k}`. -/
+/-- Lemma 6.2, equation `replicas:W-integral`: `∫ (σ^t)^{⊗k} = ∑_λ w_k(λ) π^λ`. -/
 theorem integral_specSample_tensorPow (hd : 0 < d) {t : ℝ} (ht : 0 < t) {k : ℕ}
     (a b : Fin k → Fin d) :
     Integrable (fun ω : (Fin d → ℝ) × unitaryGroup (Fin d) ℂ =>
@@ -443,4 +368,3 @@ theorem integral_specSample_tensorPow (hd : 0 < d) {t : ℝ} (ht : 0 < t) {k : �
   exact sum_congr rfl fun l _ => (integral_specMeasure_label hd ht a b l).2
 
 end TensorPower
-

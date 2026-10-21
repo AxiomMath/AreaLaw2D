@@ -2,34 +2,14 @@
 Copyright (c) 2026 TNLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: TNLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Representation/BranchProbability.lean`.
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.StarOperator
 
 /-!
 # Removable-row branches and their probabilities
 
-Let `S_{m+1}` act by a permutation representation, and let `S_m` permute the first `m`
-copies. This file proves the branch statements of Lemma 6.1(6) of the area-law paper
-(*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
-132–145, proof lines 237–249):
-
-* the label `λ` of all copies and the label `ν` of the first `m` copies are compatible
-  (their projectors have nonzero product) exactly when `π^λ ≠ 0` and `ν = λ - e_i` for a
-  removable row `i`;
-* in any state commuting with the representation, conditional on `λ`, the probability of
-  the branch `ν = λ - e_i` is `d_ν / d_λ`;
-* `d_{λ - e_i} / d_λ = (l_i / k) ∏_{j ≠ i} (l_i - 1 - l_j)/(l_i - l_j) ≤ 2^q l_i / k` for a
-  padding length `q` at least the number of rows of `λ`.
-
-## Main declarations
-
-* `PermutationRepresentation.labelProj_mul_labelProj_firstCopies_ne_zero_iff`.
-* `PermutationRepresentation.trace_mul_labelProj_mul_labelProj_firstCopies`.
-* `TensorPower.dim_div_dim_eq`, `TensorPower.dim_div_dim_le`.
+The branches `ν = λ - e_i` of Lemma 6.1(6) and their probabilities `d_ν / d_λ ≤ 2^q l_i / k` (*A
+two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 132–145 and 237–249).
 -/
 
 open Finset Matrix PermutationRepresentation TensorPower
@@ -67,11 +47,9 @@ theorem block_restrict_centralIdem_eq_zero_iff (l : IrrepLabel (Equiv.Perm (Fin 
     rw [h, trace_zero] at this
     have hd : (n.dim : ℂ) ≠ 0 := by exact_mod_cast n.dim_pos.ne'
     exact_mod_cast (mul_eq_zero.mp this.symm).resolve_left hd
-  · intro h
-    refine IrrepLabel.eq_zero_of_mul_self_of_trace_eq_zero ?_ ?_
-    · rw [← IrrepLabel.block_mul, ← map_mul, IrrepLabel.centralIdem_mul_self]
-    · rw [IrrepLabel.trace_block_centralIdem, h]
-      simp
+  · exact fun h => IrrepLabel.eq_zero_of_mul_self_of_trace_eq_zero
+      (by rw [← IrrepLabel.block_mul, ← map_mul, IrrepLabel.centralIdem_mul_self])
+      (by rw [IrrepLabel.trace_block_centralIdem, h]; simp)
 
 /-- **Compatible branches** (`05-replicas.tex`, Lemma 6.1(6), lines 132–134): the full label
 `λ` and the first-`m` label `ν` are compatible exactly when `π^λ ≠ 0` and `ν = λ - e_i` for
@@ -140,11 +118,9 @@ theorem dim_div_dim_eq {l : IrrepLabel (Equiv.Perm (Fin (m + 1)))}
     · subst ha; simp [p, part, i', hli]
     · have ha' : (a : ℕ) ≠ i := fun e => ha (Fin.ext e)
       simp [p, part, Function.update_of_ne ha, h, Function.update_of_ne ha']
-  have hqn : ∀ a, q ≤ a → labelPart n a = 0 := by
-    intro a ha
-    have hai : a ≠ i := by omega
+  have hqn : ∀ a, q ≤ a → labelPart n a = 0 := fun a ha => by
     have := hq a ha
-    rwa [h, Function.update_of_ne hai] at this
+    rwa [h, Function.update_of_ne (by omega : a ≠ i)] at this
   have hdl := dim_eq_hookFormula_of_rows l hq
   have hdn := dim_eq_hookFormula_of_rows n hqn
   rw [hn] at hdn
@@ -165,13 +141,9 @@ theorem dim_div_dim_eq {l : IrrepLabel (Equiv.Perm (Fin (m + 1)))}
 theorem sub_one_div_le_two {d : ℝ} (hd : 1 ≤ |d|) : 0 ≤ (d - 1) / d ∧ (d - 1) / d ≤ 2 := by
   rcases le_or_gt 0 d with h | h
   · rw [abs_of_nonneg h] at hd
-    refine ⟨div_nonneg (by linarith) h, ?_⟩
-    rw [div_le_iff₀ (by linarith)]
-    linarith
+    exact ⟨div_nonneg (by linarith) h, by rw [div_le_iff₀ (by linarith)]; linarith⟩
   · rw [abs_of_neg h] at hd
-    refine ⟨div_nonneg_of_nonpos (by linarith) h.le, ?_⟩
-    rw [div_le_iff_of_neg h]
-    linarith
+    exact ⟨div_nonneg_of_nonpos (by linarith) h.le, by rw [div_le_iff_of_neg h]; linarith⟩
 
 /-- **The branch-probability bound** (`05-replicas.tex`, equation
 `replicas:branch-probability`): `d_{λ - e_i}/d_λ ≤ 2^q l_i/k`. -/
@@ -191,8 +163,7 @@ theorem dim_div_dim_le {l : IrrepLabel (Equiv.Perm (Fin (m + 1)))}
       0 ≤ ((Partition.shiftedPart p i' : ℝ) - 1 - Partition.shiftedPart p j) /
         ((Partition.shiftedPart p i' : ℝ) - Partition.shiftedPart p j) ∧
       ((Partition.shiftedPart p i' : ℝ) - 1 - Partition.shiftedPart p j) /
-        ((Partition.shiftedPart p i' : ℝ) - Partition.shiftedPart p j) ≤ 2 := by
-    intro j hj
+        ((Partition.shiftedPart p i' : ℝ) - Partition.shiftedPart p j) ≤ 2 := fun j hj => by
     have hne : (Partition.shiftedPart p i' : ℝ) ≠ Partition.shiftedPart p j := fun e =>
       (mem_erase.mp hj).1 (hinj e).symm
     have h1 : (1 : ℝ) ≤ |(Partition.shiftedPart p i' : ℝ) - Partition.shiftedPart p j| := by

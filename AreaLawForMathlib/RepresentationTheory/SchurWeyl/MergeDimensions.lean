@@ -2,10 +2,6 @@
 Copyright (c) 2026 TNLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: TNLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Representation/MergeDimensions.lean`.
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.GroupedCopies
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelCommutation
@@ -13,23 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelCommutation
 /-!
 # Merging the labels of disjoint subsystems
 
-This file proves the dimension inequalities of part 3 of Lemma 6.1 (`lem:schur`) of the
-area-law paper (*A two-dimensional area law from a global spectral gap*,
-`05-replicas.tex`, lines 105–111, proof lines 183–189): if `Q, E` are disjoint and their
-labels `λ, μ` are compatible with the label `ν` on `QE`, then `d_ν ≤ d_λ d_μ` and
-`d_λ ≤ d_ν d_μ`.
-
-The argument is stated for two pointwise-commuting permutation actions `φ_Q, φ_E` of a
-finite group and their product action `φ_{QE} = φ_Q φ_E`: a joint block of `λ` and `μ`
-has dimension at most `d_λ d_μ`, is invariant under the product action, and its image
-under `π^ν` is a nonzero invariant subspace of the `ν`-isotypic component.
-
-## Main declarations
-
-* `PermutationRepresentation.dim_le_mul_dim_of_compatible` — `d_ν ≤ d_λ d_μ`.
-* `PermutationRepresentation.dim_le_mul_dim_of_compatible'` — `d_λ ≤ d_ν d_μ`, through the
-  action `M ↦ U_{QE}(σ) M U_E(σ)⁻¹` on matrices, which replaces the duality argument.
-* `TensorPower.merge_dim_le` — both inequalities for disjoint subsystems.
+Lemma 6.1(3): compatible labels satisfy `d_ν ≤ d_λ d_μ` and `d_λ ≤ d_ν d_μ` (*A two-dimensional area
+law from a global spectral gap*, `05-replicas.tex`, lines 105–111 and 183–189).
 -/
 
 open MonoidAlgebra Matrix Module
@@ -48,7 +29,6 @@ theorem dim_le_mul_dim_of_compatible (hcomm : ∀ g h, Commute (φQ g) (φE h))
     ν.dim ≤ l.dim * μ.dim := by
   set ol : Fin l.dim := ⟨0, l.dim_pos⟩
   set oμ : Fin μ.dim := ⟨0, μ.dim_pos⟩
-  -- `π^ν` commutes with the central functions of `φ_Q` and `φ_E`.
   have hνl : Commute (labelProj φQ l) (labelProj φQE ν) :=
     commute_groupAlgebraRep_of_eq_mul φQ φE φQE hprod hcomm
       (IrrepLabel.centralIdem_mem_center l) _
@@ -71,13 +51,11 @@ theorem dim_le_mul_dim_of_compatible (hcomm : ∀ g h, Commute (φQ g) (φE h))
       rw [mul_assoc, ← mul_assoc (matrixUnitOp φE μ a oμ),
         ← (commute_matrixUnitOp_pair hcomm l μ ol i a oμ).eq, mul_assoc, ← mul_assoc,
         matrixUnitOp_mul_matrixUnitOp_self, matrixUnitOp_mul_matrixUnitOp_self]
-    have := h i a
-    rwa [hsplit] at this
+    rw [← hsplit]; exact h i a
   obtain ⟨x, hx⟩ := exists_mulVec_ne_zero hia
   set w := (matrixUnitOp φQ l ol i * matrixUnitOp φE μ oμ a) *ᵥ x
   set W := pairBlockSpan φQ φE l μ w
-  have hWinv : ∀ g, ∀ y ∈ W, permOp φQE g *ᵥ y ∈ W := by
-    intro g y hy
+  have hWinv : ∀ g, ∀ y ∈ W, permOp φQE g *ᵥ y ∈ W := fun g y hy => by
     rw [permOp_of_eq_mul φQ φE φQE hprod g, ← mulVec_mulVec]
     exact permOp_mulVec_mem_pairBlockSpan_left φQ φE l μ w g
       (permOp_mulVec_mem_pairBlockSpan_right hcomm l μ w g hy)
@@ -89,8 +67,7 @@ theorem dim_le_mul_dim_of_compatible (hcomm : ∀ g h, Commute (φQ g) (φE h))
   have hVν : ∀ y ∈ V, labelProj φQE ν *ᵥ y = y := by
     rintro _ ⟨y, -, rfl⟩
     rw [toLin'_apply, mulVec_mulVec, labelProj_mul_self]
-  have hVne : V ≠ ⊥ := by
-    intro hbot
+  have hVne : V ≠ ⊥ := fun hbot => by
     have hmem : labelProj φQE ν *ᵥ
         ((matrixUnitOp φQ l i ol * matrixUnitOp φE μ a oμ) *ᵥ w) ∈ V :=
       ⟨_, Submodule.subset_span ⟨(i, a), rfl⟩, rfl⟩
@@ -121,10 +98,8 @@ theorem permOp_pairAction_mulVec (φ ψ : G →* Equiv.Perm X) (σ : G) (M : Mat
   simp [vecOfMatrix, pairAction, Equiv.Perm.inv_def, map_inv]
 
 omit [Fintype G] [Fintype X] [DecidableEq X] in
-theorem vecOfMatrix_injective : Function.Injective (vecOfMatrix (X := X)) := by
-  intro M N h
-  ext i j
-  exact congrFun h (i, j)
+theorem vecOfMatrix_injective : Function.Injective (vecOfMatrix (X := X)) :=
+  fun _ _ h => ext fun i j => congrFun h (i, j)
 
 omit [Fintype G] [Fintype X] [DecidableEq X] in
 theorem vecOfMatrix_smul (c : ℂ) (M : Matrix X X ℂ) :
@@ -138,12 +113,7 @@ theorem vecOfMatrix_sum {ι : Type*} (s : Finset ι) (M : ι → Matrix X X ℂ)
 
 /-- **Lemma 6.1(3), second merge inequality** (`05-replicas.tex`, lines 105–111, 186–189).
 For pointwise-commuting actions `φ_Q, φ_E` with product `φ_{QE}`, if the labels `λ, μ` of
-`φ_Q, φ_E` are compatible with the label `ν` of `φ_{QE}`, then `d_λ ≤ d_ν d_μ`.
-
-The paper derives this from `Hom([ν], [λ] ⊗ [μ]) ≅ Hom([λ], [ν] ⊗ [μ]^*)` and
-self-duality. Here the role of `[ν] ⊗ [μ]^*` is played by the matrices
-`E^ν_{jo} N E^μ_{ob}` under the action `M ↦ U_{QE}(σ) M U_E(σ)⁻¹`, whose restriction to
-the copies of `Q` is `U_Q(σ)`. -/
+`φ_Q, φ_E` are compatible with the label `ν` of `φ_{QE}`, then `d_λ ≤ d_ν d_μ`. -/
 theorem dim_le_mul_dim_of_compatible' (hcomm : ∀ g h, Commute (φQ g) (φE h))
     (hprod : ∀ g, φQE g = φQ g * φE g) {l μ ν : IrrepLabel G}
     (hP : labelProj φQ l * labelProj φE μ * labelProj φQE ν ≠ 0) :
@@ -183,23 +153,19 @@ theorem dim_le_mul_dim_of_compatible' (hcomm : ∀ g h, Commute (φQ g) (φE h))
     rw [mul_assoc (labelProj φQ l * labelProj φE μ), ← hνμ.eq, ← mul_assoc,
       mul_assoc (labelProj φQ l) (labelProj φE μ), labelProj_mul_self]
   generalize labelProj φQ l * labelProj φE μ * labelProj φQE ν = P at hP hPQE hPl hνP hPμ
-  have hPU : ∀ σ, permOp φQE σ * P * permOp φE σ⁻¹ = P * permOp φQ σ := by
-    intro σ
+  have hPU : ∀ σ, permOp φQE σ * P * permOp φE σ⁻¹ = P * permOp φQ σ := fun σ => by
     rw [← (hPQE σ).eq, mul_assoc, permOp_of_eq_mul φQ φE φQE hprod σ, mul_assoc,
       permOp_mul_inv_self, mul_one]
-  -- The label projection of `P` under the pair action is `P` itself.
   have hΛP : labelProj (pairAction φQE φE) l *ᵥ vecOfMatrix P = vecOfMatrix P := by
     rw [labelProj, groupAlgebraRep_eq_sum, sum_mulVec]
     simp_rw [smul_mulVec, permOp_pairAction_mulVec, hPU, ← vecOfMatrix_smul,
       ← vecOfMatrix_sum, ← Matrix.mul_smul, ← Finset.mul_sum]
     rw [← groupAlgebraRep_eq_sum, ← labelProj, hPl]
-  -- Decompose `P` through the matrix units.
   have hdec : P = ∑ j, ∑ b, matrixUnitOp φQE ν j oν *
       (matrixUnitOp φQE ν oν j * P * matrixUnitOp φE μ b oμ) * matrixUnitOp φE μ oμ b := by
     have hterm : ∀ j b, matrixUnitOp φQE ν j oν *
         (matrixUnitOp φQE ν oν j * P * matrixUnitOp φE μ b oμ) * matrixUnitOp φE μ oμ b =
-          matrixUnitOp φQE ν j j * P * matrixUnitOp φE μ b b := by
-      intro j b
+          matrixUnitOp φQE ν j j * P * matrixUnitOp φE μ b b := fun j b => by
       rw [← matrixUnitOp_mul_matrixUnitOp_self φQE ν j oν j,
         ← matrixUnitOp_mul_matrixUnitOp_self φE μ b oμ b]
       simp only [mul_assoc]
@@ -209,12 +175,11 @@ theorem dim_le_mul_dim_of_compatible' (hcomm : ∀ g h, Commute (φQ g) (φE h))
       labelProj (pairAction φQE φE) l *ᵥ vecOfMatrix (matrixUnitOp φQE ν j oν *
         (matrixUnitOp φQE ν oν j * P * matrixUnitOp φE μ b oμ) * matrixUnitOp φE μ oμ b) ≠ 0 := by
     by_contra! h
-    apply hP
-    apply vecOfMatrix_injective
+    refine hP (vecOfMatrix_injective ?_)
     rw [← hΛP, hdec, vecOfMatrix_sum, mulVec_sum]
-    refine (Finset.sum_eq_zero fun j _ => ?_).trans (by funext; simp [vecOfMatrix])
-    rw [vecOfMatrix_sum, mulVec_sum]
-    exact Finset.sum_eq_zero fun b _ => h j b
+    exact (Finset.sum_eq_zero fun j _ => by
+      rw [vecOfMatrix_sum, mulVec_sum]; exact Finset.sum_eq_zero fun b _ => h j b).trans
+      (by funext; simp [vecOfMatrix])
   set N := matrixUnitOp φQE ν oν j * P * matrixUnitOp φE μ b oμ
   let f : Fin ν.dim × Fin μ.dim → X × X → ℂ := fun pq =>
     vecOfMatrix (matrixUnitOp φQE ν pq.1 oν * N * matrixUnitOp φE μ oμ pq.2)
@@ -234,18 +199,14 @@ theorem dim_le_mul_dim_of_compatible' (hcomm : ∀ g h, Commute (φQ g) (φE h))
           simp only [mul_assoc]
         rw [e1, permOp_mul_matrixUnitOp, matrixUnitOp_mul_permOp, Finset.sum_mul,
           Finset.sum_mul]
-        refine Finset.sum_congr rfl fun p' _ => ?_
-        rw [Finset.mul_sum]
-        refine Finset.sum_congr rfl fun q' _ => ?_
-        rw [smul_mul_assoc, smul_mul_assoc, mul_smul_comm, smul_smul]
+        exact Finset.sum_congr rfl fun p' _ => by
+          rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun q' _ => by
+            rw [smul_mul_assoc, smul_mul_assoc, mul_smul_comm, smul_smul]
       change permOp (pairAction φQE φE) σ *ᵥ
         vecOfMatrix (matrixUnitOp φQE ν p oν * N * matrixUnitOp φE μ oμ q) ∈ W
-      rw [permOp_pairAction_mulVec, key, vecOfMatrix_sum]
-      refine Submodule.sum_mem _ fun p' _ => ?_
-      rw [vecOfMatrix_sum]
-      refine Submodule.sum_mem _ fun q' _ => ?_
-      rw [vecOfMatrix_smul]
-      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨(p', q'), rfl⟩)
+      simp only [permOp_pairAction_mulVec, key, vecOfMatrix_sum, vecOfMatrix_smul]
+      exact Submodule.sum_mem _ fun p' _ => Submodule.sum_mem _ fun q' _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨(p', q'), rfl⟩)
     · rw [mulVec_add]; exact Submodule.add_mem _ hx hy
     · rw [mulVec_smul]; exact Submodule.smul_mem _ _ hx
   set V := Submodule.map (toLin' (labelProj (pairAction φQE φE) l)) W
@@ -256,8 +217,7 @@ theorem dim_le_mul_dim_of_compatible' (hcomm : ∀ g h, Commute (φQ g) (φE h))
   have hVl : ∀ y ∈ V, labelProj (pairAction φQE φE) l *ᵥ y = y := by
     rintro _ ⟨y, -, rfl⟩
     rw [toLin'_apply, mulVec_mulVec, labelProj_mul_self]
-  have hVne : V ≠ ⊥ := by
-    intro hbot
+  have hVne : V ≠ ⊥ := fun hbot => by
     have hmem : labelProj (pairAction φQE φE) l *ᵥ f (j, b) ∈ V :=
       ⟨_, Submodule.subset_span ⟨(j, b), rfl⟩, rfl⟩
     rw [hbot, Submodule.mem_bot] at hmem
@@ -268,7 +228,6 @@ theorem dim_le_mul_dim_of_compatible' (hcomm : ∀ g h, Commute (φQ g) (φE h))
     _ = ν.dim * μ.dim := by simp
 
 end PermutationRepresentation
-
 
 namespace TensorPower
 

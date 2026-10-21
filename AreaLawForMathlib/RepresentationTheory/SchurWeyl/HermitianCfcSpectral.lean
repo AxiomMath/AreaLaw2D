@@ -2,14 +2,12 @@
 Copyright (c) 2026 TNLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: TNLean contributors
-
-Ported from LionSR/QICLean commit
-5f76b263e3a1c418645102d90f7bef6b92f04cf3,
-`QICLean/Analysis/TraceCFC.lean`.
 -/
 import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
 
-/-! # Spectral forms of the Hermitian functional calculus -/
+/-!
+ # Spectral forms of the Hermitian functional calculus
+-/
 
 namespace Matrix.IsHermitian
 

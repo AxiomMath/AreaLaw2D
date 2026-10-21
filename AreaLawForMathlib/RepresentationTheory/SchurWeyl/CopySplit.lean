@@ -6,14 +6,8 @@ import AreaLawForMathlib.Analysis.Matrix.ReducedVectorState
 /-!
 # Splitting the copies of a tensor power
 
-For a split `e : Fin m ⊕ Fin r ≃ Fin k` of the `k` copies into two groups, `V^{⊗k}` is
-`V^{⊗m} ⊗ V^{⊗r}` (`copySplit`), and the copy permutations of the first group
-(`groupHom₁ e`) of a subsystem `T` act as the copy permutations of `T` on the first factor.
-Combined with the subsystem split of a region `S ⊇ T`, the first-group permutations of `T` act
-as the permutations of the sub-subsystem `T ⊆ S` of `S^{⊗m}` (`goodSplit`), and those of a
-region disjoint from `S` act on the other factor only.
-
-A label occurring on `(ℂ^Ω)^{⊗r}` has dimension at most `|Ω|^r`.
+A split `Fin m ⊕ Fin r ≃ Fin k` of the copies identifies `V^{⊗k}` with `V^{⊗m} ⊗ V^{⊗r}`, compatibly
+with the copy permutations of subsystems.
 -/
 
 open Matrix PermutationRepresentation
@@ -26,21 +20,12 @@ variable {G X : Type*} [Group G] [Fintype X] [DecidableEq X]
 /-- A label occurring on a permutation module has dimension at most its dimension. -/
 theorem dim_le_card_of_labelProj_ne_zero [Fintype G] (φ : G →* Equiv.Perm X) {l : IrrepLabel G}
     (h : labelProj φ l ≠ 0) : l.dim ≤ Fintype.card X := by
-  set P := labelProj φ l
-  let W := LinearMap.range (toLin' P)
-  have hW : ∀ g, ∀ w ∈ W, permOp φ g *ᵥ w ∈ W := by
-    rintro g _ ⟨v, rfl⟩
-    exact ⟨permOp φ g *ᵥ v, by
-      simp only [P, toLin'_apply, mulVec_mulVec, (commute_labelProj_permOp φ l g).eq]⟩
-  have hl : ∀ w ∈ W, P *ᵥ w = w := by
-    rintro _ ⟨v, rfl⟩
-    simp only [P, toLin'_apply, mulVec_mulVec, labelProj_mul_self]
-  have hne : W ≠ ⊥ := by
-    rw [Ne, LinearMap.range_eq_bot, ← map_zero toLin', toLin'.injective.eq_iff]
-    exact h
-  calc l.dim ≤ Module.finrank ℂ W := dim_le_finrank_of_invariant (φ := φ) l hW hl hne
-    _ ≤ Module.finrank ℂ (X → ℂ) := Submodule.finrank_le W
-    _ = Fintype.card X := Module.finrank_fintype_fun_eq_card ℂ
+  refine (dim_le_finrank_of_invariant (φ := φ) (W := LinearMap.range (toLin' (labelProj φ l))) l
+    (by rintro g _ ⟨v, rfl⟩; exact ⟨permOp φ g *ᵥ v, by
+      simp only [toLin'_apply, mulVec_mulVec, (commute_labelProj_permOp φ l g).eq]⟩)
+    (by rintro _ ⟨v, rfl⟩; simp only [toLin'_apply, mulVec_mulVec, labelProj_mul_self])
+    (by rwa [Ne, LinearMap.range_eq_bot, ← map_zero toLin', toLin'.injective.eq_iff])).trans ?_
+  exact (Submodule.finrank_le _).trans_eq (Module.finrank_fintype_fun_eq_card ℂ)
 
 /-- Label observables transport like the label projectors along `X ≃ Y × Z`. -/
 theorem reindex_labelObservable_eq {Y Z : Type*} [Fintype G] [Fintype Y] [DecidableEq Y]
@@ -90,9 +75,7 @@ def swapSplit : Fin r ⊕ Fin m ≃ Fin k := (Equiv.sumComm _ _).trans e
 theorem groupHom₂_eq : groupHom₂ e = groupHom₁ (swapSplit e) := by
   ext b x : 2
   obtain ⟨y, rfl⟩ := e.surjective x
-  rcases y with i | j
-  · simp [groupHom₂, groupHom₁, youngHom, Equiv.permCongr_apply, swapSplit]
-  · simp [groupHom₂, groupHom₁, youngHom, Equiv.permCongr_apply, swapSplit]
+  rcases y with i | j <;> simp [groupHom₂, groupHom₁, youngHom, Equiv.permCongr_apply, swapSplit]
 
 /-- `V^{⊗k} ≅ V^{⊗m} ⊗ V^{⊗r}` along the split `e` of the copies. -/
 def copySplit : Config k ι ≃ Config m ι × Config r ι :=
@@ -147,8 +130,7 @@ theorem splitEquiv_subsystemPerm_of_subset {S T : Finset F} (hT : T ⊆ S)
         (splitEquiv ι m S x) := by
   ext j f
   · simp [splitEquiv, subsystemPerm_apply]
-  · have : (f : F) ∉ T := fun h => f.2 (hT h)
-    simp [splitEquiv, subsystemPerm_apply, this]
+  · simp [splitEquiv, subsystemPerm_apply, show (f : F) ∉ T from fun h => f.2 (hT h)]
 
 omit [Fintype F] [∀ f, Fintype (ι f)] [∀ f, DecidableEq (ι f)] in
 /-- Under `splitEquiv` of `S`, the copy permutations of `T` disjoint from `S` act on the
@@ -160,8 +142,8 @@ theorem splitEquiv_subsystemPerm_of_disjoint {S T : Finset F} (hT : Disjoint T S
         subsystemPerm m (fun f : {f // f ∉ S} => ι f) (T.subtype (· ∉ S)) σ
           (splitEquiv ι m S x).2) := by
   ext j f
-  · have : (f : F) ∉ T := fun h => Finset.disjoint_left.mp hT h f.2
-    simp [splitEquiv, subsystemPerm_apply, this]
+  · simp [splitEquiv, subsystemPerm_apply,
+      show (f : F) ∉ T from fun h => Finset.disjoint_left.mp hT h f.2]
   · simp [splitEquiv, subsystemPerm_apply]
 
 /-- `V^{⊗k} ≅ S^{⊗m} ⊗ ((Sᶜ)^{⊗m} ⊗ V^{⊗r})`: the first group of copies of the region `S`
@@ -228,9 +210,7 @@ theorem goodSplit_apply_perm {S T T₂ : Finset F} (hT : T ⊆ S) (h2 : Disjoint
     (Equiv.refl (Config r ι))
   set x₀ := (goodSplit ι e S).symm (a, κ.symm z)
   have hinv : v (subsystemPerm k ι (T ∪ T₂) (groupHom₁ e g) x₀) = v x₀ := by
-    have := congrFun (hv g⁻¹) x₀
-    rw [permOp_mulVec] at this
-    simpa [Function.comp_apply, map_inv, inv_inv] using this
+    simpa [permOp_mulVec, Function.comp_apply, map_inv, inv_inv] using congrFun (hv g⁻¹) x₀
   rw [subsystemPerm_union k ι hTT₂, Equiv.Perm.mul_apply] at hinv
   have h1 : goodSplit ι e S (subsystemPerm k ι T₂ (groupHom₁ e g) x₀) = (a, z) := by
     rw [goodSplit_subsystemPerm_of_disjoint ι e h2, Equiv.apply_symm_apply]
