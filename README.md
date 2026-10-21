@@ -49,7 +49,7 @@ at the commit pinned in `lake-manifest.json`.
 lake exe cache get
 lake build
 lake env lean scripts/audit.lean     # axioms of each frozen statement's proof
-python3 scripts/check_roots.py       # every module is reachable from its library root
+lake exe mk_all --check            # the roots AreaLaw.lean, AreaLawForMathlib.lean, OpenAI.lean are up to date
 ```
 
 ## The comparator

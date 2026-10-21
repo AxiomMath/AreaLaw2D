@@ -29,14 +29,8 @@ jobs:
 
       - uses: leanprover/lean-action@v1
         with:
-          # The roots are curated (AreaLaw.lean imports the section umbrellas and Transfer), so
-          # `mk_all --check` does not apply; scripts/check_roots.py checks reachability instead.
-          mk_all-check: false
           lint: "true"         # `lake lint` -> the lintDriver in lakefile.toml
           # No `nanoda`: its module-name detection requires a `[package]` header we do not use.
-
-      - name: Every module is reachable from its library root
-        run: python3 scripts/check_roots.py
 
       - uses: leanprover-community/gh-problem-matcher-wrap@65a654fcdf7b64ff7633bc7a558f7b46d59a27bf # 2026-06-25
         if: always()
