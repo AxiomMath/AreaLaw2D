@@ -32,16 +32,16 @@ theorem derivLabel_mul_right (hA : ∀ i, (A i).PosDef) {Z : Matrix n n ℂ}
     simp only [derivLabel, _root_.add_apply, ContinuousLinearMap.comp_apply, ihl, ihr,
       Matrix.add_mul]
     rw [geomMeanDerivLeft_mul_right (posDef_eval hA l) (posDef_eval hA r)
-        (commute_eval_right hA hZ l) (commute_eval_right hA hZ r) p.2,
+        (commute_eval_right hZ l) (commute_eval_right hZ r) p.2,
       geomMeanDerivRight_mul_right (posDef_eval hA l) (posDef_eval hA r)
-        (commute_eval_right hA hZ l) (commute_eval_right hA hZ r) p.2]
+        (commute_eval_right hZ l) (commute_eval_right hZ r) p.2]
 
 /-- `Φ_j(X Z) = Φ_j(X) Z` for `Z` commuting with every input. -/
 theorem leafMap_mul_right (hA : ∀ i, (A i).PosDef) {Z : Matrix n n ℂ}
     (hZ : ∀ i, Commute Z (A i)) (T : MeanTree ι) (j : ι) (X : Matrix n n ℂ) :
     T.leafMap A j (X * Z) = T.leafMap A j X * Z := by
   have hM : Commute Z (T.eval A ^ (-(1 / 2) : ℝ)) :=
-    (PosDef.commute_rpow_left (posDef_eval hA T) (commute_eval_right hA hZ T).symm _).symm
+    (PosDef.commute_rpow_left (posDef_eval hA T) (commute_eval_right hZ T).symm _).symm
   have hAj : Commute Z (A j ^ (1 / 2 : ℝ)) :=
     (PosDef.commute_rpow_left (hA j) (hZ j).symm _).symm
   simp only [leafMap, normalizedDerivMap, _root_.smul_apply,
@@ -264,7 +264,7 @@ theorem isSymDensity_state [∀ v, NeZero (n v)] (hR : R.IsAdmissible) {t : ℝ}
     have hZ : Z = permOp (TensorPower.copyPerm (SiteConfig n) k) π :=
       Replicas.U_univ_eq (fun v => Fin (n v)) k π
     have hZin : ∀ j, Commute Z (R.input n t k j) := fun j => hZ ▸ R.commute_permOp_input k π j
-    have hZM : Commute Z (R.root n t k p) := hroot ▸ MeanTree.commute_eval_right hIn hZin _
+    have hZM : Commute Z (R.root n t k p) := hroot ▸ MeanTree.commute_eval_right hZin _
     have hpre' : Z *ᵥ pre = pre := by
       have hmem : pre ∈ invariantSubspace (TensorPower.copyPerm (SiteConfig n) k) := by
         rw [← Replicas.S_eq]; exact hpreS

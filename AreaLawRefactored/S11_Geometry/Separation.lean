@@ -60,11 +60,6 @@ lemma birthGen_le_of_rank_le {a : TileId InitId L.marks} {m : Mark L.marks}
   · exact Nat.zero_le _
   · simp only [rank] at h; simp only [TileId.birthGen]; omega
 
-lemma rank_init_le (b i : InitId) (hi : ∃ k w c, i = .belt k w c) :
-    L.rank (.init b) ≤ L.rank (.init i) := by
-  obtain ⟨k, w, c, rfl⟩ := hi
-  rcases b with _ | _ | _ | _ <;> simp [rank]
-
 end Layout
 
 /-! ## D11.18 Grid points near two close points -/

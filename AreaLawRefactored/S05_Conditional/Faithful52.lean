@@ -478,7 +478,7 @@ theorem lemma_5_2_faithful : Lemma_5_2_faithful := by
       hatPow_extendId hU2 (isHermitian_ptrace hU hρ.1),
       hatPow_extendId hUF' (isHermitian_ptrace hUF' hρ.1)]
     change (extendId hXU' (_ * _) - _) * _ = _
-    rw [extendId_mul, extendId_extendId]
+    rw [extendId_mul, Arealaw.extendId_extendId]
   rw [hη] at key
   refine le_of_eq_of_le ?_ key
   rw [norm_hs, hW]

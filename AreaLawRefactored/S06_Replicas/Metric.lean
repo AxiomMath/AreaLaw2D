@@ -106,10 +106,7 @@ theorem lemma_6_2_2 [∀ f, Nonempty (ι f)] {t : ℝ} (ht : 0 < t) :
         W ι t k Q ≤ (((k : ℝ) + 2) ^ C : ℝ) • cfc (fun x => Real.exp (-t * x)) (F ι k Q) := by
   -- D6.6.10
   obtain ⟨C, hC⟩ := TensorPower.exists_replicaMetric_comparison ι ht
-  refine ⟨C, fun k Q => ?_⟩
-  have h := hC k Q
-  simp only [Complex.coe_smul] at h
-  exact h
+  exact ⟨C, fun k Q => by have h := hC k Q; simp only [Complex.coe_smul] at h; exact h⟩
 
 /-- D6.6, Lemma 6.2 (complement). On `𝒮_k`: `W_{Q,k} = W_{Q^c,k}`. -/
 theorem lemma_6_2_3 (t : ℝ) (k : ℕ) (Q : Finset I) {z : Config ι k → ℂ} (hz : z ∈ S ι k) :
@@ -177,9 +174,8 @@ theorem lemma_6_2_7 [∀ f, Nonempty (ι f)] {t : ℝ} (ht0 : 0 < t) (ht1 : t < 
           (C * δ ^ ((1 - 2 * t) / 2) + ε) * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ := by
   -- D6.6.15, D6.6.16
   obtain ⟨C, hC⟩ := TensorPower.exists_norm_markedRatio_inv_sub_clipped_le ι ht0 ht1
-  refine ⟨C, fun δ hδ hδ1 ε hε => ?_⟩
-  obtain ⟨K, hK⟩ := hC δ hδ hδ1 ε hε
-  exact ⟨K, fun m hm Q z hz => hK m hm Q z (S_eq_symmetricSubspace ι _ ▸ hz)⟩
+  exact ⟨C, fun δ hδ hδ1 ε hε => (hC δ hδ hδ1 ε hε).imp fun K hK m hm Q z hz =>
+    hK m hm Q z (S_eq_symmetricSubspace ι _ ▸ hz)⟩
 
 /-- D6.6, Lemma 6.2. For `0 < t < 1/2` (the paper's `t < 1/4`; only `1 - 2t > 0` is used):
 items (1)–(7) above. -/
@@ -418,21 +414,12 @@ theorem eq_replicas_leaf_floor_3 [∀ v, NeZero (n v)] {t : ℝ} (ht : 0 ≤ t) 
           (TensorPower.copyMean n k h) := fun Q hQ g =>
     commute_labelObservable_of_forall_commute _ (commute_permOp_copyMean hh hQ) g
   -- D6.9.3: each part contains `D` or is disjoint from it
-  have hP : D ⊆ P ∨ Disjoint P D := by
+  obtain ⟨hP, hY, hF⟩ : (D ⊆ P ∨ Disjoint P D) ∧ (D ⊆ Y ∨ Disjoint Y D) ∧
+      (D ⊆ F ∨ Disjoint F D) := by
     rcases hD with hD | hD | hD
-    · exact .inl hD
-    · exact .inr (hPY.mono_right hD)
-    · exact .inr (hPF.mono_right hD)
-  have hY : D ⊆ Y ∨ Disjoint Y D := by
-    rcases hD with hD | hD | hD
-    · exact .inr (hPY.symm.mono_right hD)
-    · exact .inl hD
-    · exact .inr (hYF.mono_right hD)
-  have hF : D ⊆ F ∨ Disjoint F D := by
-    rcases hD with hD | hD | hD
-    · exact .inr (hPF.symm.mono_right hD)
-    · exact .inr (hYF.symm.mono_right hD)
-    · exact .inl hD
+    exacts [⟨.inl hD, .inr (hPY.symm.mono_right hD), .inr (hPF.symm.mono_right hD)⟩,
+      ⟨.inr (hPY.mono_right hD), .inl hD, .inr (hYF.symm.mono_right hD)⟩,
+      ⟨.inr (hPF.mono_right hD), .inr (hYF.mono_right hD), .inl hD⟩]
   rw [A, W_inv _ ht, W_inv _ ht]
   exact (((hc P hP _).mul_left (hc F hF _)).mul_left (hc Y hY _)).pow_left 2
 

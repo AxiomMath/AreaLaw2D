@@ -5,20 +5,8 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixPowers
 /-!
 # Subsystem observables in a product vector
 
-Extends `AreaLawForMathlib/RepresentationTheory/SchurWeyl/SubsystemTransport.lean`. For a
-vector `θ` on `V = ⨂_{f ∈ F} ℂ^{ι f}` and a subsystem `Q`, the expectation in `θ^{⊗k}` of an
-operator on `Q^{⊗k}` (tensored with the identity on the other factors) is its trace against
-`ρ^{⊗k}`, `ρ = Tr_{Qᶜ} |θ⟩⟨θ|` the one-copy marginal. In particular this holds for the label
-observables of the copy permutations of `Q`. Also: tensor products of positive semidefinite
-matrices are positive semidefinite, and `A ↦ A^{⊗k}` is monotone on positive semidefinite
-matrices.
-
-## Main declarations
-
-* `TensorPower.vecMarginal` — `Tr_{Qᶜ} |θ⟩⟨θ|`.
-* `TensorPower.dotProduct_kronecker_one_mulVec_prod` — `⟨θ^{⊗k}, (G ⊗ 1) θ^{⊗k}⟩ = Tr(ρ^{⊗k} G)`.
-* `TensorPower.dotProduct_labelObservable_mulVec_prod` — the same for label observables.
-* `TensorPower.tensorPow_le_tensorPow` — `0 ≤ A ≤ B ⇒ A^{⊗k} ≤ B^{⊗k}`.
+The expectation in `θ^{⊗k}` of an operator on `Q^{⊗k}` is its trace against the `k`-th power of the
+one-copy marginal.
 -/
 
 open Matrix PermutationRepresentation
@@ -49,20 +37,13 @@ theorem posSemidef_vecMarginal (θ : ((f : F) → ι f) → ℂ) (Q : Finset F) 
         (star fun a => θ ((Equiv.piEquivPiSubtypeProd (· ∈ Q) ι).symm (a, b))) := by
     ext a a'
     simp [vecMarginal, vecMulVec_apply, Matrix.sum_apply]
-  rw [h]
-  exact Finset.sum_induction _ PosSemidef (fun _ _ ha hb => ha.add hb) PosSemidef.zero
+  exact h ▸ Finset.sum_induction _ PosSemidef (fun _ _ ha hb => ha.add hb) PosSemidef.zero
     fun b _ => posSemidef_vecMulVec_self_star _
 
 /-- `Tr ρ_Q = ‖θ‖²`. -/
 theorem trace_vecMarginal (θ : ((f : F) → ι f) → ℂ) (Q : Finset F) :
     (vecMarginal ι θ Q).trace = ∑ x, θ x * star (θ x) := by
   rw [← Equiv.sum_comp (Equiv.piEquivPiSubtypeProd (· ∈ Q) ι).symm, Fintype.sum_prod_type]
-  rfl
-
-omit [Fintype F] [∀ f, Fintype (ι f)] in
-theorem splitEquiv_symm_apply (k : ℕ) (Q : Finset F)
-    (p : (Fin k → SubConfig ι Q) × (Fin k → ComplConfig ι Q)) (j : Fin k) :
-    (splitEquiv ι k Q).symm p j = (Equiv.piEquivPiSubtypeProd (· ∈ Q) ι).symm (p.1 j, p.2 j) :=
   rfl
 
 variable [∀ f, DecidableEq (ι f)]
@@ -85,16 +66,12 @@ theorem dotProduct_kronecker_one_mulVec_prod (θ : ((f : F) → ι f) → ℂ) (
   simp only [mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq,
     Finset.mem_univ, if_true]
   simp only [Finset.mul_sum]
-  rw [trace]
-  simp only [diag, Matrix.mul_apply, tensorPow_apply, vecMarginal_apply, Fintype.prod_sum,
+  simp only [trace, diag, Matrix.mul_apply, tensorPow_apply, vecMarginal_apply, Fintype.prod_sum,
     Finset.sum_mul]
   conv_rhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a' _ => ?_
-  refine Finset.sum_congr rfl fun b _ => ?_
-  rw [star_prod, Finset.prod_mul_distrib]
-  ring
+  exact Finset.sum_congr rfl fun a _ => by
+    rw [Finset.sum_comm]; exact Finset.sum_congr rfl fun a' _ => Finset.sum_congr rfl fun b _ => by
+      rw [star_prod, Finset.prod_mul_distrib]; ring
 
 /-- `⟨θ^{⊗k}, h(F_Q) θ^{⊗k}⟩ = Tr(ρ_Q^{⊗k} h(F))` for every label observable of the copy
 permutations of `Q`. -/
@@ -160,10 +137,9 @@ theorem card_mul_sum_complRestr_mul (h : Disjoint X B) (f : SubConfig ι X → �
       ∑ p : SubConfig ι X × ComplConfig ι B,
         (fun q : ComplConfig ι B × SubConfig ι X => f (complRestr ι h q.1) * G q.1) (Ψ p) := by
     rw [Fintype.sum_prod_type, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun y _ => ?_
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun b _ => ?_
-    simp [Ψ, complRestr_complReplace, hG]
+    exact Finset.sum_congr rfl fun y _ => by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun b _ => by simp [Ψ, complRestr_complReplace, hG]
   rw [e, Equiv.sum_comp Ψ (fun q => f (complRestr ι h q.1) * G q.1), Fintype.sum_prod_type]
   simp [Finset.mul_sum]
 
@@ -199,16 +175,12 @@ theorem posSemidef_tensorFamily [Finite Ω] {M : Fin k → Matrix Ω Ω ℂ}
       CFC.sqrt_mul_sqrt_self _ (hM j).nonneg]
   have h : tensorFamily M = (tensorFamily fun j => CFC.sqrt (M j))ᴴ *
       tensorFamily fun j => CFC.sqrt (M j) := by
-    rw [conjTranspose_tensorFamily, tensorFamily_mul]
-    simp only [hs]
-  rw [h]
-  exact posSemidef_conjTranspose_mul_self _
+    rw [conjTranspose_tensorFamily, tensorFamily_mul]; simp only [hs]
+  exact h ▸ posSemidef_conjTranspose_mul_self _
 
 theorem tensorPow_eq_tensorFamily [DecidableEq Ω] (A : Matrix Ω Ω ℂ) :
     tensorPow (k := k) A = tensorFamily fun _ => A := by
-  ext x y
-  rw [tensorPow_apply]
-  rfl
+  ext x y; rw [tensorPow_apply]; rfl
 
 /-- `(c A)^{⊗k} = c^k A^{⊗k}`. -/
 theorem tensorPow_real_smul [DecidableEq Ω] (c : ℝ) (A : Matrix Ω Ω ℂ) :
@@ -216,15 +188,6 @@ theorem tensorPow_real_smul [DecidableEq Ω] (c : ℝ) (A : Matrix Ω Ω ℂ) :
   ext x y
   simp only [tensorPow_apply, Matrix.smul_apply, Complex.real_smul, Finset.prod_mul_distrib,
     Finset.prod_const, Finset.card_univ, Fintype.card_fin, Complex.ofReal_pow]
-
-/-- Reindexing every copy reindexes the tensor power. -/
-theorem tensorPow_submatrix_equiv [DecidableEq Ω] {Ω' : Type*} [DecidableEq Ω']
-    (A : Matrix Ω Ω ℂ) (e : Ω' ≃ Ω) :
-    tensorPow (k := k) (A.submatrix e e) =
-      (tensorPow (k := k) A).submatrix (Equiv.arrowCongr (Equiv.refl (Fin k)) e)
-        (Equiv.arrowCongr (Equiv.refl (Fin k)) e) := by
-  ext x y
-  simp [tensorPow_apply, Equiv.arrowCongr_apply]
 
 /-- `A^{⊗k}` is positive semidefinite for `A ≥ 0`. -/
 theorem posSemidef_tensorPow_of_posSemidef [Finite Ω] [DecidableEq Ω] {A : Matrix Ω Ω ℂ}
@@ -244,8 +207,7 @@ theorem tensorPow_le_tensorPow [Finite Ω] [DecidableEq Ω] {A B : Matrix Ω Ω 
       tensorFamily fun j => if j ∈ s then D else A := by
     ext x y
     rw [tensorPow_apply, Matrix.sum_apply]
-    have hB : B = D + A := by simp [D]
-    rw [hB]
+    rw [show B = D + A by simp [D]]
     simp only [Matrix.add_apply, tensorFamily, of_apply]
     rw [Fintype.prod_add]
     refine Finset.sum_congr rfl fun s _ => ?_
@@ -259,9 +221,7 @@ theorem tensorPow_le_tensorPow [Finite Ω] [DecidableEq Ω] {A B : Matrix Ω Ω 
   rw [hexp, ← Finset.add_sum_erase _ _ (Finset.mem_univ ∅), h0, Matrix.le_iff, add_sub_cancel_left]
   refine Finset.sum_induction _ PosSemidef (fun _ _ ha hb => ha.add hb) PosSemidef.zero
     fun s _ => posSemidef_tensorFamily fun j => ?_
-  split_ifs
-  · exact hD
-  · exact hA
+  split_ifs; exacts [hD, hA]
 
 end Monotone
 

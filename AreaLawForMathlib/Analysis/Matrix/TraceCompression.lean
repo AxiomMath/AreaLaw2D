@@ -55,15 +55,6 @@ theorem conjTranspose_mul_mul_embedMatrix (j : m ↪ n) (A : Matrix n n ℂ) :
   · intro b _ hb; simp [hb]
   · simp
 
-omit [Fintype m] in
-theorem conjTranspose_mul_embedMatrix (j : m ↪ n) :
-    (embedMatrix j)ᴴ * embedMatrix j = 1 := by
-  have h := conjTranspose_mul_mul_embedMatrix j 1
-  rw [Matrix.mul_one] at h
-  rw [h]
-  ext c c'
-  simp [submatrix_apply, one_apply, j.injective.eq_iff]
-
 omit [DecidableEq m] in
 /-- Quadratic forms of `A` at `E v` are quadratic forms of the compression at `v`. -/
 theorem star_embedMatrix_mulVec_dotProduct (j : m ↪ n) (M : Matrix n n ℂ) (v : m → ℂ) :

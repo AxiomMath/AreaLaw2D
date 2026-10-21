@@ -46,16 +46,6 @@ noncomputable def IsPositiveMap.toPositiveLinearMap [Finite m] [Finite n]
         rw [Matrix.le_iff] at hAB ⊢
         simpa [map_sub] using hE (B - A) hAB }
 
-/-- Positive maps preserve Hermiticity. -/
-theorem IsPositiveMap.map_isHermitian [Finite m] [Finite n]
-    {E : Matrix n n ℂ →ₗ[ℂ] Matrix m m ℂ} (hE : IsPositiveMap E)
-    {X : Matrix n n ℂ} (hX : X.IsHermitian) : (E X).IsHermitian := by
-  classical
-  let := Fintype.ofFinite m
-  let := Fintype.ofFinite n
-  exact IsSelfAdjoint.isHermitian
-    (hX.isSelfAdjoint.map' hE.toPositiveLinearMap)
-
 /-- Positive maps preserve adjoints. -/
 theorem IsPositiveMap.map_conjTranspose [Finite m] [Finite n]
     {E : Matrix n n ℂ →ₗ[ℂ] Matrix m m ℂ} (hE : IsPositiveMap E)

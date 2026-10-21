@@ -42,10 +42,7 @@ theorem exists_perm_of_wordSym_eq {x y : Fin k → Y} (h : wordSym x = wordSym y
     have e1 : ∀ z : Fin k → Y, Fintype.card {i // z i = c} =
         Multiset.card (Multiset.filter (fun a => c = z a) Finset.univ.val) := fun z => by
       rw [Fintype.card_subtype, Finset.card, Finset.filter_val]
-      congr 1
-      apply Multiset.filter_congr
-      intro _ _
-      exact eq_comm
+      exact congrArg _ (Multiset.filter_congr fun _ _ => eq_comm)
     have := congrArg (fun s : Sym Y k => Multiset.count c s.1) h
     simp only [wordSym, Multiset.count_map] at this
     rw [e1, e1, this]
@@ -65,16 +62,11 @@ variable {I : Type*} [DecidableEq I] (ι : I → Type*) (k : ℕ)
 theorem mem_S_iff (v : Config ι k → ℂ) :
     v ∈ S ι k ↔ ∀ (x : Config ι k) (σ : Equiv.Perm (Fin k)), v (x ∘ σ) = v x := by
   have key : ∀ (σ : Equiv.Perm (Fin k)) (x : Config ι k),
-      (copyPerm ι k Finset.univ σ).symm x = x ∘ σ := by
-    intro σ x
-    exact (Equiv.symm_apply_eq _).2 (by ext j f; simp)
+      (copyPerm ι k Finset.univ σ).symm x = x ∘ σ := fun σ x =>
+    (Equiv.symm_apply_eq _).2 (by ext j f; simp)
   simp only [S, mem_invariantSubspace, permOp_mulVec]
-  constructor
-  · intro h x σ
-    simpa [key] using congrFun (h σ) x
-  · intro h σ
-    funext x
-    simp [key, h]
+  exact ⟨fun h x σ => by simpa [key] using congrFun (h σ) x, fun h σ => funext fun x => by
+    simp [key, h]⟩
 
 /-- The symmetric vectors are the functions of the multiset of a configuration. -/
 noncomputable def symEquiv : S ι k ≃ₗ[ℂ] (Sym ((f : I) → ι f) k → ℂ) where

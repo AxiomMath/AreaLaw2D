@@ -2,10 +2,6 @@
 Copyright (c) 2026 TNLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: TNLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Representation/MergeMoment.lean`.
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.MergeDimensions
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CommutantDimension
@@ -13,28 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CommutantDimension
 /-!
 # Conditional merge probabilities and the merge moment
 
-This file completes part 3 of Lemma 6.1 (`lem:schur`) of the area-law paper
-(*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`,
-lines 112–115, proof lines 189–201). For a state invariant under the copy permutations of
-`Q` and of `E` separately (in particular for a tensor product of permutation-invariant
-density matrices on `Q^{⊗k}` and `E^{⊗k}`), the conditional probability of the label `ν`
-on `QE` given the labels `λ, μ` is at most `m_ν d_ν / (d_λ d_μ)`, where the multiplicity
-`m_ν ≤ (k+1)^{q²}` with `q = d_Q d_E`; consequently, for `0 ≤ b ≤ 1`,
-`E (d_λ d_μ / d_ν)^b ≤ (k+1)^{q²}`.
-
-## Method
-
-Write `P = π^λ π^μ`. For every matrix `ρ` commuting with both actions and every product
-`Y = U_Q(σ) U_E(τ) P`, `Tr(ρ Y) tr P = Tr(ρ P) tr Y`: in the matrix units of the two
-blocks, `Tr(ρ A_{ij} B_{ab}) = δ_{ij} δ_{ab} Tr(ρ A_{00} B_{00})`. Hence the conditional
-probability of `ν` is `tr(π^ν P) / tr P`, with `tr P ≥ d_λ d_μ` when `P ≠ 0` and
-`tr(π^ν P) ≤ tr π^ν = d_ν m_ν`.
-
-## Main declarations
-
-* `PermutationRepresentation.trace_mul_trace_eq` — the trace factorization.
-* `PermutationRepresentation.merge_conditional_le` — the conditional probability bound.
-* `TensorPower.merge_moment_le` — **Lemma 6.1(3)**, the merge moment.
+Lemma 6.1(3): `E (d_λ d_μ / d_ν)^b ≤ (k+1)^{q²}` for `0 ≤ b ≤ 1` (*A two-dimensional area law from a
+global spectral gap*, `05-replicas.tex`, lines 112–115 and 189–201).
 -/
 
 open MonoidAlgebra Matrix Module
@@ -44,13 +20,6 @@ namespace PermutationRepresentation
 
 variable {G H X : Type*} [Group G] [Fintype G] [Group H] [Fintype H] [Fintype X]
   [DecidableEq X]
-
-/-- A permutation operator times a label projector, in the matrix units of the block. -/
-theorem permOp_mul_labelProj (φ : G →* Equiv.Perm X) (g : G) (l : IrrepLabel G) :
-    permOp φ g * labelProj φ l =
-      ∑ j, ∑ p, IrrepLabel.wedderburnEquiv G (single g 1) l p j • matrixUnitOp φ l p j := by
-  rw [← sum_matrixUnitOp_diag, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun j _ => permOp_mul_matrixUnitOp φ g l j j
 
 variable {φ₁ : G →* Equiv.Perm X} {φ₂ : H →* Equiv.Perm X}
 
@@ -169,13 +138,10 @@ theorem trace_mul_trace_eq {ρ : Matrix X X ℂ}
     exact Submodule.sum_mem _ fun x _ => pairUnit_mem_pairUnitSpan α β x x
   obtain ⟨κ, hκ⟩ := exists_trace_mul_eq hcomm α β hZ
   obtain ⟨κP, hκP⟩ := exists_trace_mul_eq hcomm α β hP
-  have e1 := hκ ρ hρ₁ hρ₂
   have e2 := hκ 1 h1 h2
-  have e3 := hκP ρ hρ₁ hρ₂
   have e4 := hκP 1 h1 h2
-  rw [one_mul] at e2 e4
-  rw [one_mul] at e2 e4
-  rw [e1, e2, e3, e4]
+  simp only [one_mul] at e2 e4
+  rw [hκ ρ hρ₁ hρ₂, e2, hκP ρ hρ₁ hρ₂, e4]
   ring
 
 end PermutationRepresentation
@@ -192,11 +158,8 @@ theorem isHermitian_mul_of_commute {A B : Matrix X X ℂ} (hAB : Commute A B)
 omit [Fintype G] [DecidableEq X] in
 theorem re_trace_mul_nonneg {ρ E : Matrix X X ℂ} (hρ : ρ.PosSemidef) (hE : E.IsHermitian)
     (hEE : E * E = E) : 0 ≤ (ρ * E).trace.re := by
-  have h : (ρ * E).trace = (Eᴴ * ρ * E).trace := by
-    calc (ρ * E).trace = (ρ * (E * E)).trace := by rw [hEE]
-      _ = (Eᴴ * ρ * E).trace := by
-        rw [hE.eq, ← mul_assoc, trace_mul_comm, ← mul_assoc]
-  rw [h]
+  rw [show (ρ * E).trace = (Eᴴ * ρ * E).trace by
+    rw [hE.eq, mul_assoc, trace_mul_comm E, mul_assoc, hEE]]
   exact (Complex.nonneg_iff.mp ((hρ.conjTranspose_mul_mul_same E).trace_nonneg)).1
 
 variable {φQ φE φQE : G →* Equiv.Perm X}
@@ -223,78 +186,65 @@ theorem merge_conditional_le (hcomm : ∀ g h, Commute (φQ g) (φE h))
     commute_groupAlgebraRep_of_commute φQ φE hcomm _ _
   set P := labelProj φQ l * labelProj φE μ
   have hPν : Commute P (labelProj φQE ν) := hνl.mul_left hνμ
-  have hPP : P * P = P := by
-    simp only [P]
-    rw [mul_assoc, ← mul_assoc (labelProj φE μ), ← hlμ.eq, mul_assoc, labelProj_mul_self,
-      ← mul_assoc, labelProj_mul_self]
+  have hPP : P * P = P :=
+    (IsIdempotentElem.mul_of_commute hlμ (labelProj_mul_self _ _) (labelProj_mul_self _ _)).eq
   have hPH : P.IsHermitian :=
     isHermitian_mul_of_commute hlμ (isHermitian_labelProj _ _) (isHermitian_labelProj _ _)
   set Z := labelProj φQE ν * P
-  have hZeq : labelProj φQ l * labelProj φE μ * labelProj φQE ν = Z := hPν.eq
-  rw [hZeq]
-  have hZZ : Z * Z = Z := by
-    simp only [Z]
-    rw [mul_assoc, ← mul_assoc P, hPν.eq, mul_assoc, hPP, ← mul_assoc, labelProj_mul_self]
+  rw [show labelProj φQ l * labelProj φE μ * labelProj φQE ν = Z from hPν.eq]
+  have hZZ : Z * Z = Z := (IsIdempotentElem.mul_of_commute hPν.symm (labelProj_mul_self _ _) hPP).eq
   have hZH : Z.IsHermitian :=
     isHermitian_mul_of_commute hPν.symm (isHermitian_labelProj _ _) hPH
   have hZ0 := re_trace_mul_nonneg hρ hZH hZZ
   have hP0 := re_trace_mul_nonneg hρ hPH hPP
-  -- `Z` lies in the joint span.
   have hZspan : Z ∈ pairUnitSpan (φ₁ := φQ) (φ₂ := φE) l μ := by
     have e : labelProj φQE ν =
         ∑ σ, (IrrepLabel.centralIdem ν).coeff σ • permOp φQE σ := by
       rw [labelProj, groupAlgebraRep_eq_sum]
     simp only [Z, P]
     rw [e, labelProj_mul_labelProj_eq_sum, Finset.sum_mul]
-    refine Submodule.sum_mem _ fun σ _ => ?_
-    rw [smul_mul_assoc, Finset.mul_sum, permOp_of_eq_mul φQ φE φQE hprod σ]
-    exact Submodule.smul_mem _ _ (Submodule.sum_mem _ fun x _ =>
-      permOp_mul_permOp_mul_pairUnit_mem hcomm l μ σ σ x)
+    exact Submodule.sum_mem _ fun σ _ => by
+      rw [smul_mul_assoc, Finset.mul_sum, permOp_of_eq_mul φQ φE φQE hprod σ]
+      exact Submodule.smul_mem _ _ (Submodule.sum_mem _ fun x _ =>
+        permOp_mul_permOp_mul_pairUnit_mem hcomm l μ σ σ x)
   have hfact := trace_mul_trace_eq hcomm hρQ hρE l μ hZspan
   rw [trace_eq_finrank_range_of_mul_self hPP, trace_eq_finrank_range_of_mul_self hZZ] at hfact
   have hre := congrArg Complex.re hfact
   simp only [Complex.mul_re, Complex.natCast_re, Complex.natCast_im, mul_zero, sub_zero] at hre
-  -- `tr Z ≤ d_ν m_ν`.
   have hZle : finrank ℂ (LinearMap.range (toLin' Z)) ≤ ν.dim * multiplicity φQE ν := by
     have h1 : finrank ℂ (LinearMap.range (toLin' Z)) ≤
         finrank ℂ (LinearMap.range (toLin' (labelProj φQE ν))) := by
-      apply Submodule.finrank_mono
-      rintro _ ⟨v, rfl⟩
-      exact ⟨P *ᵥ v, by simp [Z, mulVec_mulVec]⟩
+      exact Submodule.finrank_mono
+        (by rintro _ ⟨v, rfl⟩; exact ⟨P *ᵥ v, by simp [Z, mulVec_mulVec]⟩)
     have h2 := trace_labelProj φQE ν
     rw [trace_eq_finrank_range_of_mul_self (labelProj_mul_self _ _)] at h2
     exact h1.trans (le_of_eq (by exact_mod_cast h2))
   by_cases hP : P = 0
-  · have : Z = 0 := by simp [Z, hP]
-    rw [this, mul_zero, trace_zero, Complex.zero_re, zero_mul]
+  · rw [show Z = 0 by simp [Z, hP], mul_zero, trace_zero, Complex.zero_re, zero_mul]
     exact mul_nonneg (by positivity) hP0
-  -- `tr P ≥ d_λ d_μ`.
   have hPge : l.dim * μ.dim ≤ finrank ℂ (LinearMap.range (toLin' P)) := by
     refine mul_dim_le_finrank_of_invariant hcomm l μ (fun g w hw => ?_) (fun g w hw => ?_)
       (fun w hw => ?_) (fun w hw => ?_) ?_
     · obtain ⟨v, rfl⟩ := hw
-      refine ⟨permOp φQ g *ᵥ v, ?_⟩
       have h' : Commute (permOp φQ g) (labelProj φE μ) := by
         rw [labelProj]
         simpa using commute_groupAlgebraRep_of_commute φQ φE hcomm
           (single g 1) (IrrepLabel.centralIdem μ)
       have : Commute (permOp φQ g) P := (commute_labelProj_permOp φQ l g).symm.mul_right h'
-      simp [mulVec_mulVec, this.eq]
+      exact ⟨permOp φQ g *ᵥ v, by simp [mulVec_mulVec, this.eq]⟩
     · obtain ⟨v, rfl⟩ := hw
-      refine ⟨permOp φE g *ᵥ v, ?_⟩
       have h' : Commute (permOp φE g) (labelProj φQ l) := by
         rw [labelProj]
         simpa using (commute_groupAlgebraRep_of_commute φQ φE hcomm
           (IrrepLabel.centralIdem l) (single g 1)).symm
       have : Commute (permOp φE g) P := h'.mul_right (commute_labelProj_permOp φE μ g).symm
-      simp [mulVec_mulVec, this.eq]
+      exact ⟨permOp φE g *ᵥ v, by simp [mulVec_mulVec, this.eq]⟩
     · obtain ⟨v, rfl⟩ := hw
       simp only [toLin'_apply, mulVec_mulVec, P, ← mul_assoc, labelProj_mul_self]
     · obtain ⟨v, rfl⟩ := hw
       simp only [toLin'_apply, mulVec_mulVec, P]
       rw [← mul_assoc, ← hlμ.eq, mul_assoc, labelProj_mul_self, hlμ.eq]
-    · rw [Ne, LinearMap.range_eq_bot, ← map_zero toLin', toLin'.injective.eq_iff]
-      exact hP
+    · rwa [Ne, LinearMap.range_eq_bot, ← map_zero toLin', toLin'.injective.eq_iff]
   calc (ρ * Z).trace.re * (l.dim * μ.dim)
       ≤ (ρ * Z).trace.re * finrank ℂ (LinearMap.range (toLin' P)) :=
         mul_le_mul_of_nonneg_left (by exact_mod_cast hPge) hZ0
@@ -318,17 +268,12 @@ theorem re_trace_merge_nonneg (hcomm : ∀ g h, Commute (φQ g) (φE h))
       (fun g h => (hcomm h g).symm) (IrrepLabel.centralIdem_mem_center μ) _
   have hlμ : Commute (labelProj φQ l) (labelProj φE μ) :=
     commute_groupAlgebraRep_of_commute φQ φE hcomm _ _
-  have hPP : labelProj φQ l * labelProj φE μ * (labelProj φQ l * labelProj φE μ) =
-      labelProj φQ l * labelProj φE μ := by
-    rw [mul_assoc, ← mul_assoc (labelProj φE μ), ← hlμ.eq, mul_assoc, labelProj_mul_self,
-      ← mul_assoc, labelProj_mul_self]
   have hPν := hνl.mul_left hνμ
-  refine re_trace_mul_nonneg hρ (isHermitian_mul_of_commute hPν
+  exact re_trace_mul_nonneg hρ (isHermitian_mul_of_commute hPν
     (isHermitian_mul_of_commute hlμ (isHermitian_labelProj _ _) (isHermitian_labelProj _ _))
-    (isHermitian_labelProj _ _)) ?_
-  generalize labelProj φQ l * labelProj φE μ = P at hPP hPν ⊢
-  rw [mul_assoc, ← mul_assoc (labelProj φQE ν), ← hPν.eq, mul_assoc, labelProj_mul_self,
-    ← mul_assoc, hPP]
+    (isHermitian_labelProj _ _)) (IsIdempotentElem.mul_of_commute hPν
+      (IsIdempotentElem.mul_of_commute hlμ (labelProj_mul_self _ _) (labelProj_mul_self _ _))
+      (labelProj_mul_self _ _)).eq
 
 /-- **Merge moment, general form** (`05-replicas.tex`, lines 113–115, 197–201). For a
 density matrix `ρ` invariant under the copy permutations of `Q` and of `E` and `b ≤ 1`,
@@ -339,24 +284,21 @@ theorem merge_moment_le_sum_multiplicity (hcomm : ∀ g h, Commute (φQ g) (φE 
     (hρE : ∀ g, Commute (permOp φE g) ρ) {b : ℝ} (hb : b ≤ 1) :
     ∑ l, ∑ μ, ∑ ν, (ρ * (labelProj φQ l * labelProj φE μ * labelProj φQE ν)).trace.re *
         (((l.dim * μ.dim : ℕ) : ℝ) / ν.dim) ^ b ≤ ∑ ν, (multiplicity φQE ν : ℝ) := by
-  have hterm : ∀ l μ ν,
+  have hterm (l μ ν : IrrepLabel G) :
       (ρ * (labelProj φQ l * labelProj φE μ * labelProj φQE ν)).trace.re *
           (((l.dim * μ.dim : ℕ) : ℝ) / ν.dim) ^ b ≤
         multiplicity φQE ν * (ρ * (labelProj φQ l * labelProj φE μ)).trace.re := by
-    intro l μ ν
     have hp := re_trace_merge_nonneg hcomm hprod hρ l μ ν
     have hd : (0 : ℝ) < ν.dim := by exact_mod_cast ν.dim_pos
     have hcond := merge_conditional_le hcomm hprod hρ hρQ hρE l μ ν
     by_cases h0 : labelProj φQ l * labelProj φE μ * labelProj φQE ν = 0
     · rw [h0, mul_zero, trace_zero, Complex.zero_re, zero_mul]
-      have := re_trace_merge_nonneg hcomm hprod hρ l μ ν
-      have hq : 0 ≤ (ρ * (labelProj φQ l * labelProj φE μ)).trace.re := by
-        have hlμ : Commute (labelProj φQ l) (labelProj φE μ) :=
-          commute_groupAlgebraRep_of_commute φQ φE hcomm _ _
-        refine re_trace_mul_nonneg hρ (isHermitian_mul_of_commute hlμ
-          (isHermitian_labelProj _ _) (isHermitian_labelProj _ _)) ?_
-        rw [mul_assoc, ← mul_assoc (labelProj φE μ), ← hlμ.eq, mul_assoc, labelProj_mul_self,
-          ← mul_assoc, labelProj_mul_self]
+      have hlμ : Commute (labelProj φQ l) (labelProj φE μ) :=
+        commute_groupAlgebraRep_of_commute φQ φE hcomm _ _
+      have hq : 0 ≤ (ρ * (labelProj φQ l * labelProj φE μ)).trace.re :=
+        re_trace_mul_nonneg hρ (isHermitian_mul_of_commute hlμ (isHermitian_labelProj _ _)
+          (isHermitian_labelProj _ _))
+          (IsIdempotentElem.mul_of_commute hlμ (labelProj_mul_self _ _) (labelProj_mul_self _ _)).eq
       positivity
     have hcompat := dim_le_mul_dim_of_compatible hcomm hprod h0
     have hR1 : (1 : ℝ) ≤ ((l.dim * μ.dim : ℕ) : ℝ) / ν.dim := by
@@ -422,11 +364,8 @@ theorem merge_conditional_le (Q : Finset F) {ρ : Matrix (Config k ι) (Config k
       Finset.single_le_sum (f := fun ν' => multiplicity (copyPerm ((f : F) → ι f) k) ν')
         (fun _ _ => Nat.zero_le _) (Finset.mem_univ ν)
     exact_mod_cast hle.trans (sum_multiplicity_le _ k)
-  · have hlμ : Commute (labelProj (subsystemPerm k ι Q) l)
-        (labelProj (subsystemPerm k ι Qᶜ) μ) :=
-      commute_groupAlgebraRep_of_commute _ _ hcomm _ _
-    rw [mul_assoc, ← mul_assoc (labelProj _ μ), ← hlμ.eq, mul_assoc, labelProj_mul_self,
-      ← mul_assoc, labelProj_mul_self]
+  · exact (IsIdempotentElem.mul_of_commute (commute_groupAlgebraRep_of_commute _ _ hcomm _ _)
+      (labelProj_mul_self _ _) (labelProj_mul_self _ _)).eq
 
 /-- **Lemma 6.1(3), merge moment** (`05-replicas.tex`, lines 113–115, equation
 `replicas:merge-moment`). With `ρ` as in `merge_conditional_le` and `0 ≤ b ≤ 1` (indeed

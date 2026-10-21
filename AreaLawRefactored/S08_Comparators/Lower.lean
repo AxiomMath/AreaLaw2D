@@ -934,9 +934,10 @@ private theorem Statuses.posDef_root (Γ : Statuses σ K St X) (T : Transport.Me
     (ht : 0 ≤ t) (k : ℕ) : (Γ.root n d T t k).PosDef :=
   Transport.MeanTree.posDef_eval (fun s => Γ.posDef_leafA h1 ht k s) T
 
-private theorem Statuses.commute_Pi_root (Γ : Statuses σ K St X) (T : Transport.MeanTree St) {t : ℝ}
-    (ht : 0 ≤ t) (k : ℕ) : Commute (Transport.Pi (dims n d) k) (Γ.root n d T t k) :=
-  Transport.MeanTree.commute_eval_right (fun s => Γ.posDef_leafA h1 ht k s)
+omit h1 [∀ v, NeZero (n v)] [NeZero d] in
+private theorem Statuses.commute_Pi_root (Γ : Statuses σ K St X) (T : Transport.MeanTree St)
+    {t : ℝ} (k : ℕ) : Commute (Transport.Pi (dims n d) k) (Γ.root n d T t k) :=
+  Transport.MeanTree.commute_eval_right
     (fun s => Commute.list_prod_right _ _ fun y hy => by
       obtain ⟨g, rfl⟩ := List.mem_ofFn.mp hy
       exact Transport.commute_Pi_bandMetric t k _) T
@@ -990,7 +991,7 @@ private theorem vec_props [Finite St] (Γ : Statuses σ K St X) (T : Transport.M
   obtain ⟨-, hroot⟩ := hcomm Γ (a / 2) ht
   obtain ⟨hMC, hMR⟩ := hroot T
   have hMS : Commute (Γ.root n E.d T (a / 2) k) (sector E.d k (l k)) :=
-    (hMC.mul_right hMR).mul_right (Γ.commute_Pi_root (n := n) (d := E.d) h1 T ht k).symm
+    (hMC.mul_right hMR).mul_right (Γ.commute_Pi_root (n := n) (d := E.d) T k).symm
   refine ⟨Matrix.Transport.filteredNormSq_pos hM hpre,
     Matrix.Transport.star_dotProduct_filteredVector hM hpre, ?_,
     half_re_log_le_neg_log_filteredNormSq hM hpre hnorm⟩

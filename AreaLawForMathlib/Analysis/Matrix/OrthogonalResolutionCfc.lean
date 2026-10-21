@@ -118,11 +118,6 @@ theorem l2_opNorm_hom_le (hH : ∀ i, (P i).IsHermitian) {c : ι → ℂ} {M : �
 /-- The weight of a vector on the `i`-th projection. -/
 noncomputable def weight (z : n → ℂ) (i : ι) : ℝ := RCLike.re (star z ⬝ᵥ (P i *ᵥ z))
 
-omit hP [Fintype ι] [DecidableEq ι] [DecidableEq n] in
-theorem weight_eq (z : n → ℂ) (i : ι) :
-    weight (P := P) z i = RCLike.re (star z ⬝ᵥ (P i *ᵥ z)) := by
-  rfl
-
 theorem re_star_dotProduct_hom_mulVec_self (hH : ∀ i, (P i).IsHermitian) (c : ι → ℂ)
     (z : n → ℂ) :
     RCLike.re (star (hP.hom c *ᵥ z) ⬝ᵥ (hP.hom c *ᵥ z)) =

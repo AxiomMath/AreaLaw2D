@@ -2,10 +2,6 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Representation/ReplicaMetric.lean`.
 -/
 import AreaLawForMathlib.Analysis.Matrix.OrthogonalResolutionCfc
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaWeight
@@ -16,32 +12,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelCommutation
 /-!
 # The replica metrics
 
-Let `V = ⨂_{f ∈ F} ℂ^{ι f}` have dimension `d`. For a subsystem `Q ⊆ F`, `k` copies and
-`0 < t < 1/4`, the area-law paper (*A two-dimensional area law from a global spectral gap*,
-`05-replicas.tex`, equation `replicas:w-definition`, lines 287–303) defines
-
-`W_{Q,k} = ∑_λ w_k(λ) π^λ_{Q,k}`,
-
-with the label function `w_k` of `Partition.replicaWeight` evaluated on the label padded to
-the full dimension `d`, the same on every subsystem. This file proves the following parts of
-Lemma 6.2 (`replicas:metric`, lines 305–316):
-
-* `W_{Q,k}` is positive definite and central (it commutes with the copy permutations of `Q`,
-  and with the metrics of nested and disjoint subsystems), and `W_{Q,0} = I`;
-* on the symmetric subspace, `W_{Q,k} = W_{Qᶜ,k}`;
-* `poly(k)⁻¹ e^{-t F_{Q,k}} ≤ W_{Q,k} ≤ poly(k) e^{-t F_{Q,k}}` (equation
-  `replicas:W-comparison`), with `F_{Q,k}` the label observable.
-
-The integral representation (equation `replicas:W-integral`) and the marked-ratio limits are
-separate statements. The proofs are written from the paper; no Lean source was adapted.
-
-## Main declarations
-
-* `TensorPower.replicaDim`, `TensorPower.replicaLabelWeight`, `TensorPower.replicaMetric`.
-* `TensorPower.posDef_replicaMetric`, `TensorPower.replicaMetric_zero`.
-* `TensorPower.commute_replicaMetric_of_subset`, `TensorPower.commute_replicaMetric_of_disjoint`.
-* `TensorPower.replicaMetric_mul_symProj_compl`.
-* `TensorPower.exists_replicaMetric_comparison`.
+`W_{Q,k} = ∑_λ w_k(λ) π^λ_{Q,k}`: positivity, centrality, `W_{Q,0} = I` and the comparison
+`poly(k)⁻¹ e^{-t F_{Q,k}} ≤ W_{Q,k} ≤ poly(k) e^{-t F_{Q,k}}` (`05-replicas.tex`, Lemma 6.2).
 -/
 
 open Matrix PermutationRepresentation
@@ -90,10 +62,6 @@ theorem replicaMetric_eq_hom (t : ℝ) (k : ℕ) (Q : Finset F) :
     replicaMetric ι t k Q = (isOrthogonalResolution_labelProj (subsystemPerm k ι Q)).hom
       fun l => (replicaLabelWeight ι t l : ℂ) :=
   labelObservable_eq_hom _ _
-
-theorem isHermitian_replicaMetric (t : ℝ) (k : ℕ) (Q : Finset F) :
-    (replicaMetric ι t k Q).IsHermitian :=
-  isHermitian_labelObservable _ _
 
 omit [∀ f, DecidableEq (ι f)] in
 theorem replicaDim_pos [∀ f, Nonempty (ι f)] : 0 < replicaDim ι := Fintype.card_pos
@@ -146,30 +114,6 @@ theorem commute_replicaMetric_permOp (t : ℝ) (k : ℕ) (Q : Finset F) (σ : Eq
     Commute (replicaMetric ι t k Q) (permOp (subsystemPerm k ι Q) σ) :=
   Commute.sum_left _ _ _ fun l _ => (commute_labelProj_permOp _ l σ).smul_left _
 
-/-- Metrics of nested subsystems commute (`05-replicas.tex`, lines 101 and 469). -/
-theorem commute_replicaMetric_of_subset (t : ℝ) (k : ℕ) {Q Q' : Finset F} (h : Q ⊆ Q') :
-    Commute (replicaMetric ι t k Q) (replicaMetric ι t k Q') := by
-  rw [replicaMetric, replicaMetric, labelObservable_eq_groupAlgebraRep,
-    labelObservable_eq_groupAlgebraRep]
-  exact commute_groupAlgebraRep_subsystemPerm_of_subset ι k h
-    (sum_smul_centralIdem_mem_center _) _
-
-/-- Metrics of disjoint subsystems commute (`05-replicas.tex`, lines 101 and 469). -/
-theorem commute_replicaMetric_of_disjoint (t : ℝ) (k : ℕ) {Q Q' : Finset F}
-    (h : Disjoint Q Q') : Commute (replicaMetric ι t k Q) (replicaMetric ι t k Q') := by
-  rw [replicaMetric, replicaMetric, labelObservable_eq_groupAlgebraRep,
-    labelObservable_eq_groupAlgebraRep]
-  exact commute_groupAlgebraRep_subsystemPerm_of_disjoint ι k h _ _
-
-/-- **Lemma 6.2, complementary metrics** (`05-replicas.tex`, line 316): on the symmetric
-subspace `𝒮_k`, `W_{Q,k} = W_{Qᶜ,k}`, in the operator form `W_{Q,k} Π_k = W_{Qᶜ,k} Π_k`. -/
-theorem replicaMetric_mul_symProj_compl (t : ℝ) (k : ℕ) (Q : Finset F) :
-    replicaMetric ι t k Q * symProj (copyPerm ((f : F) → ι f) k) =
-      replicaMetric ι t k Qᶜ * symProj (copyPerm ((f : F) → ι f) k) := by
-  simp only [replicaMetric, labelObservable, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  rw [smul_mul_assoc, smul_mul_assoc, labelProj_mul_symProj_compl]
-
 /-- The labelwise comparison behind `replicas:W-comparison`: for a label occurring on a
 subsystem, `|log w_k(λ) + t log d_λ| ≤ C log(k + 2)` with `C` depending only on `d` and `t`. -/
 theorem exists_abs_log_replicaLabelWeight_add_le [∀ f, Nonempty (ι f)] {t : ℝ} (ht : 0 < t) :
@@ -211,16 +155,8 @@ theorem exists_abs_log_replicaLabelWeight_add_le [∀ f, Nonempty (ι f)] {t : �
         add_le_add (h1.trans (mul_le_mul_of_nonneg_right (le_abs_self _) hL)) h3
     _ = (|C₁| + t * C₂) * Real.log ((k : ℝ) + 2) := by ring
 
-/-- `e^{-t F_{Q,k}} = ∑_λ d_λ^{-t} π^λ_{Q,k}`, by functional calculus of the label
-observable. -/
-theorem cfc_exp_labelEntropy (t : ℝ) (k : ℕ) (Q : Finset F) :
-    cfc (fun x => Real.exp (-t * x)) (labelEntropy (subsystemPerm k ι Q)) =
-      labelObservable (subsystemPerm k ι Q) fun l => Real.exp (-t * Real.log l.dim) := by
-  rw [labelEntropy, labelObservable_eq_hom, labelObservable_eq_hom,
-    IsOrthogonalResolution.cfc_hom _ (isHermitian_labelProj _)]
 
-/-- **Lemma 6.2, comparison with the label observable** (`05-replicas.tex`, equation
-`replicas:W-comparison`): uniformly in the subsystem and the labels,
+/-- Lemma 6.2, equation `replicas:W-comparison`:
 `(k + 2)^{-C} e^{-t F_{Q,k}} ≤ W_{Q,k} ≤ (k + 2)^C e^{-t F_{Q,k}}`. -/
 theorem exists_replicaMetric_comparison [∀ f, Nonempty (ι f)] {t : ℝ} (ht : 0 < t) :
     ∃ C : ℝ, ∀ (k : ℕ) (Q : Finset F),
@@ -236,7 +172,8 @@ theorem exists_replicaMetric_comparison [∀ f, Nonempty (ι f)] {t : ℝ} (ht :
   have hk2 : (0 : ℝ) < (k : ℝ) + 2 := by positivity
   have hE : cfc (fun x => Real.exp (-t * x)) (labelEntropy (subsystemPerm k ι Q)) =
       hP.hom fun l => (Real.exp (-t * Real.log l.dim) : ℂ) := by
-    rw [cfc_exp_labelEntropy, labelObservable_eq_hom]
+    rw [labelEntropy, labelObservable_eq_hom,
+      IsOrthogonalResolution.cfc_hom _ (isHermitian_labelProj _)]
   have hsmul : ∀ (c : ℝ) (g : IrrepLabel (Equiv.Perm (Fin k)) → ℝ),
       (c : ℂ) • hP.hom (fun l => (g l : ℂ)) = hP.hom fun l => ((c * g l : ℝ) : ℂ) := by
     intro c g
@@ -245,44 +182,23 @@ theorem exists_replicaMetric_comparison [∀ f, Nonempty (ι f)] {t : ℝ} (ht :
     ext l
     simp
   rw [hE, replicaMetric_eq_hom, hsmul, hsmul]
-  -- Labelwise: `log w = -t log d + e` with `|e| ≤ C log(k+2)`.
   have hlab : ∀ l, labelProj (subsystemPerm k ι Q) l ≠ 0 →
       ((k : ℝ) + 2) ^ (-C) * Real.exp (-t * Real.log l.dim) ≤ replicaLabelWeight ι t l ∧
         replicaLabelWeight ι t l ≤ ((k : ℝ) + 2) ^ C * Real.exp (-t * Real.log l.dim) := by
     intro l hl
     have hw := replicaLabelWeight_pos ι ht.le l
     have h := abs_le.mp (hC k Q l hl)
-    rw [Real.rpow_def_of_pos hk2, Real.rpow_def_of_pos hk2, ← Real.exp_add, ← Real.exp_add]
-    constructor
-    · rw [← Real.exp_log hw]
-      exact Real.exp_le_exp.mpr (by nlinarith)
-    · rw [← Real.exp_log hw]
-      exact Real.exp_le_exp.mpr (by nlinarith)
-  constructor
-  · rw [Matrix.le_iff, ← map_sub]
-    have hf :
-        (fun l : IrrepLabel (Equiv.Perm (Fin k)) => (replicaLabelWeight ι t l : ℂ)) -
-          (fun l : IrrepLabel (Equiv.Perm (Fin k)) =>
-            ((((k : ℝ) + 2) ^ (-C) * Real.exp (-t * Real.log l.dim) : ℝ) : ℂ)) =
-          fun l => ((replicaLabelWeight ι t l -
-            ((k : ℝ) + 2) ^ (-C) * Real.exp (-t * Real.log l.dim) : ℝ) : ℂ) := by
-      ext l
-      simp
-    rw [hf]
+    rw [Real.rpow_def_of_pos hk2, Real.rpow_def_of_pos hk2, ← Real.exp_add, ← Real.exp_add,
+      ← Real.exp_log hw, Real.exp_le_exp, Real.exp_le_exp]
+    constructor <;> nlinarith
+  have key (f g : IrrepLabel (Equiv.Perm (Fin k)) → ℝ)
+      (h : ∀ l, labelProj (subsystemPerm k ι Q) l ≠ 0 → g l ≤ f l) :
+      (hP.hom fun l => (g l : ℂ)) ≤ hP.hom fun l => (f l : ℂ) := by
+    rw [Matrix.le_iff, ← map_sub]
+    rw [show (fun l => (f l : ℂ)) - (fun l => (g l : ℂ)) = fun l => ((f l - g l : ℝ) : ℂ) by
+      ext l; simp]
     exact hP.posSemidef_hom_of_ne_zero (isHermitian_labelProj _)
-      (fun l hl => sub_nonneg.mpr (hlab l hl).1)
-  · rw [Matrix.le_iff, ← map_sub]
-    have hf :
-        (fun l : IrrepLabel (Equiv.Perm (Fin k)) =>
-          ((((k : ℝ) + 2) ^ C * Real.exp (-t * Real.log l.dim) : ℝ) : ℂ)) -
-          (fun l : IrrepLabel (Equiv.Perm (Fin k)) => (replicaLabelWeight ι t l : ℂ)) =
-          fun l => ((((k : ℝ) + 2) ^ C * Real.exp (-t * Real.log l.dim) -
-            replicaLabelWeight ι t l : ℝ) : ℂ) := by
-      ext l
-      simp
-    rw [hf]
-    exact hP.posSemidef_hom_of_ne_zero (isHermitian_labelProj _)
-      (fun l hl => sub_nonneg.mpr (hlab l hl).2)
+      (fun l hl => sub_nonneg.mpr (h l hl))
+  exact ⟨key _ _ fun l hl => (hlab l hl).1, key _ _ fun l hl => (hlab l hl).2⟩
 
 end TensorPower
-

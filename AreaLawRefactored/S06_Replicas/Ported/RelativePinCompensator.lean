@@ -3,7 +3,7 @@ Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
-import AreaLawRefactored.S06_Replicas.Ported.TensorPowerRpow
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TensorPowerRpow
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaLift
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaSimilarity
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
@@ -12,19 +12,8 @@ import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 /-!
 # The compensators of a move
 
-For a region `R` and a density matrix `ρ_R` on it, the compensator is
-`T_R = W_{R,k}^{-1} (ρ_R^t)^{⊗k}` on `V^{⊗k}` (*A two-dimensional area law from a global spectral
-gap*, `05-replicas.tex`, proof of Lemma 6.3, lines 535–551). The paper bounds it by
-`‖T_R‖ ≤ poly(k)` uniformly in `ρ_R`, including marginals of deficient rank: in the `λ` block
-the eigenvalues of `ρ_R^{⊗k}` are at most `d_λ^{-1}`, and `W_{R,k} ≥ poly(k)^{-1} e^{-t F}`.
-
-Ported from `LionSR/QICLean`, `QICLean/Representation/RelativePinCompensator.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `TensorPower.reindex_labelObservable_subsystemPerm`.
-* `TensorPower.exists_l2_opNorm_compensator_le` — `‖T_R‖ ≤ (k + 2)^C`.
+The compensator `T_R = W_{R,k}^{-1} (ρ_R^t)^{⊗k}` satisfies `‖T_R‖ ≤ poly(k)` uniformly in the
+density matrix `ρ_R` (`05-replicas.tex`, proof of Lemma 6.3, lines 535–551).
 -/
 
 open Matrix PermutationRepresentation Entropy
@@ -49,23 +38,10 @@ theorem reindex_labelObservable_subsystemPerm (k : ℕ) (Q : Finset F)
   simp only [reindex_apply, submatrix_apply, kroneckerMap_apply] at h
   rw [h, mul_assoc]
 
-theorem labelProj_subsystemPerm_ne_zero [∀ f, Nonempty (ι f)] {k : ℕ} {Q : Finset F}
-    {l : IrrepLabel (Equiv.Perm (Fin k))} (hl : labelProj (copyPerm (SubConfig ι Q) k) l ≠ 0) :
-    labelProj (subsystemPerm k ι Q) l ≠ 0 := by
-  intro h0
-  apply hl
-  have h := labelProj_subsystemPerm_eq ι k Q l
-  rw [h0] at h
-  ext a b
-  obtain ⟨c⟩ : Nonempty (Fin k → ComplConfig ι Q) := inferInstance
-  have := congrFun (congrFun h (a, c)) (b, c)
-  simpa [kroneckerMap_apply] using this.symm
-
 variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ}
 
-/-- **The compensator bound** (`05-replicas.tex`, equation `replicas:compensator`): there is
-`C` such that `‖W_{R,k}^{-1} ((ρ_R^t ⊗ 1)^{⊗k})‖ ≤ (k + 2)^C` for every `k`, every region `R`
-and every density matrix `ρ_R` on `R`. -/
+/-- **The compensator bound** (`05-replicas.tex`, equation `replicas:compensator`):
+`‖W_{R,k}^{-1} ((ρ_R^t ⊗ 1)^{⊗k})‖ ≤ (k + 2)^C`. -/
 theorem exists_l2_opNorm_compensator_le [∀ v, NeZero (n v)] {t : ℝ} (ht : 0 < t) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (k : ℕ) (R : Finset V)
       (ρ : Matrix (RegionConfig n R) (RegionConfig n R) ℂ), ρ.PosSemidef → ρ.trace = 1 →
@@ -90,20 +66,16 @@ theorem exists_l2_opNorm_compensator_le [∀ v, NeZero (n v)] {t : ℝ} (ht : 0 
   rw [← l2_opNorm_reindex_equiv (splitEquiv ι k R), hre]
   refine (Arealaw.l2_opNorm_kronecker_one_le _).trans ?_
   refine l2_opNorm_labelObservable_mul_tensorPow_rpow_le hρ htr ht.le hw hM fun l hl => ?_
-  have hl' := labelProj_subsystemPerm_ne_zero ι hl
-  have h := hC k R l hl'
-  have hd : (0 : ℝ) < l.dim := by exact_mod_cast l.dim_pos
-  have hlog : -Real.log (w l) ≤ C * Real.log ((k : ℝ) + 2) + t * Real.log l.dim := by
-    have := (abs_le.mp h).1
-    simp only [w]
-    linarith
-  have hk : (0 : ℝ) < (k : ℝ) + 2 := by positivity
-  calc (w l)⁻¹ = Real.exp (-Real.log (w l)) := by
-        rw [Real.exp_neg, Real.exp_log (hw l)]
-    _ ≤ Real.exp (C * Real.log ((k : ℝ) + 2) + t * Real.log l.dim) := Real.exp_le_exp.mpr hlog
-    _ = ((k : ℝ) + 2) ^ C * (l.dim : ℝ) ^ t := by
-        rw [Real.exp_add, Real.rpow_def_of_pos hk, Real.rpow_def_of_pos hd, mul_comm C,
-          mul_comm t]
+  have hl' : labelProj (subsystemPerm k ι R) l ≠ 0 := fun h0 => hl (by
+    have h := labelProj_subsystemPerm_eq ι k R l
+    rw [h0] at h
+    ext a b
+    obtain ⟨c⟩ : Nonempty (Fin k → ComplConfig ι R) := inferInstance
+    simpa [kroneckerMap_apply] using (congrFun (congrFun h (a, c)) (b, c)).symm)
+  have := (abs_le.mp (hC k R l hl')).1
+  rw [Real.rpow_def_of_pos (by positivity), Real.rpow_def_of_pos (mod_cast l.dim_pos),
+    ← Real.exp_add, ← Real.exp_log (inv_pos.mpr (hw l)), Real.log_inv]
+  exact Real.exp_le_exp.mpr (by simp only [w] at this ⊢; linarith)
 
 end TensorPower
 

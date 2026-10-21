@@ -47,69 +47,6 @@ namespace CFC
 
 variable {A : Type*} [CStarAlgebra A] [PartialOrder A] [StarOrderedRing A]
 
-omit [PartialOrder A] [StarOrderedRing A] in
-/-- Backport of the norm formula for a nonzero natural power in the non-unital functional
-calculus. -/
-theorem norm_cfcₙ_pow_real (a : A) (n : ℕ) (hn : n ≠ 0)
-    (ha : IsSelfAdjoint a) : ‖cfcₙ (· ^ n : ℝ → ℝ) a‖ = ‖a‖ ^ n := by
-  refine le_antisymm (norm_cfcₙ_le fun x hx ↦ ?_) ?_
-  · grw [norm_pow,
-      NonUnitalIsometricContinuousFunctionalCalculus.norm_quasispectrum_le a hx ha]
-  have ⟨⟨x, hx, hx'⟩, _⟩ :=
-    NonUnitalIsometricContinuousFunctionalCalculus.isGreatest_norm_quasispectrum
-      (𝕜 := ℝ) a ha
-  simp only [← hx', ← norm_pow, norm_apply_le_norm_cfcₙ (· ^ n) a hx]
-
-/-- Backport of norm monotonicity on the positive cone. -/
-theorem norm_le_norm_of_le_of_nonneg {a b : A} (hab : a ≤ b) (ha : 0 ≤ a) :
-    ‖a‖ ≤ ‖b‖ := by
-  suffices ∀ a b : Unitization ℂ A, 0 ≤ a → a ≤ b → ‖a‖ ≤ ‖b‖ by
-    have hb := ha.trans hab
-    simpa only [ge_iff_le, Unitization.norm_inr] using
-      this a b (by simpa) ((Unitization.inr_le_iff a b).2 hab)
-  intro a b ha hab
-  have hb : 0 ≤ b := ha.trans hab
-  exact (CStarAlgebra.norm_le_iff_le_algebraMap a (norm_nonneg _) ha).2 <| hab.trans <|
-    IsSelfAdjoint.le_algebraMap_norm_self
-
-/-- Backport of monotonicity of the norm of the positive part, used by the square-root
-estimate below.  This entered Mathlib after the revision used by this project. -/
-theorem norm_posPart_mono {a b : A} (hab : a ≤ b) : ‖a⁺‖ ≤ ‖b⁺‖ := by
-  by_cases! ha : ¬ IsSelfAdjoint a
-  · simp [CFC.posPart_def, cfcₙ_apply_of_not_predicate, ha, mt (IsSelfAdjoint.of_le hab) ha]
-  have hb : IsSelfAdjoint b := ha.of_ge hab
-  have h : a ≤ b⁺ := hab.trans CFC.le_posPart
-  have key := IsSelfAdjoint.conjugate_le_conjugate h (CFC.posPart_nonneg a).isSelfAdjoint
-  nth_rw 2 [← CFC.posPart_sub_negPart a] at key
-  simp only [mul_sub, CFC.posPart_mul_negPart, sub_zero] at key
-  obtain (ha' | ha') := eq_zero_or_norm_pos (a⁺)
-  · simp [ha']
-  suffices ‖a⁺‖ ^ 3 ≤ ‖a⁺‖ * ‖b⁺‖ * ‖a⁺‖ by simpa [pow_succ, ha']
-  calc
-    ‖a⁺‖ ^ 3 = ‖a⁺ * a⁺ * a⁺‖ := by
-      conv_rhs => rw [← cfcₙ_id' ℝ a⁺, ← cfcₙ_mul .., ← cfcₙ_mul ..]
-      simp [← pow_three', norm_cfcₙ_pow_real a⁺ 3 (by decide) (CFC.posPart_nonneg a).isSelfAdjoint]
-    _ ≤ ‖a⁺ * b⁺ * a⁺‖ := norm_le_norm_of_le_of_nonneg key (by
-      simpa [← pow_three'] using CStarAlgebra.pow_nonneg (CFC.posPart_nonneg a) 3)
-    _ ≤ ‖a⁺‖ * ‖b⁺‖ * ‖a⁺‖ := norm_mul₃_le ..
-
-/-- Backport companion to `norm_posPart_mono`. -/
-theorem norm_negPart_anti {a b : A} (hab : a ≤ b) : ‖b⁻‖ ≤ ‖a⁻‖ := by
-  rw [← neg_neg a, ← neg_le] at hab
-  simpa using norm_posPart_mono hab
-
-/-- Backport of the order interval bound for the norm of a self-adjoint element. -/
-theorem norm_le_max_of_le_of_le {a b c : A} (hab : a ≤ b) (hbc : b ≤ c)
-    (hb : IsSelfAdjoint b) : ‖b‖ ≤ max ‖a‖ ‖c‖ := calc
-  ‖b‖ = max ‖b⁻‖ ‖b⁺‖ := by rw [hb.norm_eq_max_norm_posPart_negPart b, max_comm]
-  _ ≤ max ‖a⁻‖ ‖c⁺‖ := by grw [norm_negPart_anti hab, norm_posPart_mono hbc]
-  _ ≤ max ‖a‖ ‖c‖ := by gcongr <;> simp
-
-/-- A self-adjoint element is dominated by its absolute value. -/
-theorem le_abs_of_isSelfAdjoint {a : A} (ha : IsSelfAdjoint a) : a ≤ abs a := by
-  rw [← sub_nonneg, abs_sub_self a ha]
-  exact smul_nonneg (by norm_num) (negPart_nonneg a)
-
 /-- The square of a self-adjoint element is positive. -/
 theorem mul_self_nonneg_of_isSelfAdjoint {x : A} (hx : IsSelfAdjoint x) : 0 ≤ x * x := by
   simpa [hx.star_eq] using star_mul_self_nonneg x
@@ -133,4 +70,3 @@ theorem norm_abs_sub_abs_le {a b : A} (ha : IsSelfAdjoint a) (hb : IsSelfAdjoint
     _ = (‖a‖ + ‖b‖) * ‖a - b‖ := by ring
 
 end CFC
-

@@ -104,16 +104,6 @@ end PhysReg
 
 /-! ## Mean-tree weights -/
 
-theorem weight_bind_eq_sum {ι κ : Type*} [Fintype ι] [DecidableEq ι] [DecidableEq κ]
-    (T : MeanTree ι) (f : ι → MeanTree κ) (j : κ) :
-    (T.bind f).weight j = ∑ i, T.weight i * (f i).weight j := by
-  induction T with
-  | leaf i => simp [MeanTree.bind, MeanTree.weight, Pi.single_apply]
-  | node p l r ihl ihr =>
-    simp only [MeanTree.bind, MeanTree.weight_node, ihl, ihr, Finset.mul_sum,
-      ← Finset.sum_add_distrib]
-    exact Finset.sum_congr rfl fun i _ => by ring
-
 namespace Scan
 
 variable {σ : Type u} [DecidableEq σ] (S : Scan σ)
@@ -148,9 +138,6 @@ theorem stateAt_ext (t : ℕ) (h : S.Hist t) (c : S.Ch t) (g : Fin S.K) :
 
 theorem offset_ext (t : ℕ) (h : S.Hist t) (c : S.Ch t) :
     S.offset (t + 1) (S.ext t h c) = S.offset t h := rfl
-
-theorem ext_injective (t : ℕ) : Function.Injective fun p : S.Hist t × S.Ch t => S.ext t p.1 p.2 :=
-  fun _ _ h => h
 
 theorem ext_inj {t : ℕ} {h h' : S.Hist t} {c c' : S.Ch t} (he : S.ext t h c = S.ext t h' c') :
     h = h' ∧ c = c' :=

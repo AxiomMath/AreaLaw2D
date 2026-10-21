@@ -249,63 +249,6 @@ private lemma trace_cfc_convex_bound
   rw [hsum_re (hA₁.1.cfc f), hsum_re (hA₂.1.cfc f)] at hR
   linarith [hR ▸ hsum_right]
 
-/-- **Trace concavity of `rpow`** for `p ∈ [0, 1]` (Bhatia, Chapter V; Wolf Theorem 5.17).
-
-For PSD matrices `A₁, A₂` and `t ∈ [0, 1]`:
-`t · Re Tr(A₁^p) + (1 − t) · Re Tr(A₂^p) ≤
-   Re Tr((t • A₁ + (1 − t) • A₂)^p)`. -/
-theorem trace_rpow_concave
-    {p : ℝ} (hp : p ∈ Set.Icc (0 : ℝ) 1)
-    {A₁ A₂ : Mat} (hA₁ : 0 ≤ A₁) (hA₂ : 0 ≤ A₂)
-    {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
-    t * (trace (A₁ ^ p)).re + (1 - t) * (trace (A₂ ^ p)).re ≤
-      (trace ((t • A₁ + (1 - t) • A₂) ^ p)).re := by
-  obtain ⟨ht₀, ht₁⟩ := ht
-  have h1mt : 0 ≤ 1 - t := by linarith
-  have hPSD₁ : A₁.PosSemidef := hA₁.posSemidef
-  have hPSD₂ : A₂.PosSemidef := hA₂.posSemidef
-  have hPSD : (t • A₁ + (1 - t) • A₂).PosSemidef :=
-    (hPSD₁.smul ht₀).add (hPSD₂.smul h1mt)
-  set f : ℝ → ℝ := fun x => x ^ p with hf_def
-  -- `-f` is convex on `[0, ∞)` since `f` is concave there.
-  have hconcave : ConcaveOn ℝ (Set.Ici (0 : ℝ)) f := Real.concaveOn_rpow hp.1 hp.2
-  have hconvex_neg : ConvexOn ℝ (Set.Ici (0 : ℝ)) (fun x => -f x) := hconcave.neg
-  have hbound := trace_cfc_convex_bound hconvex_neg hPSD₁ hPSD₂ ht₀ h1mt hPSD
-  -- Unfold `cfc (-f)` on each Hermitian to `-(cfc f)` and push the minus
-  -- through `trace.re`.
-  rw [hermitian_cfc_neg hPSD.1 f, hermitian_cfc_neg hPSD₁.1 f,
-    hermitian_cfc_neg hPSD₂.1 f] at hbound
-  simp only [Matrix.trace_neg, Complex.neg_re, mul_neg] at hbound
-  rw [rpow_eq_cfc_power hA₁ hPSD₁.1, rpow_eq_cfc_power hA₂ hPSD₂.1,
-    rpow_eq_cfc_power hPSD.nonneg hPSD.1]
-  linarith
-
-/-- **Trace convexity of `rpow`** for `p ∈ [1, 2]` (Bhatia, Chapter V; Wolf Theorem 5.17).
-
-For PSD matrices `A₁, A₂` and `t ∈ [0, 1]`:
-`Re Tr((t • A₁ + (1 − t) • A₂)^p) ≤
-   t · Re Tr(A₁^p) + (1 − t) · Re Tr(A₂^p)`.
-
-The hypothesis `p ≤ 2` is slack; the scalar convexity of `x^p` on `[0, ∞)`
-holds for all `p ≥ 1`. -/
-theorem trace_rpow_convex
-    {p : ℝ} (hp : p ∈ Set.Icc (1 : ℝ) 2)
-    {A₁ A₂ : Mat} (hA₁ : 0 ≤ A₁) (hA₂ : 0 ≤ A₂)
-    {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
-    (trace ((t • A₁ + (1 - t) • A₂) ^ p)).re ≤
-      t * (trace (A₁ ^ p)).re + (1 - t) * (trace (A₂ ^ p)).re := by
-  obtain ⟨ht₀, ht₁⟩ := ht
-  have h1mt : 0 ≤ 1 - t := by linarith
-  have hPSD₁ : A₁.PosSemidef := hA₁.posSemidef
-  have hPSD₂ : A₂.PosSemidef := hA₂.posSemidef
-  have hPSD : (t • A₁ + (1 - t) • A₂).PosSemidef :=
-    (hPSD₁.smul ht₀).add (hPSD₂.smul h1mt)
-  have hconvex : ConvexOn ℝ (Set.Ici (0 : ℝ)) (fun x : ℝ => x ^ p) := convexOn_rpow hp.1
-  have hbound := trace_cfc_convex_bound hconvex hPSD₁ hPSD₂ ht₀ h1mt hPSD
-  rw [rpow_eq_cfc_power hA₁ hPSD₁.1, rpow_eq_cfc_power hA₂ hPSD₂.1,
-    rpow_eq_cfc_power hPSD.nonneg hPSD.1]
-  exact hbound
-
 end TNLean
 
 end

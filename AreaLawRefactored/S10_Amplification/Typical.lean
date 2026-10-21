@@ -77,9 +77,6 @@ theorem specProj_mul_self (sel : Finset n) :
   rw [specProj_eq_conjDiag, conjDiag_mul]
   congr 1; funext j; split_ifs <;> simp
 
-theorem specProj_norm_le (sel : Finset n) : ‖specProj hA sel‖ ≤ 1 :=
-  IsStarProjection.norm_le _ ⟨specProj_mul_self hA sel, specProj_isHermitian hA sel⟩
-
 theorem specProj_mul (sel : Finset n) :
     specProj hA sel * A = conjDiag hA (fun j => if j ∈ sel then hA.eigenvalues j else 0) := by
   rw [show specProj hA sel * A = specProj hA sel * conjDiag hA hA.eigenvalues from

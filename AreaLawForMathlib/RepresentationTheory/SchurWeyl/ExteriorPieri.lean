@@ -3,37 +3,14 @@ Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
-import AreaLawRefactored.S06_Replicas.Ported.SplitCopies
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SplitCopies
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.BranchingPieri
 
 /-!
 # Highest-weight vectors in `V_μ ⊗ Λ^r ℂ^q`
 
-Let `μ` be a label of `S_m` and `A_r` the antisymmetrizer of the last `r` of `m + r` copies.
-The idempotent `e^μ_{00} ⊗ A_r` of `ℂ[S_{m+r}]` cuts out `V_μ ⊗ Λ^r ℂ^q` inside
-`(ℂ^q)^{⊗(m + r)}`. A highest-weight vector of weight `λ` fixed by it has components
-`w_z ∈ V_μ`, indexed by configurations `z` of the last `r` copies, which are antisymmetric in
-`z`; the component with the largest `∑_j z_j` among the nonzero ones is a highest-weight vector
-of `V_μ`. Hence `λ = μ + 1_S` for a set `S` of `r` rows, and such vectors form a space of
-dimension at most one.
-
-This is the highest-weight half of the vertical-strip Pieri rule
-`V_μ ⊗ Λ^r ℂ^q = ⊕_{λ/μ vertical strip} V_λ`, used for the Weyl character formula in the
-proof of Lemma 6.2 of the area-law paper (*A two-dimensional area law from a global spectral
-gap*, `05-replicas.tex`, lines 336–364). The argument is the one of `BranchingPieri.lean`
-with `ℂ^q` replaced by `Λ^r ℂ^q`.
-
-Ported from `LionSR/QICLean`, `QICLean/Representation/ExteriorPieri.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `TensorPower.pieriElem μ r` — the idempotent `e^μ_{00} ⊗ A_r`.
-* `TensorPower.sliceR z w` — the component of `w` along the configuration `z` of the last
-  `r` copies.
-* `TensorPower.finrank_hwSpace_pieri_le_one` — the highest-weight bound.
-* `TensorPower.pieriRank_le_one_and` — the multiplicity of `λ` in `V_μ ⊗ Λ^r` is at most one,
-  and nonzero only for `λ = μ + 1_S`.
+The multiplicity of `V_λ` in `V_μ ⊗ Λ^r ℂ^q` is at most one, and nonzero only for
+`λ = μ + 1_S` with `|S| = r` (the highest-weight half of the vertical-strip Pieri rule).
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra
@@ -101,12 +78,6 @@ theorem groupAlgebraRep_pieriElem (μ : IrrepLabel (Equiv.Perm (Fin m))) :
 def sliceR (z : Fin r → Fin q) (w : (Fin (m + r) → Fin q) → ℂ) : (Fin m → Fin q) → ℂ :=
   fun x => w (Fin.append x z)
 
-theorem sliceR_add (z : Fin r → Fin q) (w w' : (Fin (m + r) → Fin q) → ℂ) :
-    sliceR z (w + w') = sliceR z w + sliceR z w' := rfl
-
-theorem sliceR_smul (z : Fin r → Fin q) (c : ℂ) (w : (Fin (m + r) → Fin q) → ℂ) :
-    sliceR z (c • w) = c • sliceR z w := rfl
-
 theorem sliceR_splitOp_one (z : Fin r → Fin q) (A : Matrix (Fin m → Fin q) (Fin m → Fin q) ℂ)
     (w : (Fin (m + r) → Fin q) → ℂ) :
     sliceR z (splitOp A 1 *ᵥ w) = A *ᵥ sliceR z w := by
@@ -129,36 +100,23 @@ theorem sliceR_permOp_rightCopies (z : Fin r → Fin q) (τ : Equiv.Perm (Fin r)
   rw [copyPerm_rightCopies_append]
 
 theorem castAdd_ne_natAdd (i : Fin m) (j : Fin r) : Fin.castAdd r i ≠ Fin.natAdd m j := by
-  intro h
-  have := congrArg Fin.val h
-  simp only [Fin.val_castAdd, Fin.val_natAdd] at this
-  omega
+  simp only [ne_eq, Fin.ext_iff, Fin.val_castAdd, Fin.val_natAdd]; omega
 
 theorem update_append_castAdd (x : Fin m → Fin q) (z : Fin r → Fin q) (i : Fin m)
     (b : Fin q) :
     Function.update (Fin.append x z) (Fin.castAdd r i) b =
       Fin.append (Function.update x i b) z := by
   funext j
-  refine Fin.addCases (fun i' => ?_) (fun j' => ?_) j
-  · by_cases h : i' = i
-    · subst h; simp
-    · rw [Function.update_of_ne (fun e => h (Fin.castAdd_inj.mp e)), Fin.append_left,
-        Fin.append_left, Function.update_of_ne h]
-  · rw [Function.update_of_ne (castAdd_ne_natAdd i j').symm, Fin.append_right,
-      Fin.append_right]
+  refine Fin.addCases (fun i' => ?_) (fun j' => ?_) j <;>
+    simp [Function.update_apply, Fin.castAdd_inj, Ne.symm (castAdd_ne_natAdd i _)]
 
 theorem update_append_natAdd (x : Fin m → Fin q) (z : Fin r → Fin q) (j : Fin r)
     (b : Fin q) :
     Function.update (Fin.append x z) (Fin.natAdd m j) b =
       Fin.append x (Function.update z j b) := by
   funext i
-  refine Fin.addCases (fun i' => ?_) (fun j' => ?_) i
-  · rw [Function.update_of_ne (castAdd_ne_natAdd i' j), Fin.append_left, Fin.append_left]
-  · by_cases h : j' = j
-    · subst h; simp
-    · rw [Function.update_of_ne (fun e => h (Fin.ext (by
-        have := congrArg Fin.val e; simp only [Fin.val_natAdd] at this; omega))), Fin.append_right,
-        Fin.append_right, Function.update_of_ne h]
+  refine Fin.addCases (fun i' => ?_) (fun j' => ?_) i <;>
+    simp [Function.update_apply, Fin.natAdd_inj, castAdd_ne_natAdd _ j]
 
 theorem sliceR_gen (z : Fin r → Fin q) (a b : Fin q) (w : (Fin (m + r) → Fin q) → ℂ) :
     sliceR z (gen a b *ᵥ w) = gen a b *ᵥ sliceR z w +
@@ -226,7 +184,8 @@ theorem sliceR_copyPerm_of_fixed {w : (Fin (m + r) → Fin q) → ℂ}
           (IrrepLabel.restrictHom (rightCopies m r) (single τ 1)) := by
       rw [← groupAlgebraRep_comp, groupAlgebraRep_single, one_smul, permOp_comp]
     rw [h1, ← map_mul, e, map_smul, smul_mulVec, hw]
-  rw [← sliceR_permOp_rightCopies, h, sliceR_smul]
+  rw [← sliceR_permOp_rightCopies, h]
+  rfl
 
 theorem sliceR_eq_zero_of_not_injective {w : (Fin (m + r) → Fin q) → ℂ}
     (hw : groupAlgebraRep (copyPerm (Fin q) (m + r))
@@ -301,10 +260,7 @@ theorem exists_sliceR_isHighestWeight {μ : IrrepLabel (Equiv.Perm (Fin m))} {ν
     simpa [sliceR, Fin.append_castAdd_natAdd] using this
   obtain ⟨z, hzS, hmax⟩ := exists_max_image _ zSum hS
   have hz0 : sliceR z w ≠ 0 := (mem_filter.mp hzS).2
-  have hinj : Function.Injective z := by
-    by_contra h
-    exact hz0 (hw.zero z h)
-  refine ⟨z, hinj, hz0, hw.hw.1.sliceR z, fun a b hab => ?_⟩
+  refine ⟨z, by_contra fun h => hz0 (hw.zero z h), hz0, hw.hw.1.sliceR z, fun a b hab => ?_⟩
   have h := sliceR_gen z a b w
   rw [hw.hw.2 a b hab] at h
   have hzero : ∀ j, (if z j = a then sliceR (Function.update z j b) w else 0) = 0 := by
@@ -324,8 +280,7 @@ theorem weight_pos_iff (z : Fin r → Fin q) (a : Fin q) : 0 < weight z a ↔ �
   · intro h
     by_contra hne
     push Not at hne
-    rw [sum_eq_zero fun i _ => by simp [hne i]] at h
-    exact lt_irrefl _ h
+    simp [hne] at h
   · rintro ⟨j, hj⟩
     exact lt_of_lt_of_le (by simp [hj])
       (single_le_sum (f := fun i => if z i = a then (1 : ℤ) else 0)
@@ -395,7 +350,6 @@ theorem finrank_hwSpace_pieri_le_one (μ : IrrepLabel (Equiv.Perm (Fin m)))
         (LinearMap.finrank_range_of_inj hΦ).symm
     _ ≤ Module.finrank ℂ (ℂ ∙ v) := Submodule.finrank_mono hrange
     _ = 1 := finrank_span_singleton hv.ne_zero
-    _ ≤ 1 := le_rfl
 
 /-! ### The multiplicity of `λ` in `V_μ ⊗ Λ^r` -/
 

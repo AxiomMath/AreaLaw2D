@@ -107,7 +107,7 @@ theorem exists_filterProd_specPow_I (hTU : ∀ j, T j ⊆ U) (hT : ∀ j, T j �
     | succ j ih =>
       change _ * filterProd hTU _ j = Arealaw.extendId (hTU (j + 1))
         (Arealaw.extendId (hT j) (specPow (W j) (l j) (y * Complex.I) * V j))
-      rw [ih, extendId_extendId, ← Arealaw.extendId_mul]
+      rw [ih, Arealaw.extendId_extendId, ← Arealaw.extendId_mul]
 
 /-- D3.12.4 on regions. If `‖M_{m-1} ⋯ M_0 ξ‖ ≤ B` for all zero-floor filters `M_j` on `T_j`,
 then `‖F(1 + iy)‖ ≤ B`: `F(1 + iy) = (U_m ⋯ U_1) (V_{m-1}^* M_m V_{m-1}) ⋯ (V_0^* M_1 V_0) ξ` with

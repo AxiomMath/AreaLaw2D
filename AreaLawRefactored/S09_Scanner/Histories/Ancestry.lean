@@ -308,8 +308,6 @@ theorem ind_pos {p : Prop} (hp : p) : ind p = 1 := by unfold ind; rw [if_pos hp]
 
 theorem ind_neg {p : Prop} (hp : ¬ p) : ind p = 0 := by unfold ind; rw [if_neg hp]
 
-theorem ind_le_one (p : Prop) : ind p ≤ 1 := by unfold ind; split_ifs <;> norm_num
-
 open Classical in
 /-- D9.8.14. Prescribing (by predicates allowing at most one slot value each) the band-`g`
 choices at distinct charge rounds `s ∈ T_s` has classical probability `≤ (2M)^{-|T_s|}`: the

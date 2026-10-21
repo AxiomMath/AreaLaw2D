@@ -47,11 +47,6 @@ theorem dyadicIndex_add (k l : ℕ) (p : ℤ × ℤ) :
   have : (0 : ℤ) ≤ 2 ^ k := by positivity
   simp only [dyadicIndex, pow_add, Int.ediv_ediv_of_nonneg this]
 
-theorem dyadicSquare_nonempty (k : ℕ) (z : ℤ × ℤ) : (dyadicSquare k z).Nonempty :=
-  ⟨(2 ^ k * z.1, 2 ^ k * z.2), mem_Icc.2 ⟨le_rfl, by
-    have : (0 : ℤ) ≤ 2 ^ k - 1 := by have : (1 : ℤ) ≤ 2 ^ k := one_le_pow₀ (by norm_num); omega
-    exact Prod.le_def.2 ⟨by simpa, by simpa⟩⟩⟩
-
 /-- Dyadic nesting: a square of side `2^k` sharing a site `p` with a square of side `2^l ≥ 2^k`
 lies inside it. -/
 theorem dyadicSquare_subset_of_mem (hkl : k ≤ l) (hp : p ∈ dyadicSquare k z) {w : ℤ × ℤ}

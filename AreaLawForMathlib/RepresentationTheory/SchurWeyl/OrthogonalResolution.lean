@@ -2,10 +2,6 @@
 Copyright (c) 2026 TNLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: TNLean contributors
-
-Ported from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Analysis/OrthogonalResolution.lean`.
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HermitianCfcSpectral
 
@@ -19,11 +15,7 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 /-!
 # Orthogonal resolutions of the identity and their function algebras
 
-A family `P : ι → Matrix n n ℂ` of mutually orthogonal idempotents with sum the
-identity defines an algebra homomorphism `(ι → ℂ) →ₐ[ℂ] Matrix n n ℂ`,
-`f ↦ ∑ i, f i • P i`. The spectral projections of a Hermitian matrix form such a
-resolution, indexed by its distinct eigenvalues, and the Hermitian functional calculus
-is the composite with evaluation at the eigenvalues.
+Mutually orthogonal idempotents summing to `1` give an algebra homomorphism from `ι → ℂ`.
 -/
 
 open scoped Matrix ComplexOrder
@@ -37,8 +29,7 @@ omit [DecidableEq n] in
 /-- A Hermitian idempotent is positive semidefinite. -/
 theorem IsHermitian.posSemidef_of_mul_self {E : Matrix n n ℂ}
     (hE : E.IsHermitian) (hEE : E * E = E) : E.PosSemidef := by
-  have : E = Eᴴ * E := by rw [hE.eq, hEE]
-  rw [this]
+  rw [show E = Eᴴ * E by rw [hE.eq, hEE]]
   exact posSemidef_conjTranspose_mul_self E
 
 /-- A finite family of mutually orthogonal idempotent matrices with sum the identity. -/
@@ -80,8 +71,8 @@ theorem hom_apply (f : ι → ℂ) : hP.hom f = ∑ i, f i • P i := by
 theorem trace_hom (f : ι → ℂ) : (hP.hom f).trace = ∑ i, f i * (P i).trace := by
   simp [hom_apply, trace_sum, trace_smul]
 
-theorem continuous_hom : Continuous hP.hom := by
-  exact LinearMap.continuous_of_finiteDimensional hP.hom.toLinearMap
+theorem continuous_hom : Continuous hP.hom :=
+  LinearMap.continuous_of_finiteDimensional hP.hom.toLinearMap
 
 open scoped Matrix.Norms.Operator in
 /-- The matrix exponential of a function of the resolution is computed pointwise. -/
@@ -126,22 +117,15 @@ theorem isHermitian_hom (hH : ∀ i, (P i).IsHermitian) (f : ι → ℝ) :
 theorem posSemidef_hom (hH : ∀ i, (P i).IsHermitian) {f : ι → ℝ} (hf : ∀ i, 0 ≤ f i) :
     (hP.hom fun i => (f i : ℂ)).PosSemidef := by
   rw [hom_apply]
-  refine posSemidef_sum _ fun i _ => ?_
-  have := ((hH i).posSemidef_of_mul_self (hP.mul_self i)).smul (a := (f i : ℂ))
-    (by exact_mod_cast hf i)
-  exact this
+  exact posSemidef_sum _ fun i _ => ((hH i).posSemidef_of_mul_self (hP.mul_self i)).smul
+    (a := (f i : ℂ)) (by exact_mod_cast hf i)
 
 theorem posSemidef_hom_of_ne_zero (hH : ∀ i, (P i).IsHermitian) {f : ι → ℝ}
     (hf : ∀ i, P i ≠ 0 → 0 ≤ f i) : (hP.hom fun i => (f i : ℂ)).PosSemidef := by
   have : hP.hom (fun i => (f i : ℂ)) = hP.hom fun i => ((if P i = 0 then 0 else f i : ℝ) : ℂ) := by
     rw [hom_apply, hom_apply]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    by_cases h : P i = 0 <;> simp [h]
-  rw [this]
-  refine hP.posSemidef_hom hH fun i => ?_
-  by_cases h : P i = 0
-  · simp [h]
-  · simpa [h] using hf i h
+    exact Finset.sum_congr rfl fun i _ => by by_cases h : P i = 0 <;> simp [h]
+  exact this ▸ hP.posSemidef_hom hH fun i => by by_cases h : P i = 0 <;> simp [h, hf i]
 
 end IsOrthogonalResolution
 
@@ -156,8 +140,8 @@ noncomputable def eigenvalueSet : Finset ℝ := Finset.univ.image hA.eigenvalues
 noncomputable def spectralProj (u : ℝ) : Matrix n n ℂ :=
   hA.cfc fun x => if x = u then 1 else 0
 
-theorem mem_eigenvalueSet (i : n) : hA.eigenvalues i ∈ hA.eigenvalueSet := by
-  exact Finset.mem_image_of_mem _ (Finset.mem_univ i)
+theorem mem_eigenvalueSet (i : n) : hA.eigenvalues i ∈ hA.eigenvalueSet :=
+  Finset.mem_image_of_mem _ (Finset.mem_univ i)
 
 theorem cfc_eq_sum_smul_spectralProj (f : ℝ → ℝ) :
     hA.cfc f = ∑ u : hA.eigenvalueSet, (f u : ℂ) • hA.spectralProj u := by
@@ -176,11 +160,10 @@ theorem cfc_eq_sum_smul_spectralProj (f : ℝ → ℝ) :
   · subst hij
     simp only [ite_true]
     rw [Finset.sum_coe_sort hA.eigenvalueSet (fun u => (f u : ℂ) *
-      ((if hA.eigenvalues i = u then 1 else 0 : ℝ) : ℂ))]
-    rw [Finset.sum_eq_single (hA.eigenvalues i)]
+      ((if hA.eigenvalues i = u then 1 else 0 : ℝ) : ℂ)), Finset.sum_eq_single (hA.eigenvalues i)]
     · simp
     · intro u _ hu; simp [Ne.symm hu]
-    · intro h; exact absurd (hA.mem_eigenvalueSet i) h
+    · exact fun h => absurd (hA.mem_eigenvalueSet i) h
   · simp [hij]
 
 theorem isHermitian_spectralProj (u : ℝ) : (hA.spectralProj u).IsHermitian := by
@@ -196,11 +179,7 @@ theorem isOrthogonalResolution_spectralProj :
     · have : (fun x : ℝ => (if x = (u : ℝ) then (1 : ℝ) else 0) * if x = v then 1 else 0) =
           fun _ => 0 := by
         funext x
-        split_ifs with h1 h2
-        · exact absurd (Subtype.ext (h1.symm.trans h2)) h
-        · simp
-        · simp
-        · simp
+        split_ifs with h1 h2 <;> first | exact absurd (Subtype.ext (h1.symm.trans h2)) h | simp
       rw [this, cfc_form]
       simp
   sum_eq := by
@@ -215,8 +194,7 @@ theorem cfc_eq_hom (f : ℝ → ℝ) :
 
 theorem eq_hom : A = hA.isOrthogonalResolution_spectralProj.hom fun u => ((u : ℝ) : ℂ) := by
   have := cfc_eq_hom hA id
-  rw [cfc_id] at this
-  exact this
+  rwa [cfc_id] at this
 
 theorem commute_spectralProj {B : Matrix n n ℂ} (hB : Commute A B) (u : ℝ) :
     Commute (hA.spectralProj u) B := by

@@ -73,7 +73,6 @@ theorem trDistance_traceRight_le (ρ τ : _root_.MState (α × β)) : -- helper
 
 end TrDist
 
-
 /-! ## Marginals of pure states -/
 
 section PureMarg
@@ -328,11 +327,6 @@ theorem dotProduct_copyVec' (hX : X ⊆ Λ) (Ω : Reg loc Λ → ℂ) : -- helpe
   · intro w
     simp [copyVec]
 
-/-- `vnorm φ = 1`. -/
-theorem vnorm_copyVec' (hX : X ⊆ Λ) {Ω : Reg loc Λ → ℂ} (hΩ : star Ω ⬝ᵥ Ω = 1) :
-    vnorm (copyVec hX Ω) = 1 :=
-  vnorm_eq_one ((dotProduct_copyVec' hX Ω).trans hΩ)
-
 /-- D10.6.1. `φ = 𝓡_X Ω`, so for every physical `J ⊆ Λ ∖ X` the `(e', J)`-reduction of `φ`
 equals the `(X, J)`-reduction of `Ω` with `X → e'`. -/
 theorem step_10_6_1 (hX : X ⊆ Λ) (hJ : J ⊆ Λ \ X) (Ω : Reg loc Λ → ℂ) (hΩ : star Ω ⬝ᵥ Ω = 1)
@@ -479,11 +473,6 @@ theorem dotProduct_restoredVec' [∀ i, Nonempty (loc i)] (hX : X ⊆ Λ) (Ω : 
         rw [Finset.sum_mul_sum]
         exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
     _ = 1 := by rw [hΩ, hξ, one_mul]
-
-/-- `vnorm η = 1`. -/
-theorem vnorm_restoredVec' [∀ i, Nonempty (loc i)] (hX : X ⊆ Λ) (Ω : Reg loc Λ → ℂ)
-    (hΩ : star Ω ⬝ᵥ Ω = 1) : vnorm (restoredVec hX Ω hΩ) = 1 :=
-  vnorm_eq_one (dotProduct_restoredVec' hX Ω hΩ)
 
 end Restored
 

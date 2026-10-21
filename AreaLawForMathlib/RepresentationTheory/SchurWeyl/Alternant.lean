@@ -11,30 +11,9 @@ import Mathlib.Algebra.Polynomial.Eval.Defs
 /-!
 # Alternants and the vertical-strip Pieri rule
 
-For exponents `α : Fin q → ℕ` the alternant is `a_α(y) = det [y_i ^ α_j]`. The Weyl character
-formula used in the proof of Lemma 6.2 of the area-law paper (*A two-dimensional area law
-from a global spectral gap*, `05-replicas.tex`, lines 336–364: "the Weyl denominator cancels
-`Δ(s^t)` in the density") writes the character of a multiplicity space as a quotient of two
-alternants. This file proves the algebraic facts about alternants that the character formula
-needs:
-
-* `a_α = 0` when two exponents coincide;
-* the vertical-strip Pieri rule `a_α e_r = ∑_{|S| = r} a_{α + 1_S}`, with
-  `e_r(y) = ∑_{|S| = r} ∏_{i ∈ S} y_i` the elementary symmetric polynomial;
-* its dimension form `∑_{|S| = r} V(α + 1_S) = binom(q, r) V(α)` for the Vandermonde product
-  `V(t) = ∏_{i<j} (t_i - t_j)`, obtained by evaluating the Pieri rule at
-  `y = (1, z, …, z^{q-1})` and letting `z → 1`.
-
-Ported from `LionSR/QICLean`, `QICLean/Representation/Alternant.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `Partition.alternant`, `Partition.elemSymm`, `Partition.indic`.
-* `Partition.alternant_eq_zero_of_eq` — coinciding exponents.
-* `Partition.alternant_mul_elemSymm` — the vertical-strip Pieri rule.
-* `Partition.sum_vand_add_indic` — `∑_{|S| = r} V(α + 1_S) = binom(q, r) V(α)`.
-* `Partition.sum_weylFormula_add_indic` — the same for the Weyl dimension formula.
+The alternant `a_α(y) = det [y_i ^ α_j]` satisfies `a_α e_r = ∑_{|S| = r} a_{α + 1_S}`, whence
+`∑_{|S| = r} V(α + 1_S) = binom(q, r) V(α)` for the Vandermonde product `V` (*A two-dimensional area
+law from a global spectral gap*, `05-replicas.tex`, lines 336–364).
 -/
 
 open Finset Matrix Polynomial
@@ -54,20 +33,16 @@ def elemSymm (r : ℕ) (y : Fin q → R) : R :=
 /-- The indicator vector `1_S` of a set of rows. -/
 def indic (S : Finset (Fin q)) : Fin q → ℕ := fun i => if i ∈ S then 1 else 0
 
-theorem indic_injective : Function.Injective (indic : Finset (Fin q) → Fin q → ℕ) := by
-  intro S T h
+theorem indic_injective : Function.Injective (indic : Finset (Fin q) → Fin q → ℕ) := fun S T h => by
   ext a
   have := congrFun h a
-  simp only [indic] at this
-  by_cases ha : a ∈ S <;> by_cases hb : a ∈ T <;> simp [ha, hb] at this ⊢
+  by_cases ha : a ∈ S <;> by_cases hb : a ∈ T <;> simp [indic, ha, hb] at this ⊢
 
 theorem alternant_eq_sum (α : Fin q → ℕ) (y : Fin q → R) :
     alternant α y = ∑ σ : Equiv.Perm (Fin q),
       (Equiv.Perm.sign σ : R) * ∏ i, y (σ i) ^ α i := by
   rw [alternant, det_apply]
-  refine sum_congr rfl fun σ _ => ?_
-  rw [Units.smul_def, zsmul_eq_mul]
-  simp
+  exact sum_congr rfl fun σ _ => by rw [Units.smul_def, zsmul_eq_mul]; simp
 
 /-- An alternant with two equal exponents vanishes. -/
 theorem alternant_eq_zero_of_eq {α : Fin q → ℕ} (y : Fin q → R) {i j : Fin q} (hij : i ≠ j)
@@ -79,20 +54,12 @@ theorem elemSymm_eq_perm (r : ℕ) (y : Fin q → R) (σ : Equiv.Perm (Fin q)) :
     elemSymm r y = ∑ S ∈ powersetCard r (univ : Finset (Fin q)), ∏ i ∈ S, y (σ i) := by
   rw [elemSymm]
   refine sum_nbij' (fun S => S.map σ.symm.toEmbedding) (fun S => S.map σ.toEmbedding)
-    ?_ ?_ ?_ ?_ ?_
-  · intro S hS
-    simp only [mem_powersetCard, subset_univ, true_and] at hS ⊢
-    rw [card_map]; exact hS
-  · intro S hS
-    simp only [mem_powersetCard, subset_univ, true_and] at hS ⊢
-    rw [card_map]; exact hS
-  · intro S _
-    simp [Finset.map_map]
-  · intro S _
-    simp [Finset.map_map]
-  · intro S _
-    rw [prod_map]
-    simp
+    ?_ ?_ ?_ ?_ ?_ <;> intro S hS
+  · simpa using hS
+  · simpa using hS
+  · simp [Finset.map_map]
+  · simp [Finset.map_map]
+  · rw [prod_map]; simp
 
 theorem prod_pow_indic (S : Finset (Fin q)) (f : Fin q → R) :
     ∏ i, f i ^ indic S i = ∏ i ∈ S, f i := by
@@ -166,19 +133,14 @@ theorem sum_prod_add_indic (α : Fin q → ℕ) (r : ℕ) :
     pow_ne_zero _ (X_sub_C_ne_zero 1)
   have h' := mul_left_cancel₀ hX h
   have := congrArg (eval 1) h'
-  rw [eval_mul, eval_finsetSum, eval_one_geomVand, eval_one_elemSymm_geom] at this
-  simp only [eval_one_geomVand] at this
+  simp only [eval_mul, eval_finsetSum, eval_one_geomVand, eval_one_elemSymm_geom] at this
   rw [← this, mul_comm]
 
 theorem prod_Ioi_eq_vand (t : Fin q → ℝ) :
     ∏ i, ∏ j ∈ Ioi i, (t j - t i) = (-1) ^ (rowPairs q).card * vand t := by
   have h : ∏ ij ∈ rowPairs q, (t ij.2 - t ij.1) = ∏ i, ∏ j ∈ Ioi i, (t j - t i) := by
     rw [rowPairs, prod_filter, ← univ_product_univ, prod_product]
-    refine prod_congr rfl fun i _ => ?_
-    rw [← prod_filter]
-    congr 1
-    ext j
-    simp
+    exact prod_congr rfl fun i _ => by rw [← prod_filter]; congr 1; ext j; simp
   rw [← h, vand, ← prod_neg]
   exact prod_congr rfl fun ij _ => by ring
 
@@ -189,10 +151,7 @@ theorem sum_vand_add_indic (α : Fin q → ℕ) (r : ℕ) :
         vand (fun i => ((α + indic S) i : ℝ)) = (q.choose r : ℝ) * vand (fun i => (α i : ℝ)) := by
   have h := congrArg (fun z : ℤ => (z : ℝ)) (sum_prod_add_indic α r)
   push_cast at h
-  have hs : ∀ β : Fin q → ℕ, ∏ i, ∏ j ∈ Ioi i, ((β j : ℝ) - β i) =
-      (-1) ^ (rowPairs q).card * vand (fun i => (β i : ℝ)) :=
-    fun β => prod_Ioi_eq_vand _
-  simp only [hs] at h
+  simp only [prod_Ioi_eq_vand] at h
   rw [← mul_sum, mul_left_comm] at h
   have hu : ((-1 : ℝ) ^ (rowPairs q).card) ≠ 0 := pow_ne_zero _ (by norm_num)
   exact mul_left_cancel₀ hu h
@@ -210,8 +169,6 @@ theorem sum_weylFormula_add_indic (p : Fin q → ℕ) (r : ℕ) :
     ∑ S ∈ powersetCard r (univ : Finset (Fin q)), weylFormula (p + indic S) =
       (q.choose r : ℝ) * weylFormula p := by
   simp only [weylFormula_eq_vand, ← sum_div, shiftedPart_add_indic]
-  rw [mul_div_assoc']
-  congr 1
-  exact sum_vand_add_indic (shiftedPart p) r
+  rw [mul_div_assoc', sum_vand_add_indic]
 
 end Partition

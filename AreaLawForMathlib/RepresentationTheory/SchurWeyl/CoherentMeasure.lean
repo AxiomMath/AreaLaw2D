@@ -2,12 +2,8 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from `LionSR/QICLean`,
-`QICLean/Representation/CoherentMeasure.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
-import AreaLawRefactored.S06_Replicas.Ported.HusimiIdentity
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HusimiIdentity
 import AreaLawForMathlib.Analysis.Matrix.TraceMulBound
 
 /-! # The coherent measure of a symmetric density matrix -/
@@ -64,8 +60,7 @@ theorem symProj_mul_of_permOp_mul
     inv_mul_cancel₀ (by exact_mod_cast Fintype.card_ne_zero), one_smul]
 
 theorem trace_symProj_ne_zero (a : Ω) :
-    (symProj (copyPerm Ω k)).trace ≠ 0 := by
-  intro h0
+    (symProj (copyPerm Ω k)).trace ≠ 0 := fun h0 => by
   obtain ⟨l₀, hl₀⟩ :=
     exists_labelProj_eq_symProj (G := Equiv.Perm (Fin k))
       (X := Fin k → Ω)
@@ -95,14 +90,10 @@ theorem integral_trace_mul_coherentProj
       ((U : Matrix Ω Ω ℂ) *ᵥ Pi.single a 1)).trace ∂(unitaryHaar Ω) =
       ((symProj (copyPerm Ω k)).trace)⁻¹ *
         (σ * symProj (copyPerm Ω k)).trace := by
-  have h := trace_mul_integral σ _
-    (integrable_twirlIntegrand (coherentProj k (Pi.single a 1)))
-    (T := unitaryTwirl (coherentProj k (Pi.single a 1)))
-    (fun _ _ => rfl)
-  rw [unitaryTwirl_coherentProj, Matrix.mul_smul, trace_smul,
-    smul_eq_mul] at h
-  rw [h]
-  simp only [coherentProj_mulVec]
+  have h := trace_mul_integral σ _ (integrable_twirlIntegrand (coherentProj k (Pi.single a 1)))
+    (T := unitaryTwirl (coherentProj k (Pi.single a 1))) (fun _ _ => rfl)
+  rw [unitaryTwirl_coherentProj, Matrix.mul_smul, trace_smul, smul_eq_mul] at h
+  simpa only [coherentProj_mulVec] using h.symm
 
 /-- The coherent measure has total mass `Tr σ`. -/
 theorem coherentIntegral_one
@@ -140,34 +131,23 @@ theorem norm_coherentIntegral_trace_coherentProj_le
   have hF : Continuous F := continuous_trace_mul_coherentProj σ a
   have hFi : Integrable F (unitaryHaar Ω) :=
     hF.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  have hFre : Integrable (fun U => ‖G‖ * (F U).re) (unitaryHaar Ω) :=
-    (hFi.re).const_mul _
-  have hpsd : ∀ U, (coherentProj m (θ U)).PosSemidef :=
-    fun U => posSemidef_vecMulVec_self_star _
-  have hFnorm : ∀ U, ‖F U‖ = (F U).re := by
-    intro U
+  have hFnorm : ∀ U, ‖F U‖ = (F U).re := fun U => by
     have h0 : 0 ≤ F U := by
       change 0 ≤ (σ * coherentProj k (θ U)).trace
       rw [coherentProj, mul_vecMulVec, trace_vecMulVec, dotProduct_comm]
       exact hσp.dotProduct_mulVec_nonneg _
-    obtain ⟨hre, him⟩ := Complex.nonneg_iff.mp h0
-    rw [← Complex.re_add_im (F U), ← him]
-    simp [abs_of_nonneg hre]
+    simpa using congrArg Complex.re (Complex.norm_of_nonneg' h0)
   have hbound : ∀ U,
-      ‖F U * (G * coherentProj m (θ U)).trace‖ ≤ ‖G‖ * (F U).re := by
-    intro U
+      ‖F U * (G * coherentProj m (θ U)).trace‖ ≤ ‖G‖ * (F U).re := fun U => by
     rw [norm_mul, hFnorm, mul_comm]
     gcongr
-    · rw [← hFnorm]
-      exact norm_nonneg _
+    · exact hFnorm U ▸ norm_nonneg _
     · rw [trace_mul_comm]
-      refine ((hpsd U).norm_trace_mul_le G).trans ?_
+      refine (PosSemidef.norm_trace_mul_le (ρ := coherentProj m (θ U))
+        (posSemidef_vecMulVec_self_star _) G).trans ?_
       rw [trace_coherentProj_unitary_mulVec_single, Complex.one_re, one_mul]
-  have hint := norm_integral_le_of_norm_le hFre
-    (Filter.Eventually.of_forall hbound)
-  have hre : ∫ U, (F U).re ∂(unitaryHaar Ω) =
-      (∫ U, F U ∂(unitaryHaar Ω)).re := integral_re hFi
-  rw [integral_const_mul, hre] at hint
+  have hint := norm_integral_le_of_norm_le (hFi.re.const_mul _) (.of_forall hbound)
+  rw [integral_const_mul, integral_re hFi] at hint
   have hFint : ∫ U, F U ∂(unitaryHaar Ω) =
       ((symProj (copyPerm Ω k)).trace)⁻¹ := by
     rw [integral_trace_mul_coherentProj, trace_mul_comm,

@@ -17,7 +17,7 @@ universe u
 
 open Matrix PermutationRepresentation Filter Arealaw TensorPower Entropy
 open OpenAI (pureState)
-open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
+open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator Polynomial
 
 variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ}
 
@@ -25,8 +25,7 @@ variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ}
 
 section Bridges
 
-/-- `extendId` on the full region is `localLift`, read through
-`univEquiv : Reg (Fin ∘ n) univ ≃ SiteConfig n`. -/
+/-- `extendId` on the full region is `localLift`, read through `univEquiv`. -/
 theorem extendId_univ (D : Finset V) (hD : D ⊆ Finset.univ)
     (K : Matrix (RegionConfig n D) (RegionConfig n D) ℂ) :
     extendId hD K = (localLift D K).submatrix univEquiv univEquiv := by
@@ -34,13 +33,9 @@ theorem extendId_univ (D : Finset V) (hD : D ⊆ Finset.univ)
   simp only [extendId, of_apply, submatrix_apply, localLift_apply, univEquiv_apply]
   have e : (restr (S := Finset.univ \ D) Finset.sdiff_subset w =
       restr (S := Finset.univ \ D) Finset.sdiff_subset w') ↔
-      ∀ v ∉ D, w ⟨v, Finset.mem_univ v⟩ = w' ⟨v, Finset.mem_univ v⟩ := by
-    constructor
-    · intro h v hv
-      exact congrFun h ⟨v, Finset.mem_sdiff.2 ⟨Finset.mem_univ v, hv⟩⟩
-    · intro h
-      funext i
-      exact h i.1 (Finset.mem_sdiff.1 i.2).2
+      ∀ v ∉ D, w ⟨v, Finset.mem_univ v⟩ = w' ⟨v, Finset.mem_univ v⟩ :=
+    ⟨fun h v hv => congrFun h ⟨v, Finset.mem_sdiff.2 ⟨Finset.mem_univ v, hv⟩⟩,
+      fun h => funext fun i => h i.1 (Finset.mem_sdiff.1 i.2).2⟩
   simp only [e]
   rfl
 
@@ -89,9 +84,8 @@ theorem f_univ {P₀ P₁ X U : Finset V} (hP : P₀ ∪ P₁ ⊆ Finset.univ)
     bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _),
     bracketPow_eq_cfc_suppRpow (posSemidef_margMatrix _ _), extendId_univ, extendId_univ,
     extendId_univ, extendId_univ, extendId_univ]
-  simp only [submatrix_mul_equiv, submatrix_mulVec_equiv]
-  simp only [markedScalarSymbol, regionPow, dotProduct, Function.comp_apply, Pi.star_apply,
-]
+  simp only [submatrix_mul_equiv, submatrix_mulVec_equiv, markedScalarSymbol, regionPow,
+    dotProduct, Function.comp_apply, Pi.star_apply]
   exact univEquiv.sum_comp (fun w => star (θ w) * _)
 
 /-- A lift from a region `D` is a lift from any region `D' = D`. -/
@@ -113,10 +107,7 @@ variable {Ω : Type*} [Fintype Ω] [DecidableEq Ω] {k : ℕ}
 
 theorem coherentIntegral_const_mul (a : Ω) (σ : Matrix (Fin k → Ω) (Fin k → Ω) ℂ) (c : ℂ)
     (φ : (Ω → ℂ) → ℂ) : coherentIntegral a σ (fun θ => c * φ θ) = c * coherentIntegral a σ φ := by
-  simp only [coherentIntegral]
-  simp_rw [mul_left_comm _ c]
-  rw [MeasureTheory.integral_const_mul]
-  ring
+  simp only [coherentIntegral, mul_left_comm _ c, MeasureTheory.integral_const_mul]
 
 theorem continuous_comp_unitary_mulVec_single {φ : (Ω → ℂ) → ℂ}
     (hφ : ContinuousOn φ unitSphere) (a : Ω) :
@@ -124,8 +115,7 @@ theorem continuous_comp_unitary_mulVec_single {φ : (Ω → ℂ) → ℂ}
   hφ.comp_continuous (continuous_unitary_mulVec_single a) fun U =>
     unitary_mulVec_single_mem_unitSphere U a
 
-/-- Monotonicity of the coherent measure: `Re φ ≤ Re ψ` on unit vectors gives
-`Re ∫ φ dμ_σ ≤ Re ∫ ψ dμ_σ`. -/
+/-- `Re φ ≤ Re ψ` on unit vectors gives `Re ∫ φ dμ_σ ≤ Re ∫ ψ dμ_σ`. -/
 theorem re_coherentIntegral_le {σ : Matrix (Fin k → Ω) (Fin k → Ω) ℂ} (hσp : σ.PosSemidef)
     (a : Ω) {φ ψ : (Ω → ℂ) → ℂ} (hφ : ContinuousOn φ unitSphere)
     (hψ : ContinuousOn ψ unitSphere) (hle : ∀ θ ∈ unitSphere, (φ θ).re ≤ (ψ θ).re) :
@@ -175,11 +165,8 @@ theorem spectrum_subset_Icc_of_trace_eq_one {m : Type*} [Fintype m] [DecidableEq
   rintro _ ⟨i, rfl⟩
   refine ⟨hM.eigenvalues_nonneg i, ?_⟩
   have hsum : ∑ j, hM.isHermitian.eigenvalues j = 1 := by
-    have h := hM.isHermitian.trace_eq_sum_eigenvalues
-    rw [htr] at h
-    simpa using (congrArg Complex.re h).symm
-  rw [← hsum]
-  exact Finset.single_le_sum (fun j _ => hM.eigenvalues_nonneg j) (Finset.mem_univ i)
+    simpa [htr] using (congrArg Complex.re hM.isHermitian.trace_eq_sum_eigenvalues).symm
+  exact hsum ▸ Finset.single_le_sum (fun j _ => hM.eigenvalues_nonneg j) (Finset.mem_univ i)
 
 /-- Continuity of the von Neumann entropy along Hermitian families with spectrum in `[0, 1]`. -/
 theorem continuousOn_vonNeumann {X m : Type*} [TopologicalSpace X] [Fintype m] [DecidableEq m]
@@ -205,8 +192,7 @@ theorem continuousOn_η (X U F : Finset V) : ContinuousOn (η (n := n) X U F) un
     rw [dotProduct_comm, dotProduct_star_comp_univEquiv]; exact hθ
   have hS : ∀ A : Finset V, ContinuousOn (fun θ : SiteConfig n → ℂ => vonNeumann
       (posSemidef_ptrace (Finset.subset_univ A)
-        (posSemidef_vecMulVec_self_star (θ ∘ univEquiv))).isHermitian) unitSphere := by
-    intro A
+        (posSemidef_vecMulVec_self_star (θ ∘ univEquiv))).isHermitian) unitSphere := fun A => by
     refine continuousOn_vonNeumann _ (Continuous.continuousOn ?_) fun θ hθ =>
       spectrum_subset_Icc_of_trace_eq_one (posSemidef_ptrace _
         (posSemidef_vecMulVec_self_star _)) ?_
@@ -226,8 +212,7 @@ variable [∀ v, NeZero (n v)]
 
 /-! ### D6.13 Bounded approximation on symmetric inputs -/
 
-/-- `R_P R_Y^{-1} H R_P^{-1} R_Y = W_Y^{-1} W_P H W_P^{-1} W_Y` for `H` on the last copy: the
-first-copy metrics `W_{Q,k-1}` commute with everything here and cancel. -/
+/-- `R_P R_Y^{-1} H R_P^{-1} R_Y = W_Y^{-1} W_P H W_P^{-1} W_Y` for `H` on the last copy. -/
 theorem markedWord_eq {t : ℝ} (ht : 0 ≤ t) (m : ℕ) {P Y : Finset V} (hPY : Disjoint P Y)
     (c : Matrix (SiteConfig n) (SiteConfig n) ℂ) :
     markedRatio (fun v => Fin (n v)) t m P * (markedRatio (fun v => Fin (n v)) t m Y)⁻¹ *
@@ -298,9 +283,11 @@ theorem markedWord_eq {t : ℝ} (ht : 0 ≤ t) (m : ℕ) {P Y : Finset V} (hPY :
 
 /-- D6.13. (a) `O_k`, as a quadratic form on `𝒮_k`, is the compression of
 `R_{P,k} R_{Y,k}^{-1} h^{(k)} R_{P,k}^{-1} R_{Y,k}`; `sup_k ‖O_k‖ < ∞`. (b) Every `ε > 0`: there
-are operators `B_k` (here: an injection polynomial, the form compressed polynomial words in
-marked operators and stars `J_{Q,k}` take by D6.15.1) with common `sup_k ‖B_k‖` bound and
-`limsup_k ‖O_k - B_k‖ ≤ ε` on `𝒮_k`. -/
+are a product decomposition `h = ∑ b_i a_i` (`a_i` on `P`, `b_i` on `Y`) and polynomials `p, q`
+such that the compressions `B_k = Π_k W_k Π_k` of the polynomial word
+`W_k = ∑_i (q(J_Y) b_i^{(k)} p(J_Y))(p(J_P) a_i^{(k)} q(J_P))` in the marked operators and the
+stars `J_{Q,k}` have a common `sup_k ‖B_k‖` bound, the coherent symbol
+`⟨θ, (q(ρ_Y) b_i p(ρ_Y))(p(ρ_P) a_i q(ρ_P)) θ⟩` (D6.15), and `limsup_k ‖O_k - B_k‖ ≤ ε` on `𝒮_k`. -/
 theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
     (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
     {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) :
@@ -316,10 +303,14 @@ theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
         z ∈ symmetricSubspace k (fun v => Fin (n v)) →
           ‖(EuclideanSpace.equiv _ ℂ).symm (markedSimilarity n t k P Y F h *ᵥ z)‖ ≤
             M * ‖(EuclideanSpace.equiv _ ℂ).symm z‖) ∧
-    ∀ ε > 0, ∃ (B : ∀ k, Matrix (Fin k → SiteConfig n) (Fin k → SiteConfig n) ℂ)
-      (ψ : (SiteConfig n → ℂ) → ℂ), IsInjectionPoly B ψ ∧ (∃ M, ∀ k, ‖B k‖ ≤ M) ∧
-        ∀ᶠ k in atTop, ‖(markedSimilarity n t k P Y F h - B k) *
-          symProj (copyPerm (SiteConfig n) k)‖ ≤ ε := by
+    ∀ ε > 0, ∃ (N : ℕ) (a b : Fin N → Matrix (SiteConfig n) (SiteConfig n) ℂ) (p q : ℝ[X]),
+      (∀ i, IsSupportedOn (a i) P) ∧ (∀ i, IsSupportedOn (b i) Y) ∧ h = ∑ i, b i * a i ∧
+      (∃ M, ∀ k, ‖HasMarkedSymbol.compress (polyWord P Y a b p q) k‖ ≤ M) ∧
+      HasCoherentSymbol (HasMarkedSymbol.compress (polyWord P Y a b p q))
+        (fun θ => star θ ⬝ᵥ (polyWordSymbol P Y a b p q θ *ᵥ θ)) ∧
+        ∀ᶠ k in atTop, ‖(markedSimilarity n t k P Y F h -
+          HasMarkedSymbol.compress (polyWord P Y a b p q) k) *
+            symProj (copyPerm (SiteConfig n) k)‖ ≤ ε := by
   refine ⟨⟨fun m u z hu hz => ?_,
     -- D6.13.3–D6.13.5: both inverses act on symmetric vectors, polarization
     exists_norm_markedSimilarity_mulVec_le ht0 ht1 hPY hPF hYF hh⟩, fun ε hε => ?_⟩
@@ -335,9 +326,19 @@ theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
     rw [star_dotProduct_copyMean_eq (Fin.last m) h (fun τ => (hc Y τ).2.mul_right (hc P τ).1)
       (fun τ => (hc P τ).2.mul_right (hc Y τ).1) hu hz, markedWord_eq ht0.le m hPY]
   · -- D6.13.6–D6.13.8: clip, then polynomials, then `k → ∞`
-    obtain ⟨B, ψ, hB, -, hev⟩ :=
-      (hasCoherentSymbol_markedSimilarity ht0 ht1 hPY hPF hYF hh).approx ε hε
-    exact ⟨B, ψ, hB, hB.norm_le, hev⟩
+    obtain ⟨N, a, b, p, q, ha, hb, hdec, -, hev⟩ := exists_polyWord_approx ht0 ht1 hPY hPF hYF hh hε
+    have hB := (hasMarkedSymbol_polyWord P Y a b p q).hasCoherentSymbol_compress
+    refine ⟨N, a, b, p, q, ha, hb, hdec, ?_, hB, hev⟩
+    -- D6.13.8: the common bound, `B_k = Π_k W_k Π_k = B_k Π_k`
+    obtain ⟨M, hM⟩ := hB.bounded
+    refine ⟨M, fun k => ?_⟩
+    have hBP : HasMarkedSymbol.compress (polyWord P Y a b p q) k *
+        symProj (copyPerm (SiteConfig n) k) =
+          HasMarkedSymbol.compress (polyWord P Y a b p q) k := by
+      cases k with
+      | zero => simp [HasMarkedSymbol.compress]
+      | succ m => simp only [HasMarkedSymbol.compress, Matrix.mul_assoc, symProj_mul_symProj]
+    simpa only [hBP] using hM k
 
 /-! ### D6.16 Removing clipping; absolute values -/
 
@@ -514,8 +515,8 @@ theorem lemma_6_4 : ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     exact h4 V n P Y F hPY hPF hYF hcov D K hD hK0 hK1 t ht0 hac θ hθ
   rw [coherentIntegral_const_mul, Complex.re_ofReal_mul] at hle
   have h1 := (Complex.re_le_norm _).trans (hk b σ hσp hσt hσ)
-  have e2 : ∀ z : ℂ, (2 * z).re = 2 * z.re := fun z => by simp
-  rw [Complex.sub_re, e2] at h1
+  simp only [Complex.sub_re, Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul,
+    sub_zero] at h1
   simp only [L] at hle
   linarith
 

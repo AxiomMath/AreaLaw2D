@@ -196,7 +196,7 @@ theorem commute_Pi_bandRelRatio (hR : R.IsAdmissible) {t : ℝ} (ht : 0 ≤ t) (
   have hA := R.posDef_old (n := n) hR ht k h g
   have hr : Commute (Pi n k) (bandMetric n t k (R.old h g) ^ (-(1 / 2) : ℝ)) :=
     (hA.commute_rpow_left (commute_Pi_bandMetric t k _).symm _).symm
-  exact (hr.mul_right (MeanTree.commute_eval_right (fun c => R.posDef_new (n := n) hR ht k h c g)
+  exact (hr.mul_right (MeanTree.commute_eval_right
     (fun c => commute_Pi_bandMetric t k _) _)).mul_right hr
 
 /-- On `𝒮_k^⊥` every relative metric is the identity: `1 − Π_k ≤ C_{h,g}`. -/
@@ -267,7 +267,7 @@ theorem step_7_17 (hR : R.IsAdmissible) {t : ℝ} (ht : 0 ≤ t) {k : ℕ}
         (bandMetric n t k (R.old h g')) := fun g g' hg => hcomm ⟨h, none⟩ ⟨h, none⟩ g g' hg
     have hAB : ∀ g g', g ≠ g' → Commute (bandMetric n t k (R.old h g))
         (R.bandChoiceRoot n t k h g') := fun g g' hg =>
-      MeanTree.commute_eval_right (fun c => hN c g')
+      MeanTree.commute_eval_right
         (fun c => hcomm ⟨h, none⟩ ⟨h, some c⟩ g g' hg) _
     -- D7.17.1: Lemma 7.1 (6) applied to the choice tree, `B_h = ∏_g B_{h,g}`, commuting factors
     obtain ⟨hB, hBB⟩ := lemma_7_1_6 (D := fun c g => bandMetric n t k (R.new h c g))

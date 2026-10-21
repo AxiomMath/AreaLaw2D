@@ -382,6 +382,11 @@ def restrictX (x : SiteConfig n) : Reg (fun v => Fin (n v)) X := fun v => x v
 def replaceX (x : SiteConfig n) (y : Reg (fun v => Fin (n v)) X) : SiteConfig n :=
   fun v => if h : v ∈ X then y ⟨v, h⟩ else x v
 
+omit [Fintype σ] in
+theorem restrictX_replaceX (x : SiteConfig n) (y : Reg (fun v => Fin (n v)) X) :
+    restrictX (replaceX x y) = y :=
+  funext fun v => by simp [restrictX, replaceX, v.2]
+
 /-- D8.11. The Schmidt vector `|w_i⟩ = p_i^{-1/2} ⟨i|_X Ω̃` on `X^c`, as a function of the
 physical configuration that ignores its `X`-part. -/
 noncomputable def schmidtW (i : Reg (fun v => Fin (n v)) X) : SiteConfig n → ℂ :=

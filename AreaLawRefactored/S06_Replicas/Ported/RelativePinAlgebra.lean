@@ -8,27 +8,10 @@ import AreaLawRefactored.S06_Replicas.Ported.ReplicaSimilarity
 /-!
 # The relative metric of a move
 
-Let `P, x, Y₀, F` be pairwise disjoint subsystems, `A_k = A_k(P, x Y₀, F)` and
-`B_k = A_k(P x, Y₀, F)` the partition metrics before and after moving `x` from the middle part
-to `P`, and `C_{x,k} = A_k^{-1/2} B_k A_k^{-1/2}` (*A two-dimensional area law from a global
-spectral gap*, `05-replicas.tex`, Lemma 6.3, lines 489–495). This file proves the algebraic
-first step of the proof of Lemma 6.3 (lines 512–533):
-
-* the inverse Cauchy–Schwarz inequality `C ≥ ⟨z, C^{-1} z⟩^{-1} |z⟩⟨z|` for `C > 0`, in the
-  form `|⟨z, w⟩|² ≤ ⟨z, C^{-1} z⟩ ⟨w, C w⟩`;
-* `⟨z, C_{x,k}^{-1} z⟩ = ‖W_{Px,k} W_{xY₀,k} W_{P,k}^{-1} W_{Y₀,k}^{-1} z‖²`, obtained by
-  cancelling the disjoint `F` factors and commuting the remaining nested or disjoint central
-  factors (no commutation of `A_k` with `B_k` is used).
-
-Ported from `QICLean/Representation/RelativePinAlgebra.lean` at commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
-
-## Main declarations
-
-* `TensorPower.norm_star_dotProduct_sq_le_inv` — inverse Cauchy–Schwarz.
-* `TensorPower.relativeMetric` — `C_{x,k}`.
-* `TensorPower.moveWord` — `W_{Px} W_{xY₀} W_P^{-1} W_{Y₀}^{-1}`.
-* `TensorPower.re_dotProduct_relativeMetric_inv` — `⟨z, C^{-1} z⟩ = ‖moveWord z‖²`.
+The relative metric `C_{x,k} = A_k^{-1/2} B_k A_k^{-1/2}` of moving `x` from the middle part to
+`P`, the inverse Cauchy–Schwarz inequality, and
+`⟨z, C_{x,k}^{-1} z⟩ = ‖W_{Px,k} W_{xY₀,k} W_{P,k}^{-1} W_{Y₀,k}^{-1} z‖²` (`05-replicas.tex`,
+Lemma 6.3, lines 489–533).
 -/
 
 open Matrix PermutationRepresentation Entropy
@@ -42,14 +25,6 @@ section CauchySchwarz
 
 variable {X : Type*} [Fintype X] [DecidableEq X]
 
-omit [DecidableEq X] in
-theorem norm_euclidean_sq (u : X → ℂ) :
-    ‖(EuclideanSpace.equiv X ℂ).symm u‖ ^ 2 = (star u ⬝ᵥ u).re := by
-  rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _)]
-  simp only [dotProduct, Pi.star_apply, Complex.re_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Complex.sq_norm, Complex.normSq_apply]
-  simp [Complex.mul_re]
 
 /-- **Inverse Cauchy–Schwarz** (`05-replicas.tex`, lines 515–520): for `C > 0`,
 `|⟨z, w⟩|² ≤ ⟨z, C^{-1} z⟩ ⟨w, C w⟩`. -/
@@ -64,10 +39,8 @@ theorem norm_star_dotProduct_sq_le_inv {C : Matrix X X ℂ} (hC : C.PosDef) (z w
     rw [← hSS, isUnit_iff_isUnit_det, det_mul, IsUnit.mul_iff] at this
     exact this.1
   have hSinv : S⁻¹ * S = 1 := nonsing_inv_mul S hdet
-  have hSinv' : S * S⁻¹ = 1 := mul_nonsing_inv S hdet
   have hSinvh : (S⁻¹)ᴴ = S⁻¹ := by rw [conjTranspose_nonsing_inv, hSh]
-  have hCinv : C⁻¹ = S⁻¹ * S⁻¹ := by
-    rw [← hSS, Matrix.mul_inv_rev]
+  have hCinv : C⁻¹ = S⁻¹ * S⁻¹ := by rw [← hSS, Matrix.mul_inv_rev]
   set u := S⁻¹ *ᵥ z
   set v := S *ᵥ w
   have h1 : star u ⬝ᵥ v = star z ⬝ᵥ w := by
@@ -77,12 +50,12 @@ theorem norm_star_dotProduct_sq_le_inv {C : Matrix X X ℂ} (hC : C.PosDef) (z w
     simp only [u, star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, hSinvh, hCinv]
   have h3 : (star v ⬝ᵥ v).re = (star w ⬝ᵥ (C *ᵥ w)).re := by
     simp only [v, star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, hSh, hSS]
-  have hcs := norm_star_dotProduct_le u v
-  rw [h1] at hcs
   calc ‖star z ⬝ᵥ w‖ ^ 2
       ≤ (‖(EuclideanSpace.equiv X ℂ).symm u‖ * ‖(EuclideanSpace.equiv X ℂ).symm v‖) ^ 2 :=
-        pow_le_pow_left₀ (norm_nonneg _) hcs 2
-    _ = _ := by rw [mul_pow, norm_euclidean_sq, norm_euclidean_sq, h2, h3]
+        pow_le_pow_left₀ (norm_nonneg _) (h1 ▸ norm_star_dotProduct_le u v) 2
+    _ = _ := by
+      rw [mul_pow, ← re_star_dotProduct_self_eq_norm_sq, ← re_star_dotProduct_self_eq_norm_sq,
+        RCLike.re_to_complex, RCLike.re_to_complex, h2, h3]
 
 end CauchySchwarz
 
@@ -208,11 +181,8 @@ theorem relativeMetric_eq {t : ℝ} (ht : 0 ≤ t) (k : ℕ) {P x Y₀ F : Finse
     relativeMetric n t k P x Y₀ F = (leafRoot n t k P (x ∪ Y₀) F)⁻¹ *
       (leafRoot n t k (P ∪ x) Y₀ F * leafRoot n t k (P ∪ x) Y₀ F) *
         (leafRoot n t k P (x ∪ Y₀) F)⁻¹ := by
-  have hPxY : Disjoint P (x ∪ Y₀) := Finset.disjoint_union_right.mpr ⟨h.Px, h.PY⟩
-  have hxYF : Disjoint (x ∪ Y₀) F := Finset.disjoint_union_left.mpr ⟨h.xF, h.YF⟩
-  have hPxY0 : Disjoint (P ∪ x) Y₀ := Finset.disjoint_union_left.mpr ⟨h.PY, h.xY⟩
-  have hPxF : Disjoint (P ∪ x) F := Finset.disjoint_union_left.mpr ⟨h.PF, h.xF⟩
-  rw [relativeMetric, sqrt_leafMetric ht k hPxY h.PF hxYF, leafMetric, pow_two]
+  rw [relativeMetric, sqrt_leafMetric ht k (Finset.disjoint_union_right.mpr ⟨h.Px, h.PY⟩) h.PF
+    (Finset.disjoint_union_left.mpr ⟨h.xF, h.YF⟩), leafMetric, pow_two]
 
 /-- **The inverse quadratic form of a move** (`05-replicas.tex`, equation
 `replicas:move-inverse`): `⟨z, C_{x,k}^{-1} z⟩ = ‖W_{Px} W_{xY₀} W_P^{-1} W_{Y₀}^{-1} z‖²`, and
@@ -243,15 +213,12 @@ theorem posDef_relativeMetric_and_inv {t : ℝ} (ht : 0 ≤ t) (k : ℕ) {P x Y�
         (R := ℂ)).conjTranspose_mul_mul_same (B := RB)
         (Matrix.mulVec_injective_iff_isUnit.mpr ((isUnit_iff_isUnit_det _).mpr hBu))
       rwa [Matrix.mul_one, hB.isHermitian] at this
-    have hinj : Function.Injective RA⁻¹.mulVec := Matrix.mulVec_injective_iff_isUnit.mpr
-      ((isUnit_iff_isUnit_det _).mpr (isUnit_nonsing_inv_det RA hAu))
-    have := hBB.conjTranspose_mul_mul_same hinj
-    rwa [hAih] at this
+    simpa only [hAih] using hBB.conjTranspose_mul_mul_same (Matrix.mulVec_injective_iff_isUnit.mpr
+      ((isUnit_iff_isUnit_det _).mpr (isUnit_nonsing_inv_det RA hAu)))
   · have hinv : (RA⁻¹ * (RB * RB) * RA⁻¹)⁻¹ = RA * RB⁻¹ * (RB⁻¹ * RA) := by
-      simp only [Matrix.mul_inv_rev, nonsing_inv_nonsing_inv _ hAu]
-      simp only [Matrix.mul_assoc]
-    rw [hinv, ← leafRoot_inv_mul_leafRoot ht k h, norm_euclidean_sq, ← mulVec_mulVec,
-      star_mulVec (RB⁻¹ * RA)]
+      simp only [Matrix.mul_inv_rev, nonsing_inv_nonsing_inv _ hAu, Matrix.mul_assoc]
+    rw [hinv, ← leafRoot_inv_mul_leafRoot ht k h, ← re_star_dotProduct_self_eq_norm_sq,
+      RCLike.re_to_complex, ← mulVec_mulVec, star_mulVec (RB⁻¹ * RA)]
     congr 1
     rw [← dotProduct_mulVec, conjTranspose_mul, hAh, hBih]
 
@@ -262,8 +229,7 @@ theorem norm_star_dotProduct_sq_le_moveWord {t : ℝ} (ht : 0 ≤ t) (k : ℕ)
     ‖star z ⬝ᵥ w‖ ^ 2 ≤ ‖(EuclideanSpace.equiv _ ℂ).symm (moveWord n t k P x Y₀ *ᵥ z)‖ ^ 2 *
       (star w ⬝ᵥ (relativeMetric n t k P x Y₀ F *ᵥ w)).re := by
   obtain ⟨hC, hinv⟩ := posDef_relativeMetric_and_inv ht k h (n := n)
-  rw [← hinv]
-  exact norm_star_dotProduct_sq_le_inv hC z w
+  exact hinv z ▸ norm_star_dotProduct_sq_le_inv hC z w
 
 end Move
 

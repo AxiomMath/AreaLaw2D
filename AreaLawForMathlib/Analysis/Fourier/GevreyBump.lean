@@ -27,7 +27,6 @@ open scoped Nat
 
 namespace GevreyBump
 
-
 /-- The complex profile `z ↦ e · exp(-(1 - z²)^{-p})` of the spectral filter. At `z = ±1` the
 Lean value is `1`, which plays no role: only points with `1 - z² ≠ 0` are used. -/
 noncomputable def profile (p : ℕ) (z : ℂ) : ℂ :=
@@ -458,19 +457,6 @@ theorem bump_neg (p : ℕ) (δ ω : ℝ) : bump p δ (-ω) = bump p δ ω := by
 
 theorem bump_nonneg (p : ℕ) (δ ω : ℝ) : 0 ≤ bump p δ ω := by
   unfold bump; split_ifs <;> positivity
-
-theorem bump_le_one (p : ℕ) {δ : ℝ} (hδ : 0 < δ) (ω : ℝ) :
-    bump p δ ω ≤ 1 := by
-  unfold bump
-  split_ifs with h
-  · have hu : |ω / δ| < 1 := by rwa [abs_div, abs_of_pos hδ, div_lt_one hδ]
-    have hw := one_sub_sq_pos hu
-    have hw1 : (1 - (ω / δ) ^ 2) ^ p ≤ 1 := pow_le_one₀ hw.le (by nlinarith [sq_nonneg (ω / δ)])
-    have hpos : 0 < (1 - (ω / δ) ^ 2) ^ p := by positivity
-    have : 1 ≤ ((1 - (ω / δ) ^ 2) ^ p)⁻¹ := by rw [le_inv_comm₀ one_pos hpos, inv_one]; exact hw1
-    rw [← Real.exp_add]
-    exact Real.exp_le_one_iff.mpr (by linarith)
-  · exact zero_le_one
 
 theorem iteratedDeriv_bump {p : ℕ} (hp : 1 ≤ p) {δ : ℝ} (hδ : 0 < δ) (n : ℕ) :
     iteratedDeriv n (bump p δ) = fun ω => (δ⁻¹) ^ n * profileDeriv p n (δ⁻¹ * ω) := by

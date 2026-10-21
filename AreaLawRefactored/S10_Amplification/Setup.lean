@@ -157,14 +157,6 @@ theorem clockExp_le_of_sum_le {t : ℝ} (ht : 0 ≤ t) {F : ∀ m : ℕ, (Fin m 
   have hsum := Summable.of_nonneg_of_le h0 hle hs.summable
   exact ⟨hsum, (hsum.tsum_le_tsum hle hs.summable).trans_eq hs.tsum_eq⟩
 
-/-- A bounded nonnegative observable, `0 ≤ F ≤ b`, has a summable expectation. -/
-theorem summable_clock_of_le {t : ℝ} (ht : 0 ≤ t) {F : ∀ m : ℕ, (Fin m → ι) → ℝ}
-    (hF : ∀ m w, 0 ≤ F m w) {b : ℝ} (hb : ∀ m w, F m w ≤ b) :
-    Summable (fun m => clockWeight (Fintype.card ι) t m * ∑ w : Fin m → ι, F m w) :=
-  (clockExp_le_of_sum_le ht hF (A := b) (a := Fintype.card ι) fun m => by
-    refine (Finset.sum_le_sum fun w _ => hb m w).trans_eq ?_
-    simp [Finset.card_univ, mul_comm]).1
-
 /-- If `∑_w F m w ≤ A m a^{m-1}` for nonnegative `F`, then `𝔼_t F ≤ A t e^{(a - N) t}`. -/
 theorem clockExp_le_of_sum_le_mul {t : ℝ} (ht : 0 ≤ t) {F : ∀ m : ℕ, (Fin m → ι) → ℝ}
     (hF : ∀ m w, 0 ≤ F m w) {A a : ℝ} (hb : ∀ m, ∑ w, F m w ≤ A * (m * a ^ (m - 1))) :
@@ -263,9 +255,6 @@ theorem vnorm_sub_le (u v : n → ℂ) : vnorm (u - v) ≤ vnorm u + vnorm v := 
 theorem vnorm_sub_rev (u v : n → ℂ) : vnorm (u - v) = vnorm (v - u) := norm_sub_rev _ _
 
 theorem vnorm_neg (v : n → ℂ) : vnorm (-v) = vnorm v := norm_neg _
-
-theorem vnorm_smul (c : ℂ) (v : n → ℂ) : vnorm (c • v) = ‖c‖ * vnorm v := by
-  rw [vnorm, WithLp.toLp_smul, norm_smul]; rfl
 
 theorem vnorm_mulVec_le [DecidableEq n] (A : Matrix m n ℂ) (v : n → ℂ) :
     vnorm (A *ᵥ v) ≤ ‖A‖ * vnorm v :=

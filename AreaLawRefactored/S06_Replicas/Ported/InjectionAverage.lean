@@ -2,12 +2,8 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported from `LionSR/QICLean`,
-`QICLean/Representation/InjectionAverage.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
-import AreaLawRefactored.S06_Replicas.Ported.HusimiIdentity
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HusimiIdentity
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
 import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 
@@ -29,17 +25,9 @@ noncomputable def placeSplit (ι : Fin m ↪ Fin k) :
     exact if h : i ∈ Set.range ι then
       p.1 ((Equiv.ofInjective ι ι.injective).symm ⟨i, h⟩)
     else p.2 ⟨i, h⟩
-  left_inv x := by
-    funext i
-    by_cases h : i ∈ Set.range ι
-    · simp only [h, dite_true, Function.comp_apply,
-        Equiv.apply_ofInjective_symm]
-    · simp only [h, dite_false]
-  right_inv p := by
-    refine Prod.ext (funext fun j => ?_) (funext fun i => ?_)
-    · simp only [Function.comp_apply, Set.mem_range_self, dite_true]
-      rw [Equiv.ofInjective_symm_apply]
-    · simp only [i.2, dite_false]
+  left_inv x := funext fun i => by
+    by_cases h : i ∈ Set.range ι <;> simp [h, Equiv.apply_ofInjective_symm]
+  right_inv p := Prod.ext (funext fun j => by simp) (funext fun i => by simp [i.2])
 
 @[simp]
 theorem placeSplit_apply_fst (ι : Fin m ↪ Fin k) (x : Fin k → Ω) :
@@ -52,9 +40,7 @@ theorem placeSplit_apply_snd (ι : Fin m ↪ Fin k) (x : Fin k → Ω) (i) :
 theorem placeSplit_symm_apply_self (ι : Fin m ↪ Fin k)
     (p : (Fin m → Ω) × ({i : Fin k // i ∉ Set.range ι} → Ω))
     (j : Fin m) : (placeSplit ι).symm p (ι j) = p.1 j := by
-  simp only [placeSplit, Equiv.coe_fn_symm_mk, Set.mem_range_self,
-    dite_true]
-  rw [Equiv.ofInjective_symm_apply]
+  simp [placeSplit]
 
 theorem placeSplit_symm_apply_of_notMem (ι : Fin m ↪ Fin k)
     (p : (Fin m → Ω) × ({i : Fin k // i ∉ Set.range ι} → Ω))
@@ -87,8 +73,7 @@ theorem placeOp_one (ι : Fin m ↪ Fin k) :
 theorem l2_opNorm_placeOp_le (ι : Fin m ↪ Fin k)
     (G : Matrix (Fin m → Ω) (Fin m → Ω) ℂ) :
     ‖placeOp ι G‖ ≤ ‖G‖ := by
-  rw [placeOp, l2_opNorm_reindex_equiv]
-  exact Arealaw.l2_opNorm_kronecker_one_le G
+  rw [placeOp, l2_opNorm_reindex_equiv]; exact Arealaw.l2_opNorm_kronecker_one_le G
 
 /-- Average a fixed-copy operator over all ordered injections. -/
 noncomputable def injectionAverage (k m : ℕ)
@@ -102,8 +87,7 @@ theorem l2_opNorm_injectionAverage_le
     ‖injectionAverage (Ω := Ω) k m G‖ ≤ ‖G‖ := by
   rw [injectionAverage]
   rcases Nat.eq_zero_or_pos (Fintype.card (Fin m ↪ Fin k)) with hN | hN
-  · rw [hN, Nat.cast_zero, _root_.inv_zero, zero_smul, norm_zero]
-    exact norm_nonneg _
+  · simp [hN]
   refine (norm_smul_le _ _).trans ?_
   rw [norm_inv, Complex.norm_natCast]
   calc
@@ -130,9 +114,7 @@ noncomputable def injectionSwapFun (ι : Fin m ↪ Fin k)
 
 theorem injectionSwapFun_castAdd_self (ι : Fin m ↪ Fin k) (j : Fin m) :
     injectionSwapFun ι (Fin.castAdd m (ι j)) = Fin.natAdd k j := by
-  simp only [injectionSwapFun, Fin.addCases_left, Set.mem_range_self,
-    dite_true]
-  rw [Equiv.ofInjective_symm_apply]
+  simp [injectionSwapFun]
 
 theorem injectionSwapFun_castAdd_of_notMem (ι : Fin m ↪ Fin k)
     {i : Fin k} (h : i ∉ Set.range ι) :
@@ -145,8 +127,7 @@ theorem injectionSwapFun_natAdd (ι : Fin m ↪ Fin k) (j : Fin m) :
 
 theorem injectionSwapFun_involutive (ι : Fin m ↪ Fin k) :
     Function.Involutive (injectionSwapFun ι) := by
-  intro i
-  refine Fin.addCases (fun i => ?_) (fun j => ?_) i
+  refine fun i => Fin.addCases (fun i => ?_) (fun j => ?_) i
   · by_cases h : i ∈ Set.range ι
     · obtain ⟨j, rfl⟩ := h
       rw [injectionSwapFun_castAdd_self, injectionSwapFun_natAdd]
@@ -170,18 +151,13 @@ theorem injectionSwap_inv (ι : Fin m ↪ Fin k) :
 
 theorem injectionSwap_mul_self (ι : Fin m ↪ Fin k) :
     injectionSwap ι * injectionSwap ι = 1 := by
-  ext i
-  simp [injectionSwapFun_involutive ι i]
+  ext i; simp [injectionSwapFun_involutive ι i]
 
 /-- The trace of `M U(π)` as an entry sum. -/
 theorem trace_mul_permOp {G X : Type*} [Group G] [Fintype X]
     [DecidableEq X] (φ : G →* Equiv.Perm X) (M : Matrix X X ℂ) (g : G) :
     (M * permOp φ g).trace = ∑ x, M x (φ g x) := by
-  simp only [trace, diag_apply, mul_apply, permOp_apply_apply, mul_ite,
-    mul_one, mul_zero]
-  refine Finset.sum_congr rfl fun x _ => ?_
-  rw [Finset.sum_ite_eq Finset.univ (φ g x)]
-  simp
+  simp [trace, mul_apply, permOp_apply_apply]
 
 omit [Fintype Ω] [DecidableEq Ω] in
 theorem splitCopies_copyPerm_injectionSwap (ι : Fin m ↪ Fin k)
@@ -211,8 +187,7 @@ theorem trace_kronecker_mul_injectionSwap (ι : Fin m ↪ Fin k)
     (reindex (splitCopies k m).symm (splitCopies k m).symm (σ ⊗ₖ G) *
         permOp (copyPerm Ω (k + m)) (injectionSwap ι)).trace =
       (σ * placeOp ι G).trace := by
-  rw [trace_mul_permOp]
-  rw [← (splitCopies k m).symm.sum_comp]
+  rw [trace_mul_permOp, ← (splitCopies k m).symm.sum_comp]
   simp only [reindex_apply, submatrix_apply, Equiv.symm_symm,
     Equiv.apply_symm_apply, splitCopies_copyPerm_injectionSwap,
     kroneckerMap_apply, Fintype.sum_prod_type]

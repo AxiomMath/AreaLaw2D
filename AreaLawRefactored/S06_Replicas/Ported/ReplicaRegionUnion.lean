@@ -2,21 +2,13 @@
 Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
-
-Ported and specialized from LionSR/QICLean commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
-`QICLean/Entropy/LocalLift.lean` and
-`QICLean/Entropy/RegionUnion.lean`.
 -/
-import AreaLawRefactored.S06_Replicas.Ported.ReplicaSupport
-
+import AreaLawForMathlib.QuantumInfo.SiteSupport
 /-!
 # Regional lifts for the concrete replica-site model
 
-This narrow compatibility layer supplies the regional matrix lift for
-`Entropy.SiteConfig` and the product decomposition of an operator supported on a disjoint
-union.  The general region formalism elsewhere in `OpenAI` uses `Arealaw.extendId`;
-the replica representation files use the separate concrete full-product model.
+The regional lift `K ↦ K ⊗ 1` on `Entropy.SiteConfig` and the product decomposition of an
+operator supported on a disjoint union.
 -/
 
 open Matrix
@@ -54,23 +46,15 @@ theorem localLift_apply (D : Finset V) (K : Matrix (RegionConfig n D) (RegionCon
 theorem localLift_add (D : Finset V)
     (K K' : Matrix (RegionConfig n D) (RegionConfig n D) ℂ) :
     localLift D (K + K') = localLift D K + localLift D K' := by
-  classical
   ext σ τ
-  change (if h : ∀ v ∉ D, σ v = τ v then
-      K (restrictConfig D σ) (restrictConfig D τ) +
-        K' (restrictConfig D σ) (restrictConfig D τ) else 0) =
-    (if h : ∀ v ∉ D, σ v = τ v then K (restrictConfig D σ) (restrictConfig D τ) else 0) +
-      if h : ∀ v ∉ D, σ v = τ v then K' (restrictConfig D σ) (restrictConfig D τ) else 0
+  simp only [localLift_apply, Matrix.add_apply]
   split_ifs <;> simp
 
 theorem localLift_smul (D : Finset V) (c : ℂ)
     (K : Matrix (RegionConfig n D) (RegionConfig n D) ℂ) :
     localLift D (c • K) = c • localLift D K := by
-  classical
   ext σ τ
-  change (if h : ∀ v ∉ D, σ v = τ v then
-      c * K (restrictConfig D σ) (restrictConfig D τ) else 0) =
-    c * if h : ∀ v ∉ D, σ v = τ v then K (restrictConfig D σ) (restrictConfig D τ) else 0
+  simp only [localLift_apply, Matrix.smul_apply]
   split_ifs <;> simp
 
 /-- In coordinates splitting a region from its complement, `localLift` is `K ⊗ 1`. -/
@@ -84,19 +68,11 @@ theorem localLift_eq_reindex_kronecker (D : Finset V)
   ext σ τ
   simp only [reindex_apply, submatrix_apply, Equiv.symm_symm, kroneckerMap_apply,
     Equiv.piEquivPiSubtypeProd_apply, localLift_apply, Matrix.one_apply]
-  by_cases h : ∀ v ∉ D, σ v = τ v
-  · have hout : (fun x : {x // x ∉ D} => σ x) =
-        (fun x : {x // x ∉ D} => τ x) := by
-      funext v
-      exact h v.1 v.2
-    rw [if_pos h, if_pos hout, mul_one]
-  · have hout : (fun x : {x // x ∉ D} => σ x) ≠
-        (fun x : {x // x ∉ D} => τ x) := by
-      intro he
-      apply h
-      intro v hv
-      exact congrFun he ⟨v, hv⟩
-    rw [if_neg h, if_neg hout, mul_zero]
+  have : (∀ v ∉ D, σ v = τ v) ↔
+      (fun x : {x // x ∉ D} => σ x) = fun x : {x // x ∉ D} => τ x :=
+    ⟨fun h => funext fun v => h v.1 v.2, fun he v hv => congrFun he ⟨v, hv⟩⟩
+  simp only [this]
+  split_ifs <;> simp
 
 /-- The concrete regional lift preserves multiplication. -/
 theorem localLift_mul (D : Finset V)
@@ -123,18 +99,10 @@ theorem localLift_conjTranspose (D : Finset V)
 theorem isSupportedOn_localLift (D : Finset V)
     (K : Matrix (RegionConfig n D) (RegionConfig n D) ℂ) :
     IsSupportedOn (localLift D K) D := by
-  classical
-  constructor
-  · rintro σ τ ⟨v, hv, hne⟩
-    rw [localLift_apply, if_neg]
-    exact fun h => hne (h v hv)
-  · intro σ τ σ' τ' h1 h2 h3 h4
-    rw [localLift_apply, localLift_apply, if_pos h3, if_pos h4]
-    congr 1
-    · funext v
-      exact h1 v.1 v.2
-    · funext v
-      exact h2 v.1 v.2
+  refine ⟨fun σ τ ⟨v, hv, hne⟩ => if_neg fun h => hne (h v hv), fun σ τ σ' τ' h1 h2 h3 h4 => ?_⟩
+  rw [localLift_apply, localLift_apply, if_pos h3, if_pos h4]
+  congr 1 <;> funext v
+  exacts [h1 v.1 v.2, h2 v.1 v.2]
 
 /-- Every concretely supported operator is a regional lift. -/
 theorem IsSupportedOn.exists_localLift {D : Finset V}
@@ -147,25 +115,20 @@ theorem IsSupportedOn.exists_localLift {D : Finset V}
   change X σ τ = if ∀ v ∉ D, σ v = τ v then
     X (extendConfig D σ₀ (restrictConfig D σ))
       (extendConfig D σ₀ (restrictConfig D τ)) else 0
-  by_cases h : ∀ v ∉ D, σ v = τ v
-  · rw [if_pos h]
-    exact hX.2 σ τ (extendConfig D σ₀ (restrictConfig D σ))
-      (extendConfig D σ₀ (restrictConfig D τ))
-      (fun v hv => by simp [extendConfig, restrictConfig, hv])
+  split_ifs with h
+  · exact hX.2 _ _ _ _ (fun v hv => by simp [extendConfig, restrictConfig, hv])
       (fun v hv => by simp [extendConfig, restrictConfig, hv]) h
       (fun v hv => by simp [extendConfig, hv])
-  · rw [if_neg h]
-    push Not at h
+  · push Not at h
     exact hX.1 σ τ h
 
 omit [Fintype V] [DecidableEq V] in
 /-- Support is monotone in the region. -/
 theorem IsSupportedOn.mono {X : Matrix (SiteConfig n) (SiteConfig n) ℂ} {D D' : Finset V}
     (hX : IsSupportedOn X D) (hDD : D ⊆ D') : IsSupportedOn X D' := by
-  refine ⟨fun σ τ ⟨v, hv, hne⟩ => hX.1 σ τ ⟨v, fun h => hv (hDD h), hne⟩, ?_⟩
-  intro σ τ σ' τ' h1 h2 h3 h4
-  refine hX.apply_eq (fun v hv => h1 v (hDD hv)) (fun v hv => h2 v (hDD hv))
-    (fun v hv => ?_)
+  refine ⟨fun σ τ ⟨v, hv, hne⟩ => hX.1 σ τ ⟨v, fun h => hv (hDD h), hne⟩,
+    fun σ τ σ' τ' h1 h2 h3 h4 => hX.apply_eq (fun v hv => h1 v (hDD hv))
+      (fun v hv => h2 v (hDD hv)) fun v hv => ?_⟩
   by_cases hv' : v ∈ D'
   · rw [h1 v hv', h2 v hv']
   · exact ⟨fun _ => h4 v hv', fun _ => h3 v hv'⟩
@@ -183,8 +146,7 @@ def regionUnionEquiv {X T : Finset V} (hXT : Disjoint X T) :
   right_inv p := by
     ext v
     · simp [v.2]
-    · have : v.1 ∉ X := fun hv ↦ Finset.disjoint_left.mp hXT hv v.2
-      simp [this]
+    · simp [Finset.disjoint_right.mp hXT v.2]
 
 omit [Fintype V] in
 @[simp] theorem regionUnionEquiv_apply_fst {X T : Finset V} (hXT : Disjoint X T)
@@ -214,42 +176,28 @@ theorem localLift_union_kronecker {X T : Finset V} (hXT : Disjoint X T)
     rw [Finset.sum_eq_single ρ]
     · rw [localLift_apply, localLift_apply, if_pos, if_pos]
       · simp only [reindex_apply, submatrix_apply, Equiv.symm_symm, kroneckerMap_apply]
-        congr 1
-        · congr 1
-          funext v
-          simp [ρ, v.2]
-        · congr 1
-          funext v
-          simp [ρ, hTX v.1 v.2]
+        congr 1 <;> congr 1 <;> funext v <;> simp [ρ, v.2, hTX]
       · intro v hv
         by_cases hvX : v ∈ X
         · simp [ρ, hvX]
-        · simp only [ρ, hvX, if_false]
-          exact h v (by simp [hv, hvX])
-      · intro v hv
-        simp [ρ, hv]
+        · simpa [ρ, hvX] using h v (by simp [hv, hvX])
+      · exact fun v hv => by simp [ρ, hv]
     · intro ρ' _ hne
-      obtain ⟨v, hv⟩ : ∃ v, ρ' v ≠ ρ v := by
-        by_contra hcon
-        push Not at hcon
-        exact hne (funext hcon)
+      obtain ⟨v, hv⟩ := Function.ne_iff.mp hne
       by_cases hvX : v ∈ X
       · have : ρ' v ≠ τ v := by simpa [ρ, hvX] using hv
         rw [localLift_apply T, if_neg (fun hc ↦ this (hc v (hXT' v hvX))), mul_zero]
       · have : σ v ≠ ρ' v := fun he ↦ hv (by simp [ρ, hvX, he])
         rw [localLift_apply X, if_neg (fun hc ↦ this (hc v hvX)), zero_mul]
-    · intro hρ
-      exact absurd (Finset.mem_univ ρ) hρ
+    · exact fun hρ => absurd (Finset.mem_univ ρ) hρ
   · rw [if_neg h]
     refine (Finset.sum_eq_zero fun ρ _ ↦ ?_).symm
     rw [localLift_apply, localLift_apply]
-    by_cases h1 : ∀ v ∉ X, σ v = ρ v
-    · by_cases h2 : ∀ v ∉ T, ρ v = τ v
-      · exact absurd (fun v hv ↦ by
-          simp only [Finset.mem_union, not_or] at hv
-          exact (h1 v hv.1).trans (h2 v hv.2)) h
-      · rw [if_neg h2, mul_zero]
-    · rw [if_neg h1, zero_mul]
+    split_ifs with h1 h2
+    · exact absurd (fun v hv ↦ by
+        simp only [Finset.mem_union, not_or] at hv
+        exact (h1 v hv.1).trans (h2 v hv.2)) h
+    all_goals simp
 
 /-- Concrete regional lifts on disjoint regions commute. -/
 theorem localLift_commute_of_disjoint {X T : Finset V}
@@ -259,19 +207,10 @@ theorem localLift_commute_of_disjoint {X T : Finset V}
   rw [← localLift_union_kronecker hTX.symm, ← localLift_union_kronecker hTX]
   ext σ τ
   rw [localLift_apply, localLift_apply]
-  by_cases h : ∀ v ∉ X ∪ T, σ v = τ v
-  · rw [if_pos h, if_pos]
-    · simp only [reindex_apply, submatrix_apply, Equiv.symm_symm, kroneckerMap_apply]
-      change A (fun v => σ v) (fun v => τ v) * B (fun v => σ v) (fun v => τ v) =
-        B (fun v => σ v) (fun v => τ v) * A (fun v => σ v) (fun v => τ v)
-      rw [mul_comm]
-    · intro v hv
-      exact h v (by simpa [Finset.union_comm] using hv)
-  · rw [if_neg h, if_neg]
-    intro h'
-    apply h
-    intro v hv
-    exact h' v (by simpa [Finset.union_comm] using hv)
+  simp only [Finset.union_comm T X]
+  split_ifs
+  · exact mul_comm _ _
+  · rfl
 
 /-- An operator supported on a disjoint union is a finite sum of products of operators
 supported on the two regions. -/

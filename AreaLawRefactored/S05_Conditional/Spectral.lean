@@ -144,15 +144,6 @@ theorem specFun_unitary_conj {W : Matrix n n ℂ} (hW : W ∈ unitary (Matrix n 
         rw [← Matrix.mul_assoc, specFun_mul_intertwine h' h W
           (by rw [Matrix.mul_assoc, Unitary.star_mul_self_of_mem hW, Matrix.mul_one])]
 
-/-- `g(ρ)` is unitary when `|g| = 1` on the spectrum. -/
-theorem specFun_mem_unitary {g : ℝ → ℂ}
-    (hg : ∀ i, star (g (h.eigenvalues i)) * g (h.eigenvalues i) = 1) :
-    specFun h g ∈ unitary (Matrix n n ℂ) := by
-  have h1 : specFun h (star g * g) = 1 := (specFun_congr h (g := 1) hg).trans (specFun_one h)
-  refine Unitary.mem_iff.2 ⟨?_, ?_⟩
-  · rw [star_specFun, specFun_mul, h1]
-  · rw [star_specFun, specFun_mul, mul_comm, h1]
-
 /-- Entries of `g_z(ρ)` are entire in `z` when each `z ↦ g_z(t)` is. -/
 theorem differentiable_specFun_apply {G : ℂ → ℝ → ℂ} (hG : ∀ t, Differentiable ℂ (G · t))
     (i j : n) : Differentiable ℂ fun z ↦ specFun h (G z) i j := by
@@ -206,9 +197,6 @@ theorem star_hfun (z : ℂ) : star (hfun z) = hfun (starRingEnd ℂ z) := by
 theorem hfun_eq (z : ℂ) : hfun z = bfun z + (1 - bfun 0) := by
   funext t; simp only [Pi.add_apply, Pi.sub_apply, Pi.one_apply, hfun, bfun]
   split_ifs <;> simp
-
-/-- `t̂^0 = 1`. -/
-theorem hfun_zero : hfun 0 = 1 := by funext t; simp [hfun]
 
 /-- `t^{[a]} = t^a` for real `a ≠ 0`, `t ≥ 0`. -/
 theorem bfun_ofReal {a : ℝ} (ha : a ≠ 0) {t : ℝ} (ht : 0 ≤ t) : bfun a t = ((t ^ a : ℝ) : ℂ) := by
@@ -568,31 +556,6 @@ theorem extendId_bracketPow_zero_marg_mulVec_extendId {Y : Finset σ} (θ : Reg 
     extendId hY (bracketPow (marg θ hY) 0) *ᵥ (extendId hD A *ᵥ θ) = extendId hD A *ᵥ θ := by
   rw [mulVec_mulVec, ← (commute_extendId_extendId hD hY hd A _).eq, ← mulVec_mulVec,
     extendId_bracketPow_zero_marg_mulVec]
-
-namespace Conditional
-
-omit [∀ i, Fintype (loc i)] in
-/-- Nested extension: `(A ⊗ 1_{T∖S}) ⊗ 1_{V∖T} = A ⊗ 1_{V∖S}`. -/
-theorem extendId_extendId {S T V : Finset σ} (hST : S ⊆ T) (hTV : T ⊆ V)
-    (A : Matrix (Reg loc S) (Reg loc S) ℂ) :
-    extendId hTV (extendId hST A) = extendId (hST.trans hTV) A := by
-  ext w w'
-  have hiff : (restr (S := V \ T) Finset.sdiff_subset w = restr Finset.sdiff_subset w' ∧
-      restr (S := T \ S) Finset.sdiff_subset (restr hTV w) =
-        restr Finset.sdiff_subset (restr hTV w')) ↔
-      restr (S := V \ S) Finset.sdiff_subset w = restr Finset.sdiff_subset w' := by
-    simp only [restr, Finset.restrict₂, funext_iff, Subtype.forall, Finset.mem_sdiff]
-    constructor
-    · rintro ⟨h1, h2⟩ i ⟨hiV, hiS⟩
-      by_cases hiT : i ∈ T
-      · exact h2 i ⟨hiT, hiS⟩
-      · exact h1 i ⟨hiV, hiT⟩
-    · intro h
-      exact ⟨fun i hi ↦ h i ⟨hi.1, fun hS ↦ hi.2 (hST hS)⟩, fun i hi ↦ h i ⟨hTV hi.1, hi.2⟩⟩
-  simp only [extendId, of_apply]
-  split_ifs <;> first | rfl | (exfalso; tauto)
-
-end Conditional
 
 namespace Conditional
 

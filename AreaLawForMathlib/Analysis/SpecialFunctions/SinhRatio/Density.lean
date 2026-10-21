@@ -80,31 +80,6 @@ private theorem tendsto_sinh_mul_div (c : ℝ) :
   refine this.congr fun z ↦ ?_
   rw [inv_mul_eq_div]
 
-/-- **Continuity of `g_s`**: the quotient `sinh(sz) / sinh(z/2)` extends continuously to
-`z = 0` with value `2s`.
-
-Area-law paper, `06-transport.tex` lines 187 and 210--211. -/
-theorem continuous_sinhRatio (s : ℝ) : Continuous (sinhRatio s) := by
-  rw [continuous_iff_continuousAt]
-  intro z
-  rcases eq_or_ne z 0 with rfl | hz
-  · rw [continuousAt_iff_punctured_nhds, sinhRatio_zero]
-    have hlim : Tendsto (fun z : ℝ ↦ (sinh (s * z) / z) / (sinh ((1 / 2) * z) / z))
-        (𝓝[≠] 0) (𝓝 (s / (1 / 2))) :=
-      (tendsto_sinh_mul_div s).div (tendsto_sinh_mul_div (1 / 2)) (by norm_num)
-    rw [show s / (1 / 2) = 2 * s by ring] at hlim
-    refine hlim.congr' ?_
-    filter_upwards [self_mem_nhdsWithin] with w hw
-    rw [sinhRatio_of_ne_zero s hw, div_div_div_cancel_right₀ hw]
-    ring_nf
-  · have hev : sinhRatio s =ᶠ[𝓝 z] fun w ↦ sinh (s * w) / sinh (w / 2) := by
-      filter_upwards [isOpen_ne.mem_nhds hz] with w hw
-      exact sinhRatio_of_ne_zero s hw
-    refine ContinuousAt.congr ?_ hev.symm
-    refine ContinuousAt.div (by fun_prop) (by fun_prop) ?_
-    rw [Ne, sinh_eq_zero]
-    exact div_ne_zero hz two_ne_zero
-
 /-- **Positivity of the density** for `0 < s < 1/2`.
 
 Area-law paper, display `transport:g-fourier`, `06-transport.tex` line 198. -/
@@ -216,4 +191,3 @@ noncomputable def sinhRatioDensity (s : ℝ) (w : ℂ) : ℂ :=
   Real.sin (2 * Real.pi * s) / (cosh (2 * Real.pi * w) + Real.cos (2 * Real.pi * s))
 
 end Complex
-

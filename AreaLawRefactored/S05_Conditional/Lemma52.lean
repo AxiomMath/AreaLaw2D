@@ -222,7 +222,7 @@ theorem extendId_kerProj_mul_hatPow_mul_sqrt (hDE : D ⊆ E) (hE : E ⊆ T)
   have hρE := posSemidef_ptrace hE hρ
   rw [hatPow_eq_bracketPow_add, extendId_add, Matrix.add_mul, extendId_kerProj_mul_sqrt hE hρ,
     add_zero, ← add_sub_cancel (1 / 2 : ℂ) z, ← bracketPow_mul_bracketPow, bracketPow_half hρE,
-    ← ptrace_ptrace hDE hE, ← extendId_extendId hDE hE, ← Matrix.mul_assoc, ← extendId_mul,
+    ← ptrace_ptrace hDE hE, ← Arealaw.extendId_extendId hDE hE, ← Matrix.mul_assoc, ← extendId_mul,
     ← Matrix.mul_assoc, extendId_kerProj_mul_sqrt hDE hρE, Matrix.zero_mul, extendId_zero,
     Matrix.zero_mul]
 
@@ -431,7 +431,7 @@ theorem lemma_5_2_of_faithful (hf : Lemma_5_2_faithful.{u, v}) : Lemma_5_2.{u, v
   · -- D5.12.10: (F1), `θ` purifies `ρ_f`; marginals and extensions are transitive
     refine (congrArg (fun A ↦ ‖(WithLp.toLp 2 (A *ᵥ θ) : EuclideanSpace ℂ (Reg loc Λ))‖) ?_).trans
       (norm_extendId_mulVec θ hT (phaseOp hX' hU' hF' ρ.M u))
-    simp only [phaseOp, extendId_sub, extendId_mul, extendId_extendId, ρ, MState.restrict_M,
+    simp only [phaseOp, extendId_sub, extendId_mul, Arealaw.extendId_extendId, ρ, MState.restrict_M,
       ptrace_ptrace]
     rfl
   · simp only [condMutualInfo, SubState.regionEntropy, ρ, MState.toSubState_restrict,
