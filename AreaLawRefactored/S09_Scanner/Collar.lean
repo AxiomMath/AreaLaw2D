@@ -687,7 +687,7 @@ theorem prop_9_6_of (h92 : Prop_9_2.{0}) (h94 : Lemma_9_4) (h95 : Prop_9_5) {q R
     (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
   -- D9.26: the parameters, Proposition 9.2 on `ℤ × ℤ`
   obtain ⟨hℓ, hℓ₁, hκ, hκμ, hμ, hν, he, he₁, hκe⟩ := step_9_26_params
-  obtain ⟨C₁, c, Crl, csh, Csu, Csl, C₀, c₀, C, Cl, n₁, hC₁, hc, hcsh, hCsl, hCsu, H⟩ :=
+  obtain ⟨C₁, c, Crl, csh, Csu, Csl, C₀, c₀, C, Cl, n₁, hC₁, hc, hcsh, hCsl, hCsu, -, H⟩ :=
     prop_9_2_planar h92 q R J Δ hΔ Collar.ℓ Collar.κ Collar.μ Collar.ν Collar.eStar Ce C₄ hℓ
       hℓ₁ hκ hκμ hμ hν he he₁ hκe hCe hC₄
   -- D9.29: the error table

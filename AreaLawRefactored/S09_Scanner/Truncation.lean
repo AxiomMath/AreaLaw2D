@@ -437,6 +437,9 @@ structure TruncatedSystem (q : ℕ) [NeZero q] (R : ℕ) (g C₁ Cb : ℝ) (m₀
   traceDist_le : traceDist (pureState Dt.Ω Dt.norm_Ω) (pureState Ω hΩ) ≤
     √(2 * (n : ℝ) ^ (-1000 : ℝ) / g)
   anchor : ∀ Y ∈ supports G Λ R, a Y ∈ Y
+  /-- The labels `i` are the admissible supports, with designated supports `X̃_i`. -/
+  support_eq : ∃ e : Fin N ≃ supports G Λ R, ∀ i, Et.support i =
+    (truncatedSupport G Λ (A.filter fun x => dep x ≤ L) (r₀ C₁ n) (a (e i))).subtype (· ∈ Λ)
   budget_eq : ∀ Q : Finset Λ,
     budget Et Q = cutBudget G q Λ (A.filter fun x => dep x ≤ L) R (r₀ C₁ n) a (up Q)
   crossing : ∀ X ⊆ A.filter (fun x => dep x ≤ L),
@@ -517,6 +520,7 @@ theorem step_9_3 [Nonempty σ] (V : ℕ → ℕ)
     traceDist_le := htd.trans (Real.sqrt_le_sqrt (div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left (min_le_left _ _) (by norm_num)) (div_pos hΔ hcs).le))
     anchor := ha
+    support_eq := ⟨e.symm, fun _ => rfl⟩
     budget_eq := fun Q => ?_
     crossing := hcross }⟩
   · -- `H̃ = ∑_i h̃_i`

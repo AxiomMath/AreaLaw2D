@@ -82,8 +82,9 @@ terminal tree of the selected charge round at the selected `p_k ∈ [ε/2, ε]`)
 
 Assume `scanner:scales` (`0 < ℓ < 1`, `0 < κ < μ < 1 - ℓ`), `scanner:test-geometry`,
 `0 < e < 1`, `κ ≤ e`, `S_Ω(X) ≤ C_e n^{1+e}`, `S_Ω(Q_j) ≤ C_e (n L^e + n)` (`0 ≤ j ≤ L`),
-`ε = n^{-ν}`, `a r₀²` small. Then the truncated system `Ω̃` (D4.11), the auxiliary systems, the
-label sector and `pre` of Proposition 8.1 (width `w = n^{3/5}`) and the statuses of the scan
+`ε = n^{-ν}`, `a (r₀+1)^{m₀}` small (`a r₀²` on `ℤ²`, D9.11.4: the split supports are
+`r₀`-balls, of `log`-dimension `≤ C (r₀+1)^{m₀}`). Then the truncated system `Ω̃` (D4.11), the
+auxiliary systems, the label sector and `pre` of Proposition 8.1 (width `w = n^{3/5}`) and the statuses of the scan
 satisfy: every entropy and mutual information of `Ω̃` is within `n^{-200}(1 + |Q|)` of that of
 `Ω` (D9.9.1); `z ≥ 1 - n^{-100}`; prefix data with `B_sh ≤ C(nL^e + n)`, `B_exc ≤ C n D`; marginal
 moment data with `𝓑 ≤ C n D (log n)^C`; `Λ \ S₀ ⊆ V` in every status (D9.28.2); all norm
@@ -93,14 +94,16 @@ comparisons of Proposition 8.1; and for every `k ≥ 1` a point with
 auxiliary dimensions are fixed before `k → ∞`; constants depend on the exponents, `C_e`, `C_T`
 and the Hamiltonian parameters, not on `W`, `Λ`, `A`, `dep`. -/
 def Prop_9_2 : Prop :=
-  ∀ {σ : Type u} [DecidableEq σ] (G : SimpleGraph σ) [DecidableRel G.Adj] (V : ℕ → ℕ),
+  ∀ {σ : Type u} [DecidableEq σ] [Nonempty σ] (G : SimpleGraph σ) [DecidableRel G.Adj]
+    (V : ℕ → ℕ),
     (∀ (Λ : Finset σ) (x : σ) (r : ℕ), #(GraphDomain.ball G Λ x r) ≤ V r) →
     ∀ (K₀ : ℝ) (m₀ : ℕ), 0 ≤ K₀ → (∀ r : ℕ, (V r : ℝ) ≤ K₀ * (r + 1) ^ m₀) →
     ∀ (q : ℕ) [NeZero q] (R : ℕ) (J Δ : ℝ), 0 < Δ →
     ∀ (ℓ κ μ ν e Ce CT : ℝ), 0 < ℓ → ℓ < 1 → 0 < κ → κ < μ → μ < 1 - ℓ → 0 < ν →
       0 < e → e < 1 → κ ≤ e → 0 < Ce → 0 < CT →
-    ∃ (C₁ c Crl csh Csu Csl C₀ c₀ C Cl : ℝ) (n₀ : ℕ), 0 < C₁ ∧ 0 < c ∧ 0 < csh ∧ 0 < Csl ∧ 0 < Csu ∧
-      ∀ n : ℕ, n₀ ≤ n → ∀ W : ℝ, 1 ≤ W → a ℓ μ W n * (r₀ C₁ n : ℝ) ^ 2 ≤ c →
+    ∃ (C₁ c Crl csh Csu Csl C₀ c₀ C Cl : ℝ) (n₀ : ℕ), 0 < C₁ ∧ 0 < c ∧ 0 < csh ∧ 0 < Csl ∧
+      0 < Csu ∧ 0 < Crl ∧
+      ∀ n : ℕ, n₀ ≤ n → ∀ W : ℝ, 1 ≤ W → a ℓ μ W n * ((r₀ C₁ n : ℝ) + 1) ^ m₀ ≤ c →
       ∀ (Λ : Finset σ)
         (Φ : (X : Finset σ) → Matrix (Reg (fun _ : σ => Fin q) X) (Reg (fun _ : σ => Fin q) X) ℂ),
         GraphDomain.IsAdmissible G Λ R J Φ →

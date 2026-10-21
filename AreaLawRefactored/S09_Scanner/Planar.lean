@@ -107,7 +107,7 @@ theorem prop_9_2_planar (h92 : Prop_9_2.{0}) (q : ℕ) [NeZero q] (R : ℕ) (J �
     (hμ : μ < 1 - ℓ) (hν : 0 < ν) (he : 0 < e) (he₁ : e < 1) (hκe : κ ≤ e) (hCe : 0 < Ce)
     (hCT : 0 < CT) :
     ∃ (C₁ c Crl csh Csu Csl C₀ c₀ C Cl : ℝ) (n₀ : ℕ), 0 < C₁ ∧ 0 < c ∧ 0 < csh ∧
-      0 < Csl ∧ 0 < Csu ∧
+      0 < Csl ∧ 0 < Csu ∧ 0 < Crl ∧
       ∀ n : ℕ, n₀ ≤ n → ∀ W : ℝ, 1 ≤ W → a ℓ μ W n * (r₀ C₁ n : ℝ) ^ 2 ≤ c →
       ∀ (Λ : Finset (ℤ × ℤ))
         (Φ : (X : Finset (ℤ × ℤ)) → Matrix (Reg (OpenAI.Qudits q) X) (Reg (OpenAI.Qudits q) X) ℂ),
@@ -159,11 +159,23 @@ theorem prop_9_2_planar (h92 : Prop_9_2.{0}) (q : ℕ) [NeZero q] (R : ℕ) (J �
                 C * (n : ℝ) ^ (-1000 : ℝ) + r k := by
   have hV : ∀ r : ℕ, (v 2 r : ℝ) ≤ 2 * (r + 1) ^ 2 := fun r => by
     rw [v_two]; push_cast; nlinarith
-  obtain ⟨C₁, c, Crl, csh, Csu, Csl, C₀, c₀, C, Cl, n₀, hC₁, hc, hcsh, hCsl, hCsu, H⟩ :=
+  obtain ⟨C₁, c, Crl, csh, Csu, Csl, C₀, c₀, C, Cl, n₀, hC₁, hc, hcsh, hCsl, hCsu, hCrl, H⟩ :=
     h92 squareLattice (v 2) eq_ball_count_two 2 2 zero_le_two hV q R J Δ hΔ ℓ κ μ ν e Ce CT
       hℓ hℓ₁ hκ hκμ hμ hν he he₁ hκe hCe hCT
-  refine ⟨C₁, c, Crl, csh, Csu, Csl, C₀, c₀, C, Cl, n₀, hC₁, hc, hcsh, hCsl, hCsu,
-    fun n hn W hW har Λ Φ hΦ Ω hΩ E₀ hE hgap A hA T hT hTcard hrow hclear hSX hSQ => ?_⟩
+  refine ⟨C₁, c / 4, Crl, csh, Csu, Csl, C₀, c₀, C, Cl, max n₀ 3, hC₁, by positivity, hcsh,
+    hCsl, hCsu, hCrl,
+    fun n hn W hW har' Λ Φ hΦ Ω hΩ E₀ hE hgap A hA T hT hTcard hrow hclear hSX hSQ => ?_⟩
+  -- D9.11.4 on `ℤ²` (`m₀ = 2`): `a r₀² ≤ c/4` gives `a (r₀ + 1)² ≤ c`, as `r₀ ≥ 1`
+  have har : a ℓ μ W n * ((r₀ C₁ n : ℝ) + 1) ^ 2 ≤ c := by
+    have hn3 : (3 : ℝ) ≤ n := by exact_mod_cast (le_max_right n₀ 3).trans hn
+    have hlog : 0 < Real.log n := Real.log_pos (by linarith)
+    have hr : (1 : ℝ) ≤ r₀ C₁ n := by
+      exact_mod_cast Nat.one_le_iff_ne_zero.2 (Nat.pos_iff_ne_zero.1
+        (Nat.ceil_pos.2 (by positivity)))
+    have ha : 0 ≤ a ℓ μ W n := div_nonneg (by linarith) (Nat.cast_nonneg _)
+    nlinarith [mul_le_mul_of_nonneg_left (by nlinarith : ((r₀ C₁ n : ℝ) + 1) ^ 2 ≤
+      4 * (r₀ C₁ n : ℝ) ^ 2) ha]
+  have hn : n₀ ≤ n := (le_max_left n₀ 3).trans hn
   -- D9.3: the test geometry of `dist_∞(·, T)`
   have hgeom : TestGeometry squareLattice Λ A (depth T hT) CT n (L ℓ n) (r₀ C₁ n) := by
     refine ⟨fun x y h => depth_le_depth_add_one h, ?_, fun j hj hjL => ?_, fun z hz => ?_⟩
