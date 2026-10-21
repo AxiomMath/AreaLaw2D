@@ -1,3 +1,4 @@
+import AreaLawForMathlib.Algebra.BigOperators.IidSecondMoment
 import AreaLawForMathlib.Analysis.Complex.RectangleSimplePoles
 import AreaLawForMathlib.Analysis.CStarAlgebra.Matrix
 import AreaLawForMathlib.Analysis.CStarAlgebra.SqrtHolder
@@ -11,6 +12,7 @@ import AreaLawForMathlib.Analysis.Matrix.CfcLogAdditive
 import AreaLawForMathlib.Analysis.Matrix.CommutantModule
 import AreaLawForMathlib.Analysis.Matrix.CommutingExponentialOrder
 import AreaLawForMathlib.Analysis.Matrix.CommutingProductLog
+import AreaLawForMathlib.Analysis.Matrix.CommutingProjectionProduct
 import AreaLawForMathlib.Analysis.Matrix.DiagonalJensen
 import AreaLawForMathlib.Analysis.Matrix.FilteredNorm
 import AreaLawForMathlib.Analysis.Matrix.FiniteProductChannel
@@ -35,11 +37,15 @@ import AreaLawForMathlib.Analysis.Matrix.PosSemidefSupport
 import AreaLawForMathlib.Analysis.Matrix.PowerDerivative
 import AreaLawForMathlib.Analysis.Matrix.ProjectionCfcUpperBound
 import AreaLawForMathlib.Analysis.Matrix.ProjectionCompressionCfc
+import AreaLawForMathlib.Analysis.Matrix.ProjectionSectorMean
+import AreaLawForMathlib.Analysis.Matrix.ProjectionVectorEstimates
+import AreaLawForMathlib.Analysis.Matrix.ReducedVectorState
 import AreaLawForMathlib.Analysis.Matrix.ResolventFunctionalCalculus
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
 import AreaLawForMathlib.Analysis.Matrix.SkewAbsReduction
 import AreaLawForMathlib.Analysis.Matrix.SpecPow
 import AreaLawForMathlib.Analysis.Matrix.SpectralQuadraticForm
+import AreaLawForMathlib.Analysis.Matrix.SpectralVectorJensen
 import AreaLawForMathlib.Analysis.Matrix.SqrtHolder
 import AreaLawForMathlib.Analysis.Matrix.TraceCompression
 import AreaLawForMathlib.Analysis.Matrix.TraceHolder
@@ -48,10 +54,13 @@ import AreaLawForMathlib.Analysis.Matrix.TraceRightDomination
 import AreaLawForMathlib.Analysis.Matrix.TwoPositiveSchwarz
 import AreaLawForMathlib.Analysis.Matrix.WeightedGeometricMean
 import AreaLawForMathlib.Analysis.Matrix.WeylTwirl
+import AreaLawForMathlib.Analysis.MeanInequalitiesCubic
+import AreaLawForMathlib.Analysis.MeanInequalitiesFinProd
 import AreaLawForMathlib.Analysis.Normed.Ring.NeumannInverse
 import AreaLawForMathlib.Analysis.ODE.LiebRobinson
 import AreaLawForMathlib.Analysis.RCLike.ToComplex
 import AreaLawForMathlib.Analysis.SpecialFunctions.BetaHalfLine
+import AreaLawForMathlib.Analysis.SpecialFunctions.BinEntropySubsetCount
 import AreaLawForMathlib.Analysis.SpecialFunctions.GammaRatio
 import AreaLawForMathlib.Analysis.SpecialFunctions.Pow.RpowNonneg
 import AreaLawForMathlib.Analysis.SpecialFunctions.ResolventMellin
@@ -59,6 +68,7 @@ import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Density
 import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Fourier
 import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Shift
 import AreaLawForMathlib.Data.Int.L1Ball
+import AreaLawForMathlib.LinearAlgebra.Matrix.PiTensorOp
 import AreaLawForMathlib.LinearAlgebra.Matrix.TracePairing
 import AreaLawForMathlib.QuantumInfo.Entropy.ClassicalQuantum
 import AreaLawForMathlib.QuantumInfo.Entropy.Concavity
@@ -75,6 +85,7 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Casimir
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CentralLabelFunction
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.ColumnAntisymmetrizer
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CommutantDimension
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CopySplit
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.GroupedCopies
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HermitianCfcSpectral
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HighestWeight
@@ -85,10 +96,12 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.IrrepLabelCount
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.IsotypicDimension
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.JointIsotypic
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.JucysRecursion
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.LabelObservableCalculus
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.MergeDimensions
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.MergeMoment
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.OrthogonalResolution
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.PartitionCount
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.ProductVectorMarginal
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.RegularTrace
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelCommutation
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelEstimates
