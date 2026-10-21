@@ -78,7 +78,7 @@ _Used from._ Form matches eq:initial-tail-mgf of Lemma 3.1 ({bpref "D3.1"}[D3.1]
 
 :::
 
-:::definition "D8.6" (lean := "AreaLaw.Comparators.Site, AreaLaw.Comparators.Statuses.bandA, AreaLaw.Comparators.Statuses.leafA, AreaLaw.Comparators.Statuses.Atil") (uses := "D6.5, D6.8, D6.9")
+:::definition "D8.6" (lean := "AreaLaw.Comparators.Site, AreaLaw.Comparators.Statuses.bandA, AreaLaw.Comparators.Statuses.leafA, AreaLaw.Comparators.Statuses.Atil") (uses := "D6.5, D6.8, D6.9, D6.4, D6.6")
 *D8.6* — Def: Auxiliary pair, common-dimension metrics, leaf metrics
 
 _Source: 07-comparators.tex 87–112, `comparator:metrics`._
@@ -117,7 +117,7 @@ _Quantifiers._ Replica limits ($`k\to\infty`): physical system, auxiliary dimens
 
 :::
 
-:::proof "D8.8" (uses := "D8.1, D8.2, D8.3, D8.4, D8.5, D8.6, D8.7")
+:::proof "D8.8" (uses := "D8.1, D8.2, D8.3, D8.4, D8.5, D8.6, D8.7, D8.9, D8.10, D8.11, D8.12, D8.13, D8.14, D8.15, D8.16, D8.17, D8.18, D8.19, D8.20, D8.21, D8.22, D8.23, D8.24, D8.25, D8.26, D8.27, D8.28, D8.29, D8.30, D8.31, D8.32, D8.33, D8.34, D8.35, D8.36, D8.37")
 Order:
 
 *D8.8.1* Labels and pin: {bpref "D8.9"}[D8.9]–{bpref "D8.16"}[D8.16].
@@ -128,13 +128,13 @@ Order:
 
 *D8.8.4* Tree and conclusion: {bpref "D8.32"}[D8.32]–{bpref "D8.35"}[D8.35] (lower bounds), {bpref "D8.36"}[D8.36] (identity), {bpref "D8.37"}[D8.37] (uniformity).
 
-_Used from._ {bpref "D8.1"}[D8.1]–{bpref "D8.7"}[D8.7].
+_Used from._ {bpref "D8.1"}[D8.1]–{bpref "D8.7"}[D8.7]; internal steps {bpref "D8.9"}[D8.9]–{bpref "D8.37"}[D8.37].
 
 :::
 
 # 8.2 Labels selected by the auxiliary pair
 
-:::lemma_ "D8.9" (lean := "AreaLaw.Comparators.log_dim_le_neg_log")
+:::lemma_ "D8.9" (lean := "AreaLaw.Comparators.log_dim_le_neg_log") (uses := "D6.4")
 *D8.9* — Step: Label remainder
 
 _Source: 07-comparators.tex 218–226, `comparator:label-remainder`._
@@ -187,7 +187,7 @@ One can select $`\lambda_k\vdash k` (at most $`d_*` rows) with $$`q_k:=\|\pi_R^{
 
 :::
 
-:::proof "D8.12" (uses := "D8.9, D8.11")
+:::proof "D8.12" (uses := "D6.4, D8.9, D8.11")
 *D8.12.1* $`R`-marginal of $`\psi` is $`\mathrm{diag}(p_i')_{i\in E}` ($`w_i` orthonormal). Surprisal $`L` of $`\rho_R^{\otimes k}` = sum of $`k` iid variables, mean $`S'`, fixed finite variance. Chebyshev: $`\Pr\{|L-kS'|>k^{3/4}\}\le\mathrm{const}\cdot k^{-1/2}`.
 
 *D8.12.2* {bpref "D8.9"}[D8.9]: $`L-F_R>k^{3/4}` has probability $`\le\poly(k)e^{-k^{3/4}/2}` (exponential Markov with $`b=1/2`: $`\Pr\le e^{-bk^{3/4}}\,\Tr\rho\,e^{b(L-F)}`).
@@ -211,7 +211,7 @@ _Source: 07-comparators.tex 273–281._
 
 :::
 
-:::proof "D8.13" (uses := "D8.12")
+:::proof "D8.13" (uses := "D6.4, D8.12")
 *D8.13.1* (a) $`R`-marginal of $`\mathrm{Bell}^{\otimes k}` is maximally mixed on $`R^{\otimes k}`, so $`\Pr(\lambda)=d_\lambda\dim V_\lambda/d_*^k>0` for every label with at most $`d_*` rows, $`\lambda_k` included; so $`\pi_R^{\lambda_k}(\widetilde\Omega\otimes\mathrm{Bell})^{\otimes k}\ne0`. (Equivalently, {bpref "D8.14"}[D8.14]: $`\|\mathsf P\mathrm{pre}_k\|^2=(z/d_*^2)^kq_k>0`.) $`\|\mathrm{pre}_k\|\le1`: projection of a unit vector.
 
 *D8.13.2* (b) $`\pi_R^{\lambda_k}` acts on $`R` only, so commutes with every $`\widetilde H^{(i)}`; $`\widetilde H^{(i)}\widetilde\Omega^{(i)}=\widetilde E_0\widetilde\Omega^{(i)}`.
@@ -275,7 +275,7 @@ On the pinned symmetric range ($`B_{XC}^{\otimes k}\otimes` symmetric vector on 
 
 :::
 
-:::proof "D8.16" (uses := "D8.6, D6.7")
+:::proof "D8.16" (uses := "D6.7, D6.4, D8.6")
 *D8.16.1* $`W_{CXU}\to W_U` by the fixed-factor identity with fixed vector $`B_{XC}^{\otimes k}` on $`XC` (internal entanglement irrelevant to simultaneous permutations of the whole factor).
 
 *D8.16.2* $`F_{j,g}=RV_{j,g}` has complement $`CXU_{j,g}Y_{j,g}` in $`\mathcal V`. On $`\mathcal S_k`, $`W_{RV}=W_{CXUY}\to W_{UY}` by the same identity. $`W_Y` unaffected.
@@ -321,7 +321,7 @@ There is a unit vector $`\varphi` in the common range of the projections $`\{F_B
 
 :::
 
-:::proof "D8.18" (uses := "D8.4, D8.9, D8.12, D8.17")
+:::proof "D8.18" (uses := "D6.4, D8.4, D8.9, D8.12, D8.17")
 *D8.18.1* Cutoff projections commute (nested family, Lemma 6.1(2)) and commute with $`\pi_R^{\lambda_k}` (disjoint regions).
 
 *D8.18.2* Under $`\mathrm{post}_k` the $`B`-marginal is $`\rho_{\psi,B}^{\otimes k}`. $`F_B\le L_B` ({bpref "D8.9"}[D8.9]), $`L_B` = sum of iid one-copy surprisals, each bounded on the positive spectrum at fixed system. Exponential Markov with $`\E e^{\theta L_B}\le\exp\{k\theta S(\rho_{\psi,B})+O(k\theta^2)\}` and $`S(\rho_{\psi,B})\le S(B)/z` ({bpref "D8.17"}[D8.17]): $`\Pr\{F_B>k(S(B)/z+1)\}\le e^{-ck}` for small $`\theta`.
@@ -345,7 +345,7 @@ For matched $`(B,Q)`: $`F_Q\le F_B+k\log\dim\mathcal H_{B\triangle Q}` (either i
 
 :::
 
-:::proof "D8.19" (uses := "D8.4, D8.18")
+:::proof "D8.19" (uses := "D6.4, D8.4, D8.18")
 *D8.19.1* $`Q\subseteq B`: $`B=Q\sqcup(B\setminus Q)`; Lemma 6.1(3) second inequality $`d_\lambda\le d_\nu d_\mu` gives $`F_Q\le F_B+F_{B\setminus Q}`. $`B\subseteq Q`: first inequality $`d_\nu\le d_\lambda d_\mu` gives $`F_Q\le F_B+F_{Q\setminus B}`. A Specht dimension for a system of dimension $`D` is at most $`D^k` (multiplicity space inside $`(\mathbb C^D)^{\otimes k}`), so the extra term is $`\le k\log\dim\mathcal H_{B\triangle Q}`.
 
 *D8.19.2* $`F_B,F_Q` commute (nested). In each joint eigenspace with $`F_B\le k(S(B)/z+1)`: $`F_Q\le k(S(B)/z+1+\log\dim\mathcal H_{B\triangle Q})\le k(B_{\rm sh}/z+B_{\rm exc})` by {bpref "D8.4"}[D8.4]. $`\varphi` is supported on such eigenspaces.
@@ -363,7 +363,7 @@ _Source: 07-comparators.tex 366–381, `comparator:rough-upper`._
 
 :::
 
-:::proof "D8.20" (uses := "D8.15, D8.16, D8.18, D8.19, D8.1")
+:::proof "D8.20" (uses := "D7.3, D8.15, D8.16, D8.18, D8.19, D8.1")
 *D8.20.1* Within a product leaf all labels in $`\widetilde A_{j,g}` commute ({bpref "D8.1"}[D8.1](iii)). $`F_{Y}\ge0`, so dropping $`-aF_Y`: $`\prod_g\widetilde A_{j,g}\le\poly(k)\exp\{a\sum_g(F_{U_{j,g}}+F_{U_{j,g}Y_{j,g}})\}` ($`K` fixed). On $`\varphi`, {bpref "D8.19"}[D8.19]: $$`\langle\varphi,\textstyle\prod_g\widetilde A_{j,g}\varphi\rangle\le\poly(k)\exp\{2kaK(B_{\rm sh}/z+B_{\rm exc})\}.`
 
 *D8.20.2* Vector Jensen through the tree: $`\langle\varphi,\widetilde{\mathcal M}\varphi\rangle\le\prod_j\langle\varphi,\prod_g\widetilde A_{j,g}\varphi\rangle^{w_j}`, same bound ($`\sum_jw_j=1`).
@@ -389,7 +389,7 @@ $`\widehat\psi_k=\pi_R^{\lambda_k}\mathrm{post}_k/\sqrt{q_k}`. Then $$`\|\wideti
 
 :::
 
-:::proof "D8.21" (uses := "D8.7, D8.12, D8.13, D8.16")
+:::proof "D8.21" (uses := "D7.3, D8.7, D8.12, D8.13, D8.16")
 *D8.21.1* $`\|\pi\,\mathrm{post}_k\|^2=q_k` ($`\|B^{\otimes k}\|=1`). $`\|\widetilde{\mathcal M}^{-s}\pi\,\mathrm{post}\|^2=q_k\langle\widehat\psi,e^{-2s\log\widetilde{\mathcal M}}\widehat\psi\rangle\ge q_k\exp\{-2s\langle\widehat\psi,\log\widetilde{\mathcal M}\widehat\psi\rangle\}`: convexity of $`\exp`.
 
 *D8.21.2* $`\log\widetilde{\mathcal M}=\sum_g\log\widetilde{\mathcal M}_g` (commuting factors).
@@ -477,7 +477,7 @@ For any region $`Q`, whole label and two subgroup labels commute. On a compatibl
 
 :::
 
-:::proof "D8.25"
+:::proof "D8.25" (uses := "D6.4")
 *D8.25.1* $`[\alpha]\otimes[\beta]` embeds in $`\mathrm{Res}^{S_k}_{S_{k'}\times S_r}[\lambda]` as a subspace $`U`: $`d_\alpha d_\beta=\dim U\le d_\lambda`. Take $`\log`.
 
 *D8.25.2* Translates $`gU`, $`g\in S_k`, span $`[\lambda]` (irreducible). $`gU` depends only on the coset $`g(S_{k'}\times S_r)`; $`\binom kr` cosets. So $`d_\lambda\le\binom kr\dim U=\binom kr d_\alpha d_\beta`. Take $`\log`.
@@ -515,7 +515,7 @@ On $`u_B`: $$`F_C^{\rm good},\ F_R^{\rm good}\ge kS'-r\log d_*-\log\binom kr-o(k
 
 :::
 
-:::proof "D8.27" (uses := "D8.12, D8.13, D8.24, D8.25")
+:::proof "D8.27" (uses := "D6.4, D8.12, D8.13, D8.24, D8.25")
 *D8.27.1* $`F^{\rm whole}_C=F^{\rm whole}_R=\log d_{\lambda_k}=kS'+o(k)` on $`u_B` ({bpref "D8.12"}[D8.12]).
 
 *D8.27.2* {bpref "D8.25"}[D8.25] upper: $`F^{\rm good}\ge F^{\rm whole}-F^{\rm bad}-\log\binom kr`. Bad-group Specht dimension on a $`d_*`-dimensional system with $`r` copies $`\le d_*^r`, so $`F^{\rm bad}\le r\log d_*`.
@@ -535,7 +535,7 @@ On the good group put $`Q=XU_{j,g}`, $`V=V_{j,g}`, $`Y=Y_{j,g}` and $$`D_C=F_Q+F
 
 :::
 
-:::proof "D8.28" (uses := "D8.24")
+:::proof "D8.28" (uses := "D6.4, D8.24")
 *D8.28.1* $`G^{\rm good}=F_{QC}+F_{VR}-F_Y` for the partition $`(P,Y,F)=(QC,Y,VR)`. Substitute $`F_{QC}=F_Q+F_C-D_C`, $`F_{VR}=F_V+F_R-D_R`.
 
 *D8.28.2* $`D_C,D_R\ge0`: $`d_\nu\le d_\lambda d_\mu` (Lemma 6.1(3)).
@@ -557,7 +557,7 @@ For $`0\le b\le1`, $$`\E_{u_B/\|u_B\|}e^{bD_C}\le\poly(k),\qquad\E_{u_B/\|u_B\|}
 
 :::
 
-:::proof "D8.29" (uses := "D8.24, D8.28")
+:::proof "D8.29" (uses := "D6.4, D8.24, D8.28")
 *D8.29.1* In normalized $`u_B` the $`QC`-marginal on good copies is $`\rho_Q^{\otimes k'}\otimes\rho_C`, $`\rho_C` permutation-invariant (trace out other factors of the good-group symmetric component). Conditional on labels $`\gamma` (on $`Q`), $`\beta` (on $`C`) the two Specht factors are independent and maximally mixed ($`I/d_\gamma`, $`I/d_\beta`).
 
 *D8.29.2* Combined label $`\nu` has conditional probability $`m^\nu_{\gamma\beta}\,d_\nu/(d_\gamma d_\beta)`, $`m^\nu_{\gamma\beta}` = multiplicity of $`[\nu]` in $`[\gamma]\otimes[\beta]`.
@@ -647,7 +647,7 @@ $$`\mathcal M_g\ge b_0(\id-\Pi)+e^{\ell_g}\Pi,\quad\ell_g=\sum_jw_j\log b_{j,g},
 
 :::
 
-:::proof "D8.33" (uses := "D8.32")
+:::proof "D8.33" (uses := "D7.3, D8.32")
 *D8.33.1* Monotone in each input: $`\mathcal M_g\ge` the tree with leaves $`b_0(\id-\Pi)+b_{j,g}\Pi`. These commute and are scalars on $`\mathrm{ran}\,\Pi` and on $`\mathrm{ran}(\id-\Pi)`. Homogeneity: on $`\mathrm{ran}(\id-\Pi)` the value is $`b_0` (all leaves equal, $`\sum w_j=1`); on $`\mathrm{ran}\,\Pi` it is $`\prod_jb_{j,g}^{w_j}=e^{\ell_g}`.
 
 *D8.33.2* $`b_{j,g}\ge\tfrac12e^{kaL_{j,g}-o(k)}` gives the first bound on $`\ell_g` ($`\log2` absorbed).
@@ -691,7 +691,7 @@ _Source: 07-comparators.tex 641–650._
 
 :::
 
-:::proof "D8.35" (uses := "D8.7, D8.8, D8.34")
+:::proof "D8.35" (uses := "D8.7, D8.34")
 *D8.35.1* $`N^2\langle v,\mathcal M^{2s}v\rangle=\|\mathcal M^s(N v)\|^2=\|\mathrm{pre}_k\|^2\le1`.
 
 *D8.35.2* $`-\log N^2\ge\log\langle v,\mathcal M^{2s}v\rangle\ge2s\langle v,\log\mathcal Mv\rangle` (convexity of $`\exp`).
@@ -700,7 +700,7 @@ _Source: 07-comparators.tex 641–650._
 
 *D8.35.4* Divide by $`k`. $`-\log N^2/k\ge2sW[\langle L\rangle_{\rm av}-(E_{\rm def}/\tau)(2S'\text{ or }2S'+g_{\max})]-o_k(1)`. Since $`2S'\le2(S'+g_{\max})` the coefficient of $`E_{\rm def}/\tau` is at most $`2(S'+g_{\max})`: the constant $`C` in the display is $`2`. Rough: drop $`g^{\rm pre}` and $`a\mathcal B`.
 
-_Used from._ {bpref "D8.7"}[D8.7], {bpref "D8.8"}[D8.8], {bpref "D8.34"}[D8.34].
+_Used from._ {bpref "D8.7"}[D8.7], the statement of the proposition this step belongs to, {bpref "D8.34"}[D8.34].
 
 :::
 

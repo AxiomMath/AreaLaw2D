@@ -298,7 +298,7 @@ $`G` vector-valued, analytic in $`0<\Re z<1`, bounded and continuous on the clos
 
 :::
 
-:::proof "D5.11" (uses := "D5.5")
+:::proof "D5.11"
 *D5.11.1* $`z\mapsto e^{\pi iz}` maps the strip onto the upper half-plane ($`|e^{\pi iz}|=e^{-\pi\Im z}`, $`\arg=\pi\Re z`), $`z=\tfrac12\mapsto i`, $`\Re z=0\mapsto(0,\infty)`, $`\Re z=1\mapsto(-\infty,0)`. Harmonic measure at $`i` is $`\frac{dx}{\pi(1+x^2)}`; with $`x=\pm e^{-\pi u}`, $`|dx|=\pi e^{-\pi u}du`: density $`\frac{du}{e^{\pi u}+e^{-\pi u}}=\frac{du}{2\cosh\pi u}`.
 
 *D5.11.2* Scalar case: sub-mean value property for $`\log|\varphi|`, $`\varphi` analytic, on bounded subdomains then by exhaustion.
@@ -309,7 +309,7 @@ $`G` vector-valued, analytic in $`0<\Re z<1`, bounded and continuous on the clos
 
 _Formal route_ (RefactoringResult.md §5, {bpref "D5.5"}[D5.5.9]–D5.11): paired Gaussian three-lines on `g(z) = f(z)·conj f(1−z̄)·e^{B(z−1/2)²}` (reflection `z ↦ 1−z̄` pairs `iu` with `1+iu` at the same `u`), `u`-growth bounded pointwise by `(3+u²)/2` (`step_5_11`, AreaLawRefactored/S05\_Conditional/Interpolation.lean:118; `step_5_5_10` :142). Reason: Mathlib has three-lines but no Poisson kernel/harmonic measure for the strip.
 
-_Used from._ none ({bpref "D5.5"}[D5.5.3] supplies the hypotheses).
+_Used from._ none (step 3 of the lemma this step belongs to supplies the hypotheses).
 
 :::
 
@@ -372,7 +372,7 @@ In the set-up of {bpref "D5.12"}[D5.12] (faithful $`\rho_f`): $$`\|(A+v)^{1/2}\d
 
 :::
 
-:::proof "D5.13" (uses := "D5.12, D2.1")
+:::proof "D5.13" (uses := "D2.1")
 *D5.13.1* _Compression identity._ $`g=(A+v)^{-1}a_0`, $`k=(B+v)^{-1}b_0`, $`\delta_v=g-Vk`: $$`\langle\delta_v,(A+v)\delta_v\rangle=\langle g,(A+v)g\rangle-2\Re\langle(A+v)g,Vk\rangle+\langle k,V^*(A+v)Vk\rangle .` $`(A+v)g=a_0`; $`V^*a_0=b_0` ($`V^*V=I`); $`V^*(A+v)V=B+v` ({bpref "D5.12"}[D5.12.3]). Three terms: $`\langle a_0,(A+v)^{-1}a_0\rangle`, $`-2\langle b_0,k\rangle`, $`+\langle b_0,k\rangle`, giving $`h(v)`. $`h\ge0`: left side is a squared norm.
 
 *D5.13.2* _Log formula._ $`\log x=\int_0^\infty\big(\tfrac1{1+v}-\tfrac1{x+v}\big)dv`, $`x>0`. So $`-\langle a_0,\log A\,a_0\rangle=\int_0^\infty\big(\langle a_0,(A+v)^{-1}a_0\rangle-\tfrac{\|a_0\|^2}{1+v}\big)dv`, same for $`B`. $`\|a_0\|^2=\operatorname{Tr}\rho_f=1=\|b_0\|^2`: the $`\tfrac1{1+v}` terms cancel in the difference, and $`\int_0^\infty h=-\langle a_0,\log A\,a_0\rangle+\langle b_0,\log B\,b_0\rangle` (each integral converges separately).
@@ -381,7 +381,7 @@ In the set-up of {bpref "D5.12"}[D5.12] (faithful $`\rho_f`): $$`\|(A+v)^{1/2}\d
 
 *D5.13.4* _Four entropies._ $`D(\rho_f\|\sigma_f)=-S(xUF)+\log d+S(UF)`; $`D(\rho_s\|\sigma_s)=-S(xU)+\log d+S(U)`. Difference $`=S(xU)+S(UF)-S(U)-S(xUF)=I(x:F|U)=\eta`.
 
-_Used from._ {bpref "D5.12"}[D5.12.1]–4, {bpref "D2.1"}[D2.1].
+_Used from._ steps 1–4 of the lemma this step belongs to; {bpref "D2.1"}[D2.1].
 
 :::
 
@@ -394,7 +394,7 @@ $`0\le h(v)\le\min(d^2,\,v^{-2})` and $`\|\delta_v\|_2\le\sqrt{h(v)/v}` for all 
 
 :::
 
-:::proof "D5.14" (uses := "D5.2, D5.12, D5.13")
+:::proof "D5.14" (uses := "D5.2, D5.13")
 *D5.14.1* _Local domination._ $`\rho_f\le d(I_x\otimes\rho_{UF})=d^2\sigma_f` ({bpref "D5.2"}[D5.2.1] with $`UF` for $`U`). So $`\sigma_f^{-1/2}\rho_f\sigma_f^{-1/2}\le d^2`, i.e. $`\rho_f^{1/2}\sigma_f^{-1}\rho_f^{1/2}\le d^2`.
 
 *D5.14.2* $`\langle a_0,A^{-1}a_0\rangle=\operatorname{Tr}\sqrt{\rho_f}\,\sigma_f^{-1}\rho_f^{3/2}=\operatorname{Tr}\rho_f^2\sigma_f^{-1}\le d^2\operatorname{Tr}\rho_f=d^2`. $`\langle b_0,Bb_0\rangle=\operatorname{Tr}\sigma_s=1`.
@@ -405,7 +405,7 @@ $`0\le h(v)\le\min(d^2,\,v^{-2})` and $`\|\delta_v\|_2\le\sqrt{h(v)/v}` for all 
 
 *D5.14.5* $`\|(A+v)^{1/2}\delta_v\|^2\ge v\|\delta_v\|^2` gives $`\|\delta_v\|_2\le\sqrt{h/v}`.
 
-_Used from._ {bpref "D5.2"}[D5.2.1], {bpref "D5.12"}[D5.12.1]–3, {bpref "D5.13"}[D5.13].
+_Used from._ {bpref "D5.2"}[D5.2.1], steps 1–3 of the lemma this step belongs to, {bpref "D5.13"}[D5.13].
 
 :::
 

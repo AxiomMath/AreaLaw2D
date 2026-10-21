@@ -113,7 +113,7 @@ For unit vectors $`\xi,\eta`: $`\tfrac12\|\,|\xi\rangle\langle\xi|-|\eta\rangle\
 
 :::
 
-:::proof "D2.5" (uses := "D2.4")
+:::proof "D2.5"
 *D2.5.1* $`\tfrac12\|\,|\xi\rangle\langle\xi|-|\eta\rangle\langle\eta|\,\|_1=\sqrt{1-|\langle\xi,\eta\rangle|^2}`: difference traceless, rank two, Hermitian, eigenvalues $`\pm\lambda` with $`\lambda^2=\tfrac12\operatorname{Tr}(\cdot)^2=1-|\langle\xi,\eta\rangle|^2`; trace norm $`2\lambda`.
 
 *D2.5.2* $`x=|\langle\xi,\eta\rangle|\in[0,1]`: $`1-x^2=(1-x)(1+x)\le2(1-x)\le2-2\operatorname{Re}\langle\xi,\eta\rangle=\|\xi-\eta\|^2`.
@@ -122,7 +122,7 @@ For unit vectors $`\xi,\eta`: $`\tfrac12\|\,|\xi\rangle\langle\xi|-|\eta\rangle\
 
 _Formal route_ (RefactoringResult.md §5, D2.5.1): X³ = (1−\\|⟨ξ,η⟩\\|²)X, so \\|X\\| = c^\{−1/2\}X². Reason: avoids a spectral computation.
 
-_Used from._ {bpref "D2.4"}[D2.4].
+_Used from._ none (a usage rule for the continuity lemma of this section, not an input to it).
 
 :::
 
@@ -176,7 +176,7 @@ Terms whose operator is a scalar multiple of the identity obey the same bounds w
 
 :::
 
-:::proof "D2.8" (uses := "D2.7")
+:::proof "D2.8" (uses := "D1.2, D2.7")
 *D2.8.1* $`x\in X`, $`\operatorname{diam}_{d_\Lambda}X\le R` $`\Rightarrow` every $`y\in X` has $`d_\Lambda(x,y)\le R`, so $`X\subseteq B_\Lambda(x,R)`.
 
 *D2.8.2* Subsets of $`B_\Lambda(x,R)` containing $`x`: $`2^{|B_\Lambda(x,R)|-1}\le2^{v_R-1}=\mu_R` ({bpref "D2.7"}[D2.7]).
@@ -240,7 +240,7 @@ If $`q=1` or $`\Lambda=\varnothing`: all entropies vanish. If $`R=0`: $`H` is a 
 
 :::
 
-:::proof "D2.11"
+:::proof "D2.11" (uses := "D1.4")
 *D2.11.1* $`q=1` or $`\Lambda=\varnothing`: $`\mathcal H_\Lambda=\mathbb C`, the only state is pure, every $`\rho_A` pure.
 
 *D2.11.2* $`R=0`: only singletons have $`\operatorname{diam}X\le0`, so $`H=\sum_xh_{\{x\}}`, commuting operators on distinct tensor factors. Ground eigenspace $`\bigotimes_x\ker(h_{\{x\}}-e_x)`, $`e_x=\min\operatorname{spec}h_{\{x\}}`. One-dimensional $`\Rightarrow` each factor one-dimensional. So $`\Omega=\bigotimes_x\omega_x` (up to phase), $`\rho_A` pure, $`S_\Omega(A)=0\le C|\partial_\Lambda A|`.
@@ -260,7 +260,7 @@ Under the hypotheses of Theorem 1.1 ($`H` admissible, unique normalized ground v
 
 :::
 
-:::proof "D2.12"
+:::proof "D2.12" (uses := "D1.2, D1.4")
 *D2.12.1* No edge between $`A` and $`\Lambda\setminus A` $`\Rightarrow` $`A` is a union of connected components of the induced graph.
 
 *D2.12.2* Every support $`X` has $`d_\Lambda`-diameter $`\le R<\infty`, $`d_\Lambda=\infty` across components, so $`X` lies in a single component $`c`.

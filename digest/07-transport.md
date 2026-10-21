@@ -260,7 +260,7 @@ $$-\partial_p\log N^2\ge ka\sum_{h,g}w_h\int m_s(u)\int\sum_{c\in\mathcal C_h}q_
 $$\langle v,\bar Hv\rangle\le2E_0+Ca^2\ell^C\sum_iW_i(p)\sum_{j\in\mathcal J_i}\pi_j\int m_s(u)\int\eta_{i,j}(\theta)^{1/8}d\mu_{\sigma_{j,u}}(\theta)\,du+o_k(1).$$
 The $o_k(1)$ is uniform in $p\in(0,1)$, in nonzero $\mathrm{pre}$ with the eigenvector property, and in all replica states. $C$ and the exponents called $C$ are universal; support dimensions enter only through $\ell$. Only the implicit constant in $\beta_k$ and the rate of $o_k(1)$ depend on the whole fixed finite data, never on $p$ or on the replica state. (b) may be integrated over any closed subinterval of $[0,1]$ using the continuous endpoint values of $N$.
 
-**Used from.** D7.3 (items 1, 3, 5, 6), D7.5, D7.6, D7.7, D7.8–D7.13; D6.10 (Lemma 6.3); D6.12 (Lemma 6.4), inside it D5.15 (Lemma 5.3).
+**Used from.** D7.3 (items 1, 3, 5, 6), D7.5, D7.6, D7.7, D7.8–D7.13; D6.10 (Lemma 6.3); D6.12 (Lemma 6.4), inside it D5.15 (Lemma 5.3); internal steps D7.15–D7.25.
 
 **Proof.** D7.15–D7.16: (a); D7.17–D7.20: (b); D7.21–D7.25: (c); D7.26: endpoints, uniformity.
 
@@ -487,7 +487,7 @@ One common $r_k\ge0$ serves all (finitely many) split pairs ($r_k=0$ if none). U
 $$\operatorname{Re}\langle(T_i+E_{i,+})v,(T_i+E_{i,-})v\rangle=\operatorname{Re}\langle\mathcal M^{-s}v,\bar h_i\mathcal M^sv\rangle\ge\tfrac12\|T_iv\|^2-\tfrac32\bigl(\|E_{i,+}v\|^2+\|E_{i,-}v\|^2\bigr).$$
 Hence $\langle v,\bar Hv\rangle\le2E_0+3\sum_{i,\pm}\|E_{i,\pm}v\|^2$, and Proposition 7.4(c) holds.
 
-**Used from.** D7.23, D7.24; D7.14 (definition of $v$, hypothesis $\bar H\mathrm{pre}=E_0\mathrm{pre}$); D7.21.1 ($T^*T=\bar h_i$).
+**Used from.** D7.23, D7.24; the definition of $v$ and the hypothesis $\bar H\mathrm{pre}=E_0\mathrm{pre}$ of the proposition this step belongs to; D7.21.1 ($T^*T=\bar h_i$).
 
 **Proof.**
 - D7.25.1 $T+E_\pm=\mathcal B^{\pm s}T\mathcal M^{\mp s}$. $\langle\mathcal B^sT\mathcal M^{-s}v,\mathcal B^{-s}T\mathcal M^sv\rangle=\langle T\mathcal M^{-s}v,T\mathcal M^sv\rangle$ (opposite powers of $\mathcal B_i$ cancel) $=\langle\mathcal M^{-s}v,\bar h_i\mathcal M^sv\rangle$.

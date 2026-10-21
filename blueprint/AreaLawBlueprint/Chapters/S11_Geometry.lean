@@ -55,7 +55,7 @@ Keep $`\beta=1-2\cdot10^{-6}` from Prop 10.2. Put $$`\delta_0=2\cdot10^{-7},\qua
 
 :::
 
-:::proof "D11.2" (uses := "D10.1")
+:::proof "D11.2" (uses := "D9.25, D10.1")
 _check of the gaps._
 
 *D11.2.1* $`(1+2\delta_0)\beta=(1+4\cdot10^{-7})(1-2\cdot10^{-6})=1-1.6\cdot10^{-6}-8\cdot10^{-13}<1-10^{-7}=\zeta<1`.
@@ -101,10 +101,10 @@ Fix $`D_0,C_{\rm tpl}` of Def 9.3 and a threshold $`n_*\ge1`. There is $`C` (dep
 
 :::
 
-:::proof "D11.4" (uses := "D11.2, D11.23, D1.6")
+:::proof "D11.4" (uses := "D9.14, D9.15, D11.2, D11.25, D1.6")
 Staged: layers and strips ({bpref "D11.5"}[D11.5]–{bpref "D11.10"}[D11.10]), belt filling and marks ({bpref "D11.11"}[D11.11]–{bpref "D11.13"}[D11.13]), repairs ({bpref "D11.14"}[D11.14]–{bpref "D11.16"}[D11.16]), separation ({bpref "D11.17"}[D11.17]–{bpref "D11.18"}[D11.18]), counting and scales ({bpref "D11.19"}[D11.19]–{bpref "D11.24"}[D11.24]), assembly ({bpref "D11.25"}[D11.25]).
 
-_Used from._ {bpref "D11.2"}[D11.2]; Def 9.3 (template, $`D_0` from §3 "safe", $`C_{\rm tpl}`); Lemma 9.4 ({bpref "D11.23"}[D11.23]); {bpref "D1.6"}[D1.6] ($`Z`).
+_Used from._ {bpref "D11.2"}[D11.2]; Def 9.3 (template, $`D_0` from §3 "safe", $`C_{\rm tpl}`); Lemma 9.4 ({bpref "D9.15"}[D9.15], applied in the assembly {bpref "D11.25"}[D11.25]); {bpref "D1.6"}[D1.6] ($`Z`).
 
 :::
 
@@ -483,7 +483,7 @@ For a primary in layer $`k`: $`s_0=r=2^k`, $`n=\lceil C_Pr^{1+2\delta_0}\rceil` 
 
 :::
 
-:::proof "D11.21" (uses := "D11.2, D11.5, D11.6, D11.10")
+:::proof "D11.21" (uses := "D9.14, D11.2, D11.5, D11.6, D11.10")
 *D11.21.1* $`s_k/r=2^{\lfloor(1+\delta_0)k\rfloor-k}\le r^{\delta_0}`, so $`N_0\le C(r^{\delta_0}+2)^2\le9Cr^{2\delta_0}`.
 
 *D11.21.2* $`C_{\rm tpl}N_0(s_0+1)\le2C_{\rm tpl}\cdot9C\,r^{1+2\delta_0}\le n` for $`C_P\ge18C\,C_{\rm tpl}`. $`\diam_\infty T\le s_k\le r^{1+\delta_0}\le r^{1+2\delta_0}\le n`.
@@ -525,7 +525,7 @@ All birth templates of belt tiles and of their descendant replacements have $`\d
 
 :::
 
-:::proof "D11.23" (uses := "D11.6, D11.15, D11.22")
+:::proof "D11.23" (uses := "D9.15, D9.25, D11.6, D11.15, D11.22")
 *D11.23.1* A belt cell in $`D_k` has $`\dist_\infty(\cdot,Z)\ge C_0r` on its closure, so also at any mark on it.
 
 *D11.23.2* By {bpref "D11.15"}[D11.15], every descendant lies within $`2d(S)\le2S^{\rho_0}\le2t_k^{\rho_0}=o(t_k)` of that mark ($`S\le t_k`).
@@ -591,7 +591,7 @@ For every $`q,R,J,\Delta` there is $`C=C(q,R,J,\Delta)` with $`S_\Omega(A)\le C|
 
 :::
 
-:::proof "D11.26" (uses := "D1.4, D1.6, D2.11, D2.12, D11.1, D11.4, D10.4")
+:::proof "D11.26" (uses := "D9.25, D9.14, D1.4, D1.6, D2.11, D2.12, D11.1, D11.4, D10.4")
 $`b=|\partial_\Lambda A|`.
 
 *D11.26.1* Trivial cases. $`\Lambda=\varnothing` or $`A\in\{\varnothing,\Lambda\}`: $`S_\Omega(A)=0` (purity, $`S_\Omega(\Lambda)=0`; tex 804). $`q=1`, $`R=0`: $`S_\Omega(A)=0` by {bpref "D2.11"}[D2.11]. $`b=0`: Lemma 2.2 gives $`S_\Omega(A)=0`. Afterwards $`q\ge2`, $`R\ge1`, $`\Lambda\ne\varnothing`, $`b>0`.

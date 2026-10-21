@@ -61,9 +61,9 @@ For all integers $`q\ge1`, $`R\ge0` and reals $`J>0`, $`\Delta>0` there is a fin
 :::
 
 :::proof "D1.4" (uses := "D1.1, D1.2, D1.3, D1.6, D1.11")
-{bpref "D11.26"}[D11.26].
+{bpref "D11.26"}[D11.26], from Lemma 11.1 (D1.12 = {bpref "D11.1"}[D11.1]), Prop 9.6 ({bpref "D9.25"}[D9.25]), Prop 10.2 ({bpref "D10.4"}[D10.4]), Prop 11.2 ({bpref "D11.4"}[D11.4]) and Lemma 2.2 ({bpref "D2.12"}[D2.12]).
 
-_Used from._ {bpref "D1.1"}[D1.1], {bpref "D1.2"}[D1.2], {bpref "D1.3"}[D1.3], {bpref "D1.6"}[D1.6] ($`Z=Z_A`), {bpref "D1.11"}[D1.11], D1.12 (Lemma 11.1), D1.16 (Prop 9.6), D1.17 (Prop 10.2), D1.18 (Prop 11.2); Lemma 2.2 (§2).
+_Used from._ {bpref "D1.1"}[D1.1], {bpref "D1.2"}[D1.2], {bpref "D1.3"}[D1.3], {bpref "D1.6"}[D1.6] ($`Z=Z_A`), {bpref "D1.11"}[D1.11] (statement only).
 
 :::
 

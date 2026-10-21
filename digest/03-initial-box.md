@@ -96,7 +96,7 @@ $$X=A\cap Q_0,\qquad T=(A\cap Q_0^{+C_{\rm pad}r})\setminus X,$$
 in $\Omega$:
 $$S(X\mid T)\le\tfrac12S(X)+C_{\rm buf}\,r .$$
 
-**Used from.** D3.1, D3.2, D3.3; D2.2 item 2 (SSA); D2.7–D2.10; D2.13; D1.4 (gap, uniqueness).
+**Used from.** D3.1, D3.2, D3.3; D2.2 item 2 (SSA); D2.7–D2.10; D2.13; D1.4 (gap, uniqueness); internal steps D3.5–D3.14.
 
 **Proof.** $X=\varnothing$: both sides $0$. Else D3.5–D3.14 in order. Constants chosen: $D_0$, $D$ (depend on $R$) $\to$ $C_{\rm pad}$ (D3.6, enlarged D3.10) $\to$ $\epsilon$ (floor, removed D3.12) $\to$ $C_{\rm buf}$ (D3.14).
 - D3.4.1 D3.5: nested regions, locality; contour budget independent of $C_{\rm pad}$.

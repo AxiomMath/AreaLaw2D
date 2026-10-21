@@ -262,10 +262,10 @@ Fix: finite $`\mathcal V`, history and choice trees, partitions, cross-band comm
 
 :::
 
-:::proof "D7.14" (uses := "D7.3, D7.5, D7.6, D7.7, D7.8, D7.9, D7.10, D7.11, D7.12, D7.13, D6.10, D6.12, D5.15")
+:::proof "D7.14" (uses := "D7.3, D7.5, D7.6, D7.7, D7.8, D7.9, D7.10, D7.11, D7.12, D7.13, D6.10, D6.12, D5.15, D7.15, D7.16, D7.17, D7.18, D7.19, D7.20, D7.21, D7.22, D7.23, D7.24, D7.25")
 {bpref "D7.15"}[D7.15]–{bpref "D7.16"}[D7.16]: (a); {bpref "D7.17"}[D7.17]–{bpref "D7.20"}[D7.20]: (b); {bpref "D7.21"}[D7.21]–{bpref "D7.25"}[D7.25]: (c); {bpref "D7.26"}[D7.26]: endpoints, uniformity.
 
-_Used from._ {bpref "D7.3"}[D7.3] (items 1, 3, 5, 6), {bpref "D7.5"}[D7.5], {bpref "D7.6"}[D7.6], {bpref "D7.7"}[D7.7], {bpref "D7.8"}[D7.8]–{bpref "D7.13"}[D7.13]; {bpref "D6.10"}[D6.10] (Lemma 6.3); {bpref "D6.12"}[D6.12] (Lemma 6.4), inside it {bpref "D5.15"}[D5.15] (Lemma 5.3).
+_Used from._ {bpref "D7.3"}[D7.3] (items 1, 3, 5, 6), {bpref "D7.5"}[D7.5], {bpref "D7.6"}[D7.6], {bpref "D7.7"}[D7.7], {bpref "D7.8"}[D7.8]–{bpref "D7.13"}[D7.13]; {bpref "D6.10"}[D6.10] (Lemma 6.3); {bpref "D6.12"}[D6.12] (Lemma 6.4), inside it {bpref "D5.15"}[D5.15] (Lemma 5.3); internal steps {bpref "D7.15"}[D7.15]–{bpref "D7.25"}[D7.25].
 
 :::
 
@@ -528,7 +528,7 @@ $$`\operatorname{Re}\langle(T_i+E_{i,+})v,(T_i+E_{i,-})v\rangle=\operatorname{Re
 
 :::
 
-:::proof "D7.25" (uses := "D7.23, D7.24, D7.14, D7.21")
+:::proof "D7.25" (uses := "D7.23, D7.24, D7.21")
 *D7.25.1* $`T+E_\pm=\mathcal B^{\pm s}T\mathcal M^{\mp s}`. $`\langle\mathcal B^sT\mathcal M^{-s}v,\mathcal B^{-s}T\mathcal M^sv\rangle=\langle T\mathcal M^{-s}v,T\mathcal M^sv\rangle` (opposite powers of $`\mathcal B_i` cancel) $`=\langle\mathcal M^{-s}v,\bar h_i\mathcal M^sv\rangle`.
 
 *D7.25.2* Let $`\alpha=T_iv`, $`e_\pm=E_{i,\pm}v`. $`\operatorname{Re}\langle\alpha+e_+,\alpha+e_-\rangle\ge\|\alpha\|^2-\|\alpha\|\|e_-\|-\|\alpha\|\|e_+\|-\tfrac12(\|e_+\|^2+\|e_-\|^2)`. Each $`\|\alpha\|\|e\|\le\tfrac14\|\alpha\|^2+\|e\|^2`. Total: $`\tfrac12\|\alpha\|^2-\tfrac32(\|e_+\|^2+\|e_-\|^2)`.
@@ -537,7 +537,7 @@ $$`\operatorname{Re}\langle(T_i+E_{i,+})v,(T_i+E_{i,-})v\rangle=\operatorname{Re
 
 *D7.25.4* Insert {bpref "D7.23"}[D7.23] (factor $`2` for the two signs) and {bpref "D7.24"}[D7.24], with $`\int m_s=\tfrac12` for the $`r_k` term: main term $`Ca^2\ell^C\sum_iW_i\sum_{j\in\mathcal J_i}\pi_j\int m_s\int\eta_{i,j}^{1/8}d\mu_{\sigma_{j,u}}du`; remainder $`\le C'r_k\sum_iW_i^2\le C'r_k\cdot\#\{i\}\to0` ($`W_i\le1`, finite index set), uniform in $`p` and $`v`.
 
-_Used from._ {bpref "D7.23"}[D7.23], {bpref "D7.24"}[D7.24]; {bpref "D7.14"}[D7.14] (definition of $`v`, hypothesis $`\bar H\mathrm{pre}=E_0\mathrm{pre}`); {bpref "D7.21"}[D7.21.1] ($`T^*T=\bar h_i`).
+_Used from._ {bpref "D7.23"}[D7.23], {bpref "D7.24"}[D7.24]; the definition of $`v` and the hypothesis $`\bar H\mathrm{pre}=E_0\mathrm{pre}` of the proposition this step belongs to; {bpref "D7.21"}[D7.21.1] ($`T^*T=\bar h_i`).
 
 :::
 

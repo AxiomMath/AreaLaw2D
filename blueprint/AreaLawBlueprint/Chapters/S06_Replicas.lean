@@ -426,7 +426,7 @@ Rest of {bpref "D6.12"}[D6.12] after {bpref "D6.13"}[D6.13]–{bpref "D6.15"}[D6
 
 :::
 
-:::proof "D6.16" (uses := "D6.12, D6.13, D6.14, D6.15, D5.15")
+:::proof "D6.16" (uses := "D5.15, D6.13, D6.14, D6.15")
 *D6.16.1* _Tail of inverse powers._ Eigenvalues $`p_i` (with multiplicity) of any marginal density on $`Q`: $`\sum_{0<p_i<\delta}p_i^{1-2t}\le d_Q\delta^{1-2t}`. Pure $`\theta`, marginal $`\rho_Q`: $`\|\rho_Q^{-t}\mathbf 1_{(0,\delta)}(\rho_Q)\theta\|^2=\sum_{0<p_i<\delta}p_i^{-2t}\cdot p_i\le d_Q\delta^{1-2t}`, uniformly in $`\theta`.
 
 *D6.16.2* _Convergence._ Clipping: $`\rho_Q^{-t}\to\max(\rho_Q,\delta)^{-t}` (symbol of $`\max(J_{Q,k},\delta)^{-t}`). Difference on eigenvalue $`p<\delta`: $`p^{-t}-\delta^{-t}\in(0,p^{-t})`; zero for $`p\ge\delta`. So $`\|(\rho_Q^{-t}-\max(\rho_Q,\delta)^{-t})\theta\|^2\le d_Q\delta^{1-2t}` (D6.16.1). Clipped one-copy vectors of `replicas:inverse-innermost` converge uniformly in $`\theta` to the zero-kernel-power vectors as $`\delta\to0`, error $`\le\sqrt{d_Q}\,\delta^{(1-2t)/2}`; so do their inner products: clipped symbols $`\to f_\theta` uniformly.
@@ -443,6 +443,6 @@ Rest of {bpref "D6.12"}[D6.12] after {bpref "D6.13"}[D6.13]–{bpref "D6.15"}[D6
 
 *D6.16.8* _Skew bound._ {bpref "D6.12"}[D6.12.4].
 
-_Used from._ {bpref "D6.12"}[D6.12] (statement), {bpref "D6.13"}[D6.13], {bpref "D6.14"}[D6.14], {bpref "D6.15"}[D6.15]; {bpref "D5.15"}[D5.15] = Lemma 5.3.
+_Used from._ the statement of the lemma this step belongs to; {bpref "D6.13"}[D6.13], {bpref "D6.14"}[D6.14], {bpref "D6.15"}[D6.15]; {bpref "D5.15"}[D5.15] = Lemma 5.3.
 
 :::

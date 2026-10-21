@@ -141,7 +141,7 @@ $$2S_X+g^{\rm pre}_{j,g}-g^{\rm post}_{j,g}=I(X{:}V_{j,g})+I(X{:}Y_{j,g}V_{j,g})
 
 *Quantifiers.* Replica limits ($k\to\infty$): physical system, auxiliary dimensions, status collection, tree, $a$, $\tau$ fixed. $o_k(1)$ uniform over terminal probabilities (also their $k$-dependence) and over the symmetric vectors to which the lower comparison is applied. Intermediate polynomial factors in $k$ may depend on the whole fixed system; they vanish in $o_k(1)$. Displayed constants $C$ universal in the rough bounds; in the sharp bounds may also depend on $C_0,c_0$. No dependence on system dimensions.
 
-**Used from.** D8.1–D8.7.
+**Used from.** D8.1–D8.7; internal steps D8.9–D8.37.
 
 **Proof.** Order:
 - D8.8.1 Labels and pin: D8.9–D8.16.
@@ -647,7 +647,7 @@ Rough: $\max_j(L_{j,g})_+\le2S'$. Sharp: $\le2S'+g_{\max}$.
 
 **Statement.** (comparator:rough-lower) and (comparator:sharp-lower).
 
-**Used from.** D8.7, D8.8, D8.34.
+**Used from.** D8.7, the statement of the proposition this step belongs to, D8.34.
 
 **Proof.**
 - D8.35.1 $N^2\langle v,\mathcal M^{2s}v\rangle=\|\mathcal M^s(N v)\|^2=\|\mathrm{pre}_k\|^2\le1$.

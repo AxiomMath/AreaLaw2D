@@ -152,7 +152,7 @@ Fix $`C_0>0`; $`\varepsilon,\beta,\alpha` as in {bpref "D10.1"}[D10.1]. Let $`n\
 
 :::
 
-:::proof "D10.4" (uses := "D10.1, D10.2, D10.3, D3.1, D2.4, D2.5, D2.2, D2.9")
+:::proof "D10.4" (uses := "D9.25, D10.1, D10.2, D10.3, D3.1, D2.4, D2.5, D2.2, D2.9, D10.5, D10.6, D10.7, D10.8, D10.9, D10.10, D10.11, D10.12, D10.13, D10.14, D10.15, D10.16")
 _skeleton; details in the Steps below._
 
 *D10.4.1* $`X=\varnothing`: $`I_\Omega(\varnothing:J)=0`, take $`r=1`. Assume $`X\ne\varnothing` below. Constructions keep the physical system fixed; all estimates are uniform in $`|\Lambda|`.
@@ -179,7 +179,7 @@ _Formal route_ (RefactoringResult.md §5, D10.4): `prop_10_2` (AreaLawRefactored
 
 _Formal route_ (RefactoringResult.md §5, {bpref "D10.2"}[D10.2] (B) in D10.4): `lemma_10_1` takes `κ : Type`; the spectator `Reg loc X × Reg loc X` (universe of `σ`) is reindexed to `Fin (card …)` (`kronecker_one_reindex`, `vnorm_reindex`, AreaLawRefactored/S10\_Amplification.lean:97–:113). Reason: universe of `κ` in `lemma_10_1`; generalising `κ` to `Type*` would remove the reindexing.
 
-_Used from._ {bpref "D10.1"}[D10.1]; {bpref "D10.2"}[D10.2] (Lemma 10.1); {bpref "D10.3"}[D10.3]; {bpref "D3.1"}[D3.1] (Lemma 3.1, `lem:tail`; $`\mathcal B` as in {bpref "D3.1"}[D3.1]); {bpref "D2.4"}[D2.4] (Lemma 2.1 continuity); {bpref "D2.5"}[D2.5] (pure-state trace distance); {bpref "D2.2"}[D2.2] (SSA consequences, purity); {bpref "D2.9"}[D2.9] (crossing count $`\le2v_R\mu_R|\partial_\Lambda D|`); hypotheses from Proposition 9.6 (`prop:collar`).
+_Used from._ {bpref "D10.1"}[D10.1]; {bpref "D10.2"}[D10.2] (Lemma 10.1); {bpref "D10.3"}[D10.3]; {bpref "D3.1"}[D3.1] (Lemma 3.1, `lem:tail`; $`\mathcal B` as in {bpref "D3.1"}[D3.1]); {bpref "D2.4"}[D2.4] (Lemma 2.1 continuity); {bpref "D2.5"}[D2.5] (pure-state trace distance); {bpref "D2.2"}[D2.2] (SSA consequences, purity); {bpref "D2.9"}[D2.9] (crossing count $`\le2v_R\mu_R|\partial_\Lambda D|`); hypotheses from Proposition 9.6 (`prop:collar`); internal steps {bpref "D10.5"}[D10.5]–{bpref "D10.16"}[D10.16].
 
 :::
 
@@ -258,7 +258,7 @@ With $`B_Y=\sum_{x\ \rm sel}p_x^{-1}T_0\langle x|Q|x\rangle T_0\ge0` (operator o
 
 :::
 
-:::proof "D10.8" (uses := "D10.5, D2.2")
+:::proof "D10.8" (uses := "D10.6, D10.7, D10.5, D2.2")
 *D10.8.1* _Gram identities._ In $`R_0^\dagger R_0=\sum_{x,x'}(p_xp_{x'})^{-1/2}|0\rangle\langle x'|x\rangle\langle0|_{s'}\otimes(|0\rangle\langle x'|_X\otimes T_0)Q^2(|x\rangle\langle0|_X\otimes T_0)`, $`\langle x'|x\rangle=\delta_{xx'}`, $`Q^2=Q`, giving the first formula. In $`B_0^\dagger B_0` orthogonality in $`s'` and $`e'` forces $`(x,y)=(x',y')`; $`\sum_y|y\rangle\langle y|_X=I_X` (full basis).
 
 *D10.8.2* _Spectral inequalities (selected, typical):_ $`p_x^{-1}\le e^{S(X)+w}`; $`Q\le e^{S(S_0)+w}\rho_{S_0}` ($`Q` commutes with $`\rho_{S_0}`, eigenvalues on its range $`\ge e^{-S(S_0)-w}`); $`T_0\rho_YT_0\le e^{-S(Y)+w}T_0`.
@@ -269,7 +269,7 @@ With $`B_Y=\sum_{x\ \rm sel}p_x^{-1}T_0\langle x|Q|x\rangle T_0\ge0` (operator o
 
 *D10.8.5* $`\|R_0\|^2=\|R_0^\dagger R_0\|=\|B_Y\|\le e^{\mathcal I+3w}`; same for $`B_0`.
 
-_Used from._ {bpref "D10.5"}[D10.5] (spectral inequalities); {bpref "D2.2"}[D2.2] item 5 (purity).
+_Used from._ {bpref "D10.6"}[D10.6], {bpref "D10.7"}[D10.7] ($`R_0`, $`B_0`); {bpref "D10.5"}[D10.5] (spectral inequalities); {bpref "D2.2"}[D2.2] item 5 (purity).
 
 :::
 
@@ -424,7 +424,7 @@ For every physical $`J\subseteq\Lambda\setminus N_{2r}(S_0)`: $`I_\Omega(X:J)\le
 
 :::
 
-:::proof "D10.15" (uses := "D2.4, D2.5, D2.2, D10.6, D10.14, D10.4")
+:::proof "D10.15" (uses := "D2.4, D2.5, D2.2, D10.6, D10.14")
 *D10.15.1* $`U'` acts on $`s'\cup N_{2r}(S_0)`, disjoint from $`e'` and $`J`. So $`\rho^{U'\phi}_{e'J}=\rho^\phi_{e'J}`, which is the $`XJ`-reduction of $`\Omega` with $`X\to e'` ({bpref "D10.6"}[D10.6.1]): $`I(e':J)_{U'\phi}=I_\Omega(X:J)`.
 
 *D10.15.2* $`\rho^\eta_{e'J}` is a product ({bpref "D10.6"}[D10.6.2]): $`I(e':J)_\eta=0`.
@@ -443,7 +443,7 @@ _Formal route_ (RefactoringResult.md §5, {bpref "D10.6"}[D10.6], D10.15): `s'`,
 
 _Formal route_ (RefactoringResult.md §5, D10.15.4): the same with `2C = 8`: Lemma 2.1 (frozen constant 4) once for `S(e'\|J)`, once for `S(e')` (`abs_qMutualInfo_sub_le`, Information.lean:504). Reason: the frozen Lemma 2.1 constant.
 
-_Used from._ {bpref "D2.4"}[D2.4] (Lemma 2.1), {bpref "D2.5"}[D2.5], {bpref "D2.2"}[D2.2] item 3; {bpref "D10.6"}[D10.6]; {bpref "D10.14"}[D10.14]; {bpref "D10.4"}[D10.4] hypothesis $`|S_0|\le C_0n^2`.
+_Used from._ {bpref "D2.4"}[D2.4] (Lemma 2.1), {bpref "D2.5"}[D2.5], {bpref "D2.2"}[D2.2] item 3; {bpref "D10.6"}[D10.6]; {bpref "D10.14"}[D10.14]; the hypothesis $`|S_0|\le C_0n^2` of the proposition this step belongs to.
 
 :::
 
@@ -456,13 +456,13 @@ _Source: 09-amplification.tex 563–575; `eq:amplification-radius`, `eq:amplific
 
 :::
 
-:::proof "D10.16" (uses := "D10.11, D10.1, D10.4")
+:::proof "D10.16" (uses := "D10.11, D10.1")
 *D10.16.1* {bpref "D10.11"}[D10.11.1] gives (i) first part.
 
 *D10.16.2* _Exponents._ $`\alpha>1-10^{-6}` and $`\beta=1-2\cdot10^{-6}`: $`\beta\alpha>(1-2\cdot10^{-6})(1-10^{-6})=1-3\cdot10^{-6}+2\cdot10^{-12}>1-10^{-5}=1-\varepsilon`. So $`(1-\varepsilon)/\alpha<\beta`. Also $`1-\varepsilon<\beta`. Hence $`r=O(n^{(1-\varepsilon)/\alpha})=o(n^\beta)` and $`L\le n^{1-\varepsilon}=o(n^\beta)`: $`L+2r=o(n^\beta)`.
 
 *D10.16.3* _Containment._ $`S_0\subseteq A`. Suppose a graph path of length $`\le2r` from $`s\in S_0` reaches $`\Lambda\setminus A`. It then contains an edge with one endpoint in $`A`, one outside, hence an endpoint of the original cut ($`\in Z`). $`s\in T_L`: $`\operatorname{dist}_\infty(s,T)\le L`. Each graph step changes ambient $`\ell_\infty` position by $`\le1`. So that endpoint satisfies $`\operatorname{dist}_\infty(T,Z)\le L+2r<L+n^\beta` for large $`n` (D10.16.2), contradicting the clearance hypothesis. So no such path.
 
-_Used from._ {bpref "D10.11"}[D10.11], {bpref "D10.1"}[D10.1], {bpref "D10.4"}[D10.4] hypotheses.
+_Used from._ {bpref "D10.11"}[D10.11], {bpref "D10.1"}[D10.1], the hypotheses of the proposition this step belongs to.
 
 :::

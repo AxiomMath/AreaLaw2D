@@ -136,7 +136,7 @@ and, simultaneously for every physical $J\subseteq\Lambda\setminus N_{2r}(S_0)$,
 $$I_\Omega(X:J)\le C_Mn^{-M}.$$
 Same for any subset of $X$ in place of $X$. Constants and threshold depend on $C_0,M$ (and the standing data of D2.13, $p$), not on $\Lambda,A,T$. If in addition $\operatorname{dist}_\infty(T,Z)>L+n^\beta$, $Z$ the endpoint set of the original cut, then $N_{2r}(S_0)\subseteq A$; so $J$ may contain all of $\Lambda\setminus A$.
 
-**Used from.** D10.1; D10.2 (Lemma 10.1); D10.3; D3.1 (Lemma 3.1, `lem:tail`; $\mathcal B$ as in D3.1); D2.4 (Lemma 2.1 continuity); D2.5 (pure-state trace distance); D2.2 (SSA consequences, purity); D2.9 (crossing count $\le2v_R\mu_R|\partial_\Lambda D|$); hypotheses from Proposition 9.6 (`prop:collar`).
+**Used from.** D10.1; D10.2 (Lemma 10.1); D10.3; D3.1 (Lemma 3.1, `lem:tail`; $\mathcal B$ as in D3.1); D2.4 (Lemma 2.1 continuity); D2.5 (pure-state trace distance); D2.2 (SSA consequences, purity); D2.9 (crossing count $\le2v_R\mu_R|\partial_\Lambda D|$); hypotheses from Proposition 9.6 (`prop:collar`); internal steps D10.5–D10.16.
 
 **Proof (skeleton; details in the Steps below).**
 - D10.4.1 $X=\varnothing$: $I_\Omega(\varnothing:J)=0$, take $r=1$. Assume $X\ne\varnothing$ below. Constructions keep the physical system fixed; all estimates are uniform in $|\Lambda|$.
@@ -226,7 +226,7 @@ Then $R_0\phi=B_0\bigl(\Omega\otimes|00\rangle_{s'e'}\bigr)$.
 $$R_0^\dagger R_0=|0\rangle\langle0|_{s'}\otimes|0\rangle\langle0|_X\otimes B_Y,\qquad B_0^\dagger B_0=|00\rangle\langle00|_{s'e'}\otimes I_X\otimes B_Y,$$
 $$\|R_0\|,\|B_0\|\le M_0:=\exp\bigl((\mathcal I+3w)/2\bigr)\quad(\ge1).$$
 
-**Used from.** D10.5 (spectral inequalities); D2.2 item 5 (purity).
+**Used from.** D10.6, D10.7 ($R_0$, $B_0$); D10.5 (spectral inequalities); D2.2 item 5 (purity).
 
 **Proof.**
 - D10.8.1 *Gram identities.* In $R_0^\dagger R_0=\sum_{x,x'}(p_xp_{x'})^{-1/2}|0\rangle\langle x'|x\rangle\langle0|_{s'}\otimes(|0\rangle\langle x'|_X\otimes T_0)Q^2(|x\rangle\langle0|_X\otimes T_0)$, $\langle x'|x\rangle=\delta_{xx'}$, $Q^2=Q$, giving the first formula. In $B_0^\dagger B_0$ orthogonality in $s'$ and $e'$ forces $(x,y)=(x',y')$; $\sum_y|y\rangle\langle y|_X=I_X$ (full basis).
@@ -371,7 +371,7 @@ $$\|U'\phi-\eta\|\le Cn^{-K/2}.$$
 
 **Statement.** For every physical $J\subseteq\Lambda\setminus N_{2r}(S_0)$: $I_\Omega(X:J)\le Cn^{2-K/4}$. With $K\ge4(M+3)$: $I_\Omega(X:J)\le C_Mn^{-M}$; also for any subset of $X$.
 
-**Used from.** D2.4 (Lemma 2.1), D2.5, D2.2 item 3; D10.6; D10.14; D10.4 hypothesis $|S_0|\le C_0n^2$.
+**Used from.** D2.4 (Lemma 2.1), D2.5, D2.2 item 3; D10.6; D10.14; the hypothesis $|S_0|\le C_0n^2$ of the proposition this step belongs to.
 
 **Proof.**
 - D10.15.1 $U'$ acts on $s'\cup N_{2r}(S_0)$, disjoint from $e'$ and $J$. So $\rho^{U'\phi}_{e'J}=\rho^\phi_{e'J}$, which is the $XJ$-reduction of $\Omega$ with $X\to e'$ (D10.6.1): $I(e':J)_{U'\phi}=I_\Omega(X:J)$.
@@ -393,7 +393,7 @@ $$\|U'\phi-\eta\|\le Cn^{-K/2}.$$
 
 **Statement.** (i) $r\le C_Mn^{(1-\varepsilon)/\alpha}$ and $L+2r=o(n^\beta)$. (ii) If $\operatorname{dist}_\infty(T,Z)>L+n^\beta$ then $N_{2r}(S_0)\subseteq A$ for large $n$.
 
-**Used from.** D10.11, D10.1, D10.4 hypotheses.
+**Used from.** D10.11, D10.1, the hypotheses of the proposition this step belongs to.
 
 **Proof.**
 - D10.16.1 D10.11.1 gives (i) first part.

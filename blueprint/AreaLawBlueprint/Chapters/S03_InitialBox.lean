@@ -102,7 +102,7 @@ There are an integer $`C_{\rm pad}\ge1` and $`C_{\rm buf}`, both depending only 
 
 :::
 
-:::proof "D3.4" (uses := "D3.1, D3.2, D3.3, D2.2, D2.7, D2.8, D2.9, D2.10, D1.4")
+:::proof "D3.4" (uses := "D3.1, D3.2, D3.3, D2.2, D2.7, D2.8, D2.9, D2.10, D1.4, D3.5, D3.6, D3.7, D3.8, D3.9, D3.10, D3.11, D3.12, D3.13, D3.14")
 $`X=\varnothing`: both sides $`0`. Else {bpref "D3.5"}[D3.5]–{bpref "D3.14"}[D3.14] in order. Constants chosen: $`D_0`, $`D` (depend on $`R`) $`\to` $`C_{\rm pad}` ({bpref "D3.6"}[D3.6], enlarged {bpref "D3.10"}[D3.10]) $`\to` $`\epsilon` (floor, removed {bpref "D3.12"}[D3.12]) $`\to` $`C_{\rm buf}` ({bpref "D3.14"}[D3.14]).
 
 *D3.4.1* {bpref "D3.5"}[D3.5]: nested regions, locality; contour budget independent of $`C_{\rm pad}`.
@@ -119,7 +119,7 @@ $`X=\varnothing`: both sides $`0`. Else {bpref "D3.5"}[D3.5]–{bpref "D3.14"}[D
 
 *D3.4.7* {bpref "D3.14"}[D3.14]: combine, SSA.
 
-_Used from._ {bpref "D3.1"}[D3.1], {bpref "D3.2"}[D3.2], {bpref "D3.3"}[D3.3]; {bpref "D2.2"}[D2.2] item 2 (SSA); {bpref "D2.7"}[D2.7]–{bpref "D2.10"}[D2.10]; D2.13; {bpref "D1.4"}[D1.4] (gap, uniqueness).
+_Used from._ {bpref "D3.1"}[D3.1], {bpref "D3.2"}[D3.2], {bpref "D3.3"}[D3.3]; {bpref "D2.2"}[D2.2] item 2 (SSA); {bpref "D2.7"}[D2.7]–{bpref "D2.10"}[D2.10]; D2.13; {bpref "D1.4"}[D1.4] (gap, uniqueness); internal steps {bpref "D3.5"}[D3.5]–{bpref "D3.14"}[D3.14].
 
 :::
 

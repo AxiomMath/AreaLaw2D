@@ -16,7 +16,7 @@ Notation (from §2 unless stated). $`\Lambda` finite, $`d_\Lambda` graph metric 
 
 # 4.0 Setup
 
-:::definition "D4.1" (lean := "AreaLaw.GraphDomain.step_4_1")
+:::definition "D4.1" (lean := "AreaLaw.GraphDomain.step_4_1") (uses := "D1.2")
 *D4.1* — Def: Anchored decomposition and graph balls
 
 _Source: 03-quasilocal.tex 14–18._
@@ -52,7 +52,7 @@ $$`\sup_{x\in\Lambda}\sum_{i:x\in X_i}\|h_i\|\le b_0:=J\mu_R,\qquad |X_i|\le v_R
 
 :::
 
-:::proof "D4.3" (uses := "D4.1, D2.8")
+:::proof "D4.3" (uses := "D2.7, D4.1, D2.8")
 {bpref "D2.8"}[D2.8].
 
 _Used from._ {bpref "D4.1"}[D4.1]; §2 `eq:ball-count`, $`\mu_R` ({bpref "D2.8"}[D2.8]).
@@ -70,7 +70,7 @@ There are $`C,v,c>0` (depending on $`q,R,J`) such that for every label $`i`, eve
 
 :::
 
-:::proof "D4.4" (uses := "D4.1, D4.2, D4.3")
+:::proof "D4.4" (uses := "D2.7, D4.1, D4.2, D4.3")
 *D4.4.1* _Quantity._ Fix $`y`, $`B_y`. For any set $`X`: $`F(X,t)=\sup\{\|[\tau_t(A),B_y]\|:\operatorname{supp}A\subseteq X,\|A\|\le1\}`. $`F\le2\|B_y\|`. Take $`t\ge0` ($`t<0`: replace $`H\to-H`).
 
 *D4.4.2* _Exact ODE._ Fix $`A` on $`X`. $`\mathcal J_X=\{j:X_j\cap X\ne\varnothing\}`, $`Q_X(t)=\sum_{j\in\mathcal J_X}\tau_t(h_j)`. Terms with $`j\notin\mathcal J_X` commute with $`A`, so $`\partial_t\tau_t(A)=i\tau_t([H,A])=i[Q_X(t),\tau_t(A)]`. With $`f(t)=[\tau_t(A),B_y]` and $`[[Q,T],B]=[Q,[T,B]]-[T,[Q,B]]`: $$`f'=i[Q_X,f]-i\sum_{j\in\mathcal J_X}[\tau_t(A),[\tau_t(h_j),B_y]].`
@@ -182,7 +182,7 @@ With $`f` from {bpref "D4.5"}[D4.5] at $`\delta=\Delta/2`, $$`M_i=\int_{\mathbb 
 
 :::
 
-:::proof "D4.7" (uses := "D4.5, D4.6")
+:::proof "D4.7" (uses := "D4.5")
 *D4.7.1* Norm convergence: $`\|\tau_t(h_i)\|=\|h_i\|\le J`, $`f\in L^1`. Hermitian: $`f` real, $`h_i=h_i^*`, $`\tau_t` a $`*`-automorphism.
 
 *D4.7.2* Eigenbasis of $`H`: $`\langle E|\int f\tau_t(h_i)|E'\rangle=\int f(t)e^{it(E-E')}dt\,\langle E|h_i|E'\rangle=\chi(E-E')\langle E|h_i|E'\rangle`.
@@ -195,7 +195,7 @@ With $`f` from {bpref "D4.5"}[D4.5] at $`\delta=\Delta/2`, $$`M_i=\int_{\mathbb 
 
 *D4.7.6* $`\|M_i\|\le\|f\|_1J+|\langle\Omega,h_i\Omega\rangle|\le J(\|f\|_1+1)`.
 
-_Used from._ {bpref "D4.5"}[D4.5]; hypotheses of {bpref "D4.6"}[D4.6] (gap).
+_Used from._ {bpref "D4.5"}[D4.5]; the gap hypothesis of the proposition this step belongs to.
 
 :::
 
@@ -284,7 +284,7 @@ Use {bpref "D4.6"}[D4.6] with $`p=1`, $`\alpha=1/2`. Fix $`C_0>0`. There is $`C_
 
 :::
 
-:::proof "D4.11" (uses := "D4.6, D4.3, D4.2, D4.12, D4.13, D4.14")
+:::proof "D4.11" (uses := "D2.7, D4.6, D4.3, D4.2, D4.12, D4.13, D4.14")
 *D4.11.1* $`\widetilde h_i\in[0,I]` ($`k_{i,l},k_i\in[0,I]` by {bpref "D4.6"}[D4.6]) $`\Rightarrow` $`\widetilde H` is a sum of positive contractions.
 
 *D4.11.2* Error: {bpref "D4.12"}[D4.12] with $`\alpha=1/2`, then choice of $`C_1`: `eq:quasilocal-truncation-error`.
@@ -308,7 +308,7 @@ For any fixed $`\alpha\in(0,1)` for which `eq:quasilocal-positive-tail` holds, a
 
 :::
 
-:::proof "D4.12" (uses := "D4.6, D4.3")
+:::proof "D4.12" (uses := "D2.7, D4.6, D4.3")
 *D4.12.1* Labels at infinite distance have $`\widetilde h_i=k_i`: zero error. Triangle inequality: $`\|\widetilde H-H_F\|\le\sum_{i:d_i^0<\infty}\|k_i-k_{i,r_i}\|\le\sum_iCe^{-cr_i^\alpha}`.
 
 *D4.12.2* Count at distance $`d`: an anchor with $`d(a,S_0)=d` lies in $`N_d(x)` for some $`x\in S_0`, so $`\le|S_0|v_d\le3|S_0|(d+1)^2` anchors, hence $`\le3\mu_R|S_0|(d+1)^2` labels.
@@ -338,7 +338,7 @@ Given $`\|\widetilde H-H_F\|\le\epsilon:=\epsilon_n\le g/4`: $`\widetilde E_0\in
 
 :::
 
-:::proof "D4.13" (uses := "D4.6, D4.12")
+:::proof "D4.13" (uses := "D4.6, D4.12, D2.5")
 *D4.13.1* $`\widetilde H\ge0` ({bpref "D4.11"}[D4.11.1]) $`\Rightarrow` $`\widetilde E_0\ge0`. $`\widetilde E_0\le\langle\Omega,\widetilde H\Omega\rangle=\langle\Omega,(\widetilde H-H_F)\Omega\rangle\le\epsilon` ($`H_F\Omega=0`).
 
 *D4.13.2* $`H_F` has eigenvalues $`0` (simple) then $`\ge g`. Min–max (Weyl): $`\lambda_2(\widetilde H)\ge\lambda_2(H_F)-\epsilon\ge g-\epsilon`.
@@ -353,7 +353,7 @@ Given $`\|\widetilde H-H_F\|\le\epsilon:=\epsilon_n\le g/4`: $`\widetilde E_0\in
 
 _Formal route_ (RefactoringResult.md §5, D4.13.2): diagonalise H̃; for each other eigenvector v\_j, the combination −⟨Ω,v\_j⟩Ω̃ + ⟨Ω,Ω̃⟩v\_j ⊥ Ω tested against H̃ ≥ g(1−P\_Ω) − ε; second eigenvalue as the Loewner bound `Ẽ₀P̃ + (g−ε)(1−P̃) ≤ H̃`; D4.13.4 proved first (`step_4_13`, AreaLawRefactored/S04\_Quasilocal/GroundState.lean:20). Reason: no Weyl/Courant–Fischer in Mathlib.
 
-_Used from._ {bpref "D4.6"}[D4.6] ($`H_F\ge0`, $`H_F\Omega=0`, $`H_F\ge g(I-P_\Omega)`), {bpref "D4.12"}[D4.12].
+_Used from._ {bpref "D4.6"}[D4.6] ($`H_F\ge0`, $`H_F\Omega=0`, $`H_F\ge g(I-P_\Omega)`), {bpref "D4.12"}[D4.12], {bpref "D2.5"}[D2.5.1] (pure-state trace distance, in D4.13.5).
 
 :::
 
@@ -366,7 +366,7 @@ The crossing/cut clause of {bpref "D4.11"}[D4.11]: $$`|\mathcal C_X|\le Cb_X(r_0
 
 :::
 
-:::proof "D4.14" (uses := "D4.11, D4.3")
+:::proof "D4.14" (uses := "D2.7, D4.3")
 *D4.14.1* _Finite distance._ $`\widetilde X_i` meets $`X\subseteq S_0`. If $`d_i^0=\infty`, $`\widetilde X_i` is the whole component of $`a_i`, which has no point of $`S_0`: contradiction. So $`d_i^0<\infty`.
 
 *D4.14.2* _Radius._ Suppose $`r_i>r_0`. Then $`r_i=\lfloor d_i^0/2\rfloor<d_i^0` ($`d_i^0\ge1` when $`r_i>r_0\ge1`). $`N_{r_i}(a_i)` contains no point of $`S_0\supseteq X`, but $`\widetilde X_i` meets $`X`: contradiction. So $`r_i=r_0`.
@@ -381,6 +381,6 @@ The crossing/cut clause of {bpref "D4.11"}[D4.11]: $$`|\mathcal C_X|\le Cb_X(r_0
 
 *D4.14.7* _Consequence._ $`1+b_X\le(1+C_2)nD` ($`nD\ge1`). $`r_0+1\le C_1(\log n)^2+2\le C(\log n)^2` for $`n\ge2` ($`\log n\ge\log2`). So $`(r_0+1)^6\le C(\log n)^{12}`.
 
-_Used from._ {bpref "D4.11"}[D4.11] ($`r_i,\widetilde X_i`), §2 `eq:ball-count`, {bpref "D4.3"}[D4.3].
+_Used from._ the radii $`r_i` and sets $`\widetilde X_i` fixed in the statement of the proposition this step belongs to; §2 `eq:ball-count`, {bpref "D4.3"}[D4.3].
 
 :::

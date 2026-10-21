@@ -172,7 +172,7 @@ $$E_{{\rm def},k}=\frac{\langle v_k,\overline{\widetilde H}v_k\rangle-\widetilde
 $$\delta_n=C_e\,\epsilon^{-1}\big(n^{e-\mu}+a^{1/4}(\log n)^C\big).$$
 $\overline{\widetilde H}$ = copy mean of $\widetilde H$. All norm comparisons of Prop 8.1 hold at the selected point with $B_{\rm sh}\le C_e(nL^e+n)$, $B_{\rm exc}\le CnD$, $\mathcal B\le CnD(\log n)^C$; the sharp ones further need $a\sqrt{\mathcal B}\le c$. The finite system, $n$, the scan and all auxiliary dimensions are fixed before $k\to\infty$; remainders are uniform over the selected round and $p$ (which may depend on $k$). Constants depend on the exponents and $C_e$.
 
-**Used from.** D9.8 (Lemma 9.1); D9.3, D4.11, D4.13, D4.14; D3.1; D2.4 (Lemma 2.1, continuity); D8.2–D8.5, D8.8 (Prop 8.1: typical set, $B_{\rm sh},B_{\rm exc},\mathcal B$ data, `comparator:rough-upper`); D7.14 (Prop 7.4: `transport:entropy-gain`, `transport:energy`), D7.10 (`transport:move-eta`); D7.3 (Lemma 7.1, mean trees); D6.12 (Lemma 6.4, `lem:symbol`), D7.13 (coherent measure $\mu_\sigma$); D6.9 (`replicas:leaf-floor`).
+**Used from.** D9.8 (Lemma 9.1); D9.3, D4.11, D4.13, D4.14; D3.1; D2.4 (Lemma 2.1, continuity); D8.2–D8.5, D8.8 (Prop 8.1: typical set, $B_{\rm sh},B_{\rm exc},\mathcal B$ data, `comparator:rough-upper`); D7.14 (Prop 7.4: `transport:entropy-gain`, `transport:energy`), D7.10 (`transport:move-eta`); D7.3 (Lemma 7.1, mean trees); D6.12 (Lemma 6.4, `lem:symbol`), D7.13 (coherent measure $\mu_\sigma$); D6.9 (`replicas:leaf-floor`); internal steps D9.10–D9.13.
 
 **Proof.**
 - D9.9.1 Transfer $\Omega\to\widetilde\Omega$. Trace distance $\le\sqrt{2\epsilon_n/g}=O(n^{-500})$ (Prop 4.5). Lemma 2.1 ($|\Delta S|\le C\sqrt\delta\log(e\,d_D)$) with $\delta=O(n^{-500})$, $\log d_D\le Cn^2$ ($O(n^2)$ sites) changes every entropy in the hypothesis by $\le C\,n^{-250}\cdot n^2=O(n^{-248})$. A partial last depth row adds $\le n\log q$.
@@ -299,7 +299,7 @@ If moreover $T$ is separated from the cut and $F_{\rm box}(r)\le C_er^{1+e}$ for
 $$S_\Omega(X)\le C'_en s_0^{e},\qquad S_\Omega(Q_j)\le C'_en L^{e}\quad(0\le j\le L).$$
 The same shell bound with an extra $Cn$ holds for any prefix consisting of all depth rows before one row and an arbitrary subset of that last row. All physical cuts of $X$, $Q_j$, $A\cap T_j$ have $O(n)$ edges.
 
-**Used from.** D9.14; D3.3, D3.15 (safe, $F_{\rm box}$, $D_0$); D2.2 (SSA $\Rightarrow$ subadditivity).
+**Used from.** D9.14; D3.3, D3.15 (safe, $F_{\rm box}$, $D_0$); D2.2 (SSA $\Rightarrow$ subadditivity); internal steps D9.16–D9.18.
 
 **Proof.** D9.16–D9.18.
 
@@ -372,7 +372,7 @@ The same shell bound with an extra $Cn$ holds for any prefix consisting of all d
 **Statement.** There is $C$ depending only on the Hamiltonian parameters ($q,R,J,\Delta$) with
 $$F_{\rm box}(r)\le Cr^{1+e_*}\quad(r\ge1),\qquad e_*=2\cdot10^{-6}.$$
 
-**Used from.** D3.16 (Prop 3.3: $e_0$, $F_{\rm box}(r)\le Cr^{1+e_0}$); D9.9 (Prop 9.2); D9.18 (covering argument); D8.8 (rough comparisons).
+**Used from.** D3.16 (Prop 3.3: $e_0$, $F_{\rm box}(r)\le Cr^{1+e_0}$); D9.9 (Prop 9.2); D9.18 (covering argument); D8.8 (rough comparisons); internal steps D9.20–D9.24.
 
 **Proof.** If $e_0\le e_*$ done. Else D9.20 (parameters, fixed once), D9.21–D9.24 (one improvement $e\mapsto(1-\ell)e$), D9.24.5 (iterate).
 
@@ -480,7 +480,7 @@ and suppose $L\le s_0$. For all sufficiently large $n$,
 $$I_\Omega(X:\Lambda\setminus S_0)\le Cn^{1-\varepsilon},\qquad\varepsilon=10^{-5}.$$
 Constant and threshold independent of $T,s_0,n,\Lambda,A$. The cuts of $X$, $S_0$, $S_0\setminus X$ have $O(n)$ edges and $|S_0|=O(n^2)$.
 
-**Used from.** D9.19 (Prop 9.5); D9.15 (Lemma 9.4); D9.9 (Prop 9.2); D8.8 (sharp comparisons, `comparator:entropy-identity`); D2.4 (Lemma 2.1); D4.11, D4.13 (trace distance $O(n^{-500})$).
+**Used from.** D9.19 (Prop 9.5); D9.15 (Lemma 9.4); D9.9 (Prop 9.2); D8.8 (sharp comparisons, `comparator:entropy-identity`); D2.4 (Lemma 2.1); D4.11, D4.13 (trace distance $O(n^{-500})$); internal steps D9.26–D9.30.
 
 **Proof.** If $X=\varnothing$ trivial. Else D9.26 (hypotheses, parameters, $E_{\rm def}$), D9.27 (comparison difference), D9.28 (entropy identity, monotonicity), D9.29 (error table), D9.30 (transfer back).
 

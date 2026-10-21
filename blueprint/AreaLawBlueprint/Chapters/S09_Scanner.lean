@@ -176,14 +176,14 @@ Assume `scanner:scales`, `scanner:test-geometry`, $`0<e<1` with $`\kappa\le e`, 
 
 :::
 
-:::proof "D9.9" (uses := "D9.8, D9.3, D4.11, D4.13, D4.14, D3.1, D2.4, D8.2, D8.3, D8.4, D8.5, D8.8, D7.14, D7.10, D7.3, D6.12, D7.13, D6.9")
+:::proof "D9.9" (uses := "D9.8, D9.3, D4.11, D4.13, D4.14, D3.1, D2.4, D8.2, D8.3, D8.4, D8.5, D8.8, D7.14, D7.10, D7.3, D6.12, D7.13, D6.9, D9.10, D9.11, D9.12, D9.13")
 *D9.9.1* Transfer $`\Omega\to\widetilde\Omega`. Trace distance $`\le\sqrt{2\epsilon_n/g}=O(n^{-500})` (Prop 4.5). Lemma 2.1 ($`|\Delta S|\le C\sqrt\delta\log(e\,d_D)`) with $`\delta=O(n^{-500})`, $`\log d_D\le Cn^2` ($`O(n^2)` sites) changes every entropy in the hypothesis by $`\le C\,n^{-250}\cdot n^2=O(n^{-248})`. A partial last depth row adds $`\le n\log q`.
 
 *D9.9.2* Comparator data. Lemma 9.1 (nested prefixes $`\mathcal R` disjoint from $`X`; matched pairs differ by $`\le CnD` sites) gives $`B_{\rm sh}\le C_e(nL^e+n)+n\log q` ($`n\log q` absorbed into $`C_en`) and $`B_{\rm exc}\le1+CnD\log q\le CnD` ({bpref "D8.4"}[D8.4]: $`B_{\rm exc}\ge1+\log\dim\mathcal H_{B\triangle Q}`). Marginal moments: each $`Q\in\{XU,V,Y,U,UY\}` has a cut with $`\le CnD` edges (Lemma 9.1(2)); for $`V` use $`XUY` (same spectrum by purity). A crossing support has $`\dim\le q^{C(1+r_0)^2}` and anchor within $`r_0` of a cut edge, so {bpref "D3.1"}[D3.1] ($`\vartheta\le2/g`) gives `comparator:mgf-data` with $`\mathcal B_X\le C(1+b_X)(r_0+1)^6\le CnD(\log n)^C` ({bpref "D4.14"}[D4.14], $`b_X\le CnD`). At the target $`\mathcal B\le Cn(\log n)^C` ({bpref "D9.3"}[D9.3]), so with $`w=n^{3/5}`: $`w/\sqrt{\mathcal B}\ge n^{1/10}/(\log n)^C` and $`\Pr\{|K-S_X|>w\}\le C\exp[-cn^{1/10}/(\log n)^C]\le n^{-100}`. Typical set $`E=\{i:|{-\log p_i}-S_X|\le w\}` has $`z\ge1-n^{-100}`.
 
 *D9.9.3* $`\mathcal Q(p)`, charge gain, selection, energy: {bpref "D9.10"}[D9.10]–{bpref "D9.13"}[D9.13].
 
-_Used from._ {bpref "D9.8"}[D9.8] (Lemma 9.1); {bpref "D9.3"}[D9.3], {bpref "D4.11"}[D4.11], {bpref "D4.13"}[D4.13], {bpref "D4.14"}[D4.14]; {bpref "D3.1"}[D3.1]; {bpref "D2.4"}[D2.4] (Lemma 2.1, continuity); {bpref "D8.2"}[D8.2]–{bpref "D8.5"}[D8.5], {bpref "D8.8"}[D8.8] (Prop 8.1: typical set, $`B_{\rm sh},B_{\rm exc},\mathcal B` data, `comparator:rough-upper`); {bpref "D7.14"}[D7.14] (Prop 7.4: `transport:entropy-gain`, `transport:energy`), {bpref "D7.10"}[D7.10] (`transport:move-eta`); {bpref "D7.3"}[D7.3] (Lemma 7.1, mean trees); {bpref "D6.12"}[D6.12] (Lemma 6.4, `lem:symbol`), {bpref "D7.13"}[D7.13] (coherent measure $`\mu_\sigma`); {bpref "D6.9"}[D6.9] (`replicas:leaf-floor`).
+_Used from._ {bpref "D9.8"}[D9.8] (Lemma 9.1); {bpref "D9.3"}[D9.3], {bpref "D4.11"}[D4.11], {bpref "D4.13"}[D4.13], {bpref "D4.14"}[D4.14]; {bpref "D3.1"}[D3.1]; {bpref "D2.4"}[D2.4] (Lemma 2.1, continuity); {bpref "D8.2"}[D8.2]–{bpref "D8.5"}[D8.5], {bpref "D8.8"}[D8.8] (Prop 8.1: typical set, $`B_{\rm sh},B_{\rm exc},\mathcal B` data, `comparator:rough-upper`); {bpref "D7.14"}[D7.14] (Prop 7.4: `transport:entropy-gain`, `transport:energy`), {bpref "D7.10"}[D7.10] (`transport:move-eta`); {bpref "D7.3"}[D7.3] (Lemma 7.1, mean trees); {bpref "D6.12"}[D6.12] (Lemma 6.4, `lem:symbol`), {bpref "D7.13"}[D7.13] (coherent measure $`\mu_\sigma`); {bpref "D6.9"}[D6.9] (`replicas:leaf-floor`); internal steps {bpref "D9.10"}[D9.10]–{bpref "D9.13"}[D9.13].
 
 :::
 
@@ -300,10 +300,10 @@ For $`C_{\rm tpl}` large, a template satisfies $$`|T|\le Cns_0,\qquad|T_j\setmin
 
 :::
 
-:::proof "D9.15" (uses := "D9.14, D3.3, D3.15, D2.2")
+:::proof "D9.15" (uses := "D9.14, D3.3, D3.15, D2.2, D9.16, D9.17, D9.18")
 {bpref "D9.16"}[D9.16]–{bpref "D9.18"}[D9.18].
 
-_Used from._ {bpref "D9.14"}[D9.14]; {bpref "D3.3"}[D3.3], {bpref "D3.15"}[D3.15] (safe, $`F_{\rm box}`, $`D_0`); {bpref "D2.2"}[D2.2] (SSA $`\Rightarrow` subadditivity).
+_Used from._ {bpref "D9.14"}[D9.14]; {bpref "D3.3"}[D3.3], {bpref "D3.15"}[D3.15] (safe, $`F_{\rm box}`, $`D_0`); {bpref "D2.2"}[D2.2] (SSA $`\Rightarrow` subadditivity); internal steps {bpref "D9.16"}[D9.16]–{bpref "D9.18"}[D9.18].
 
 :::
 
@@ -388,10 +388,10 @@ There is $`C` depending only on the Hamiltonian parameters ($`q,R,J,\Delta`) wit
 
 :::
 
-:::proof "D9.19" (uses := "D3.16, D9.9, D9.18, D8.8")
+:::proof "D9.19" (uses := "D3.16, D9.9, D9.18, D8.8, D9.20, D9.21, D9.22, D9.23, D9.24")
 If $`e_0\le e_*` done. Else {bpref "D9.20"}[D9.20] (parameters, fixed once), {bpref "D9.21"}[D9.21]–{bpref "D9.24"}[D9.24] (one improvement $`e\mapsto(1-\ell)e`), {bpref "D9.24"}[D9.24.5] (iterate).
 
-_Used from._ {bpref "D3.16"}[D3.16] (Prop 3.3: $`e_0`, $`F_{\rm box}(r)\le Cr^{1+e_0}`); {bpref "D9.9"}[D9.9] (Prop 9.2); {bpref "D9.18"}[D9.18] (covering argument); {bpref "D8.8"}[D8.8] (rough comparisons).
+_Used from._ {bpref "D3.16"}[D3.16] (Prop 3.3: $`e_0`, $`F_{\rm box}(r)\le Cr^{1+e_0}`); {bpref "D9.9"}[D9.9] (Prop 9.2); {bpref "D9.18"}[D9.18] (covering argument); {bpref "D8.8"}[D8.8] (rough comparisons); internal steps {bpref "D9.20"}[D9.20]–{bpref "D9.24"}[D9.24].
 
 :::
 
@@ -507,10 +507,10 @@ Let $`T` be a template separated from the cut with parameters $`(n,s_0)` (Def 9.
 
 :::
 
-:::proof "D9.25" (uses := "D9.19, D9.15, D9.9, D8.8, D2.4, D4.11, D4.13")
+:::proof "D9.25" (uses := "D9.19, D9.15, D9.9, D8.8, D2.4, D4.11, D4.13, D9.26, D9.27, D9.28, D9.29, D9.30")
 If $`X=\varnothing` trivial. Else {bpref "D9.26"}[D9.26] (hypotheses, parameters, $`E_{\rm def}`), {bpref "D9.27"}[D9.27] (comparison difference), {bpref "D9.28"}[D9.28] (entropy identity, monotonicity), {bpref "D9.29"}[D9.29] (error table), {bpref "D9.30"}[D9.30] (transfer back).
 
-_Used from._ {bpref "D9.19"}[D9.19] (Prop 9.5); {bpref "D9.15"}[D9.15] (Lemma 9.4); {bpref "D9.9"}[D9.9] (Prop 9.2); {bpref "D8.8"}[D8.8] (sharp comparisons, `comparator:entropy-identity`); {bpref "D2.4"}[D2.4] (Lemma 2.1); {bpref "D4.11"}[D4.11], {bpref "D4.13"}[D4.13] (trace distance $`O(n^{-500})`).
+_Used from._ {bpref "D9.19"}[D9.19] (Prop 9.5); {bpref "D9.15"}[D9.15] (Lemma 9.4); {bpref "D9.9"}[D9.9] (Prop 9.2); {bpref "D8.8"}[D8.8] (sharp comparisons, `comparator:entropy-identity`); {bpref "D2.4"}[D2.4] (Lemma 2.1); {bpref "D4.11"}[D4.11], {bpref "D4.13"}[D4.13] (trace distance $`O(n^{-500})`); internal steps {bpref "D9.26"}[D9.26]–{bpref "D9.30"}[D9.30].
 
 :::
 
