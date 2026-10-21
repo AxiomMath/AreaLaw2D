@@ -4,6 +4,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# materialize the dependencies, then patch VersoBlueprint's exponential closure walk
+lake env true
+python3 scripts/patch_versoblueprint.py
+
 lake exe vbp build
 
 test -f _out/site/html-multi/index.html
