@@ -271,7 +271,7 @@ So $-aS(x|P)_{\theta_u}\le-ad_P+Ca\ell(1+|u|)^{1/2}(\lambda^{1/4}+a^{1/4}\ell^{1
 $$\log\|G(\tfrac12)\|\le\int_{\mathbb R}\log\|G(iu)\|\frac{du}{2\cosh\pi u}+\int_{\mathbb R}\log\|G(1+iu)\|\frac{du}{2\cosh\pi u},$$
 each line carrying mass $\int\frac{du}{2\cosh\pi u}=\tfrac12$.
 
-**Used from.** none (D5.5.3 supplies the hypotheses).
+**Used from.** none (step 3 of the lemma this step belongs to supplies the hypotheses).
 
 **Proof.**
 - D5.11.1 $z\mapsto e^{\pi iz}$ maps the strip onto the upper half-plane ($|e^{\pi iz}|=e^{-\pi\Im z}$, $\arg=\pi\Re z$), $z=\tfrac12\mapsto i$, $\Re z=0\mapsto(0,\infty)$, $\Re z=1\mapsto(-\infty,0)$. Harmonic measure at $i$ is $\frac{dx}{\pi(1+x^2)}$; with $x=\pm e^{-\pi u}$, $|dx|=\pi e^{-\pi u}du$: density $\frac{du}{e^{\pi u}+e^{-\pi u}}=\frac{du}{2\cosh\pi u}$.
@@ -335,7 +335,7 @@ $$\|A^{-iu}a_0-VB^{-iu}b_0\|_2\le C|\sinh\pi u|\int_0^\infty\sqrt{h(v)/v}\,dv .$
 $$\|(A+v)^{1/2}\delta_v\|_2^2=\langle a_0,(A+v)^{-1}a_0\rangle-\langle b_0,(B+v)^{-1}b_0\rangle=:h(v)\ge0,$$
 $$\int_0^\infty h(v)\,dv=D(\rho_f\|\sigma_f)-D(\rho_s\|\sigma_s)=\eta,\qquad D(\rho\|\sigma)=\operatorname{Tr}\rho(\log\rho-\log\sigma).$$
 
-**Used from.** D5.12.1–4, D2.1.
+**Used from.** steps 1–4 of the lemma this step belongs to; D2.1.
 
 **Proof.**
 - D5.13.1 *Compression identity.* $g=(A+v)^{-1}a_0$, $k=(B+v)^{-1}b_0$, $\delta_v=g-Vk$:
@@ -354,7 +354,7 @@ $(A+v)g=a_0$; $V^*a_0=b_0$ ($V^*V=I$); $V^*(A+v)V=B+v$ (D5.12.3). Three terms: $
 
 **Statement.** $0\le h(v)\le\min(d^2,\,v^{-2})$ and $\|\delta_v\|_2\le\sqrt{h(v)/v}$ for all $v>0$.
 
-**Used from.** D5.2.1, D5.12.1–3, D5.13.
+**Used from.** D5.2.1, steps 1–3 of the lemma this step belongs to, D5.13.
 
 **Proof.**
 - D5.14.1 *Local domination.* $\rho_f\le d(I_x\otimes\rho_{UF})=d^2\sigma_f$ (D5.2.1 with $UF$ for $U$). So $\sigma_f^{-1/2}\rho_f\sigma_f^{-1/2}\le d^2$, i.e. $\rho_f^{1/2}\sigma_f^{-1}\rho_f^{1/2}\le d^2$.

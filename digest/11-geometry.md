@@ -78,7 +78,7 @@ $$(1+2\delta_0)\beta<\zeta<1,\qquad(1+2\delta_0)(1-\ell)<1,\qquad1-\ell<\beta<\r
 3. $\dist_\infty(T_i,Z)>2n_i^\beta$ (`geometry:cut-clearance`) and $\dist_\infty\bigl(T_i,\bigcup_{j<i,\,f_j=f_i}X_j\bigr)>2n_i^\beta$ (`geometry:ordered-clearance`); distance to $\varnothing$ is $\infty$.
 4. $\sum_in_i^{-100}\le Cb$.
 
-**Used from.** D11.2; Def 9.3 (template, $D_0$ from §3 "safe", $C_{\rm tpl}$); Lemma 9.4 (D11.23); D1.6 ($Z$).
+**Used from.** D11.2; Def 9.3 (template, $D_0$ from §3 "safe", $C_{\rm tpl}$); Lemma 9.4 (D9.15, applied in the assembly D11.25); D1.6 ($Z$).
 
 **Proof.** Staged: layers and strips (D11.5–D11.10), belt filling and marks (D11.11–D11.13), repairs (D11.14–D11.16), separation (D11.17–D11.18), counting and scales (D11.19–D11.24), assembly (D11.25).
 

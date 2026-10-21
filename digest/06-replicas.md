@@ -366,7 +366,7 @@ Hence for a polynomial word $B_k$ (D6.13) in marked operators and stars: $B_k^\d
 
 **Statement.** Rest of D6.12 after D6.13–D6.15: (i) $f_\theta$ bounded, continuous in $\theta$; (ii) `replicas:polynomial-symbol` for every fixed $q$; $O_k^\dagger O_k$, $O_kO_k^\dagger$ have symbol $|f_\theta|^2$; (iii) `replicas:skew-symbol`; (iv) `replicas:skew-bound`.
 
-**Used from.** D6.12 (statement), D6.13, D6.14, D6.15; D5.15 = Lemma 5.3.
+**Used from.** the statement of the lemma this step belongs to; D6.13, D6.14, D6.15; D5.15 = Lemma 5.3.
 
 **Proof.**
 - D6.16.1 *Tail of inverse powers.* Eigenvalues $p_i$ (with multiplicity) of any marginal density on $Q$: $\sum_{0<p_i<\delta}p_i^{1-2t}\le d_Q\delta^{1-2t}$. Pure $\theta$, marginal $\rho_Q$: $\|\rho_Q^{-t}\mathbf 1_{(0,\delta)}(\rho_Q)\theta\|^2=\sum_{0<p_i<\delta}p_i^{-2t}\cdot p_i\le d_Q\delta^{1-2t}$, uniformly in $\theta$.

@@ -157,7 +157,7 @@ Each $k_i$ is supported in the connected component of $a_i$. $c_*,g$ depend on $
 $$M_i=\int_{\mathbb R}f(t)\tau_t(h_i)\,dt-\langle\Omega,h_i\Omega\rangle I .$$
 The integral converges in norm; $M_i=M_i^*$; $M_i\Omega=0$; $\sum_iM_i=H-E_0I$; $\|M_i\|\le J(\|f\|_1+1)$.
 
-**Used from.** D4.5; hypotheses of D4.6 (gap).
+**Used from.** D4.5; the gap hypothesis of the proposition this step belongs to.
 
 **Proof.**
 - D4.7.1 Norm convergence: $\|\tau_t(h_i)\|=\|h_i\|\le J$, $f\in L^1$. Hermitian: $f$ real, $h_i=h_i^*$, $\tau_t$ a $*$-automorphism.
@@ -298,7 +298,7 @@ no factor $|\Lambda|$. With $\alpha=1/2$, $|S_0|\le C_0n^2$, $r_0=\lceil C_1(\lo
 
 **Statement.** Given $\|\widetilde H-H_F\|\le\epsilon:=\epsilon_n\le g/4$: $\widetilde E_0\in[0,\epsilon]$; second eigenvalue of $\widetilde H$ $\ge g-\epsilon$; gap $\ge g-2\epsilon\ge g/2$; ground vector unique; with phase fixed so $\langle\Omega,\widetilde\Omega\rangle\ge0$: $\|\widetilde\Omega-\Omega\|\le2\sqrt{\epsilon/g}$ and $\tfrac12\||\widetilde\Omega\rangle\langle\widetilde\Omega|-P_\Omega\|_1\le\sqrt{2\epsilon/g}$.
 
-**Used from.** D4.6 ($H_F\ge0$, $H_F\Omega=0$, $H_F\ge g(I-P_\Omega)$), D4.12.
+**Used from.** D4.6 ($H_F\ge0$, $H_F\Omega=0$, $H_F\ge g(I-P_\Omega)$), D4.12, D2.5.1 (pure-state trace distance, in D4.13.5).
 
 **Proof.**
 - D4.13.1 $\widetilde H\ge0$ (D4.11.1) $\Rightarrow$ $\widetilde E_0\ge0$. $\widetilde E_0\le\langle\Omega,\widetilde H\Omega\rangle=\langle\Omega,(\widetilde H-H_F)\Omega\rangle\le\epsilon$ ($H_F\Omega=0$).
@@ -318,7 +318,7 @@ no factor $|\Lambda|$. With $\alpha=1/2$, $|S_0|\le C_0n^2$, $r_0=\lceil C_1(\lo
 **Statement.** The crossing/cut clause of D4.11:
 $$|\mathcal C_X|\le Cb_X(r_0+1)^2,\quad\log d_i\le C(r_0+1)^2,\quad\mathcal B_X=1+\sum_{i\in\mathcal C_X}\log^2(ed_i)\le C(1+b_X)(r_0+1)^6.$$
 
-**Used from.** D4.11 ($r_i,\widetilde X_i$), §2 `eq:ball-count`, D4.3.
+**Used from.** the radii $r_i$ and sets $\widetilde X_i$ fixed in the statement of the proposition this step belongs to; §2 `eq:ball-count`, D4.3.
 
 **Proof.**
 - D4.14.1 *Finite distance.* $\widetilde X_i$ meets $X\subseteq S_0$. If $d_i^0=\infty$, $\widetilde X_i$ is the whole component of $a_i$, which has no point of $S_0$: contradiction. So $d_i^0<\infty$.

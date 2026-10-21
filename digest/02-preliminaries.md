@@ -89,7 +89,7 @@ Lines 74–78.
 
 **Statement.** For unit vectors $\xi,\eta$: $\tfrac12\|\,|\xi\rangle\langle\xi|-|\eta\rangle\langle\eta|\,\|_1\le\|\xi-\eta\|$. Lemma 2.1 is applied (i) on regions with a controlled number of sites, or (ii) with the controlled region as the first argument of a conditional entropy, so estimates never acquire the dimension of an uncontrolled complement.
 
-**Used from.** D2.4.
+**Used from.** none (a usage rule for the continuity lemma of this section, not an input to it).
 **Proof.**
 - D2.5.1 $\tfrac12\|\,|\xi\rangle\langle\xi|-|\eta\rangle\langle\eta|\,\|_1=\sqrt{1-|\langle\xi,\eta\rangle|^2}$: difference traceless, rank two, Hermitian, eigenvalues $\pm\lambda$ with $\lambda^2=\tfrac12\operatorname{Tr}(\cdot)^2=1-|\langle\xi,\eta\rangle|^2$; trace norm $2\lambda$.
 - D2.5.2 $x=|\langle\xi,\eta\rangle|\in[0,1]$: $1-x^2=(1-x)(1+x)\le2(1-x)\le2-2\operatorname{Re}\langle\xi,\eta\rangle=\|\xi-\eta\|^2$.

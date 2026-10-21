@@ -66,8 +66,8 @@ Then for every $A\subseteq\Lambda$
 $$S_\Omega(A)\le C\,|\partial_\Lambda A|\qquad\text{(eq:area-law)}.$$
 The same $C$ serves all such $\Lambda$, $A$, $H$.
 
-**Used from.** D1.1, D1.2, D1.3, D1.6 ($Z=Z_A$), D1.11, D1.12 (Lemma 11.1), D1.16 (Prop 9.6), D1.17 (Prop 10.2), D1.18 (Prop 11.2); Lemma 2.2 (§2).
-**Proof.** D11.26.
+**Used from.** D1.1, D1.2, D1.3, D1.6 ($Z=Z_A$), D1.11 (statement only).
+**Proof.** D11.26, from Lemma 11.1 (D1.12 = D11.1), Prop 9.6 (D9.25), Prop 10.2 (D10.4), Prop 11.2 (D11.4) and Lemma 2.2 (D2.12).
 
 **Output.** Cor 1.2 (D1.7); D1.10.
 **Standard?** Specific to this paper. Context: D1.8.
