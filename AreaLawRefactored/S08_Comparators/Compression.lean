@@ -1,6 +1,6 @@
 import AreaLawRefactored.S08_Comparators.ComponentInverse
 import AreaLawRefactored.S08_Comparators.Entropy
-import AreaLawRefactored.S06_Replicas.Ported.InverseCompressionLowerPin
+import AreaLawForMathlib.Analysis.Matrix.CompressedInverse
 import AreaLawForMathlib.Analysis.SpecialFunctions.BinEntropySubsetCount
 
 /-!

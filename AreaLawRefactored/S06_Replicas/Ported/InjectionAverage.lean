@@ -3,7 +3,7 @@ Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
-import AreaLawRefactored.S06_Replicas.Ported.HusimiIdentity
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HusimiIdentity
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
 import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 

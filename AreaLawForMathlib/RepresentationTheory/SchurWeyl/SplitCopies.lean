@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Alternant
-import AreaLawRefactored.S06_Replicas.Ported.UnitaryTwirl
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.UnitaryTwirl
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Branching
 
 /-!

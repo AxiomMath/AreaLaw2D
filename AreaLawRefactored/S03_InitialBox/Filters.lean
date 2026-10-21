@@ -417,34 +417,6 @@ theorem step_3_7_2_pairing (hX : ∀ j, X j ⊆ U) {f a : ℕ → ℝ} (hf : ∀
   rw [filterProd_add, e]
   exact h
 
-omit [∀ i, Fintype (loc i)] in
-/-- `(A ⊗ 1_{T∖S}) ⊗ 1_{U∖T} = A ⊗ 1_{U∖S}`: extension by the identity is transitive. -/
-theorem extendId_extendId {S T V : Finset σ} (hST : S ⊆ T) (hTV : T ⊆ V)
-    (A : Matrix (Arealaw.Reg loc S) (Arealaw.Reg loc S) ℂ) :
-    Arealaw.extendId hTV (Arealaw.extendId hST A) = Arealaw.extendId (hST.trans hTV) A := by
-  ext w w'
-  simp only [Arealaw.extendId, Matrix.of_apply]
-  have h3 : ∀ {u u' : Arealaw.Reg loc V},
-      Arealaw.restr (S := V \ S) Finset.sdiff_subset u =
-        Arealaw.restr (S := V \ S) Finset.sdiff_subset u' ↔
-      Arealaw.restr (S := V \ T) Finset.sdiff_subset u =
-        Arealaw.restr (S := V \ T) Finset.sdiff_subset u' ∧
-      Arealaw.restr (S := T \ S) Finset.sdiff_subset (Arealaw.restr hTV u) =
-        Arealaw.restr (S := T \ S) Finset.sdiff_subset (Arealaw.restr hTV u') := by
-    intro u u'
-    refine ⟨fun h ↦ ⟨funext fun i ↦ congrFun h ⟨i, Finset.sdiff_subset_sdiff le_rfl hST i.2⟩,
-      funext fun i ↦ congrFun h ⟨i, Finset.sdiff_subset_sdiff hTV le_rfl i.2⟩⟩,
-      fun ⟨h1, h2⟩ ↦ funext fun i ↦ ?_⟩
-    by_cases hi : (i : σ) ∈ T
-    · exact congrFun h2 ⟨i, Finset.mem_sdiff.2 ⟨hi, (Finset.mem_sdiff.1 i.2).2⟩⟩
-    · exact congrFun h1 ⟨i, Finset.mem_sdiff.2 ⟨(Finset.mem_sdiff.1 i.2).1, hi⟩⟩
-  split_ifs with h1 h2 h4 h4 h4 <;> first
-    | rfl
-    | exact absurd (h3.2 ⟨h1, h2⟩) h4
-    | exact absurd (h3.1 h4).2 h2
-    | exact absurd (h3.1 h4).1 h1
-
-
 /-- D3.7.3 through `K_{>j}`, for `W` on `X_{j+1}`: for nested regions and filters
 `L_{j+1}, …, L_{j+m}` invertible and commuting with their marginals in `φ`,
 `⟨φ, K (W ⊗ 1) K⁻¹ φ⟩ = ⟨φ, (W ⊗ 1) φ⟩` for `K = L_{j+m} ⋯ L_{j+1}`. -/
@@ -478,11 +450,11 @@ theorem step_3_7_3_prodDesc_succ (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆
       Matrix.inv_eq_right_inv (by rw [← Arealaw.extendId_mul, mul_nonsing_inv _ hu,
         Arealaw.extendId_one])
     refine ⟨Arealaw.extendId (hnest (j + 1 + m)) (L (j + 1 + m) * W' * (L (j + 1 + m))⁻¹), ?_, ?_⟩
-    · rw [extendId_extendId, prodDesc, Matrix.mul_inv_rev,
+    · rw [Arealaw.extendId_extendId, prodDesc, Matrix.mul_inv_rev,
         show ∀ A P E Q R : Matrix (Arealaw.Reg loc U) (Arealaw.Reg loc U) ℂ,
           A * P * E * (Q * R) = A * (P * E * Q) * R from fun _ _ _ _ _ ↦ by
             simp only [Matrix.mul_assoc], e, hinv, ← Arealaw.extendId_mul, ← Arealaw.extendId_mul]
-    · rw [extendId_extendId]
+    · rw [Arealaw.extendId_extendId]
       exact (step_3_7_3 (hX (j + 1 + m)) φ hu (hc m m.lt_succ_self) W').trans h
 
 /-- D3.7.3 through `K_{>j}`: for nested regions and filters `L_{j+1}, …, L_{j+m}` invertible and
@@ -499,7 +471,7 @@ theorem step_3_7_3_prodDesc (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j
       (prodDesc (fun i ↦ Arealaw.extendId (hX (j + 1 + i)) (L (j + 1 + i))) m)⁻¹) *ᵥ φ) =
       star φ ⬝ᵥ (Arealaw.extendId (hX j) W *ᵥ φ) := by
   have h := step_3_7_3_prodDesc_succ hX hnest j m φ hL hc (Arealaw.extendId (hnest j) W)
-  rwa [extendId_extendId] at h
+  rwa [Arealaw.extendId_extendId] at h
 
 /-- D3.7. At a maximizer of `N = ‖L_{n-1} ⋯ L_0 Ω‖` over feasible filters with floors `f_j > 0`
 on nested regions `X_0 ⊆ X_1 ⊆ ⋯ ⊆ U`, every filter commutes with its marginal:
@@ -936,8 +908,8 @@ theorem step_3_9_2 (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j + 1))
       (Arealaw.extendId (hX j) (L j))⁻¹ = Arealaw.extendId (hX (j + 1))
         (Arealaw.extendId (hnest j) (L j) * Arealaw.extendId hS h *
           Arealaw.extendId (hnest j) (L j)⁻¹) := by
-    rw [inv_extendId _ (hL j), Arealaw.extendId_mul, Arealaw.extendId_mul, extendId_extendId,
-      extendId_extendId, extendId_extendId]
+    rw [inv_extendId _ (hL j), Arealaw.extendId_mul, Arealaw.extendId_mul,
+      Arealaw.extendId_extendId, Arealaw.extendId_extendId, Arealaw.extendId_extendId]
   rw [hK, sub_mulVec, sub_mulVec, dotProduct_sub, dotProduct_sub, hW,
     step_3_7_3_prodDesc_succ hX hnest j k φ (fun i _ ↦ hL _) hc]
 
@@ -973,7 +945,7 @@ theorem step_3_9_2_unsplit (hX : ∀ j, X j ⊆ U) (hnest : ∀ j, X j ⊆ X (j 
       Arealaw.extendId (hS.trans (hX j)) h * (filterProd hX L (j + 1 + k))⁻¹) *ᵥ φ) = 0 := by
   -- `I_in` cancels and `K_{>j}` is peeled (D3.9.2 at `j`); `L_j` is peeled by D3.7.3
   refine (step_3_9_2_of_disjoint hX hnest hL j k φ hc (hS.trans (hnest j)) h hd).trans ?_
-  rw [inv_extendId _ (hL j), ← extendId_extendId hS (hX j), ← Arealaw.extendId_mul,
+  rw [inv_extendId _ (hL j), ← Arealaw.extendId_extendId hS (hX j), ← Arealaw.extendId_mul,
     ← Arealaw.extendId_mul, sub_mulVec, dotProduct_sub, step_3_7_3 (hX j) φ (hL j) hcj, sub_self]
 
 end D392
@@ -1569,7 +1541,6 @@ theorem step_3_11_3 {ρ B : Matrix m m ℂ} (hρ : ρ.PosSemidef) (hB : B.PosSem
     (Real.holderConjugate_one_div (a := 1 - a) (b := a) (by linarith) ha0 (by ring))
   rwa [hBn, Real.one_rpow, mul_one, one_div_one_div, RCLike.re_to_complex] at this
 
-
 /-- `Tr ρ^{1/(1-a)} = ∑_{p_j > 0} p_j e^{-u log p_j}` at `u = -a/(1-a)`
 (D3.11.4: `1 - u = 1/(1-a)`). -/
 theorem sum_rpow_eq_sum_exp {ι : Type*} [Fintype ι] {p : ι → ℝ} (hp : ∀ j, 0 ≤ p j) {a : ℝ}
@@ -1601,7 +1572,6 @@ theorem step_3_11_3_region {σ : Type*} [DecidableEq σ] {loc : σ → Type*} [�
   rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, ← Arealaw.extendId_conjTranspose, hL.eq,
     ← Arealaw.extendId_mul, Arealaw.dotProduct_extendId_mulVec]
   exact step_3_11_3 hρ hB ha0 ha1 hBn
-
 
 /-- D3.11.3–D3.11.4 on a region. With Lemma 3.1 at `u = -a/(1-a)` for the cut `X | U ∖ X`
 (hypothesis `hM`, admissible by D3.10(iii)) and `0 < a ≤ ½`:

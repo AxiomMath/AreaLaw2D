@@ -89,7 +89,7 @@ theorem extendId_kerProj_mul_marg (θ : Reg loc Λ → ℂ) (hX : X ⊆ Λ) (hE 
     extendId Finset.subset_union_right (1 - bracketPow (marg θ hE) 0) *
       marg θ (Finset.union_subset hX hE) = 0 := by
   change _ * ptrace (Finset.union_subset hX hE) (vecMulVec θ (star θ)) = 0
-  rw [← extendId_mul_ptrace, Conditional.extendId_extendId, mul_vecMulVec,
+  rw [← extendId_mul_ptrace, Arealaw.extendId_extendId, mul_vecMulVec,
     extendId_one_sub_bracketPow_marg_mulVec θ hE]
   simp
 
@@ -199,7 +199,7 @@ theorem step_5_2_region : Step_5_2_region.{u, v} := by
       rw [show A * A * (B * C * B) = A * A * (B * C) * B by simp only [Matrix.mul_assoc],
         trace_mul_comm (A * A * (B * C)) B]
       simp only [Matrix.mul_assoc]
-    rw [← Conditional.extendId_extendId hE' hT, ← extendId_mul, step_5_1_F1_norm, Kmat,
+    rw [← Arealaw.extendId_extendId hE' hT, ← extendId_mul, step_5_1_F1_norm, Kmat,
       ← hatPow_Qmat, conjTranspose_mul, conjTranspose_hatPow, conjTranspose_bracketPow,
       Complex.conj_ofReal, Complex.conj_ofReal,
       show ((2 * a : ℝ) : ℂ) = (a : ℂ) + a by push_cast; ring, ← bracketPow_mul_bracketPow, e]
@@ -239,7 +239,7 @@ theorem step_5_9_1 : Step_5_9_1.{u, v} := by
     rfl
   have hext : extendId hT (star (hatPow Q z)) =
       extendId hU (hatPow (marg θ hU) ((a * u : ℝ) * I)) := by
-    rw [hstar, hatPow_Qmat, Conditional.extendId_extendId]
+    rw [hstar, hatPow_Qmat, Arealaw.extendId_extendId]
   -- D5.9.1: `((τ_u^{-iau} − Q^{-iau}) ⊗ I) θ = (Q^{-iau} ⊗ I)(θ_u − θ)`
   have key : extendId hT (hatPow (tauU θ hU X τ a u) z - hatPow Q z) *ᵥ θ =
       extendId hT (hatPow Q z) *ᵥ (thetaU θ hX hU τ a u - θ) := by

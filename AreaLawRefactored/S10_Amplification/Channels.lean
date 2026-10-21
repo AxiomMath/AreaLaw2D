@@ -303,32 +303,6 @@ section Oscillation
 variable {σ : Type*} [DecidableEq σ] {loc : σ → Type} [∀ i, Fintype (loc i)]
   [∀ i, DecidableEq (loc i)] {Λ : Finset σ} {κ : Type} [Fintype κ] [DecidableEq κ]
 
-omit [∀ i, Fintype (loc i)] in
--- helper
-/-- `(A ⊗ 1_{T∖S}) ⊗ 1_{V∖T} = A ⊗ 1_{V∖S}`: extension by the identity is transitive. -/
-theorem extendId_extendId_of_subset {S T V : Finset σ} (hST : S ⊆ T) (hTV : T ⊆ V)
-    (A : Matrix (Reg loc S) (Reg loc S) ℂ) :
-    extendId hTV (extendId hST A) = extendId (hST.trans hTV) A := by
-  ext w w'
-  simp only [extendId, Matrix.of_apply]
-  have h3 : ∀ {u u' : Reg loc V},
-      restr (S := V \ S) Finset.sdiff_subset u = restr (S := V \ S) Finset.sdiff_subset u' ↔
-      restr (S := V \ T) Finset.sdiff_subset u = restr (S := V \ T) Finset.sdiff_subset u' ∧
-      restr (S := T \ S) Finset.sdiff_subset (restr hTV u) =
-        restr (S := T \ S) Finset.sdiff_subset (restr hTV u') := by
-    intro u u'
-    refine ⟨fun h ↦ ⟨funext fun i ↦ congrFun h ⟨i, Finset.sdiff_subset_sdiff le_rfl hST i.2⟩,
-      funext fun i ↦ congrFun h ⟨i, Finset.sdiff_subset_sdiff hTV le_rfl i.2⟩⟩,
-      fun ⟨h1, h2⟩ ↦ funext fun i ↦ ?_⟩
-    by_cases hi : (i : σ) ∈ T
-    · exact congrFun h2 ⟨i, Finset.mem_sdiff.2 ⟨hi, (Finset.mem_sdiff.1 i.2).2⟩⟩
-    · exact congrFun h1 ⟨i, Finset.mem_sdiff.2 ⟨(Finset.mem_sdiff.1 i.2).1, hi⟩⟩
-  split_ifs with h1 h2 h4 h4 h4 <;> first
-    | rfl
-    | exact absurd (h3.2 ⟨h1, h2⟩) h4
-    | exact absurd (h3.1 h4).2 h2
-    | exact absurd (h3.1 h4).1 h1
-
 /-- A site operator `U_y = U ⊗ I` has norm at most `‖U‖`. -/
 theorem norm_site_le {y : σ} (hy : y ∈ Λ) (U : Matrix (Reg loc {y}) (Reg loc {y}) ℂ) :
     ‖extendId (Finset.singleton_subset_iff.2 hy) U ⊗ₖ (1 : Matrix κ κ ℂ)‖ ≤ ‖U‖ :=
@@ -401,7 +375,7 @@ theorem osc_eq_zero_of_support {S : Finset σ} {B : Matrix (Reg loc Λ × κ) (R
   have hyΛS : ({y} : Finset σ) ⊆ Λ \ S :=
     Finset.singleton_subset_iff.2 (Finset.mem_sdiff.2 ⟨hy, hyS⟩)
   have h := hB (extendId hyΛS U)
-  rwa [extendId_extendId_of_subset] at h
+  rwa [Arealaw.extendId_extendId] at h
 
 /-- `d_y(X) ≤ d_y(X') + 2‖X - X'‖`. -/
 theorem osc_le_osc_add (y : σ) (X X' : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ) :

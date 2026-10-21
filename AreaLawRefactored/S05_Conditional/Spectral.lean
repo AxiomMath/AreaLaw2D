@@ -559,31 +559,6 @@ theorem extendId_bracketPow_zero_marg_mulVec_extendId {Y : Finset σ} (θ : Reg 
 
 namespace Conditional
 
-omit [∀ i, Fintype (loc i)] in
-/-- Nested extension: `(A ⊗ 1_{T∖S}) ⊗ 1_{V∖T} = A ⊗ 1_{V∖S}`. -/
-theorem extendId_extendId {S T V : Finset σ} (hST : S ⊆ T) (hTV : T ⊆ V)
-    (A : Matrix (Reg loc S) (Reg loc S) ℂ) :
-    extendId hTV (extendId hST A) = extendId (hST.trans hTV) A := by
-  ext w w'
-  have hiff : (restr (S := V \ T) Finset.sdiff_subset w = restr Finset.sdiff_subset w' ∧
-      restr (S := T \ S) Finset.sdiff_subset (restr hTV w) =
-        restr Finset.sdiff_subset (restr hTV w')) ↔
-      restr (S := V \ S) Finset.sdiff_subset w = restr Finset.sdiff_subset w' := by
-    simp only [restr, Finset.restrict₂, funext_iff, Subtype.forall, Finset.mem_sdiff]
-    constructor
-    · rintro ⟨h1, h2⟩ i ⟨hiV, hiS⟩
-      by_cases hiT : i ∈ T
-      · exact h2 i ⟨hiT, hiS⟩
-      · exact h1 i ⟨hiV, hiT⟩
-    · intro h
-      exact ⟨fun i hi ↦ h i ⟨hi.1, fun hS ↦ hi.2 (hST hS)⟩, fun i hi ↦ h i ⟨hTV hi.1, hi.2⟩⟩
-  simp only [extendId, of_apply]
-  split_ifs <;> first | rfl | (exfalso; tauto)
-
-end Conditional
-
-namespace Conditional
-
 variable (θ : Reg loc (D ∪ D') → ℂ) (hd : Disjoint D D')
 
 omit [∀ i, Fintype (loc i)] [∀ i, DecidableEq (loc i)] in

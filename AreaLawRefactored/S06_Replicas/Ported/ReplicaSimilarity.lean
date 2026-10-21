@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaMarkedRatioInverse
-import AreaLawRefactored.S06_Replicas.Ported.ReplicaSiteOp
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SiteOp
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaRegionUnion
 import AreaLawForMathlib.Analysis.Matrix.PosSemidefCommute
 

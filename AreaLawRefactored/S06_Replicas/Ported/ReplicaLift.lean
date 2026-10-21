@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaIntegral
-import AreaLawRefactored.S06_Replicas.Ported.CoherentResolution
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CoherentResolution
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaRegionUnion
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 

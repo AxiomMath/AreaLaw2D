@@ -291,7 +291,8 @@ theorem extendId_eq_sum {P₀ P₁ X U : Finset σ} (hP : P₀ ∪ P₁ ⊆ Λ) 
   rw [show single i j (h i j) = h i j • single i j 1 by rw [smul_single, smul_eq_mul, mul_one],
     extendId_smul, single_eq_kronUnion hd,
     extendId_kronUnion (Finset.subset_union_left.trans hP) (Finset.subset_union_left.trans hY) hd,
-    extendId_extendId Finset.subset_union_left hP, extendId_extendId Finset.subset_union_left hY]
+    Arealaw.extendId_extendId Finset.subset_union_left hP,
+    Arealaw.extendId_extendId Finset.subset_union_left hY]
 
 variable {P₀ P₁ X U : Finset σ} (hP : P₀ ∪ P₁ ⊆ Λ) (hY : X ∪ U ⊆ Λ) (hPX : P₀ ∪ X ⊆ Λ)
   (θ : Reg loc Λ → ℂ) (h : Matrix (Reg loc (P₀ ∪ X)) (Reg loc (P₀ ∪ X)) ℂ)

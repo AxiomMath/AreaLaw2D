@@ -528,12 +528,6 @@ theorem star_tensorVec_dotProduct_permOp_R (d k : ℕ) (φ : SiteConfig (dims n 
 variable {D : PhysData n} {X : Finset σ}
 
 omit [Fintype σ] in
-theorem restrictX_replaceX (x : SiteConfig n) (y : Reg (fun v => Fin (n v)) X) :
-    restrictX (replaceX x y) = y := by
-  funext v
-  simp [restrictX, replaceX, v.2]
-
-omit [Fintype σ] in
 theorem replaceX_replaceX_restrictX (x : SiteConfig n) (y : Reg (fun v => Fin (n v)) X) :
     replaceX (replaceX x y) (restrictX (X := X) x) = x := by
   funext v
@@ -917,28 +911,6 @@ end HighLabelSec
 
 section PrevectorSec
 
-/-- `X` commutes with `A^r` whenever it commutes with `A` (any real `r`, any `A`). -/
-theorem commute_rpow_of_commute {m : Type*} [Fintype m] [DecidableEq m] {X A : Matrix m m ℂ}
-    (h : Commute X A) (r : ℝ) : Commute X (A ^ r) := by
-  rw [CFC.rpow_def]
-  exact (Commute.cfc_nnreal h.symm _).symm
-
-/-- `X` commutes with `A #_p B` whenever it commutes with `A` and `B`. -/
-theorem commute_geomMean_of_commute {m : Type*} [Fintype m] [DecidableEq m]
-    {X A B : Matrix m m ℂ} (hA : Commute X A) (hB : Commute X B) (p : ℝ) :
-    Commute X (geomMean p A B) := by
-  have ha := commute_rpow_of_commute hA
-  exact ((ha _).mul_right (commute_rpow_of_commute (((ha _).mul_right hB).mul_right (ha _))
-    p)).mul_right (ha _)
-
-/-- D8.13.4 (tree). `X` commutes with the root of a mean tree whose leaves it commutes with. -/
-theorem commute_eval_of_commute {m : Type*} [Fintype m] [DecidableEq m] {ι : Type*}
-    {A : ι → Matrix m m ℂ} {X : Matrix m m ℂ} (hX : ∀ j, Commute X (A j))
-    (T : Transport.MeanTree ι) : Commute X (T.eval A) := by
-  induction T with
-  | leaf j => exact hX j
-  | node p l r ihl ihr => exact commute_geomMean_of_commute ihl ihr p
-
 variable {σ : Type u} [Fintype σ] [DecidableEq σ] {n : σ → ℕ}
 
 omit [DecidableEq σ] in
@@ -1239,10 +1211,12 @@ theorem step_8_13_4 [∀ v, NeZero (n v)] [NeZero d] {K : ℕ} {St : Type v} {X 
         (Or.inr (Finset.disjoint_singleton_left.mpr (R_not_mem_physReg _)))
         (Or.inl (Finset.singleton_subset_iff.mpr (Finset.mem_insert_self _ _))) _⟩
   refine ⟨hband, fun T => ⟨?_, ?_⟩⟩
-  · exact (commute_eval_of_commute (fun s => Commute.list_prod_right _ _ fun A hA => by
+  · exact (Transport.MeanTree.commute_eval_right
+      (fun s => Commute.list_prod_right _ _ fun A hA => by
       obtain ⟨g, rfl⟩ := List.mem_ofFn.mp hA
       exact (hband s g).1.symm) T).symm
-  · exact (commute_eval_of_commute (fun s => Commute.list_prod_right _ _ fun A hA => by
+  · exact (Transport.MeanTree.commute_eval_right
+      (fun s => Commute.list_prod_right _ _ fun A hA => by
       obtain ⟨g, rfl⟩ := List.mem_ofFn.mp hA
       exact (hband s g).2.symm) T).symm
 

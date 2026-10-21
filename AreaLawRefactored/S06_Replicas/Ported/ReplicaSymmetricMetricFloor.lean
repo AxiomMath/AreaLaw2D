@@ -7,8 +7,7 @@ import AreaLawRefactored.S06_Replicas.Ported.ReplicaWholeInverse
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaDisjointMetricPositivity
 import AreaLawRefactored.S06_Replicas.Ported.GroupedLabelSymmetricSupport
 import AreaLawForMathlib.Analysis.Matrix.ProjectionCfcUpperBound
-import AreaLawRefactored.S06_Replicas.Ported.InverseCompressionLowerPin
-
+import AreaLawForMathlib.Analysis.Matrix.CompressedInverse
 /-!
 # A polynomial floor on simultaneous symmetric copies
 

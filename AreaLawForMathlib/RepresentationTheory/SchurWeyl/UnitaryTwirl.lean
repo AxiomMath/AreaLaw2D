@@ -5,8 +5,7 @@ Authors: QICLean contributors
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.UnitaryHaar
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.UnitaryCommutant
-import AreaLawRefactored.S06_Replicas.Ported.ReplicaSiteOp
-
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SiteOp
 /-!
 # The unitary twirl of a symmetric operator
 

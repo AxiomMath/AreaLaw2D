@@ -286,7 +286,8 @@ theorem markedWord_eq {t : ℝ} (ht : 0 ≤ t) (m : ℕ) {P Y : Finset V} (hPY :
 are a product decomposition `h = ∑ b_i a_i` (`a_i` on `P`, `b_i` on `Y`) and polynomials `p, q`
 such that the compressions `B_k = Π_k W_k Π_k` of the polynomial word
 `W_k = ∑_i (q(J_Y) b_i^{(k)} p(J_Y))(p(J_P) a_i^{(k)} q(J_P))` in the marked operators and the
-stars `J_{Q,k}` have a common `sup_k ‖B_k‖` bound and `limsup_k ‖O_k - B_k‖ ≤ ε` on `𝒮_k`. -/
+stars `J_{Q,k}` have a common `sup_k ‖B_k‖` bound, the coherent symbol
+`⟨θ, (q(ρ_Y) b_i p(ρ_Y))(p(ρ_P) a_i q(ρ_P)) θ⟩` (D6.15), and `limsup_k ‖O_k - B_k‖ ≤ ε` on `𝒮_k`. -/
 theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
     (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
     {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) :
@@ -305,6 +306,8 @@ theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
     ∀ ε > 0, ∃ (N : ℕ) (a b : Fin N → Matrix (SiteConfig n) (SiteConfig n) ℂ) (p q : ℝ[X]),
       (∀ i, IsSupportedOn (a i) P) ∧ (∀ i, IsSupportedOn (b i) Y) ∧ h = ∑ i, b i * a i ∧
       (∃ M, ∀ k, ‖HasMarkedSymbol.compress (polyWord P Y a b p q) k‖ ≤ M) ∧
+      HasCoherentSymbol (HasMarkedSymbol.compress (polyWord P Y a b p q))
+        (fun θ => star θ ⬝ᵥ (polyWordSymbol P Y a b p q θ *ᵥ θ)) ∧
         ∀ᶠ k in atTop, ‖(markedSimilarity n t k P Y F h -
           HasMarkedSymbol.compress (polyWord P Y a b p q) k) *
             symProj (copyPerm (SiteConfig n) k)‖ ≤ ε := by
@@ -324,9 +327,10 @@ theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
       (fun τ => (hc P τ).2.mul_right (hc Y τ).1) hu hz, markedWord_eq ht0.le m hPY]
   · -- D6.13.6–D6.13.8: clip, then polynomials, then `k → ∞`
     obtain ⟨N, a, b, p, q, ha, hb, hdec, -, hev⟩ := exists_polyWord_approx ht0 ht1 hPY hPF hYF hh hε
-    refine ⟨N, a, b, p, q, ha, hb, hdec, ?_, hev⟩
+    have hB := (hasMarkedSymbol_polyWord P Y a b p q).hasCoherentSymbol_compress
+    refine ⟨N, a, b, p, q, ha, hb, hdec, ?_, hB, hev⟩
     -- D6.13.8: the common bound, `B_k = Π_k W_k Π_k = B_k Π_k`
-    obtain ⟨M, hM⟩ := (hasMarkedSymbol_polyWord P Y a b p q).hasCoherentSymbol_compress.bounded
+    obtain ⟨M, hM⟩ := hB.bounded
     refine ⟨M, fun k => ?_⟩
     have hBP : HasMarkedSymbol.compress (polyWord P Y a b p q) k *
         symProj (copyPerm (SiteConfig n) k) =

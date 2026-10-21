@@ -100,11 +100,7 @@ omit [Fintype σ] in
 @[simp] theorem glueXC_R {d : ℕ} (x : SiteConfig (dims n d)) (c : Fin d)
     (z : Reg (fun v => Fin (n v)) X) : glueXC x c z .R = x .R := rfl
 
-omit [Fintype σ] in
-@[simp] private theorem restrictX_replaceX (x : SiteConfig n)
-    (z : Reg (fun v => Fin (n v)) X) :
-    restrictX (replaceX x z) = z :=
-  funext fun v => by simp [restrictX, replaceX, v.2]
+attribute [local simp] restrictX_replaceX
 
 /-! ## The one-copy pin -/
 
@@ -350,28 +346,6 @@ theorem re_star_mulVec_le {m : Type*} [Fintype m] {P : Matrix m m ℂ}
   rw [hsq _ hP hPP]
   linarith
 
-omit [Fintype σ] [DecidableEq σ] in
-private theorem commute_rpow_of_commute {m : Type*} [Fintype m] [DecidableEq m]
-    {Z A : Matrix m m ℂ}
-    (h : Commute Z A) (r : ℝ) : Commute Z (A ^ r) := by
-  rw [CFC.rpow_def]
-  exact (Commute.cfc_nnreal h.symm _).symm
-
-omit [Fintype σ] [DecidableEq σ] in
-/-- A matrix commuting with every leaf commutes with the root of a mean tree (no positivity
-needed: the root is built from products and real powers of the leaves). -/
-private theorem commute_eval_of_commute {ι m : Type*} [Fintype m] [DecidableEq m]
-    {Z : Matrix m m ℂ}
-    {A : ι → Matrix m m ℂ} (h : ∀ j, Commute Z (A j)) (T : Transport.MeanTree ι) :
-    Commute Z (T.eval A) := by
-  induction T with
-  | leaf j => exact h j
-  | node p l r ihl ihr =>
-    rw [Transport.MeanTree.eval_node, Matrix.geomMean]
-    have ha := commute_rpow_of_commute ihl
-    exact ((ha _).mul_right (commute_rpow_of_commute (((ha _).mul_right ihr).mul_right
-      (ha _)) _)).mul_right (ha _)
-
 section Bands
 
 variable {K : ℕ} {St : Type v} (Γ : Statuses σ K St X)
@@ -421,8 +395,8 @@ theorem step_8_15 : Step_8_15.{u, v} := by
       ((Commute.one_right _).sub_right hPi)
   -- D8.15.2: `𝖯` commutes with each `A_j`, with `𝓜` and with `𝓜^{-s}`
   have h2 : Commute (pinProj E k) (Γ.root n E.d T (a / 2) k ^ (-(1 / 4) : ℝ)) :=
-    commute_rpow_of_commute (commute_eval_of_commute (fun s => Commute.list_prod_right _ _
-      fun b hb => by
+    commute_rpow_of_commute (Transport.MeanTree.commute_eval_right
+      (fun s => Commute.list_prod_right _ _ fun b hb => by
         obtain ⟨g, rfl⟩ := List.mem_ofFn.1 hb
         exact h1 s g) T) _
   -- D8.15.3: `N ≥ ‖𝖯 𝓜^{-s} pre_k‖ = ‖𝓜^{-s} 𝖯 pre_k‖`, and D8.14

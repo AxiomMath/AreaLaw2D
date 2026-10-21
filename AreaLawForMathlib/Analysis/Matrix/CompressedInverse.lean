@@ -43,7 +43,8 @@ theorem PosDef.inv_smul_projection_le_of_compression_inv_le
   have hbound : P * A⁻¹ * P ≤ c • (1 : Matrix n n ℂ) :=
     h.trans (smul_le_smul_of_nonneg_left hPone hc.le)
   let S := CFC.sqrt A
-  have hS : S.PosDef := Matrix.IsStrictlyPositive.posDef (IsStrictlyPositive.sqrt A hA.isStrictlyPositive)
+  have hS : S.PosDef :=
+    Matrix.IsStrictlyPositive.posDef (IsStrictlyPositive.sqrt A hA.isStrictlyPositive)
   have hSq : S * S = A := CFC.sqrt_mul_sqrt_self A hA.posSemidef.nonneg
   have hSSi : S * S⁻¹ = 1 := Matrix.mul_nonsing_inv S
     ((Matrix.isUnit_iff_isUnit_det S).mp hS.isUnit)

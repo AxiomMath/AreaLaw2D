@@ -111,18 +111,17 @@ theorem eval_const {X : Matrix n n ℂ} (hX : X.PosDef) (T : MeanTree ι) :
   | node p l r ihl ihr => rw [eval_node, ihl, ihr, geomMean_self hX]
 
 /-- A matrix commuting with every input commutes with the root. -/
-theorem commute_eval_right {A : ι → Matrix n n ℂ} (hA : ∀ j, (A j).PosDef) {X : Matrix n n ℂ}
+theorem commute_eval_right {A : ι → Matrix n n ℂ} {X : Matrix n n ℂ}
     (hX : ∀ j, Commute X (A j)) (T : MeanTree ι) : Commute X (T.eval A) := by
   induction T with
   | leaf j => exact hX j
-  | node p l r ihl ihr =>
-    exact Commute.geomMean_right (posDef_eval hA l) (posDef_eval hA r) ihl ihr p
+  | node p l r ihl ihr => exact Commute.geomMean_right ihl ihr p
 
 /-- Roots of trees whose inputs commute across two families commute. -/
 theorem commute_eval_eval {ι' : Type*} {A : ι → Matrix n n ℂ} {B : ι' → Matrix n n ℂ}
-    (hA : ∀ j, (A j).PosDef) (hB : ∀ j, (B j).PosDef) (hAB : ∀ j j', Commute (A j) (B j'))
+    (hAB : ∀ j j', Commute (A j) (B j'))
     (T : MeanTree ι) (T' : MeanTree ι') : Commute (T.eval A) (T'.eval B) :=
-  commute_eval_right hB (fun j' ↦ (commute_eval_right hA (fun j ↦ (hAB j j').symm) T).symm) T'
+  commute_eval_right (fun j' ↦ (commute_eval_right (fun j ↦ (hAB j j').symm) T).symm) T'
 
 end MeanTree
 
@@ -321,7 +320,7 @@ theorem lemma_7_1_6 {K : ℕ} {D : ι → Fin K → Matrix n n ℂ} (hD : ∀ j 
     T.eval (fun j ↦ (List.ofFn (D j)).prod) = (List.ofFn fun g ↦ T.eval (D · g)).prod ∧
       ∀ g g', g ≠ g' → Commute (T.eval (D · g)) (T.eval (D · g')) := by
   -- D7.3.11: the `M_g` commute
-  refine ⟨?_, fun g g' hgg' ↦ commute_eval_eval (fun j ↦ hD j g) (fun j ↦ hD j g')
+  refine ⟨?_, fun g g' hgg' ↦ commute_eval_eval
     (fun j j' ↦ hcomm j j' g g' hgg') T T⟩
   induction K with
   | zero => simpa using eval_const PosDef.one T
@@ -345,10 +344,10 @@ theorem lemma_7_1_6 {K : ℕ} {D : ι → Fin K → Matrix n n ℂ} (hD : ∀ j 
         rw [eval_node, eval_node, eval_node, ihl, ihr]
         exact geomMean_mul_of_commute (posDef_eval (fun j ↦ hD j 0) l) (posDef_eval hrest l)
           (posDef_eval (fun j ↦ hD j 0) r) (posDef_eval hrest r)
-          (commute_eval_eval (fun j ↦ hD j 0) hrest hAB l l)
-          (commute_eval_eval (fun j ↦ hD j 0) hrest hAB l r)
-          (commute_eval_eval (fun j ↦ hD j 0) hrest hAB r l)
-          (commute_eval_eval (fun j ↦ hD j 0) hrest hAB r r) p
+          (commute_eval_eval hAB l l)
+          (commute_eval_eval hAB l r)
+          (commute_eval_eval hAB r l)
+          (commute_eval_eval hAB r r) p
     rw [hmul, ih (D := fun j g ↦ D j g.succ) (fun j g ↦ hD j _)
       (fun j j' g g' h ↦ hcomm _ _ _ _ (fun h' ↦ h (Fin.succ_injective _ h')))]
 

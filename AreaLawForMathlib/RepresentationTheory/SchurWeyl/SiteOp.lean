@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurWeylCommutant
-import AreaLawRefactored.S06_Replicas.Ported.ReplicaSupport
+import AreaLawForMathlib.QuantumInfo.SiteSupport
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
 import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 

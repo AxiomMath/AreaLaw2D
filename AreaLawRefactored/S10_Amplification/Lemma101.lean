@@ -814,7 +814,7 @@ theorem IsSupportedOn.mono {S S' T : Finset σ} {h : S ⊆ T}
     {A : Matrix (Reg loc T) (Reg loc T) ℂ} (hA : OpenAI.IsSupportedOn h A) (hSS' : S ⊆ S')
     (h' : S' ⊆ T) : OpenAI.IsSupportedOn h' A := by
   obtain ⟨A', rfl⟩ := hA
-  exact ⟨extendId hSS' A', (extendId_extendId_of_subset hSS' h' A').symm⟩
+  exact ⟨extendId hSS' A', (Arealaw.extendId_extendId hSS' h' A').symm⟩
 
 /-- D10.2.13 (support). If each retained factor `G_{i,r}` is supported on `N_r(a_i)` and
 retained anchors satisfy `d_Λ(a_i, S) ≤ r`, the product over the retained events is supported

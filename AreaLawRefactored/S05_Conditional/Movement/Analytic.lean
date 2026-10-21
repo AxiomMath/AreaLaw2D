@@ -162,7 +162,7 @@ theorem step_5_6_1 : Step_5_6_1.{u, v} := by
   intro σ _ loc _ _ Λ P X U hP hX hU _ _ _ θ a σ' τ _ hσ hτ u
   set hT := Finset.union_subset hX hU
   have hq : ∀ w, extendId hU (hatPow (marg θ hU) w) = extendId hT (hatPow (Qmat θ hU X) w) :=
-    fun w ↦ by rw [hatPow_Qmat, Conditional.extendId_extendId]
+    fun w ↦ by rw [hatPow_Qmat, Arealaw.extendId_extendId]
   have hW := hatPow_mul_I_mem_unitary (Qmat θ hU X) (-(a * u))
   have hW' := hatPow_mul_I_mem_unitary (Qmat θ hU X) (a * u)
   have hsW : star (hatPow (Qmat θ hU X) ((-(a * u) : ℝ) * I)) =
@@ -226,7 +226,7 @@ theorem step_5_10_1 : Step_5_10_1.{u, v} := by
   have hPP : P ⊆ X ∪ P := Finset.subset_union_right
   have hp : ∀ w, extendId hP (hatPow (marg θ hP) w) =
       extendId hS (extendId hPP (hatPow (marg θ hP) w)) :=
-    fun w ↦ (Conditional.extendId_extendId _ _ _).symm
+    fun w ↦ (Arealaw.extendId_extendId _ _ _).symm
   have hW := Reg51.extendId_mem_unitary hPP (hatPow_mul_I_mem_unitary (marg θ hP) (a * u))
   have hsW : star (extendId hPP (hatPow (marg θ hP) ((a * u : ℝ) * I))) =
       extendId hPP (hatPow (marg θ hP) ((-(a * u) : ℝ) * I)) := by

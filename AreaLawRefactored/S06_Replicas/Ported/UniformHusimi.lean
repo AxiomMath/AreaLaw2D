@@ -4,8 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
 import AreaLawRefactored.S06_Replicas.Ported.InjectionAverage
-import AreaLawRefactored.S06_Replicas.Ported.CoherentMeasure
-
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CoherentMeasure
 /-!
 # The coherent measure approximates a fixed number of copies uniformly
 

@@ -3,9 +3,9 @@ Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
-import AreaLawRefactored.S06_Replicas.Ported.UnitaryTwirl
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.UnitaryTwirl
 import AreaLawForMathlib.Analysis.Matrix.CfcConjugation
-import AreaLawRefactored.S06_Replicas.Ported.SchurSurprisal
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.JointResolution
 import AreaLawForMathlib.Analysis.Matrix.OrthogonalResolutionCfc
 
 /-!

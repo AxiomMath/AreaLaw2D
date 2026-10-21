@@ -285,17 +285,18 @@ theorem re_dotProduct_geomMean_le (hA : A.PosDef) (hB : B.PosDef) {p : ℝ}
   nth_rw 2 [hBeq]
   rwa [dotProduct_sandwich_mulVec ha]
 
+/-- A matrix commuting with `A` commutes with every real power of `A`. -/
+theorem commute_rpow_of_commute {X : Matrix n n ℂ} (h : Commute X A) (r : ℝ) :
+    Commute X (A ^ r) := by
+  rw [CFC.rpow_def]
+  exact (Commute.cfc_nnreal h.symm _).symm
+
 /-- A matrix commuting with both arguments commutes with the mean. -/
-theorem Commute.geomMean_right {X : Matrix n n ℂ} (hA : A.PosDef) (hB : B.PosDef)
-    (hXA : Commute X A) (hXB : Commute X B) (p : ℝ) : Commute X (geomMean p A B) := by
-  have ha : ∀ r : ℝ, Commute X (A ^ r) :=
-    fun r ↦ (hA.commute_rpow_left hXA.symm r).symm
-  have hC : Commute X (A ^ (-(1 / 2) : ℝ) * B * A ^ (-(1 / 2) : ℝ)) :=
-    ((ha _).mul_right hXB).mul_right (ha _)
-  have hCp : Commute X ((A ^ (-(1 / 2) : ℝ) * B * A ^ (-(1 / 2) : ℝ)) ^ p) := by
-    rw [CFC.rpow_eq_cfc_real (hA.whiten hB).posSemidef.nonneg]
-    exact (Commute.cfc_real hC.symm _).symm
-  exact ((ha _).mul_right hCp).mul_right (ha _)
+theorem Commute.geomMean_right {X : Matrix n n ℂ} (hXA : Commute X A) (hXB : Commute X B)
+    (p : ℝ) : Commute X (geomMean p A B) :=
+  have ha := commute_rpow_of_commute hXA
+  ((ha _).mul_right (commute_rpow_of_commute (((ha _).mul_right hXB).mul_right (ha _)) p)).mul_right
+    (ha _)
 
 omit [DecidableEq n] in
 private theorem mul_mul_mul_of_commute {x₁ x₂ y₁ y₂ : Matrix n n ℂ} (hxx : Commute x₂ x₁)
@@ -344,14 +345,13 @@ theorem geomMean_mul_of_commute {A₁ A₂ B₁ B₂ : Matrix n n ℂ} (hA₁ : 
     (hC₁.commute_rpow_left (hC₁A₂ _) p).symm (hP₂A _)
 
 /-- The two factors in `geomMean_mul_of_commute` commute. -/
-theorem commute_geomMean_of_commute {A₁ A₂ B₁ B₂ : Matrix n n ℂ} (hA₁ : A₁.PosDef)
-    (hA₂ : A₂.PosDef) (hB₁ : B₁.PosDef) (hB₂ : B₂.PosDef) (hAA : Commute A₁ A₂)
+theorem commute_geomMean_of_commute {A₁ A₂ B₁ B₂ : Matrix n n ℂ} (hAA : Commute A₁ A₂)
     (hAB : Commute A₁ B₂) (hBA : Commute B₁ A₂) (hBB : Commute B₁ B₂) (p : ℝ) :
     Commute (geomMean p A₁ B₁) (geomMean p A₂ B₂) := by
   have h₁ : Commute A₁ (geomMean p A₂ B₂) :=
-    Commute.geomMean_right hA₂ hB₂ hAA hAB p
+    Commute.geomMean_right hAA hAB p
   have h₂ : Commute B₁ (geomMean p A₂ B₂) :=
-    Commute.geomMean_right hA₂ hB₂ hBA hBB p
-  exact (Commute.geomMean_right hA₁ hB₁ h₁.symm h₂.symm p).symm
+    Commute.geomMean_right hBA hBB p
+  exact (Commute.geomMean_right h₁.symm h₂.symm p).symm
 
 end Matrix

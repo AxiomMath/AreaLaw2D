@@ -3,7 +3,7 @@ Copyright (c) 2026 QICLean contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: QICLean contributors
 -/
-import AreaLawRefactored.S06_Replicas.Ported.TensorPowerRpow
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TensorPowerRpow
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaLift
 import AreaLawRefactored.S06_Replicas.Ported.ReplicaSimilarity
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
