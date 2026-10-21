@@ -123,21 +123,10 @@ theorem conjTranspose_injectionAverage (G : Matrix (Fin m → Ω) (Fin m → Ω)
   simp only [conjTranspose_placeOp, star_inv₀, star_natCast]
 
 omit [Fintype Ω] in
-theorem placeOp_add (ι : Fin m ↪ Fin k) (G H : Matrix (Fin m → Ω) (Fin m → Ω) ℂ) :
-    placeOp ι (G + H) = placeOp ι G + placeOp ι H := by
-  ext x y
-  simp [placeOp, add_kronecker]
-
-omit [Fintype Ω] in
 theorem placeOp_smul (ι : Fin m ↪ Fin k) (c : ℂ) (G : Matrix (Fin m → Ω) (Fin m → Ω) ℂ) :
     placeOp ι (c • G) = c • placeOp ι G := by
   ext x y
   simp [placeOp, smul_kronecker]
-
-omit [Fintype Ω] in
-theorem injectionAverage_add (G H : Matrix (Fin m → Ω) (Fin m → Ω) ℂ) :
-    injectionAverage k m (G + H) = injectionAverage k m G + injectionAverage k m H := by
-  simp only [injectionAverage, placeOp_add, Finset.sum_add_distrib, smul_add]
 
 omit [Fintype Ω] in
 theorem injectionAverage_smul (c : ℂ) (G : Matrix (Fin m → Ω) (Fin m → Ω) ℂ) :
@@ -174,11 +163,6 @@ theorem coherentExpect_conjTranspose (G : Matrix (Fin m → Ω) (Fin m → Ω) �
     coherentExpect Gᴴ θ = star (coherentExpect G θ) := by
   rw [coherentExpect, coherentExpect, ← trace_conjTranspose, conjTranspose_mul,
     conjTranspose_coherentProj, trace_mul_comm]
-
-omit [DecidableEq Ω] in
-theorem coherentExpect_add (G H : Matrix (Fin m → Ω) (Fin m → Ω) ℂ) (θ : Ω → ℂ) :
-    coherentExpect (G + H) θ = coherentExpect G θ + coherentExpect H θ := by
-  simp [coherentExpect, Matrix.add_mul, trace_add]
 
 omit [DecidableEq Ω] in
 theorem coherentExpect_smul (c : ℂ) (G : Matrix (Fin m → Ω) (Fin m → Ω) ℂ) (θ : Ω → ℂ) :
@@ -415,4 +399,3 @@ theorem exists_norm_trace_sub_coherentIntegral_le (hY : IsInjectionPoly Y ψ) :
 end IsInjectionPoly
 
 end TensorPower
-

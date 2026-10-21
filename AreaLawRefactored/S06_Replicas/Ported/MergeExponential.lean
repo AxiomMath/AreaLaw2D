@@ -121,59 +121,10 @@ Original formalization, no upstream Lean proof text reused.
 Manuscript: September 24, 2026, replicas:merge-moment and comparator:merge-moments.
 -/
 
-/-- The exponential of the actual merge deficit is the finite sum over the
-actual three-label projections, with dimension-ratio powers as coefficients.
-The separate actions commute and the combined action is their literal
-pointwise product. Every real exponent is allowed.
-*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`,
-lines 112–115, and `07-comparators.tex`, lines 501–549. -/
-theorem exp_mergeDeficit_eq_sum (hcomm : ∀ g h, Commute (φQ g) (φE h))
-    (hprod : ∀ g, φQE g = φQ g * φE g) (b : ℝ) :
-    NormedSpace.exp ((b : ℂ) • (labelEntropy φQ + labelEntropy φE - labelEntropy φQE)) =
-      ∑ l, ∑ μ, ∑ ν,
-        (((((l.dim * μ.dim : ℕ) : ℝ) / ν.dim) ^ b : ℝ) : ℂ) •
-          (labelProj φQ l * labelProj φE μ * labelProj φQE ν) := by
-  classical
-  let R := mergeResolution hcomm hprod
-  have hD : (b : ℂ) • (labelEntropy φQ + labelEntropy φE - labelEntropy φQE) =
-      R.hom (fun p => (b : ℂ) *
-        ((Real.log p.1.1.dim : ℂ) + (Real.log p.1.2.dim : ℂ) - (Real.log p.2.dim : ℂ))) := by
-    rw [← mergeResolution_hom_left hcomm hprod, ← mergeResolution_hom_middle hcomm hprod,
-      ← mergeResolution_hom_right hcomm hprod]
-    rw [← map_add, ← map_sub, ← map_smul]
-    congr 1
-  rw [hD, R.exp_hom, Matrix.IsOrthogonalResolution.hom_apply,
-    Fintype.sum_prod_type, Fintype.sum_prod_type]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  refine Finset.sum_congr rfl fun μ _ => ?_
-  refine Finset.sum_congr rfl fun ν _ => ?_
-  dsimp only
-  rw [exp_mergeScalar _ _ _ _ (by exact_mod_cast l.dim_pos)
-    (by exact_mod_cast μ.dim_pos) (by exact_mod_cast ν.dim_pos), Nat.cast_mul]
-
 /-
 Original formalization, no upstream Lean proof text reused.
 Manuscript: September 24, 2026, replicas:merge-moment and comparator:merge-moments.
 -/
-
-/-- The real trace pairing with the exponential of the actual merge deficit
-is the corresponding dimension-ratio-weighted sum of actual joint label
-trace pairings. The matrix in the trace is arbitrary; every real exponent
-is allowed.
-*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`,
-lines 112–115, and `07-comparators.tex`, lines 501–549. -/
-theorem re_trace_mul_exp_mergeDeficit_eq_sum
-    (hcomm : ∀ g h, Commute (φQ g) (φE h))
-    (hprod : ∀ g, φQE g = φQ g * φE g) (b : ℝ) (ρ : Matrix X X ℂ) :
-    (ρ * NormedSpace.exp ((b : ℂ) •
-      (labelEntropy φQ + labelEntropy φE - labelEntropy φQE))).trace.re =
-      ∑ l, ∑ μ, ∑ ν,
-        (ρ * (labelProj φQ l * labelProj φE μ * labelProj φQE ν)).trace.re *
-          (((l.dim * μ.dim : ℕ) : ℝ) / ν.dim) ^ b := by
-  rw [exp_mergeDeficit_eq_sum hcomm hprod]
-  simp only [Matrix.mul_sum, Matrix.trace_sum, Complex.re_sum, Matrix.mul_smul,
-    Matrix.trace_smul, smul_eq_mul, Complex.mul_re, Complex.ofReal_re,
-    Complex.ofReal_im, zero_mul, sub_zero, mul_comm]
 
 /-
 Original formalization, no upstream Lean proof text reused.

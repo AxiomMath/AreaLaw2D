@@ -43,14 +43,6 @@ theorem continuous_hermitianUnitaryPath (H : Matrix n n ℂ) :
   unfold hermitianUnitaryPath
   fun_prop
 
-/-- The path respects addition, with a single fixed generator. -/
-theorem hermitianUnitaryPath_add (H : Matrix n n ℂ) (s t : ℝ) :
-    hermitianUnitaryPath H (s + t) =
-      hermitianUnitaryPath H s * hermitianUnitaryPath H t := by
-  unfold hermitianUnitaryPath
-  rw [add_smul]
-  exact NormedSpace.exp_add_of_commute ((Commute.refl (Complex.I • H)).smul_left s |>.smul_right t)
-
 /-- Hermitian generators give unitary matrices. -/
 theorem hermitianUnitaryPath_mul_conjTranspose
     (H : Matrix n n ℂ) (hH : H.IsHermitian) (t : ℝ) :
@@ -62,17 +54,6 @@ theorem hermitianUnitaryPath_mul_conjTranspose
     ← Matrix.exp_add_of_commute (t • (Complex.I • H)) (-(t • (Complex.I • H)))
       (Commute.refl (t • (Complex.I • H))).neg_right]
   simp
-
-/-- The same exponential path viewed as a group homomorphism. -/
-noncomputable def hermitianUnitaryRepresentation
-    (H : Matrix n n ℂ) (hH : H.IsHermitian) :
-    Multiplicative ℝ →* Matrix.unitaryGroup n ℂ where
-  toFun t := ⟨hermitianUnitaryPath H t.toAdd,
-    Matrix.mem_unitaryGroup_iff.mpr (hermitianUnitaryPath_mul_conjTranspose H hH _)⟩
-  map_one' := by ext; simp
-  map_mul' s t := by
-    apply Subtype.ext
-    exact hermitianUnitaryPath_add H s.toAdd t.toAdd
 
 /-- A differentiable curve with nonzero derivative and zero initial value
 is nonzero in a punctured neighborhood of its initial parameter. -/
@@ -87,36 +68,4 @@ private theorem eventually_ne_zero_of_hasDerivAt
   apply ht
   simp [slope, hf0, hft]
 
-/-- A nonscalar matrix exponential remains nonscalar for sufficiently small
-nonzero real parameters. Hermiticity is not needed for this analytic fact. -/
-theorem eventually_hermitianUnitaryPath_nonscalar
-    (K : Matrix n n ℂ) (hK : ∀ c : ℂ, K ≠ c • 1) :
-    ∀ᶠ t in 𝓝[≠] (0 : ℝ), ∀ c : ℂ, hermitianUnitaryPath K t ≠ c • 1 := by
-  classical
-  have hWitness : ∃ a b : n, ¬ Commute (Matrix.single a b 1) K := by
-    by_contra! hAll
-    obtain ⟨c, hc⟩ := Matrix.mem_range_scalar_iff_commute_single'.mpr hAll
-    apply hK c
-    rw [← hc]
-    ext a b
-    simp [Matrix.scalar, Matrix.diagonal, Matrix.one_apply]
-  obtain ⟨a, b, hBK⟩ := hWitness
-  let B : Matrix n n ℂ := Matrix.single a b 1
-  have hdiff : B * K - K * B ≠ 0 := by
-    intro h
-    exact hBK (sub_eq_zero.mp h)
-  have hd := hasDerivAt_exp_smul_const (𝕂 := ℝ) (Complex.I • K) 0
-  have hderiv := (hd.const_mul B).sub (hd.mul_const B)
-  have hderiv_ne : B * (exp ((0 : ℝ) • (Complex.I • K)) * (Complex.I • K)) -
-      (exp ((0 : ℝ) • (Complex.I • K)) * (Complex.I • K)) * B ≠ 0 := by
-    simpa only [zero_smul, exp_zero, one_mul, Matrix.mul_smul, smul_mul_assoc,
-      ← smul_sub] using smul_ne_zero Complex.I_ne_zero hdiff
-  have hevent := eventually_ne_zero_of_hasDerivAt hderiv (by simp) hderiv_ne
-  filter_upwards [hevent] with t ht
-  intro c hc
-  apply ht
-  change B * hermitianUnitaryPath K t - hermitianUnitaryPath K t * B = 0
-  simp [hc]
-
 end Matrix
-

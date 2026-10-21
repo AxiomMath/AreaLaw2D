@@ -217,22 +217,6 @@ theorem toBlocks₁₁ (hL : IsBlockDiagonalMap L L₁ L₂) (H : Matrix (n ⊕ 
   rw [h3] at h2
   exact (Matrix.fromBlocks_inj.mp h2).1.symm
 
-/-- The second diagonal block of `L H` is `L₂` applied to the second diagonal block of
-`H`. -/
-theorem toBlocks₂₂ (hL : IsBlockDiagonalMap L L₁ L₂) (H : Matrix (n ⊕ m) (n ⊕ m) ℂ) :
-    (L H).toBlocks₂₂ = L₂ H.toBlocks₂₂ := by
-  have h1 : blockDiagProj false * H * blockDiagProj false = fromBlocks 0 0 0 H.toBlocks₂₂ := by
-    conv_lhs => rw [← fromBlocks_toBlocks H]
-    simp [blockDiagProj, fromBlocks_multiply]
-  have h2 := hL.compress false false H
-  rw [h1, hL.second] at h2
-  have h3 : blockDiagProj false * L H * blockDiagProj false =
-      fromBlocks 0 0 0 (L H).toBlocks₂₂ := by
-    conv_lhs => rw [← fromBlocks_toBlocks (L H)]
-    simp [blockDiagProj, fromBlocks_multiply]
-  rw [h3] at h2
-  exact (Matrix.fromBlocks_inj.mp h2).2.2.2.symm
-
 end IsBlockDiagonalMap
 
 /-- Sandwiching by a block-diagonal matrix preserves the block structure. -/

@@ -309,39 +309,4 @@ theorem abs_log_hookFormula_sub_le_mul_log {p : Fin q → ℕ} (hp : Antitone p)
 noncomputable def weylFormula (p : Fin q → ℕ) : ℝ :=
   ∏ ij ∈ rowPairs q, ((shiftedPart p ij.1 : ℝ) - shiftedPart p ij.2) / ((ij.2 : ℝ) - ij.1)
 
-/-- The Weyl dimension formula is at most `(k + q)^{q²}` (`05-replicas.tex`,
-lines 162–163, which state the sharper exponent `q(q-1)/2`). -/
-theorem weylFormula_le {p : Fin q → ℕ} (hp : Antitone p) :
-    weylFormula p ≤ ((∑ i, p i : ℕ) + q : ℝ) ^ (q ^ 2) := by
-  set k := ∑ i, p i
-  have hfac : ∀ ij ∈ rowPairs q, 0 ≤ ((shiftedPart p ij.1 : ℝ) - shiftedPart p ij.2) /
-      ((ij.2 : ℝ) - ij.1) ∧ ((shiftedPart p ij.1 : ℝ) - shiftedPart p ij.2) /
-      ((ij.2 : ℝ) - ij.1) ≤ (k : ℝ) + q := by
-    intro ij hij
-    have hlt : (ij.1 : ℕ) < ij.2 := (Finset.mem_filter.mp hij).2
-    have hd : (1 : ℝ) ≤ (ij.2 : ℝ) - ij.1 := by
-      have : ((ij.1 : ℕ) + 1 : ℝ) ≤ (ij.2 : ℕ) := by exact_mod_cast hlt
-      linarith
-    have h1 := shiftedPart_sub_ge hp (Finset.mem_filter.mp hij).2
-    have h2 : (shiftedPart p ij.1 : ℝ) ≤ k + q := by exact_mod_cast shiftedPart_le p ij.1
-    have h3 : (0 : ℝ) ≤ shiftedPart p ij.2 := Nat.cast_nonneg _
-    refine ⟨div_nonneg (by linarith) (by linarith), ?_⟩
-    rw [div_le_iff₀ (by linarith)]
-    nlinarith
-  have hcard : (rowPairs q).card ≤ q ^ 2 := by
-    calc (rowPairs q).card ≤ (Finset.univ : Finset (Fin q × Fin q)).card :=
-          Finset.card_filter_le _ _
-      _ = q ^ 2 := by simp [sq]
-  calc weylFormula p ≤ ∏ _ij ∈ rowPairs q, ((k : ℝ) + q) :=
-        Finset.prod_le_prod (fun ij hij => (hfac ij hij).1) (fun ij hij => (hfac ij hij).2)
-    _ = ((k : ℝ) + q) ^ (rowPairs q).card := Finset.prod_const _
-    _ ≤ ((k : ℝ) + q) ^ (q ^ 2) := by
-        rcases Nat.eq_zero_or_pos q with hq | hq
-        · subst hq
-          have : (rowPairs 0).card = 0 := by simp [rowPairs]
-          rw [this]
-          simp
-        · have : (1 : ℝ) ≤ q := by exact_mod_cast hq
-          exact pow_le_pow_right₀ (by linarith [(k.cast_nonneg : (0 : ℝ) ≤ k)]) hcard
-
 end Partition

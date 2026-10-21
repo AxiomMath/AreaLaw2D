@@ -45,13 +45,6 @@ namespace PermutationRepresentation
 variable {G H X : Type*} [Group G] [Fintype G] [Group H] [Fintype H] [Fintype X]
   [DecidableEq X]
 
-/-- A permutation operator times a label projector, in the matrix units of the block. -/
-theorem permOp_mul_labelProj (φ : G →* Equiv.Perm X) (g : G) (l : IrrepLabel G) :
-    permOp φ g * labelProj φ l =
-      ∑ j, ∑ p, IrrepLabel.wedderburnEquiv G (single g 1) l p j • matrixUnitOp φ l p j := by
-  rw [← sum_matrixUnitOp_diag, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun j _ => permOp_mul_matrixUnitOp φ g l j j
-
 variable {φ₁ : G →* Equiv.Perm X} {φ₂ : H →* Equiv.Perm X}
 
 variable (φ₁ φ₂) in

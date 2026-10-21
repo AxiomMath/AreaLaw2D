@@ -93,10 +93,6 @@ theorem monomial_nonneg (u : Fin d → ℝ) (b : ℝ) {x : Fin d → ℝ} (hx : 
     0 ≤ orthMono u b x :=
   prod_nonneg fun i _ => mul_nonneg (rpow_nonneg (hx i).le _) (exp_pos _).le
 
-theorem measurable_monomial (u : Fin d → ℝ) (b : ℝ) : Measurable (orthMono u b) := by
-  change Measurable (fun x : Fin d → ℝ => ∏ i, x i ^ u i * exp (-b * x i))
-  fun_prop
-
 /-- **Monomial integrals with a radial weight**: for `0 < a < D = d + ∑ u`,
 `∫ ∏ x_i^{u_i} (∑ x)^{-a} e^{-∑ x} = ∏ Γ(1 + u_i) · Γ(D - a)/Γ(D)`. -/
 theorem integrable_and_integral_monomial_mul_rpow_sum (hd : 0 < d) (u : Fin d → ℝ)

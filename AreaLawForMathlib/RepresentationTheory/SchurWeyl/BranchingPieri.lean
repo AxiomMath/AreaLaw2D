@@ -71,12 +71,6 @@ theorem copyPerm_firstCopies_snoc (σ : Equiv.Perm (Fin m)) (y : Fin m → Fin q
 def slice (w : (Fin (m + 1) → Fin q) → ℂ) (c : Fin q) : (Fin m → Fin q) → ℂ :=
   fun y => w (Fin.snoc y c)
 
-theorem slice_add (w w' : (Fin (m + 1) → Fin q) → ℂ) (c : Fin q) :
-    slice (w + w') c = slice w c + slice w' c := rfl
-
-theorem slice_smul (z : ℂ) (w : (Fin (m + 1) → Fin q) → ℂ) (c : Fin q) :
-    slice (z • w) c = z • slice w c := rfl
-
 theorem slice_permOp (σ : Equiv.Perm (Fin m)) (w : (Fin (m + 1) → Fin q) → ℂ) (c : Fin q) :
     slice (permOp (copyPerm (Fin q) (m + 1)) (firstCopies m σ) *ᵥ w) c =
       permOp (copyPerm (Fin q) m) σ *ᵥ slice w c := by
@@ -342,4 +336,3 @@ theorem branchMult_le_one_and (l : IrrepLabel (Equiv.Perm (Fin (m + 1))))
     simp [labelPart, ha, show ¬a < m by omega]
 
 end TensorPower
-

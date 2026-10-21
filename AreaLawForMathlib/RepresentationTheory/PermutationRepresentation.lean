@@ -52,9 +52,6 @@ theorem invStar_single (g : G) (c : ℂ) : invStar (single g c) = single g⁻¹ 
     simp [coeff_single, Ne.symm hh]
   · simp
 
-theorem invStar_add (a b : MonoidAlgebra ℂ G) : invStar (a + b) = invStar a + invStar b := by
-  simp [invStar, Finset.sum_add_distrib, single_add]
-
 theorem coeff_invStar (a : MonoidAlgebra ℂ G) (g : G) :
     (invStar a).coeff g = star (a.coeff g⁻¹) := by
   classical
@@ -156,7 +153,6 @@ theorem commute_groupAlgebraRep_of_commute {H : Type*} [Group H] (φ : G →* Eq
   rw [← permMatrix_mul, ← permMatrix_mul, ← _root_.mul_inv_rev, ← _root_.mul_inv_rev, (h g k).eq]
 
 end PermutationRepresentation
-
 
 open MonoidAlgebra Matrix PermutationRepresentation
 open scoped ComplexOrder
@@ -406,7 +402,6 @@ theorem invStar_centralIdem (l : IrrepLabel G) : invStar (centralIdem l) = centr
   exact hPH
 
 end IrrepLabel
-
 
 open MonoidAlgebra Matrix
 

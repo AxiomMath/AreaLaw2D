@@ -934,10 +934,6 @@ lemma pitch_eq_y {p k : ℕ} {j j' : Fin 2 → ℤ} {x x' : ℝ × ℝ} (hc : Cr
 lemma lay_dummy {x : ℝ × ℝ} (h : L.piece x = .dummy) : L.lay x = L.k₀ := by
   simp [lay, piece_dummy h]
 
-lemma lay_exterior {x : ℝ × ℝ} (h : L.piece x = .exterior) : L.lay x = L.K := by
-  have := piece_exterior h; have := L.lt_K
-  unfold lay; split_ifs <;> omega
-
 /-- D11.11.5. Distinct non-belt pieces meeting across a grid line finer than both local meshes
 have opposite labels: adjacent layers, or the dummy (exterior) tile and layer `k₀` (`K - 1`). -/
 lemma nonbelt_ne {p : ℕ} {x x' : ℝ × ℝ} (hP : L.piece x ≠ L.piece x')

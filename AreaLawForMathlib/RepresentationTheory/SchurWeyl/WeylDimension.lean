@@ -42,65 +42,6 @@ namespace TensorPower
 
 variable {q m : ℕ}
 
-theorem firstCopies_groupAlgebraRep_apply_snoc (b : MonoidAlgebra ℂ (Equiv.Perm (Fin m)))
-    (y : Fin m → Fin q) (c : Fin q) :
-    groupAlgebraRep ((copyPerm (Fin q) (m + 1)).comp (firstCopies m)) b
-        (Fin.snoc y c) (Fin.snoc y c) = groupAlgebraRep (copyPerm (Fin q) m) b y y := by
-  have h := congrFun (slice_groupAlgebraRep b (Pi.single (Fin.snoc y c) 1) c) y
-  have hs : slice (Pi.single (Fin.snoc y c : Fin (m + 1) → Fin q) (1 : ℂ)) c =
-      Pi.single y 1 := by
-    funext y'
-    simp only [slice, Pi.single_apply]
-    congr 1
-    apply propext
-    constructor
-    · intro e; simpa using congrArg Fin.init e
-    · rintro rfl; rfl
-  rw [hs] at h
-  simpa [slice, mulVec_single] using h
-
-theorem trace_firstCopies_groupAlgebraRep (b : MonoidAlgebra ℂ (Equiv.Perm (Fin m))) :
-    (groupAlgebraRep ((copyPerm (Fin q) (m + 1)).comp (firstCopies m)) b).trace =
-      q * (groupAlgebraRep (copyPerm (Fin q) m) b).trace := by
-  rw [Matrix.trace, ← (Fin.snocEquiv fun _ => Fin q).sum_comp, Fintype.sum_prod_type]
-  simp only [Fin.snocEquiv, Equiv.coe_fn_mk, diag_apply]
-  simp only [firstCopies_groupAlgebraRep_apply_snoc, sum_const, card_univ, Fintype.card_fin,
-    nsmul_eq_mul]
-  rfl
-
-/-- **`∑_λ c(λ, ν) m_λ = q m_ν`**: restricting `(ℂ^q)^{⊗(m+1)}` to the first `m` copies
-multiplies the multiplicity of `ν` by `q`. -/
-theorem sum_branchMult_mul_multiplicity (n : IrrepLabel (Equiv.Perm (Fin m))) :
-    ∑ l, IrrepLabel.branchMult (firstCopies m) l n * multiplicity (copyPerm (Fin q) (m + 1)) l =
-      q * multiplicity (copyPerm (Fin q) m) n := by
-  set φ' := copyPerm (Fin q) (m + 1)
-  set a := IrrepLabel.restrictHom (firstCopies m) (IrrepLabel.centralIdem n)
-  have hd : (n.dim : ℂ) ≠ 0 := by exact_mod_cast n.dim_pos.ne'
-  have h1 : (groupAlgebraRep φ' a).trace = q * (n.dim * multiplicity (copyPerm (Fin q) m) n) := by
-    rw [← groupAlgebraRep_comp, trace_firstCopies_groupAlgebraRep, ← labelProj,
-      trace_labelProj]
-    push_cast; ring
-  have h2 : ∀ l, (groupAlgebraRep φ' a * labelProj φ' l).trace =
-      n.dim * (IrrepLabel.branchMult (firstCopies m) l n * multiplicity φ' l) := by
-    intro l
-    have h := trace_mul_groupAlgebraRep_mul_labelProj φ' (M := 1) (fun g => Commute.one_right _)
-      a l
-    simp only [one_mul] at h
-    rw [IrrepLabel.trace_block_centralIdem, trace_labelProj] at h
-    have hl : (l.dim : ℂ) ≠ 0 := by exact_mod_cast l.dim_pos.ne'
-    apply mul_left_cancel₀ hl
-    rw [h]
-    push_cast; ring
-  have h3 : (groupAlgebraRep φ' a).trace = ∑ l, (groupAlgebraRep φ' a * labelProj φ' l).trace := by
-    rw [← trace_sum, ← mul_sum, sum_labelProj, mul_one]
-  rw [h1] at h3
-  simp only [h2, ← mul_sum] at h3
-  have h4 : (n.dim : ℂ) * ∑ l, (IrrepLabel.branchMult (firstCopies m) l n : ℂ) *
-      multiplicity φ' l = n.dim * (q * multiplicity (copyPerm (Fin q) m) n) := by
-    rw [← h3]; ring
-  have h5 := mul_left_cancel₀ hd h4
-  exact_mod_cast h5
-
 variable {k : ℕ}
 
 /-- The scalar `s_λ = k! m_λ / d_λ` of the fixed-point sum on the label `λ`. -/
@@ -280,13 +221,5 @@ theorem multiplicity_eq_weylFormula : ∀ {k : ℕ} (l : IrrepLabel (Equiv.Perm 
     have hK : ((m + 1).factorial : ℝ) * n.dim * A ≠ 0 :=
       mul_ne_zero (mul_ne_zero (by positivity) hdn) hA0
     exact sub_eq_zero.mp ((mul_eq_zero.mp key).resolve_left hK)
-
-/-- **Lemma 6.1(1), the general-linear factor** (`05-replicas.tex`, equation
-`replicas:dimensions`): for a label occurring in `(ℂ^q)^{⊗k}`,
-`dim V^{(q)}_λ = ∏_{i<j} (l_i - l_j)/(j - i)`. -/
-theorem schur_multiplicity_eq_weylFormula {l : IrrepLabel (Equiv.Perm (Fin k))}
-    (hl : labelProj (copyPerm (Fin q) k) l ≠ 0) :
-    (multiplicity (copyPerm (Fin q) k) l : ℝ) = Partition.weylFormula (part q l) :=
-  multiplicity_eq_weylFormula l (labelPart_eq_zero_of_labelProj_ne_zero hl)
 
 end TensorPower

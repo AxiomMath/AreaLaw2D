@@ -85,10 +85,6 @@ theorem reindex_tensorPow_localLift (k : ℕ) (Q : Finset V)
   · obtain ⟨j, hj⟩ := Function.ne_iff.mp h
     rw [if_neg h, prod_eq_zero (mem_univ j) (if_neg hj)]
 
-theorem reindex_injective {α β : Type*} (e : α ≃ β) {A B : Matrix α α ℂ}
-    (h : reindex e e A = reindex e e B) : A = B :=
-  (reindex e e).injective h
-
 /-- **The integral representation in lifted form** (`05-replicas.tex`, equation
 `replicas:W-integral`): `W_{Q,k} = ∫ ((τ^t ⊗ 1)^{⊗k}) dζ_Q(τ)` on `V^{⊗k}`, for
 `0 < t ≤ 1` and every region `Q`. -/
@@ -182,4 +178,3 @@ theorem mul_of_integral {Ω' : Type*} [MeasurableSpace Ω'] {P : Measure Ω'} (A
 end Vectors
 
 end TensorPower
-

@@ -484,22 +484,6 @@ theorem Hyp.U_sandwich {t : ℕ} (ht : t ≤ S.T) (h : S.Hist t) (g : Fin S.K) :
     simp only [X, mem_subtype, mem_filter]
     exact ⟨hA, by omega⟩
 
-theorem Hyp.far_of_dep_gt {t : ℕ} (ht : t ≤ S.T) (h : S.Hist t) (g : Fin S.K) {y : S.Λ}
-    (hA : y.1 ∈ S.A) (hy : S.hi g (S.offset t h g) - sideFills (fills t) true / S.n < S.dep y)
-    (hy' : S.dep y ≤ S.hi g (S.offset t h g)) :
-    S.stateAt t h g y = some true := by
-  have hdiv := S.sideFills_div_le ht true
-  have hL := H.hi_add_le g (S.offset t h g)
-  have hhi := S.hi_eq g (S.offset t h g)
-  have hm := H.m_ge
-  have hidx := H.idx_lt (y := y) (by omega) (by omega)
-  have h1 : S.n * (S.hi g (S.offset t h g) - S.dep y + 1) ≤
-      S.n * (sideFills (fills t) true / S.n) := Nat.mul_le_mul_left _ (by omega)
-  have h2 := Nat.mul_div_le (sideFills (fills t) true) S.n
-  have h3 : S.n * (S.hi g (S.offset t h g) - S.dep y + 1) =
-      S.n * (S.hi g (S.offset t h g) - S.dep y) + S.n := by ring
-  exact H.consumed_far ht h g hA (by omega) hy' (by omega) (by omega)
-
 /-- D9.8.5. The far sandwich: `pre(j_F) ⊇ U Y ⊇ pre(j_F) \ (rows j_F - D - r₀ … j_F)`, `j_F` the
 far front row, the assigned far part a suffix of the slot order. -/
 theorem Hyp.UY_sandwich {t : ℕ} (ht : t ≤ S.T) (h : S.Hist t) (g : Fin S.K) :

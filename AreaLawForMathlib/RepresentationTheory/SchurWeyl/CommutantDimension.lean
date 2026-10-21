@@ -55,10 +55,6 @@ def commutant : Submodule ℂ (Matrix X X ℂ) where
   zero_mem' _ := Commute.zero_right _
   smul_mem' c _ hM g := (hM g).smul_right c
 
-omit [Fintype G] in
-theorem mem_commutant {M : Matrix X X ℂ} : M ∈ commutant φ ↔ ∀ g, Commute (permOp φ g) M :=
-  Iff.rfl
-
 theorem matrixUnitOp_mul_matrixUnitOp_of_ne {l l' : IrrepLabel G} (h : l ≠ l')
     (i j : Fin l.dim) (i' j' : Fin l'.dim) :
     matrixUnitOp φ l i j * matrixUnitOp φ l' i' j' = 0 := by
@@ -356,5 +352,3 @@ theorem card_labelProj_ne_zero_le :
   exact hP.trace_eq_zero_iff.mp htr
 
 end TensorPower
-
-

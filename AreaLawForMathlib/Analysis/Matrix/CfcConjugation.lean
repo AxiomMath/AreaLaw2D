@@ -44,22 +44,6 @@ noncomputable def reindexStarAlgHom (e : m ≃ n) :
 @[simp] theorem reindexStarAlgHom_apply (e : m ≃ n) (M : Matrix m m ℂ) :
     reindexStarAlgHom e M = M.submatrix e.symm e.symm := rfl
 
-/-- Functional calculus commutes with reindexing a Hermitian matrix. -/
-theorem cfc_submatrix_equiv {A : Matrix m m ℂ} (hA : A.IsHermitian) (f : ℝ → ℝ)
-    (e : m ≃ n) :
-    cfc f (A.submatrix e.symm e.symm) = (cfc f A).submatrix e.symm e.symm := by
-  have hcont : ContinuousOn f (spectrum ℝ A) := A.finite_real_spectrum.continuousOn f
-  have hcontφ : Continuous (reindexStarAlgHom (m := m) (n := n) e) :=
-    LinearMap.continuous_of_finiteDimensional
-      ((reindexStarAlgHom (m := m) (n := n) e : Matrix m m ℂ →ₗ[ℂ] Matrix n n ℂ))
-  have hsa : IsSelfAdjoint A := hA
-  have hsa' : IsSelfAdjoint (reindexStarAlgHom e A) := by
-    change (A.submatrix e.symm e.symm).IsHermitian
-    exact hA.submatrix e.symm
-  simpa only [reindexStarAlgHom_apply] using
-    (StarAlgHomClass.map_cfc (reindexStarAlgHom (m := m) (n := n) e) f A
-      hcont hcontφ hsa hsa').symm
-
 end Reindex
 
 variable {n : Type*} [Fintype n] [DecidableEq n]

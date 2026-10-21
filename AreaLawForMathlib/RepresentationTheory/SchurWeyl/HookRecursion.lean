@@ -230,12 +230,6 @@ theorem sum_prod_add_one_div {t : Fin q → ℝ} (ht : Function.Injective t) (i�
   refine prod_congr rfl fun j _ => ?_
   ring
 
-/-- The dimension formula vanishes when two shifted parts coincide. -/
-theorem hookFormula_eq_zero_of_shiftedPart_eq (p : Fin q → ℕ) {a b : Fin q} (hab : a < b)
-    (h : shiftedPart p a = shiftedPart p b) : hookFormula p = 0 := by
-  rw [hookFormula, prod_eq_zero (i := (a, b)) (by simp [rowPairs, hab]) (by simp [h])]
-  simp
-
 theorem hookFormula_eq_vand (p : Fin q → ℕ) :
     hookFormula p = (∑ i, p i).factorial * vand (fun j => (shiftedPart p j : ℝ)) /
       ∏ i, ((shiftedPart p i).factorial : ℝ) := rfl
@@ -558,4 +552,3 @@ theorem hookFormula_eq_of_le {N : ℕ} (h : q ≤ N) (p : Fin N → ℕ)
     congr 1
 
 end Partition
-

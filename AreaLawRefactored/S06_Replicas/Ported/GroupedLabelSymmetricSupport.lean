@@ -139,36 +139,4 @@ theorem subgroup_signedLabelEntropy_symProj_nonneg
   rw [sub_zero, mul_assoc, hGQ', ← mul_assoc]
   simpa only [hQH.eq] using hD.conjTranspose_mul_mul_same Q
 
-/-- Label observables from the two disjoint groups of copies commute for
-arbitrary choices of physical regions. Source: `07-comparators.tex`,
-lines 454--480. -/
-theorem commute_grouped_labelObservables
-    {m r k : ℕ} (e : Fin m ⊕ Fin r ≃ Fin k) (S T : Finset V)
-    (f : IrrepLabel (Equiv.Perm (Fin m)) → ℝ)
-    (g : IrrepLabel (Equiv.Perm (Fin r)) → ℝ) :
-    Commute (labelObservable ((subsystemPerm k ι S).comp (groupHom₁ e)) f)
-      (labelObservable ((subsystemPerm k ι T).comp (groupHom₂ e)) g) :=
-  commute_labelObservable_of_commute
-    ((subsystemPerm k ι S).comp (groupHom₁ e))
-    ((subsystemPerm k ι T).comp (groupHom₂ e))
-    (fun σ τ => commute_subsystemPerm_of_commute ι k S T (groupHom_commute e σ τ)) f g
-
-/-- Every good-copy label observable preserves the simultaneous symmetric
-subspace of the bad copies. Source: `07-comparators.tex`, lines 454--480. -/
-theorem commute_good_labelObservable_bad_symProj
-    {m r k : ℕ} (e : Fin m ⊕ Fin r ≃ Fin k) (S : Finset V)
-    (f : IrrepLabel (Equiv.Perm (Fin m)) → ℝ) :
-    Commute (labelObservable ((subsystemPerm k ι S).comp (groupHom₁ e)) f)
-      (symProj ((subsystemPerm k ι Finset.univ).comp (groupHom₂ e))) := by
-  unfold labelObservable symProj
-  refine Commute.sum_left _ _ _ fun ell _ => ?_
-  refine ((Commute.sum_right _ _ _ (fun τ _ => ?_)).smul_left _).smul_right _
-  simpa only [labelProj, groupAlgebraRep_single, one_smul] using
-    commute_groupAlgebraRep_of_commute
-      ((subsystemPerm k ι S).comp (groupHom₁ e))
-      ((subsystemPerm k ι Finset.univ).comp (groupHom₂ e))
-      (fun σ τ => commute_subsystemPerm_of_commute ι k S Finset.univ
-        (groupHom_commute e σ τ))
-      (IrrepLabel.centralIdem ell) (MonoidAlgebra.single τ (1 : ℂ))
-
 end TensorPower

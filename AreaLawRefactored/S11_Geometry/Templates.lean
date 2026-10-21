@@ -27,12 +27,6 @@ def lattice : (Fin 2 → ℤ) ≃ᵢ ℤ × ℤ := IsometryEquiv.piFinTwo fun _ 
 /-- The lattice site `z ∈ ℤ^d` as a point of `ℝ^d`. -/
 def latticeSite (z : Fin d → ℤ) : Fin d → ℝ := fun i ↦ z i
 
-theorem isometry_latticeSite : Isometry (latticeSite (d := d)) :=
-  Isometry.piMap (fun _ ↦ ((↑) : ℤ → ℝ)) fun _ ↦ Real.isometry_intCast
-
-theorem plane_latticeSite (z : Fin 2 → ℤ) : plane (latticeSite z) = latticePoint (lattice z) :=
-  rfl
-
 theorem isometry_latticePoint : Isometry latticePoint :=
   Real.isometry_intCast.prodMap Real.isometry_intCast
 

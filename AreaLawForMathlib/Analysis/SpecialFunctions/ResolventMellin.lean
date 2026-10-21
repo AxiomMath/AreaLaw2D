@@ -110,20 +110,4 @@ theorem integrableOn_Ioi_cpow_div_add {x : ℝ} (hx : 0 < x) {z : ℂ} (h1 : -1 
     (sin_pi_mul_ne_zero_of_re_mem h1 h0)))
     (by rw [Ne, cpow_eq_zero_iff]; exact fun h => (ofReal_ne_zero.2 hx.ne') h.1)
 
-/-- **Spectral form.** For finitely many `x k > 0`, coefficients `c k` and `-1 < re z < 0`,
-`∑ c_k x_k ^ z = -(sin (π z) / π) ∫₀^∞ v ^ z ∑ c_k / (x_k + v) dv`. Applied to the eigenvalues
-of a positive definite matrix this is `A ^ z = -(sin π z / π) ∫₀^∞ v ^ z (A + v)⁻¹ dv`. -/
-theorem sum_mul_cpow_eq_integral {ι : Type*} (s : Finset ι) {x : ι → ℝ}
-    (hx : ∀ k ∈ s, 0 < x k) (c : ι → ℂ) {z : ℂ} (h1 : -1 < z.re) (h0 : z.re < 0) :
-    ∑ k ∈ s, c k * (x k : ℂ) ^ z =
-      -(sin (π * z) / π) * ∫ v in Ioi (0 : ℝ), (v : ℂ) ^ z * ∑ k ∈ s, c k / (x k + v) := by
-  have hsin := sin_pi_mul_ne_zero_of_re_mem h1 h0
-  have hπ : (π : ℂ) ≠ 0 := ofReal_ne_zero.2 Real.pi_ne_zero
-  simp_rw [Finset.mul_sum, mul_div_left_comm _ (c _)]
-  rw [integral_finsetSum _ fun k hk => (integrableOn_Ioi_cpow_div_add (hx k hk) h1 h0).const_mul
-    _, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k hk => ?_
-  rw [integral_const_mul, integral_Ioi_cpow_div_add (hx k hk) h1 h0]
-  field_simp
-
 end Complex

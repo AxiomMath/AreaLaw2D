@@ -180,14 +180,6 @@ theorem weight_branch {m : ℕ} (Q : Finset F) {z : Config (m + 1) ι → ℂ}
   have := congrArg RCLike.re h'
   simpa [branchWeight] using this
 
-/-- Summing the branch weights over `ν` gives the weight of `λ`. -/
-theorem sum_branchWeight_snd {m : ℕ} (Q : Finset F) (z : Config (m + 1) ι → ℂ)
-    (l : IrrepLabel (Equiv.Perm (Fin (m + 1)))) :
-    ∑ n, branchWeight Q z (l, n) =
-      RCLike.re (star z ⬝ᵥ (labelProj (subsystemPerm (m + 1) ι Q) l *ᵥ z)) := by
-  simp only [branchWeight, ← map_sum, ← dotProduct_sum,
-    ← sum_mulVec, ← Finset.mul_sum, (isOrthogonalResolution_labelProj _).sum_eq, mul_one]
-
 /-- A label `λ` has at most `d` branches with nonzero projector. -/
 theorem card_branch_le [∀ f, Nonempty (ι f)] {m : ℕ} (Q : Finset F)
     (l : IrrepLabel (Equiv.Perm (Fin (m + 1)))) :

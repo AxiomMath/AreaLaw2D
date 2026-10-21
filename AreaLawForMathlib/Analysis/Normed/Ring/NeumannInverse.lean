@@ -21,16 +21,6 @@ namespace NormedRing
 
 variable {R α : Type*} [NormedRing R] [HasSummableGeomSeries R]
 
-/-- Ring inversion preserves convergence at an invertible limit. -/
-theorem inverse_tendsto_of_tendsto_of_isUnit {f : α → R} {l : Filter α} {K₀ : R}
-    (hK₀ : IsUnit K₀) (h : Filter.Tendsto f l (nhds K₀)) :
-    Filter.Tendsto (fun x => Ring.inverse (f x)) l (nhds (Ring.inverse K₀)) := by
-  rw [← hK₀.unit_spec, Ring.inverse_unit]
-  have hinv := (inverse_continuousAt hK₀.unit).tendsto.comp h
-  change Filter.Tendsto (fun x => Ring.inverse (f x)) l
-    (nhds (Ring.inverse (hK₀.unit : R))) at hinv
-  simpa only [Ring.inverse_unit] using hinv
-
 variable {R : Type*} [NormedRing R] [NormOneClass R] [HasSummableGeomSeries R]
 
 /-- Quantitative Neumann bound.  If \(\lVert t\rVert\le a<1\), then
@@ -102,58 +92,4 @@ theorem isUnit_and_norm_inverse_le_of_norm_mul_norm_sub_le (K₀ K : R) {a : ℝ
   apply isUnit_and_norm_inverse_le_of_norm_inverse_mul_sub_le K₀ K hK₀ _ ha
   exact (norm_mul_le _ _).trans h
 
-/-- Under a relative perturbation of size at most \(a<1\), the displacement of the inverse
-from the base inverse is at most \((1-a)^{-1}a\lVert K_0^{-1}\rVert\). -/
-theorem norm_inverse_sub_inverse_le_of_norm_inverse_mul_sub_le (K₀ K : R) {a : ℝ}
-    (hK₀ : IsUnit K₀) (h : ‖Ring.inverse K₀ * (K - K₀)‖ ≤ a) (ha : a < 1) :
-    ‖Ring.inverse K - Ring.inverse K₀‖ ≤
-      (1 - a)⁻¹ * a * ‖Ring.inverse K₀‖ := by
-  obtain ⟨_, E, hE, _, hbase, hinverse⟩ :=
-    perturbation_setup K₀ K hK₀ h ha
-  have hresolvent :
-      Ring.inverse K - Ring.inverse K₀ =
-        -(Ring.inverse (1 - -E) * E) * Ring.inverse K₀ := by
-    have hcancel :
-        Ring.inverse (1 - -E) + Ring.inverse (1 - -E) * E = 1 := by
-      calc
-        Ring.inverse (1 - -E) + Ring.inverse (1 - -E) * E =
-            Ring.inverse (1 - -E) * (1 - -E) := by
-          simp only [sub_neg_eq_add, mul_add, mul_one]
-        _ = 1 := Ring.inverse_mul_cancel (1 - -E) hbase
-    have hdifference :
-        Ring.inverse (1 - -E) - 1 = -(Ring.inverse (1 - -E) * E) := by
-      calc
-        Ring.inverse (1 - -E) - 1 =
-            Ring.inverse (1 - -E) -
-              (Ring.inverse (1 - -E) + Ring.inverse (1 - -E) * E) :=
-          congrArg (Ring.inverse (1 - -E) - ·) hcancel.symm
-        _ = -(Ring.inverse (1 - -E) * E) := by noncomm_ring
-    rw [hinverse]
-    calc
-      Ring.inverse (1 - -E) * Ring.inverse K₀ - Ring.inverse K₀ =
-          (Ring.inverse (1 - -E) - 1) * Ring.inverse K₀ := by noncomm_ring
-      _ = -(Ring.inverse (1 - -E) * E) * Ring.inverse K₀ := by rw [hdifference]
-  rw [hresolvent]
-  have hneumann : ‖Ring.inverse (1 - -E)‖ ≤ (1 - a)⁻¹ :=
-    norm_inverse_one_sub_le (-E) (by simpa using hE) ha
-  calc
-    ‖-(Ring.inverse (1 - -E) * E) * Ring.inverse K₀‖ ≤
-        ‖-(Ring.inverse (1 - -E) * E)‖ * ‖Ring.inverse K₀‖ := norm_mul_le _ _
-    _ ≤ (‖Ring.inverse (1 - -E)‖ * ‖E‖) * ‖Ring.inverse K₀‖ := by
-      gcongr
-      simpa only [norm_neg] using norm_mul_le (Ring.inverse (1 - -E)) E
-    _ ≤ (1 - a)⁻¹ * a * ‖Ring.inverse K₀‖ := by
-      gcongr
-
-/-- A product-form inverse-displacement estimate, obtained from
-\(\lVert K_0^{-1}(K-K_0)\rVert\le
-\lVert K_0^{-1}\rVert\,\lVert K-K_0\rVert\). -/
-theorem norm_inverse_sub_inverse_le_of_norm_mul_norm_sub_le (K₀ K : R) {a : ℝ}
-    (hK₀ : IsUnit K₀) (h : ‖Ring.inverse K₀‖ * ‖K - K₀‖ ≤ a) (ha : a < 1) :
-    ‖Ring.inverse K - Ring.inverse K₀‖ ≤
-      (1 - a)⁻¹ * a * ‖Ring.inverse K₀‖ := by
-  apply norm_inverse_sub_inverse_le_of_norm_inverse_mul_sub_le K₀ K hK₀ _ ha
-  exact (norm_mul_le _ _).trans h
-
 end NormedRing
-

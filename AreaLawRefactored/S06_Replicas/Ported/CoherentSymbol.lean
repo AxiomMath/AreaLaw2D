@@ -102,13 +102,6 @@ theorem l2_opNorm_symProj_le : ‖symProj (copyPerm Ω k)‖ ≤ 1 := by
   · have := mul_right_cancel₀ h0 (h.trans (one_mul _).symm)
     rw [this]
 
-/-- A symmetric density matrix is fixed by the symmetric projector on the right. -/
-theorem mul_symProj_of_permOp_mul {σ : Matrix (Fin k → Ω) (Fin k → Ω) ℂ}
-    (hσp : σ.PosSemidef) (hσ : ∀ π, permOp (copyPerm Ω k) π * σ = σ) :
-    σ * symProj (copyPerm Ω k) = σ := by
-  have h := congrArg conjTranspose (symProj_mul_of_permOp_mul hσ)
-  rwa [conjTranspose_mul, hσp.isHermitian.eq, isHermitian_symProj.eq] at h
-
 /-- `|Tr σ M| ≤ ‖M Π_k‖` for a symmetric density matrix `σ`. -/
 theorem norm_trace_mul_le_of_symmetric {σ : Matrix (Fin k → Ω) (Fin k → Ω) ℂ}
     (hσp : σ.PosSemidef) (hσt : σ.trace = 1) (hσ : ∀ π, permOp (copyPerm Ω k) π * σ = σ)
@@ -391,4 +384,3 @@ theorem freeAlgebra (hX : HasCoherentSymbol X f) (q : FreeAlgebra ℂ (Fin 2)) :
 end HasCoherentSymbol
 
 end TensorPower
-

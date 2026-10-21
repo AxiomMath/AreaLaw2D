@@ -46,9 +46,6 @@ def l1Lattice (d : ℕ) : SimpleGraph (Fin d → ℤ) where
     exact Finset.sum_congr rfl fun i _ => by omega⟩
   loopless := ⟨fun x (h : ∑ i, (x i - x i).natAbs = 1) => by simp at h⟩
 
-instance (d : ℕ) : DecidableRel (l1Lattice d).Adj :=
-  fun x y => inferInstanceAs (Decidable (∑ i, (x i - y i).natAbs = 1))
-
 end SimpleGraph
 
 namespace Finset
@@ -125,4 +122,3 @@ theorem card_le_l1BallCard {d : ℕ} {s : Finset (Fin d → ℤ)} (x : Fin d →
           exact sum_range_reflect (Int.l1BallCard d) r
 
 end Finset
-

@@ -59,12 +59,6 @@ theorem trace_vecMarginal (θ : ((f : F) → ι f) → ℂ) (Q : Finset F) :
   rw [← Equiv.sum_comp (Equiv.piEquivPiSubtypeProd (· ∈ Q) ι).symm, Fintype.sum_prod_type]
   rfl
 
-omit [Fintype F] [∀ f, Fintype (ι f)] in
-theorem splitEquiv_symm_apply (k : ℕ) (Q : Finset F)
-    (p : (Fin k → SubConfig ι Q) × (Fin k → ComplConfig ι Q)) (j : Fin k) :
-    (splitEquiv ι k Q).symm p j = (Equiv.piEquivPiSubtypeProd (· ∈ Q) ι).symm (p.1 j, p.2 j) :=
-  rfl
-
 variable [∀ f, DecidableEq (ι f)]
 
 /-- `⟨θ^{⊗k}, (G ⊗ 1) θ^{⊗k}⟩ = Tr(ρ_Q^{⊗k} G)` for an operator `G` on `Q^{⊗k}`. -/
@@ -216,15 +210,6 @@ theorem tensorPow_real_smul [DecidableEq Ω] (c : ℝ) (A : Matrix Ω Ω ℂ) :
   ext x y
   simp only [tensorPow_apply, Matrix.smul_apply, Complex.real_smul, Finset.prod_mul_distrib,
     Finset.prod_const, Finset.card_univ, Fintype.card_fin, Complex.ofReal_pow]
-
-/-- Reindexing every copy reindexes the tensor power. -/
-theorem tensorPow_submatrix_equiv [DecidableEq Ω] {Ω' : Type*} [DecidableEq Ω']
-    (A : Matrix Ω Ω ℂ) (e : Ω' ≃ Ω) :
-    tensorPow (k := k) (A.submatrix e e) =
-      (tensorPow (k := k) A).submatrix (Equiv.arrowCongr (Equiv.refl (Fin k)) e)
-        (Equiv.arrowCongr (Equiv.refl (Fin k)) e) := by
-  ext x y
-  simp [tensorPow_apply, Equiv.arrowCongr_apply]
 
 /-- `A^{⊗k}` is positive semidefinite for `A ≥ 0`. -/
 theorem posSemidef_tensorPow_of_posSemidef [Finite Ω] [DecidableEq Ω] {A : Matrix Ω Ω ℂ}

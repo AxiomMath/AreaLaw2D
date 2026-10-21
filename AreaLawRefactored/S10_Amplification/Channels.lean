@@ -131,11 +131,6 @@ theorem norm_chanL_le {a : σ} {l : ℕ} {k : Matrix (Reg loc Λ) (Reg loc Λ) �
     ‖chanL G a l k B‖ ≤ ‖B‖ :=
   norm_chan_le hE B
 
-theorem chanL_one {a : σ} {l : ℕ} {k : Matrix (Reg loc Λ) (Reg loc Λ) ℂ}
-    (hE : 0 ≤ E G Λ a l k ∧ E G Λ a l k ≤ 1) :
-    chanL G a l k (1 : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ) = 1 :=
-  chan_one hE
-
 theorem shell_sub (a : σ) (l : ℕ) (k : Matrix (Reg loc Λ) (Reg loc Λ) ℂ)
     (B B' : Matrix (Reg loc Λ × κ) (Reg loc Λ × κ) ℂ) :
     shell G a l k (B - B') = shell G a l k B - shell G a l k B' := by
@@ -298,7 +293,6 @@ theorem step_10_2_3 [∀ i, Nonempty (loc i)] {a : σ} {k : Matrix (Reg loc Λ) 
     · rw [Finset.Ico_eq_empty (by omega), Finset.sum_empty, add_zero,
         if_neg (by omega)]
       exact (chanL_of_card_le hc hα htail (by omega) B).symm
-
 
 end Channels
 

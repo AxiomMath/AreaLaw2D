@@ -153,12 +153,6 @@ theorem B_add_resB {v : ℝ} (hv : 0 ≤ v) (y : F) : R.B (R.resB v y) + (v : �
   have : (R.mu j + v : ℂ) ≠ 0 := by exact_mod_cast (add_pos_of_pos_of_nonneg (R.mu_pos j) hv).ne'
   simp [this]
 
-theorem A_invA (x : E) : R.A (R.invA x) = x := by
-  rw [A_eq, invA, spec_spec]
-  convert spec_one R.eA x using 2
-  funext i
-  simp [(R.lam_pos i).ne']
-
 theorem norm_a₀ : ‖R.a₀‖ = ‖R.b₀‖ := R.V.norm_map _
 
 /-- `⟪x, (A + v) x⟫ = ∑ (λᵢ + v) ‖⟪eᵢ, x⟫‖²`. -/

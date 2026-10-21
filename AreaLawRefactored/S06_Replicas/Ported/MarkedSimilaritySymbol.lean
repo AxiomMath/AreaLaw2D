@@ -27,18 +27,15 @@ area law from a global spectral gap*, `05-replicas.tex`, lines 615–638 and 663
 The proof replaces the marked ratios by polynomials in star operators (lines 693–708),
 computes the symbols of these polynomial words (lines 776–812), and removes the clipping on the
 one-copy side (lines 813–826). This file assembles these steps into
-`TensorPower.hasCoherentSymbol_markedSimilarity`, and deduces equation
-`replicas:polynomial-symbol` for every noncommutative polynomial in `O_k, O_k^†`.
+`TensorPower.exists_polyWord_approx` (D6.13 (b)) and
+`TensorPower.hasCoherentSymbol_markedSimilarity`.
 
 ## Main declarations
 
 * `TensorPower.norm_sandwich_approx_le`, `TensorPower.norm_pairing_approx_le` — the
   perturbation estimates.
+* `TensorPower.exists_polyWord_approx` — compressed polynomial words approximate `O_k`.
 * `TensorPower.hasCoherentSymbol_markedSimilarity` — `O_k` has coherent symbol `f_θ`.
-* `TensorPower.eventually_norm_trace_freeAlgebra_markedSimilarity_sub_le` — equation
-  `replicas:polynomial-symbol`.
-* `TensorPower.eventually_norm_trace_skewOperator_markedSimilarity_sub_le` — equation
-  `replicas:skew-symbol`.
 
 ## References
 
@@ -406,15 +403,21 @@ theorem norm_markedSimilarity_sub_polyWord_le {t s CR CI : ℝ} (ht0 : 0 ≤ t) 
   refine (norm_pairing_approx_le _ _ _ _ hx hMx hy hMy').trans (le_of_eq ?_)
   ring
 
-/-- **Lemma 6.4, the coherent symbol** (`05-replicas.tex`, lines 615–638 and 663–836): for
-disjoint `P, Y, F`, `0 < t < 1/2` and `h` supported on `P ∪ Y`, the similarity transforms
-`O_k = A_k^{-1/2} hbar A_k^{1/2}` have, on the symmetric subspace, the coherent symbol
-`f_θ = ⟨θ, ρ_P^t ρ_Y^{-t} h ρ_P^{-t} ρ_Y^t θ⟩`. -/
-theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2)
+/-- **The polynomial-word approximation of `O_k`** (D6.13.6–D6.13.8): for every `ε > 0` there
+are a product decomposition `h = ∑ b_i a_i` (`a_i` on `P`, `b_i` on `Y`) and polynomials `p, q`
+such that the symbol of the polynomial word is `ε`-close to `f_θ` on the unit sphere and the
+compressed words `B_k = Π_k W_k Π_k` satisfy `‖(O_k - B_k) Π_k‖ ≤ ε` for large `k`. -/
+theorem exists_polyWord_approx {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2)
     {P Y F : Finset V} (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
-    {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) :
-    HasCoherentSymbol (Ω := SiteConfig n) (fun k => markedSimilarity n t k P Y F h)
-      (markedScalarSymbol t P Y h) := by
+    {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) {ε : ℝ}
+    (hε : 0 < ε) :
+    ∃ (N : ℕ) (a b : Fin N → Matrix (SiteConfig n) (SiteConfig n) ℂ) (p q : ℝ[X]),
+      (∀ i, IsSupportedOn (a i) P) ∧ (∀ i, IsSupportedOn (b i) Y) ∧ h = ∑ i, b i * a i ∧
+      (∀ θ ∈ unitSphere, ‖markedScalarSymbol t P Y h θ -
+        star θ ⬝ᵥ (polyWordSymbol P Y a b p q θ *ᵥ θ)‖ ≤ ε) ∧
+      ∀ᶠ k in atTop, ‖(markedSimilarity n t k P Y F h -
+        HasMarkedSymbol.compress (polyWord P Y a b p q) k) *
+          symProj (copyPerm (SiteConfig n) k)‖ ≤ ε := by
   set ι : V → Type := fun v => Fin (n v)
   have σ₀ : SiteConfig n := fun _ => 0
   obtain ⟨N, b, a, hb, ha, hdec⟩ :=
@@ -423,7 +426,6 @@ theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 
   obtain ⟨CR₀, hCR₀⟩ := exists_l2_opNorm_markedRatio_le ι ht0 (by linarith)
   obtain ⟨CI₀, hCI₀⟩ := exists_norm_markedRatio_inv_mulVec_le ι ht0 ht1
   obtain ⟨C₂, hC₂⟩ := exists_norm_markedRatio_inv_sub_clipped_le ι ht0 ht1
-  obtain ⟨Cb, hCb⟩ := exists_norm_markedSimilarity_mulVec_le ht0 ht1 hPY hPF hYF hh
   set CR := max CR₀ 0
   set CI := max CI₀ 0
   have hCR : 0 ≤ CR := le_max_right _ _
@@ -432,28 +434,6 @@ theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 
       (v : (Fin k → SiteConfig n) → ℂ),
       ‖(EuclideanSpace.equiv _ ℂ).symm (M *ᵥ v)‖ ≤ ‖M‖ * ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
     fun M v => by simpa using M.l2_opNorm_mulVec ((EuclideanSpace.equiv _ ℂ).symm v)
-  have hzero : markedSimilarity n t 0 P Y F h = 0 := by
-    have h0 : copyMean n 0 h = 0 := by simp [copyMean]
-    simp [markedSimilarity, h0]
-  refine HasCoherentSymbol.of_approx (fun k => ?_) ⟨max Cb 0, fun k => ?_⟩ fun ε hε => ?_
-  · -- Commutation with the symmetric projector.
-    rcases k with _ | m
-    · exact hzero ▸ Commute.zero_right _
-    · exact commute_symProj_of_forall (commute_copyPerm_markedSimilarity_succ ht0.le m hPY hPF
-        hYF hh)
-  · -- Uniform boundedness on the symmetric subspace.
-    refine l2_opNorm_le_of_forall (le_max_right _ _) fun v => ?_
-    rw [← mulVec_mulVec]
-    have hPv : ‖(EuclideanSpace.equiv _ ℂ).symm (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ ≤
-        ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
-      (hmv _ _).trans (mul_le_of_le_one_left (norm_nonneg _) l2_opNorm_symProj_le)
-    calc _ ≤ Cb * ‖(EuclideanSpace.equiv _ ℂ).symm (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ :=
-          hCb k _ (symProj_mulVec_mem _ v)
-      _ ≤ max Cb 0 * ‖(EuclideanSpace.equiv _ ℂ).symm
-            (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ :=
-          mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _)
-      _ ≤ max Cb 0 * ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
-          mul_le_mul_of_nonneg_left hPv (le_max_right _ _)
   -- The approximation: first `δ`, then the polynomials, then `k`.
   set dP : ℝ := (Fintype.card (RegionConfig n P) : ℝ)
   set dY : ℝ := (Fintype.card (RegionConfig n Y) : ℝ)
@@ -507,9 +487,7 @@ theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 
     rw [abs_sub_comm]; exact (hp x hx).le
   have hq' : ∀ x ∈ Set.Icc (-1 : ℝ) 1, |max x δ ^ (-t) - q.eval x| ≤ s := fun x hx => by
     rw [abs_sub_comm]; exact (hq x hx).le
-  refine ⟨HasMarkedSymbol.compress (polyWord P Y a b p q),
-    fun θ => star θ ⬝ᵥ (polyWordSymbol P Y a b p q θ *ᵥ θ),
-    (hasMarkedSymbol_polyWord P Y a b p q).hasCoherentSymbol_compress, fun θ hθ => ?_, ?_⟩
+  refine ⟨N, a, b, p, q, ha, hb, hdec, fun θ hθ => ?_, ?_⟩
   · exact (norm_markedScalarSymbol_sub_le ht0 ht1 hδ0 hs0.le hs1 hPY ha hb hdec hp' hq' hdP hdY
       hθ).trans (hsK Ksym hKsym (by linarith))
   -- The operator side, for large `k`.
@@ -565,39 +543,44 @@ theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 
           s * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ := by gcongr
       _ = 3 * s * ‖(EuclideanSpace.equiv _ ℂ).symm z‖ := by ring
 
-/-- **Lemma 6.4, equation `replicas:polynomial-symbol`** (`05-replicas.tex`, lines 631–638):
-for every noncommutative polynomial `q` in two variables,
-`sup_σ |Tr σ q(O_k, O_k^†) - ∫ q(f_θ, conj f_θ) dμ_σ(θ)| → 0` over symmetric density
-matrices `σ`. -/
-theorem eventually_norm_trace_freeAlgebra_markedSimilarity_sub_le {t : ℝ} (ht0 : 0 < t)
-    (ht1 : t < 1 / 2) {P Y F : Finset V} (hPY : Disjoint P Y) (hPF : Disjoint P F)
-    (hYF : Disjoint Y F) {h : Matrix (SiteConfig n) (SiteConfig n) ℂ}
-    (hh : IsSupportedOn h (P ∪ Y)) (q : FreeAlgebra ℂ (Fin 2)) {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ k in atTop, ∀ (a : SiteConfig n)
-      (σ : Matrix (Fin k → SiteConfig n) (Fin k → SiteConfig n) ℂ), σ.PosSemidef →
-      σ.trace = 1 → (∀ π, permOp (copyPerm (SiteConfig n) k) π * σ = σ) →
-        ‖(σ * FreeAlgebra.lift ℂ ![markedSimilarity n t k P Y F h,
-            (markedSimilarity n t k P Y F h)ᴴ] q).trace -
-          coherentIntegral a σ (fun θ => FreeAlgebra.lift ℂ
-            ![markedScalarSymbol t P Y h θ, star (markedScalarSymbol t P Y h θ)] q)‖ ≤ ε :=
-  ((hasCoherentSymbol_markedSimilarity ht0 ht1 hPY hPF hYF hh).freeAlgebra
-    q).eventually_norm_trace_sub_le hε
-
-/-- **Lemma 6.4, equation `replicas:skew-symbol`** (`05-replicas.tex`, lines 627–631 and
-832–838): for `𝒟_k = |O_k| + |O_k^†| - O_k - O_k^†` on the symmetric subspace,
-`Tr σ 𝒟_k = 2 ∫ (|f_θ| - Re f_θ) dμ_σ(θ) + o_k(1)` uniformly over symmetric density
-matrices `σ`. -/
-theorem eventually_norm_trace_skewOperator_markedSimilarity_sub_le {t : ℝ} (ht0 : 0 < t)
-    (ht1 : t < 1 / 2) {P Y F : Finset V} (hPY : Disjoint P Y) (hPF : Disjoint P F)
-    (hYF : Disjoint Y F) {h : Matrix (SiteConfig n) (SiteConfig n) ℂ}
-    (hh : IsSupportedOn h (P ∪ Y)) {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ k in atTop, ∀ (a : SiteConfig n)
-      (σ : Matrix (Fin k → SiteConfig n) (Fin k → SiteConfig n) ℂ), σ.PosSemidef →
-      σ.trace = 1 → (∀ π, permOp (copyPerm (SiteConfig n) k) π * σ = σ) →
-        ‖(σ * skewOperator k (markedSimilarity n t k P Y F h)).trace -
-          coherentIntegral a σ (fun θ => ((2 * (‖markedScalarSymbol t P Y h θ‖ -
-            (markedScalarSymbol t P Y h θ).re) : ℝ) : ℂ))‖ ≤ ε :=
-  (hasCoherentSymbol_markedSimilarity ht0 ht1 hPY hPF hYF hh).skew.eventually_norm_trace_sub_le
-    hε
+/-- **Lemma 6.4, the coherent symbol** (`05-replicas.tex`, lines 615–638 and 663–836): for
+disjoint `P, Y, F`, `0 < t < 1/2` and `h` supported on `P ∪ Y`, the similarity transforms
+`O_k = A_k^{-1/2} hbar A_k^{1/2}` have, on the symmetric subspace, the coherent symbol
+`f_θ = ⟨θ, ρ_P^t ρ_Y^{-t} h ρ_P^{-t} ρ_Y^t θ⟩`. -/
+theorem hasCoherentSymbol_markedSimilarity {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2)
+    {P Y F : Finset V} (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
+    {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) :
+    HasCoherentSymbol (Ω := SiteConfig n) (fun k => markedSimilarity n t k P Y F h)
+      (markedScalarSymbol t P Y h) := by
+  obtain ⟨Cb, hCb⟩ := exists_norm_markedSimilarity_mulVec_le ht0 ht1 hPY hPF hYF hh
+  have hmv : ∀ {k : ℕ} (M : Matrix (Fin k → SiteConfig n) (Fin k → SiteConfig n) ℂ)
+      (v : (Fin k → SiteConfig n) → ℂ),
+      ‖(EuclideanSpace.equiv _ ℂ).symm (M *ᵥ v)‖ ≤ ‖M‖ * ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
+    fun M v => by simpa using M.l2_opNorm_mulVec ((EuclideanSpace.equiv _ ℂ).symm v)
+  have hzero : markedSimilarity n t 0 P Y F h = 0 := by
+    have h0 : copyMean n 0 h = 0 := by simp [copyMean]
+    simp [markedSimilarity, h0]
+  refine HasCoherentSymbol.of_approx (fun k => ?_) ⟨max Cb 0, fun k => ?_⟩ fun ε hε => ?_
+  · -- Commutation with the symmetric projector.
+    rcases k with _ | m
+    · exact hzero ▸ Commute.zero_right _
+    · exact commute_symProj_of_forall (commute_copyPerm_markedSimilarity_succ ht0.le m hPY hPF
+        hYF hh)
+  · -- Uniform boundedness on the symmetric subspace.
+    refine l2_opNorm_le_of_forall (le_max_right _ _) fun v => ?_
+    rw [← mulVec_mulVec]
+    have hPv : ‖(EuclideanSpace.equiv _ ℂ).symm (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ ≤
+        ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
+      (hmv _ _).trans (mul_le_of_le_one_left (norm_nonneg _) l2_opNorm_symProj_le)
+    calc _ ≤ Cb * ‖(EuclideanSpace.equiv _ ℂ).symm (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ :=
+          hCb k _ (symProj_mulVec_mem _ v)
+      _ ≤ max Cb 0 * ‖(EuclideanSpace.equiv _ ℂ).symm
+            (symProj (copyPerm (SiteConfig n) k) *ᵥ v)‖ :=
+          mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _)
+      _ ≤ max Cb 0 * ‖(EuclideanSpace.equiv _ ℂ).symm v‖ :=
+          mul_le_mul_of_nonneg_left hPv (le_max_right _ _)
+  obtain ⟨N, a, b, p, q, -, -, -, hsym, hev⟩ :=
+    exists_polyWord_approx (F := F) ht0 ht1 hPY hPF hYF hh hε
+  exact ⟨_, _, (hasMarkedSymbol_polyWord P Y a b p q).hasCoherentSymbol_compress, hsym, hev⟩
 
 end TensorPower

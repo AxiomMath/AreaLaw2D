@@ -473,14 +473,6 @@ theorem groupHom₁_split_mem_iff {k : ℕ} (B : Finset (Fin k)) (a : Equiv.Perm
   · rw [TensorPower.groupHom₁_apply_inr]
 
 omit [Fintype σ] [DecidableEq σ] in
-theorem groupHom₂_split_of_not_mem {k : ℕ} {B : Finset (Fin k)} (b : Equiv.Perm (Fin B.card))
-    {j : Fin k} (hj : j ∉ B) : TensorPower.groupHom₂ (split B) b j = j := by
-  obtain ⟨y, rfl⟩ := (split B).surjective j
-  rcases y with i | i
-  · exact TensorPower.groupHom₂_apply_inl _ b i
-  · exact absurd (split_inr B i) hj
-
-omit [Fintype σ] [DecidableEq σ] in
 theorem groupHom₂_split_mem_iff {k : ℕ} (B : Finset (Fin k)) (b : Equiv.Perm (Fin B.card))
     (j : Fin k) : TensorPower.groupHom₂ (split B) b j ∈ B ↔ j ∈ B := by
   obtain ⟨y, rfl⟩ := (split B).surjective j
@@ -768,10 +760,6 @@ theorem Yr_union_XU_union_V :
   ext v
   simp only [Finset.mem_union]
   tauto
-
-theorem disjoint_Yr_XU_V : Disjoint (Γ.Yr s g) (physReg (X ∪ Γ.U s g) ∪ physReg (Γ.V s g)) := by
-  rw [Statuses.Yr, ← physReg_union, physReg_disjoint]
-  exact Finset.disjoint_union_right.mpr ⟨(disjoint_XU_Y Γ s g).symm, Γ.disjoint_YV s g⟩
 
 end Regions
 

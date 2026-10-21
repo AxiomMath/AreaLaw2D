@@ -1,7 +1,7 @@
 import AreaLawForMathlib.Algebra.BigOperators.IidSecondMoment
-import AreaLawForMathlib.Analysis.Complex.RectangleSimplePoles
 import AreaLawForMathlib.Analysis.CStarAlgebra.Matrix
 import AreaLawForMathlib.Analysis.CStarAlgebra.SqrtHolder
+import AreaLawForMathlib.Analysis.Complex.RectangleSimplePoles
 import AreaLawForMathlib.Analysis.Fourier.GevreyBump
 import AreaLawForMathlib.Analysis.Fourier.GevreyBumpFourier
 import AreaLawForMathlib.Analysis.Matrix.AdjointLogFunction
@@ -25,16 +25,15 @@ import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 import AreaLawForMathlib.Analysis.Matrix.MatrixIntertwine
 import AreaLawForMathlib.Analysis.Matrix.MatrixPowers
 import AreaLawForMathlib.Analysis.Matrix.MatrixProjectionAux
-import AreaLawForMathlib.Analysis.Matrix.MatrixSqrtKernel
 import AreaLawForMathlib.Analysis.Matrix.NPositiveMap
 import AreaLawForMathlib.Analysis.Matrix.OperatorConvexity
 import AreaLawForMathlib.Analysis.Matrix.OperatorJensen
 import AreaLawForMathlib.Analysis.Matrix.OrthogonalProjection
 import AreaLawForMathlib.Analysis.Matrix.OrthogonalResolutionCfc
 import AreaLawForMathlib.Analysis.Matrix.PosDefInverseOrder
-import AreaLawForMathlib.Analysis.Matrix.PositiveMap
 import AreaLawForMathlib.Analysis.Matrix.PosSemidefCommute
 import AreaLawForMathlib.Analysis.Matrix.PosSemidefSupport
+import AreaLawForMathlib.Analysis.Matrix.PositiveMap
 import AreaLawForMathlib.Analysis.Matrix.PowerDerivative
 import AreaLawForMathlib.Analysis.Matrix.ProjectionCfcUpperBound
 import AreaLawForMathlib.Analysis.Matrix.ProjectionCompressionCfc
@@ -83,9 +82,9 @@ import AreaLawForMathlib.QuantumInfo.RegionToComplex
 import AreaLawForMathlib.QuantumInfo.StateToComplex
 import AreaLawForMathlib.RepresentationTheory.PermutationRepresentation
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Alternant
+import AreaLawForMathlib.RepresentationTheory.SchurWeyl.BranchProbability
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Branching
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.BranchingPieri
-import AreaLawForMathlib.RepresentationTheory.SchurWeyl.BranchProbability
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Casimir
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CentralLabelFunction
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.ColumnAntisymmetrizer
@@ -122,10 +121,3 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.UnitaryHaar
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.WeylDimension
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.WeylRecursion
 import AreaLawForMathlib.Topology.Instances.Real.UniformRemainder
-
-/-!
-# AreaLawForMathlib
-
-The textbook results the area-law formalization needs that Mathlib and Physlib lack, in
-Mathlib's generality, naming and directory layout.
--/

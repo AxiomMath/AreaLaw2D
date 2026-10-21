@@ -17,7 +17,7 @@ universe u
 
 open Matrix PermutationRepresentation Filter Arealaw TensorPower Entropy
 open OpenAI (pureState)
-open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
+open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator Polynomial
 
 variable {V : Type*} [Fintype V] [DecidableEq V] {n : V → ℕ}
 
@@ -298,9 +298,10 @@ theorem markedWord_eq {t : ℝ} (ht : 0 ≤ t) (m : ℕ) {P Y : Finset V} (hPY :
 
 /-- D6.13. (a) `O_k`, as a quadratic form on `𝒮_k`, is the compression of
 `R_{P,k} R_{Y,k}^{-1} h^{(k)} R_{P,k}^{-1} R_{Y,k}`; `sup_k ‖O_k‖ < ∞`. (b) Every `ε > 0`: there
-are operators `B_k` (here: an injection polynomial, the form compressed polynomial words in
-marked operators and stars `J_{Q,k}` take by D6.15.1) with common `sup_k ‖B_k‖` bound and
-`limsup_k ‖O_k - B_k‖ ≤ ε` on `𝒮_k`. -/
+are a product decomposition `h = ∑ b_i a_i` (`a_i` on `P`, `b_i` on `Y`) and polynomials `p, q`
+such that the compressions `B_k = Π_k W_k Π_k` of the polynomial word
+`W_k = ∑_i (q(J_Y) b_i^{(k)} p(J_Y))(p(J_P) a_i^{(k)} q(J_P))` in the marked operators and the
+stars `J_{Q,k}` have a common `sup_k ‖B_k‖` bound and `limsup_k ‖O_k - B_k‖ ≤ ε` on `𝒮_k`. -/
 theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
     (hPY : Disjoint P Y) (hPF : Disjoint P F) (hYF : Disjoint Y F)
     {h : Matrix (SiteConfig n) (SiteConfig n) ℂ} (hh : IsSupportedOn h (P ∪ Y)) :
@@ -316,10 +317,12 @@ theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
         z ∈ symmetricSubspace k (fun v => Fin (n v)) →
           ‖(EuclideanSpace.equiv _ ℂ).symm (markedSimilarity n t k P Y F h *ᵥ z)‖ ≤
             M * ‖(EuclideanSpace.equiv _ ℂ).symm z‖) ∧
-    ∀ ε > 0, ∃ (B : ∀ k, Matrix (Fin k → SiteConfig n) (Fin k → SiteConfig n) ℂ)
-      (ψ : (SiteConfig n → ℂ) → ℂ), IsInjectionPoly B ψ ∧ (∃ M, ∀ k, ‖B k‖ ≤ M) ∧
-        ∀ᶠ k in atTop, ‖(markedSimilarity n t k P Y F h - B k) *
-          symProj (copyPerm (SiteConfig n) k)‖ ≤ ε := by
+    ∀ ε > 0, ∃ (N : ℕ) (a b : Fin N → Matrix (SiteConfig n) (SiteConfig n) ℂ) (p q : ℝ[X]),
+      (∀ i, IsSupportedOn (a i) P) ∧ (∀ i, IsSupportedOn (b i) Y) ∧ h = ∑ i, b i * a i ∧
+      (∃ M, ∀ k, ‖HasMarkedSymbol.compress (polyWord P Y a b p q) k‖ ≤ M) ∧
+        ∀ᶠ k in atTop, ‖(markedSimilarity n t k P Y F h -
+          HasMarkedSymbol.compress (polyWord P Y a b p q) k) *
+            symProj (copyPerm (SiteConfig n) k)‖ ≤ ε := by
   refine ⟨⟨fun m u z hu hz => ?_,
     -- D6.13.3–D6.13.5: both inverses act on symmetric vectors, polarization
     exists_norm_markedSimilarity_mulVec_le ht0 ht1 hPY hPF hYF hh⟩, fun ε hε => ?_⟩
@@ -335,9 +338,17 @@ theorem step_6_13 {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1 / 2) {P Y F : Finset V}
     rw [star_dotProduct_copyMean_eq (Fin.last m) h (fun τ => (hc Y τ).2.mul_right (hc P τ).1)
       (fun τ => (hc P τ).2.mul_right (hc Y τ).1) hu hz, markedWord_eq ht0.le m hPY]
   · -- D6.13.6–D6.13.8: clip, then polynomials, then `k → ∞`
-    obtain ⟨B, ψ, hB, -, hev⟩ :=
-      (hasCoherentSymbol_markedSimilarity ht0 ht1 hPY hPF hYF hh).approx ε hε
-    exact ⟨B, ψ, hB, hB.norm_le, hev⟩
+    obtain ⟨N, a, b, p, q, ha, hb, hdec, -, hev⟩ := exists_polyWord_approx ht0 ht1 hPY hPF hYF hh hε
+    refine ⟨N, a, b, p, q, ha, hb, hdec, ?_, hev⟩
+    -- D6.13.8: the common bound, `B_k = Π_k W_k Π_k = B_k Π_k`
+    obtain ⟨M, hM⟩ := (hasMarkedSymbol_polyWord P Y a b p q).hasCoherentSymbol_compress.bounded
+    refine ⟨M, fun k => ?_⟩
+    have hBP : HasMarkedSymbol.compress (polyWord P Y a b p q) k *
+        symProj (copyPerm (SiteConfig n) k) = HasMarkedSymbol.compress (polyWord P Y a b p q) k := by
+      cases k with
+      | zero => simp [HasMarkedSymbol.compress]
+      | succ m => simp only [HasMarkedSymbol.compress, Matrix.mul_assoc, symProj_mul_symProj]
+    simpa only [hBP] using hM k
 
 /-! ### D6.16 Removing clipping; absolute values -/
 

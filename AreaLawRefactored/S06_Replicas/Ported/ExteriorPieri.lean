@@ -101,9 +101,6 @@ theorem groupAlgebraRep_pieriElem (μ : IrrepLabel (Equiv.Perm (Fin m))) :
 def sliceR (z : Fin r → Fin q) (w : (Fin (m + r) → Fin q) → ℂ) : (Fin m → Fin q) → ℂ :=
   fun x => w (Fin.append x z)
 
-theorem sliceR_add (z : Fin r → Fin q) (w w' : (Fin (m + r) → Fin q) → ℂ) :
-    sliceR z (w + w') = sliceR z w + sliceR z w' := rfl
-
 theorem sliceR_smul (z : Fin r → Fin q) (c : ℂ) (w : (Fin (m + r) → Fin q) → ℂ) :
     sliceR z (c • w) = c • sliceR z w := rfl
 

@@ -93,11 +93,6 @@ theorem sum_agree {d : ℕ} (x : SiteConfig (dims n d)) (φ : SiteConfig (dims n
     | R => exact (hy _ R_not_mem_XC).symm
 
 omit [Fintype σ] in
-theorem physPart_glueXC {d : ℕ} (x : SiteConfig (dims n d)) (c : Fin d)
-    (z : Reg (fun v => Fin (n v)) X) : physPart (glueXC x c z) = replaceX (physPart x) z :=
-  funext fun v => by by_cases h : v ∈ X <;> simp [glueXC, physPart, replaceX, h]; rfl
-
-omit [Fintype σ] in
 @[simp] theorem glueXC_C {d : ℕ} (x : SiteConfig (dims n d)) (c : Fin d)
     (z : Reg (fun v => Fin (n v)) X) : glueXC x c z .C = c := rfl
 

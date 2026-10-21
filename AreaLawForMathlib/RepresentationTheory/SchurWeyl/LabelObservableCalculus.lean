@@ -29,7 +29,6 @@ theorem labelObservable_eq_resolutionHom (f : IrrepLabel G → ℝ) :
     labelObservable φ f = (labelProj_isOrthogonalResolution φ).hom fun l => (f l : ℂ) := by
   rw [IsOrthogonalResolution.hom_apply, labelObservable]
 
-
 variable {G Y : Type*} [Group G] [Fintype G] [Fintype Y] [DecidableEq Y] (φ : G →* Equiv.Perm Y)
 
 theorem labelObservable_mul_labelObservable (f g : IrrepLabel G → ℝ) :
@@ -79,17 +78,6 @@ theorem re_dotProduct_labelObservable_mulVec_le {f : IrrepLabel G → ℝ} {M : 
     rw [Complex.norm_real, Real.norm_eq_abs]
     exact pow_le_pow_left₀ (abs_nonneg _) (h l hl) 2
 
-/-- `π^λ f(F) = f(λ) π^λ`. -/
-theorem labelProj_mulVec_labelObservable (f : IrrepLabel G → ℝ) (l : IrrepLabel G)
-    (v : Y → ℂ) :
-    labelProj φ l *ᵥ (labelObservable φ f *ᵥ v) = (f l : ℂ) • (labelProj φ l *ᵥ v) := by
-  have h : labelProj φ l * labelObservable φ f = (f l : ℂ) • labelProj φ l := by
-    rw [labelObservable, Finset.mul_sum, Finset.sum_eq_single l]
-    · rw [mul_smul_comm, labelProj_mul_self]
-    · intro l' _ h; rw [mul_smul_comm, labelProj_mul_labelProj_of_ne φ (Ne.symm h), smul_zero]
-    · simp
-  rw [mulVec_mulVec, h, smul_mulVec]
-
 theorem labelProj_eq_labelObservable_ite (l : IrrepLabel G) :
     labelProj φ l = labelObservable φ fun l' => if l' = l then 1 else 0 := by
   rw [labelObservable, Finset.sum_eq_single l]
@@ -137,7 +125,6 @@ theorem labelObservable_const_mul (c : ℝ) (f : IrrepLabel G → ℝ) :
   rw [labelObservable, labelObservable, Finset.smul_sum]
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [← Complex.coe_smul, smul_smul, Complex.ofReal_mul]
-
 
 /-- A label occurring in a permutation module has dimension at most the module's dimension. -/
 theorem labelDim_le_card {l : IrrepLabel G} (h : labelProj φ l ≠ 0) : l.dim ≤ Fintype.card Y := by

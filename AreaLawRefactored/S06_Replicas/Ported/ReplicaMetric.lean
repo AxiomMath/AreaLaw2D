@@ -91,10 +91,6 @@ theorem replicaMetric_eq_hom (t : ℝ) (k : ℕ) (Q : Finset F) :
       fun l => (replicaLabelWeight ι t l : ℂ) :=
   labelObservable_eq_hom _ _
 
-theorem isHermitian_replicaMetric (t : ℝ) (k : ℕ) (Q : Finset F) :
-    (replicaMetric ι t k Q).IsHermitian :=
-  isHermitian_labelObservable _ _
-
 omit [∀ f, DecidableEq (ι f)] in
 theorem replicaDim_pos [∀ f, Nonempty (ι f)] : 0 < replicaDim ι := Fintype.card_pos
 
@@ -145,30 +141,6 @@ permutations of `Q`. -/
 theorem commute_replicaMetric_permOp (t : ℝ) (k : ℕ) (Q : Finset F) (σ : Equiv.Perm (Fin k)) :
     Commute (replicaMetric ι t k Q) (permOp (subsystemPerm k ι Q) σ) :=
   Commute.sum_left _ _ _ fun l _ => (commute_labelProj_permOp _ l σ).smul_left _
-
-/-- Metrics of nested subsystems commute (`05-replicas.tex`, lines 101 and 469). -/
-theorem commute_replicaMetric_of_subset (t : ℝ) (k : ℕ) {Q Q' : Finset F} (h : Q ⊆ Q') :
-    Commute (replicaMetric ι t k Q) (replicaMetric ι t k Q') := by
-  rw [replicaMetric, replicaMetric, labelObservable_eq_groupAlgebraRep,
-    labelObservable_eq_groupAlgebraRep]
-  exact commute_groupAlgebraRep_subsystemPerm_of_subset ι k h
-    (sum_smul_centralIdem_mem_center _) _
-
-/-- Metrics of disjoint subsystems commute (`05-replicas.tex`, lines 101 and 469). -/
-theorem commute_replicaMetric_of_disjoint (t : ℝ) (k : ℕ) {Q Q' : Finset F}
-    (h : Disjoint Q Q') : Commute (replicaMetric ι t k Q) (replicaMetric ι t k Q') := by
-  rw [replicaMetric, replicaMetric, labelObservable_eq_groupAlgebraRep,
-    labelObservable_eq_groupAlgebraRep]
-  exact commute_groupAlgebraRep_subsystemPerm_of_disjoint ι k h _ _
-
-/-- **Lemma 6.2, complementary metrics** (`05-replicas.tex`, line 316): on the symmetric
-subspace `𝒮_k`, `W_{Q,k} = W_{Qᶜ,k}`, in the operator form `W_{Q,k} Π_k = W_{Qᶜ,k} Π_k`. -/
-theorem replicaMetric_mul_symProj_compl (t : ℝ) (k : ℕ) (Q : Finset F) :
-    replicaMetric ι t k Q * symProj (copyPerm ((f : F) → ι f) k) =
-      replicaMetric ι t k Qᶜ * symProj (copyPerm ((f : F) → ι f) k) := by
-  simp only [replicaMetric, labelObservable, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  rw [smul_mul_assoc, smul_mul_assoc, labelProj_mul_symProj_compl]
 
 /-- The labelwise comparison behind `replicas:W-comparison`: for a label occurring on a
 subsystem, `|log w_k(λ) + t log d_λ| ≤ C log(k + 2)` with `C` depending only on `d` and `t`. -/
@@ -285,4 +257,3 @@ theorem exists_replicaMetric_comparison [∀ f, Nonempty (ι f)] {t : ℝ} (ht :
       (fun l hl => sub_nonneg.mpr (hlab l hl).2)
 
 end TensorPower
-

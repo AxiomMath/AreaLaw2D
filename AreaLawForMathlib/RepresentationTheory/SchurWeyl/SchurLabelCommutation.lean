@@ -85,43 +85,10 @@ theorem commute_groupAlgebraRep_subsystemPerm_of_subset {Q Q' : Finset F} (h : Q
   conv_lhs => rw [← Finset.union_sdiff_of_subset h]
   exact subsystemPerm_union k ι Finset.disjoint_sdiff σ
 
-theorem commute_labelProj_subsystemPerm_of_subset {Q Q' : Finset F} (h : Q ⊆ Q')
-    (l l' : IrrepLabel (Equiv.Perm (Fin k))) :
-    Commute (labelProj (subsystemPerm k ι Q) l) (labelProj (subsystemPerm k ι Q') l') := by
-  exact commute_groupAlgebraRep_subsystemPerm_of_subset ι k h
-    (IrrepLabel.centralIdem_mem_center l) _
-
 theorem commute_labelProj_subsystemPerm_of_disjoint {Q Q' : Finset F} (h : Disjoint Q Q')
     (l l' : IrrepLabel (Equiv.Perm (Fin k))) :
     Commute (labelProj (subsystemPerm k ι Q) l) (labelProj (subsystemPerm k ι Q') l') := by
   exact commute_groupAlgebraRep_subsystemPerm_of_disjoint ι k h _ _
-
-theorem groupAlgebraRep_mulVec_compl_of_mem_symmetricSubspace (Q : Finset F)
-    {a : MonoidAlgebra ℂ (Equiv.Perm (Fin k))}
-    (ha : a ∈ Subalgebra.center ℂ (MonoidAlgebra ℂ (Equiv.Perm (Fin k))))
-    {v : Config k ι → ℂ} (hv : v ∈ symmetricSubspace k ι) :
-    groupAlgebraRep (subsystemPerm k ι Q) a *ᵥ v =
-      groupAlgebraRep (subsystemPerm k ι Qᶜ) a *ᵥ v := by
-  refine groupAlgebraRep_mulVec_eq_of_eq_mul _ _ (copyPerm ((f : F) → ι f) k) (fun σ => ?_)
-    (IrrepLabel.coeff_inv_of_mem_center ha) hv
-  rw [← subsystemPerm_univ, ← Finset.union_compl Q]
-  exact subsystemPerm_union k ι disjoint_compl_right σ
-
-theorem labelProj_mulVec_compl_of_mem_symmetricSubspace (Q : Finset F)
-    (l : IrrepLabel (Equiv.Perm (Fin k))) {v : Config k ι → ℂ}
-    (hv : v ∈ symmetricSubspace k ι) :
-    labelProj (subsystemPerm k ι Q) l *ᵥ v = labelProj (subsystemPerm k ι Qᶜ) l *ᵥ v := by
-  exact groupAlgebraRep_mulVec_compl_of_mem_symmetricSubspace ι k Q
-    (IrrepLabel.centralIdem_mem_center l) hv
-
-theorem labelProj_mul_symProj_compl (Q : Finset F) (l : IrrepLabel (Equiv.Perm (Fin k))) :
-    labelProj (subsystemPerm k ι Q) l * symProj (copyPerm ((f : F) → ι f) k) =
-      labelProj (subsystemPerm k ι Qᶜ) l * symProj (copyPerm ((f : F) → ι f) k) := by
-  ext x y
-  have h := labelProj_mulVec_compl_of_mem_symmetricSubspace ι k Q l
-    (symProj_mulVec_mem (copyPerm ((f : F) → ι f) k) (Pi.single y 1))
-  simp only [mulVec_single_one] at h
-  exact congrFun h x
 
 end TensorPower
 
@@ -134,30 +101,6 @@ section ComplementarySubsystemLabels
 
 variable {F : Type*} [Fintype F] [DecidableEq F]
   (ι : F → Type*) [∀ f, Fintype (ι f)] [∀ f, DecidableEq (ι f)] (k : ℕ)
-
-theorem labelProj_mul_symProj_union (A B : Finset F) (hAB : Disjoint A B)
-    (l : IrrepLabel (Equiv.Perm (Fin k))) :
-    labelProj (subsystemPerm k ι A) l * symProj (subsystemPerm k ι (A ∪ B)) =
-      labelProj (subsystemPerm k ι B) l * symProj (subsystemPerm k ι (A ∪ B)) := by
-  ext x y
-  have h := groupAlgebraRep_mulVec_eq_of_eq_mul
-    (subsystemPerm k ι A) (subsystemPerm k ι B) (subsystemPerm k ι (A ∪ B))
-    (fun σ => subsystemPerm_union k ι hAB σ) (a := IrrepLabel.centralIdem l)
-    (IrrepLabel.coeff_inv_of_mem_center (IrrepLabel.centralIdem_mem_center l))
-    (symProj_mulVec_mem (subsystemPerm k ι (A ∪ B)) (Pi.single y 1))
-  simp only [mulVec_single_one] at h
-  exact congrFun h x
-
-theorem commute_labelObservable_symProj_of_subset
-    (A B : Finset F) (hAB : A ⊆ B) (f : IrrepLabel (Equiv.Perm (Fin k)) → ℝ) :
-    Commute (labelObservable (subsystemPerm k ι A) f) (symProj (subsystemPerm k ι B)) := by
-  unfold labelObservable symProj
-  refine Commute.sum_left (R := Matrix (Config k ι) (Config k ι) ℂ) _ _ _ fun l _ => ?_
-  refine ((Commute.sum_right (R := Matrix (Config k ι) (Config k ι) ℂ)
-    _ _ _ (fun σ _ => ?_)).smul_left _).smul_right _
-  simpa only [labelProj, groupAlgebraRep_single, one_smul] using
-    commute_groupAlgebraRep_subsystemPerm_of_subset ι k hAB
-      (IrrepLabel.centralIdem_mem_center l) (MonoidAlgebra.single σ (1 : ℂ))
 
 end ComplementarySubsystemLabels
 

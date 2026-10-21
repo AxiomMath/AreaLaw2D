@@ -125,10 +125,4 @@ theorem isHermitian_aeval_starOp (m : ℕ) (Q : Finset F) (p : ℝ[X]) :
   rw [starOp_subsystemPerm_eq_hom, (isOrthogonalResolution_branch m Q).aeval_hom]
   exact (isOrthogonalResolution_branch m Q).isHermitian_hom (isHermitian_branch ι m Q) _
 
-theorem isHermitian_cfc_starOp (m : ℕ) (Q : Finset F) (φ : ℝ → ℝ) :
-    (cfc φ (starOp (subsystemPerm (m + 1) ι Q))).IsHermitian := by
-  rw [starOp_subsystemPerm_eq_hom, (isOrthogonalResolution_branch m Q).cfc_hom
-    (isHermitian_branch ι m Q)]
-  exact (isOrthogonalResolution_branch m Q).isHermitian_hom (isHermitian_branch ι m Q) _
-
 end TensorPower

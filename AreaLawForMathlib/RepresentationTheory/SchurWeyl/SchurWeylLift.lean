@@ -185,10 +185,6 @@ theorem shape_lift (h : q ≤ q') {l : IrrepLabel (Equiv.Perm (Fin k))}
   rw [labelProj, groupAlgebraRep_mulVec_liftMat, ← labelProj, labelProj_mulVec_of_mem hvV]
   exact hlift.ne_zero
 
-theorem multSpace_ne_bot_of_lift (h : q ≤ q') {l : IrrepLabel (Equiv.Perm (Fin k))}
-    (hl : multSpace q l ≠ ⊥) : multSpace q' l ≠ ⊥ :=
-  (shape_lift h hl).1
-
 /-- The partition of a label with at most `q` rows, as a padded partition of length `q`. -/
 theorem labelShape_truncate_mem {l : IrrepLabel (Equiv.Perm (Fin k))} (hqk : q ≤ k)
     (hrows : ∀ i : Fin k, q ≤ (i : ℕ) → labelShape l i = 0) :
@@ -290,4 +286,3 @@ theorem labelProj_ne_zero_iff (l : IrrepLabel (Equiv.Perm (Fin k))) :
   rw [labelProj_ne_zero_iff_multSpace, multSpace_ne_bot_iff]
 
 end TensorPower
-

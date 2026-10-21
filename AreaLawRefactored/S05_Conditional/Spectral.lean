@@ -144,15 +144,6 @@ theorem specFun_unitary_conj {W : Matrix n n ℂ} (hW : W ∈ unitary (Matrix n 
         rw [← Matrix.mul_assoc, specFun_mul_intertwine h' h W
           (by rw [Matrix.mul_assoc, Unitary.star_mul_self_of_mem hW, Matrix.mul_one])]
 
-/-- `g(ρ)` is unitary when `|g| = 1` on the spectrum. -/
-theorem specFun_mem_unitary {g : ℝ → ℂ}
-    (hg : ∀ i, star (g (h.eigenvalues i)) * g (h.eigenvalues i) = 1) :
-    specFun h g ∈ unitary (Matrix n n ℂ) := by
-  have h1 : specFun h (star g * g) = 1 := (specFun_congr h (g := 1) hg).trans (specFun_one h)
-  refine Unitary.mem_iff.2 ⟨?_, ?_⟩
-  · rw [star_specFun, specFun_mul, h1]
-  · rw [star_specFun, specFun_mul, mul_comm, h1]
-
 /-- Entries of `g_z(ρ)` are entire in `z` when each `z ↦ g_z(t)` is. -/
 theorem differentiable_specFun_apply {G : ℂ → ℝ → ℂ} (hG : ∀ t, Differentiable ℂ (G · t))
     (i j : n) : Differentiable ℂ fun z ↦ specFun h (G z) i j := by
@@ -206,9 +197,6 @@ theorem star_hfun (z : ℂ) : star (hfun z) = hfun (starRingEnd ℂ z) := by
 theorem hfun_eq (z : ℂ) : hfun z = bfun z + (1 - bfun 0) := by
   funext t; simp only [Pi.add_apply, Pi.sub_apply, Pi.one_apply, hfun, bfun]
   split_ifs <;> simp
-
-/-- `t̂^0 = 1`. -/
-theorem hfun_zero : hfun 0 = 1 := by funext t; simp [hfun]
 
 /-- `t^{[a]} = t^a` for real `a ≠ 0`, `t ≥ 0`. -/
 theorem bfun_ofReal {a : ℝ} (ha : a ≠ 0) {t : ℝ} (ht : 0 ≤ t) : bfun a t = ((t ^ a : ℝ) : ℂ) := by

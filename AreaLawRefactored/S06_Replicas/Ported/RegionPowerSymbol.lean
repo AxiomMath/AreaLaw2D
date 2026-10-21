@@ -138,20 +138,6 @@ theorem trace_margMatrix {D : Finset V} (θ : SiteConfig n → ℂ) :
   rw [localLift_one, one_mulVec, Matrix.mul_one] at h
   exact h.symm
 
-/-- The trace-based marginal used by the replica-symbol calculus is the canonical
-finite-product reduced pure state.  The only coordinate change identifies `v ∉ D` with
-membership in the finset complement `Dᶜ`. -/
-theorem margMatrix_eq_reducedPure {D : Finset V} (θ : SiteConfig n → ℂ) :
-    TensorPower.margMatrix D θ =
-      FiniteProduct.reducedPure (fun v => Fin (n v)) (WithLp.toLp 2 θ) D := by
-  ext a b
-  simp only [TensorPower.margMatrix, Matrix.traceRight, Matrix.of_apply,
-    Matrix.vecMulVec_apply, Function.comp_apply, Pi.star_apply, FiniteProduct.reducedPure,
-    FiniteProduct.reducedMatrix_apply]
-  exact (FiniteProduct.complementEquiv (fun v => Fin (n v)) D).sum_comp
-    (fun c => θ ((FiniteProduct.splitEquiv (fun v => Fin (n v)) D).symm (a, c)) *
-      star (θ ((FiniteProduct.splitEquiv (fun v => Fin (n v)) D).symm (b, c))))
-
 end Entropy
 
 namespace Matrix.IsHermitian

@@ -22,7 +22,6 @@ namespace AreaLaw.Comparators
 
 universe u v
 
-
 /-! ## Moments of a fixed finite density -/
 
 section FixedMoments
@@ -192,10 +191,6 @@ def splitPhys (d : ℕ) (B : Finset σ) :
       SiteConfig (dims n d) :=
   (Equiv.prodCongr (regPhys d B) (complPhys d B).symm).trans
     (Equiv.piEquivPiSubtypeProd (· ∈ physReg B) (fun f => Fin (dims n d f))).symm
-
-theorem splitPhys_apply (d : ℕ) (B : Finset σ) (p : Reg (fun v => Fin (n v)) B ×
-    (TensorPower.ComplConfig (fun v => Fin (n v)) B × Fin d × Fin d)) :
-    splitPhys d B p = joinPhys d B p.1 p.2 := rfl
 
 theorem joinPhys_phys (d : ℕ) (B : Finset σ) (a : Reg (fun v => Fin (n v)) B)
     (q : TensorPower.ComplConfig (fun v => Fin (n v)) B × Fin d × Fin d) {v : σ} (hv : v ∈ B) :

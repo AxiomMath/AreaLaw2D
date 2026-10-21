@@ -98,51 +98,6 @@ theorem exists_replicaMetric_symProj_inverse_bound_and_floor
   simpa only [p, Real.rpow_neg (by positivity : 0 ≤ (k : ℝ) + 2)] using
     hA.inv_smul_projection_le_of_compression_inv_le hQ hp hbound
 
-/-- Every fixed isometry onto the simultaneous symmetric space inherits
-the same metric floor and compressed ambient inverse bound. In particular,
-this applies to the coordinates chosen before the exponent, regions and
-tree in the common symmetric compression family. Source:
-`07-comparators.tex`, lines 603--615. -/
-theorem exists_replicaMetric_symProj_isometric_floor
-    {t : ℝ} (ht : 0 < t) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (k : ℕ) (P Y F : Finset V),
-      Disjoint P Y → Disjoint P F → Disjoint Y F →
-      P ∪ Y ∪ F = Finset.univ →
-      ∀ (n : ℕ) (Z : Matrix (Config k ι) (Fin n) ℂ),
-      Zᴴ * Z = 1 → Z * Zᴴ = symProj (copyPerm ((v : V) → ι v) k) →
-      let W := replicaMetric ι t k
-      let A := ((W P)⁻¹ * (W F)⁻¹ * W Y) ^ 2
-      Zᴴ * A⁻¹ * Z ≤ ((k : ℝ) + 2) ^ C • (1 : Matrix (Fin n) (Fin n) ℂ) ∧
-        ((k : ℝ) + 2) ^ (-C) • (1 : Matrix (Fin n) (Fin n) ℂ) ≤ Zᴴ * A * Z := by
-  obtain ⟨C, hC, hmetric⟩ := exists_replicaMetric_symProj_inverse_bound_and_floor ι ht
-  refine ⟨C, hC, ?_⟩
-  intro k P Y F hPY hPF hYF hcover n Z hZ hZZ W A
-  let Q := symProj (copyPerm ((v : V) → ι v) k)
-  obtain ⟨hinv, hfloor⟩ :
-      Q * A⁻¹ * Q ≤ ((k : ℝ) + 2) ^ C • Q ∧
-        ((k : ℝ) + 2) ^ (-C) • Q ≤ A :=
-    hmetric k P Y F hPY hPF hYF hcover
-  change Z * Zᴴ = Q at hZZ
-  have hQZ : Q * Z = Z := by
-    rw [← hZZ, Matrix.mul_assoc, hZ, Matrix.mul_one]
-  have hZQ : Zᴴ * Q = Zᴴ := by
-    rw [← hZZ, ← Matrix.mul_assoc, hZ, Matrix.one_mul]
-  have hZQZ : Zᴴ * Q * Z = 1 := by rw [hZQ, hZ]
-  have hcompressed : Zᴴ * (Q * A⁻¹ * Q) * Z = Zᴴ * A⁻¹ * Z := by
-    calc
-      Zᴴ * (Q * A⁻¹ * Q) * Z = (Zᴴ * Q) * A⁻¹ * (Q * Z) := by
-        simp only [Matrix.mul_assoc]
-      _ = Zᴴ * A⁻¹ * Z := by rw [hZQ, hQZ]
-  constructor
-  · apply Matrix.le_iff.mpr
-    simpa only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_smul,
-      Matrix.smul_mul, hZQZ, hcompressed] using
-      (Matrix.le_iff.mp hinv).conjTranspose_mul_mul_same Z
-  · apply Matrix.le_iff.mpr
-    simpa only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_smul,
-      Matrix.smul_mul, hZQZ] using
-      (Matrix.le_iff.mp hfloor).conjTranspose_mul_mul_same Z
-
 end IsometricFloor
 
 end TensorPower

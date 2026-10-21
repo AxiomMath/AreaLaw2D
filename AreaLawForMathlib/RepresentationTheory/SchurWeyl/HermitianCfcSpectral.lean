@@ -15,15 +15,6 @@ namespace Matrix.IsHermitian
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
-/-- The spectral form of a Hermitian matrix. -/
-theorem spectral_form {A : Matrix n n ℂ} (hA : A.IsHermitian) :
-    A = (hA.eigenvectorUnitary : Matrix n n ℂ) *
-      Matrix.diagonal (fun i => ((hA.eigenvalues i : ℝ) : ℂ)) *
-      star (hA.eigenvectorUnitary : Matrix n n ℂ) := by
-  have h := hA.spectral_theorem
-  rw [Unitary.conjStarAlgAut_apply] at h
-  exact h
-
 /-- The Hermitian functional calculus in spectral form. -/
 theorem cfc_form {A : Matrix n n ℂ} (hA : A.IsHermitian) (f : ℝ → ℝ) :
     hA.cfc f = (hA.eigenvectorUnitary : Matrix n n ℂ) *
@@ -48,12 +39,6 @@ theorem cfc_id {𝕜 : Type*} [RCLike 𝕜] {A : Matrix n n 𝕜} (hA : A.IsHerm
   rw [Matrix.IsHermitian.cfc]
   conv_rhs => rw [hA.spectral_theorem]
   rw [Function.id_comp]
-
-/-- Left multiplication by the matrix absorbs into the functional calculus. -/
-theorem self_mul_cfc {𝕜 : Type*} [RCLike 𝕜] {A : Matrix n n 𝕜} (hA : A.IsHermitian)
-    (g : ℝ → ℝ) : A * hA.cfc g = hA.cfc (fun x => x * g x) := by
-  nth_rewrite 1 [← cfc_id hA]
-  exact (cfc_mul hA id g).symm
 
 /-- The trace of the Hermitian functional calculus is the sum over its eigenvalues. -/
 theorem trace_cfc_eq_sum {𝕜 : Type*} [RCLike 𝕜] {A : Matrix n n 𝕜}
