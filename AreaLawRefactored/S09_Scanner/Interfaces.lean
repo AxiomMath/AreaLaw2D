@@ -99,7 +99,7 @@ def Prop_9_2 : Prop :=
     ∀ (q : ℕ) [NeZero q] (R : ℕ) (J Δ : ℝ), 0 < Δ →
     ∀ (ℓ κ μ ν e Ce CT : ℝ), 0 < ℓ → ℓ < 1 → 0 < κ → κ < μ → μ < 1 - ℓ → 0 < ν →
       0 < e → e < 1 → κ ≤ e → 0 < Ce → 0 < CT →
-    ∃ (C₁ c Crl csh Csu Csl C₀ c₀ C Cl : ℝ) (n₀ : ℕ), 0 < C₁ ∧ 0 < c ∧ 0 < csh ∧
+    ∃ (C₁ c Crl csh Csu Csl C₀ c₀ C Cl : ℝ) (n₀ : ℕ), 0 < C₁ ∧ 0 < c ∧ 0 < csh ∧ 0 < Csl ∧ 0 < Csu ∧
       ∀ n : ℕ, n₀ ≤ n → ∀ W : ℝ, 1 ≤ W → a ℓ μ W n * (r₀ C₁ n : ℝ) ^ 2 ≤ c →
       ∀ (Λ : Finset σ)
         (Φ : (X : Finset σ) → Matrix (Reg (fun _ : σ => Fin q) X) (Reg (fun _ : σ => Fin q) X) ℂ),
