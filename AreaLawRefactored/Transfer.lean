@@ -3,6 +3,7 @@ import AreaLawRefactored.S02_Preliminaries
 import AreaLawRefactored.S03_InitialBox
 import AreaLawRefactored.S04_Quasilocal.Positive
 import AreaLawForMathlib.QuantumInfo.StateToComplex
+import AreaLawRefactored.S09_Scanner
 
 /-!
 # From `ℂ` to an arbitrary `RCLike` field
@@ -28,6 +29,8 @@ Proposition 11.2 (`TwoFamilyDecomposition`) has no scalar field and needs no tra
 * `AreaLaw.twoFamilyCancellation`: Lemma 11.1.
 * `AreaLaw.areaLaw_of_collarBound`, `AreaLaw.areaLawCorollary_of_collarBound`: Theorem 1.1
   and Corollary 1.2 over every field, from Proposition 9.6 over `ℂ`.
+* `AreaLaw.areaLaw`, `AreaLaw.areaLawCorollary`: Theorem 1.1 and Corollary 1.2 over every
+  field, with Proposition 9.6 discharged by `AreaLaw.Scanner.prop_9_6`.
 -/
 
 namespace AreaLaw
@@ -346,5 +349,19 @@ theorem areaLaw_of_collarBound (𝕜 : Type*) [RCLike 𝕜] {q R : ℕ} {J Δ : 
 theorem areaLawCorollary_of_collarBound (𝕜 : Type*) [RCLike 𝕜] {q : ℕ} {J Δ : ℝ} (hq : 1 ≤ q)
     (hΔ : 0 < Δ) (prop_9_6 : ∀ R, CollarBound ℂ q R J Δ) : AreaLawCorollary 𝕜 q J Δ :=
   areaLawCorollary_of_complex (corollary_1_2' hq hΔ prop_9_6)
+
+/-- D1.4 **Theorem 1.1** (area law). For all integers `q ≥ 1`, `R ≥ 0` and reals `J > 0`,
+`Δ > 0` there is `C = C(q, R, J, Δ)` such that for every finite domain `Λ ⊂ ℤ²`, every
+admissible `H` with gapped ground vector `Ω` and every `A ⊆ Λ`, `S_Ω(A) ≤ C |∂_Λ A|`; over every
+`RCLike` field. -/
+theorem areaLaw (𝕜 : Type*) [RCLike 𝕜] (q R : ℕ) (J Δ : ℝ) (hq : 1 ≤ q) (hJ : 0 < J)
+    (hΔ : 0 < Δ) : AreaLaw 𝕜 q R J Δ :=
+  areaLaw_of_collarBound 𝕜 hq hΔ (Scanner.prop_9_6 hq hJ hΔ)
+
+/-- D1.7 **Corollary 1.2**: the area law for range `R = 1` and the vertex-boundary forms for
+every range `R`; over every `RCLike` field. -/
+theorem areaLawCorollary (𝕜 : Type*) [RCLike 𝕜] (q : ℕ) (J Δ : ℝ) (hq : 1 ≤ q) (hJ : 0 < J)
+    (hΔ : 0 < Δ) : AreaLawCorollary 𝕜 q J Δ :=
+  areaLawCorollary_of_collarBound 𝕜 hq hΔ fun _ => Scanner.prop_9_6 hq hJ hΔ
 
 end AreaLaw
