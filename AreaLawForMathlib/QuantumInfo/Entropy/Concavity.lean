@@ -1,6 +1,6 @@
 import AreaLawForMathlib.QuantumInfo.Entropy.ClassicalQuantum
-import Arealaw.Bridge.VonNeumann
-import Arealaw.PTrace
+import AreaLawForMathlib.QuantumInfo.Region.Physlib
+import AreaLawForMathlib.QuantumInfo.Region.PartialTrace
 
 /-!
 # Concavity of the von Neumann entropy for `Arealaw.MState`

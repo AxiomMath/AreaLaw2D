@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.RegularTrace
 /-!
 # The fixed-point sum of the copy permutations
 
+Extends `Mathlib/RepresentationTheory/Character.lean`.
+
 Jucys' factorization `Z_{m+1} = (q + X_{m+1}) Z_m` of the fixed-point sum (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, equation `replicas:dimensions`).
 -/

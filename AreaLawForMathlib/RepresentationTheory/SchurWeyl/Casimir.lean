@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HookDimension
 /-!
 # The sum of transpositions acts on a label by twice its content sum
 
+Extends `Mathlib/RepresentationTheory/Character.lean`.
+
 The Casimir identity `∑_{a,b} E_{ab} E_{ba} = k q + ρ(T_k)` evaluates the central element `T_k =
 ∑_{i ≠ j} (i j)` on each label (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, lines 250–263).

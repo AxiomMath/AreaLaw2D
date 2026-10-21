@@ -11,6 +11,8 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Ord
 /-!
 # Operators that are scalar on the two ranges of an orthogonal projection
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/ExpLog/Order.lean`.
+
 For an orthogonal projection `P` and reals `b, d`, the operator `b (1 - P) + d P` is the
 scalar `b` on `ran (1 - P)` and `d` on `ran P`. Such operators multiply, take real powers and
 functional calculus sectorwise, and their weighted geometric mean is sectorwise the weighted

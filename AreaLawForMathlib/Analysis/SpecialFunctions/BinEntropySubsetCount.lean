@@ -5,6 +5,8 @@ import Mathlib.Data.Fintype.Powerset
 /-!
 # Counting small subsets by the binary entropy
 
+Extends `Mathlib/Analysis/SpecialFunctions/BinaryEntropy.lean`.
+
 For `0 < τ ≤ 1/2` and a finite type of cardinality `k`, the subsets of size at most `τ k` number
 at most `e^{k h(τ)}`, `h` the binary entropy; in particular `binom(k, r) ≤ e^{k h(τ)}` for
 `r ≤ τ k`. Proof: `τ^{|B|} (1-τ)^{k-|B|} ≥ e^{-k h(τ)}` for `|B| ≤ τ k`, and these weights sum

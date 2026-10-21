@@ -5,6 +5,8 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixPowers
 /-!
 # Subsystem observables in a product vector
 
+Extends `Mathlib/LinearAlgebra/Matrix/Kronecker.lean`.
+
 The expectation in `θ^{⊗k}` of an operator on `Q^{⊗k}` is its trace against the `k`-th power of the
 one-copy marginal.
 -/

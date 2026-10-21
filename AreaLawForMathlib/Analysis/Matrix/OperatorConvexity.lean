@@ -14,21 +14,13 @@ import Mathlib.Analysis.Convex.SpecificFunctions.Pow
 /-!
 # Trace convexity/concavity of matrix real powers
 
-Ported from `LionSR/QICLean`, `QICLean/Analysis/OperatorConvexity.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Order.lean`.
 
 This module proves the trace convexity and concavity of the map
 `A ↦ Re Tr(A ^ p)` on positive semidefinite matrices, namely:
 
 * `trace_rpow_concave` — for `p ∈ [0, 1]`, the map is **concave**.
 * `trace_rpow_convex` — for `p ∈ [1, 2]`, the map is **convex**.
-
-Both statements were previously axiomatized in `TNLean.Analysis.LiebConcavity`
-(as `trace_rpow_concave_axiom` / `trace_rpow_convex_axiom`); this module
-discharges them using the matrix-analysis lemmas
-`Matrix.IsHermitian.trace_cfc_eq_sum_re` (from `QICLean/Analysis/TraceCFC.lean`)
-and `Matrix.diagonal_jensen_of_convexOn`
-(from `QICLean/Channel/Schwarz/DiagonalJensen.lean`).
 
 ## Proof sketch
 

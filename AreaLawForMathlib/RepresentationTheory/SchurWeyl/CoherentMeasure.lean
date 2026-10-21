@@ -6,7 +6,11 @@ Authors: QICLean contributors
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HusimiIdentity
 import AreaLawForMathlib.Analysis.Matrix.TraceMulBound
 
-/-! # The coherent measure of a symmetric density matrix -/
+/-!
+# The coherent measure of a symmetric density matrix
+
+Extends `Mathlib/LinearAlgebra/Matrix/Trace.lean`.
+-/
 
 open Matrix PermutationRepresentation Finset MeasureTheory
 open scoped Kronecker Matrix.Norms.L2Operator MatrixOrder ComplexOrder

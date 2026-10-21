@@ -2,7 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import AreaLawBlueprint.TexPrelude
-import AreaLawRefactored
+import AreaLaw
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -50,11 +50,11 @@ Notation: $`M(u)=\sum_jp_j^{1-u}=\mathbb Ee^{uK}`, $`L(u)=\log M(u)`. Then $`L(0
 
 *D3.1.13* _Tail_ (eq:initial-tail-probability). $`u_*=[32\sqrt{(1+\vartheta)\mathcal B}]^{-1}`; quadratic term at $`u_*`: $`512e\vartheta\mathcal Bu_*^2=e\vartheta/[2(1+\vartheta)]\le e/2`. Exponential Markov, $`u=+u_*`: $`\Pr\{K-S>w\}\le e^{-u_*w}\mathbb Ee^{u_*(K-S)}\le e^{e/2}e^{-u_*w}`; $`u=-u_*`: $`\Pr\{K-S<-w\}\le e^{e/2}e^{-u_*w}`. Add; $`\min` with $`1` trivial.
 
-_Formal route_ (RefactoringResult.md §5, D3.1.8): Mathlib's higher-order Schwarz lemma on k(z) = f\_i(z) + f\_i(−z) − 2f\_i(0), which vanishes to second order at 0 and is bounded by 4ec₀ on the disk of radius δ\_i: `|Re(f_i(x) − f_i(0))| = |Re k(x)|/2 ≤ 2 e c₀ x² δ_i⁻²` (`AreaLaw.step_3_1_8`, AreaLawRefactored/S03\_InitialBox/MarginalTails.lean:162). Reason: no Mathlib Taylor-coefficient bound; same constant 128 e c₀ ℓ\_i² x².
+_Formal route_ (RefactoringResult.md §5, D3.1.8): Mathlib's higher-order Schwarz lemma on k(z) = f\_i(z) + f\_i(−z) − 2f\_i(0), which vanishes to second order at 0 and is bounded by 4ec₀ on the disk of radius δ\_i: `|Re(f_i(x) − f_i(0))| = |Re k(x)|/2 ≤ 2 e c₀ x² δ_i⁻²` (`AreaLaw.step_3_1_8`, AreaLaw/S03\_InitialBox/MarginalTails.lean:162). Reason: no Mathlib Taylor-coefficient bound; same constant 128 e c₀ ℓ\_i² x².
 
-_Formal route_ (RefactoringResult.md §5, D3.1.3): f\_i is constant for terms A ⊗ 1 and 1 ⊗ A (`modF_kronecker_one`, `modF_one_kronecker`, AreaLawRefactored/S03\_InitialBox/MarginalTails.lean:352, :360), so every term enters through the D3.1.4 identity and the one-sided ones contribute 0. Reason: same content in the Schmidt coordinates already used for D3.1.4.
+_Formal route_ (RefactoringResult.md §5, D3.1.3): f\_i is constant for terms A ⊗ 1 and 1 ⊗ A (`modF_kronecker_one`, `modF_one_kronecker`, AreaLaw/S03\_InitialBox/MarginalTails.lean:352, :360), so every term enters through the D3.1.4 identity and the one-sided ones contribute 0. Reason: same content in the Schmidt coordinates already used for D3.1.4.
 
-_Formal route_ (RefactoringResult.md §5, D3.1.1): explicit unitary (V\* ⊗ 1) ∘ glue⁻¹, V the eigenvector unitary of ρ (`step_3_1_1`, `isSchmidt_cut`, AreaLawRefactored/S03\_InitialBox/MarginalTails.lean:900, :865). Reason: encoding only.
+_Formal route_ (RefactoringResult.md §5, D3.1.1): explicit unitary (V\* ⊗ 1) ∘ glue⁻¹, V the eigenvector unitary of ρ (`step_3_1_1`, `isSchmidt_cut`, AreaLaw/S03\_InitialBox/MarginalTails.lean:900, :865). Reason: encoding only.
 
 _Used from._ none. Textbook: three-lines, Cauchy coefficient estimate, exponential Markov.
 
@@ -301,9 +301,9 @@ Lines 497–562. Label `eq:initial-trial-norm` (524–527).
 
 *D3.12.6* _Choice of $`M_j`._ $`M_j=\big((1-\delta)\rho_{w_i,T_j}+\frac\delta{\dim\mathcal H_{T_j}}\mathrm{id}\big)^{a_j/2}`, $`0<\delta<1`: strictly positive, $`\operatorname{Tr}M_j^{2/a_j}=1`. $`\langle w_i,\log M_jw_i\rangle=\frac{a_j}2\sum_kp_k\log\big((1-\delta)p_k+\frac\delta{\dim}\big)\to\frac{a_j}2\sum_{p_k>0}p_k\log p_k=-\frac{a_j}2S_{w_i}(T_j)` as $`\delta\downarrow0` (zero weight on kernel). Gives (c).
 
-_Formal route_ (RefactoringResult.md §5, D3.12.5): `‖F(x)‖² ≤ B^{2x}` on (0,1), equality at 0, so the right slope of `‖F‖² − B^{2x}` at 0 is ≤ 0: `2 Re⟨ξ, ∑ log M_j ξ⟩ ≤ 2 log B` (`step_3_12_5`, AreaLawRefactored/S03\_InitialBox/ThreeLines.lean:206). Reason: same inequality; avoids `log` of a possibly vanishing norm.
+_Formal route_ (RefactoringResult.md §5, D3.12.5): `‖F(x)‖² ≤ B^{2x}` on (0,1), equality at 0, so the right slope of `‖F‖² − B^{2x}` at 0 is ≤ 0: `2 Re⟨ξ, ∑ log M_j ξ⟩ ≤ 2 log B` (`step_3_12_5`, AreaLaw/S03\_InitialBox/ThreeLines.lean:206). Reason: same inequality; avoids `log` of a possibly vanishing norm.
 
-_Formal route_ (RefactoringResult.md §5, D3.12.6): the lower bound `⟨w, log M_j w⟩ ≥ (a_j/2)(log(1−δ) − S_w(T_j))` for each δ (`step_3_12_6`, AreaLawRefactored/S03\_InitialBox/TrialNorm.lean:31), then δ ↓ 0 in `eq_initial_trial_norm` (:98). Reason: only the inequality is needed.
+_Formal route_ (RefactoringResult.md §5, D3.12.6): the lower bound `⟨w, log M_j w⟩ ≥ (a_j/2)(log(1−δ) − S_w(T_j))` for each δ (`step_3_12_6`, AreaLaw/S03\_InitialBox/TrialNorm.lean:31), then δ ↓ 0 in `eq_initial_trial_norm` (:98). Reason: only the inequality is needed.
 
 _Used from._ {bpref "D3.5"}[D3.5](a) ($`T_1\subseteq\dots\subseteq T_m`), {bpref "D3.7"}[D3.7], {bpref "D3.11"}[D3.11]; vector three-lines \[Tao, 247A Notes 1, Lemma 5.10\].
 
@@ -323,7 +323,7 @@ $$`-2\log N\ \le\ S(X)+\sum_{j=1}^ma_jS(T_j) .`
 
 *D3.13.2* Average with weights $`p_i`: $`\sum_ip_i(-\log p_i)=S(X)`; concavity: $`\sum_ip_iS_{w_i}(T_j)\le S(\sum_ip_i\rho_{w_i,T_j})`; $`\sum_ip_i|w_i\rangle\langle w_i|=\operatorname{Tr}_X|\Omega\rangle\langle\Omega|` => $`\sum_ip_i\rho_{w_i,T_j}=\rho_{\Omega,T_j}`, entropy $`S(T_j)`.
 
-_Formal route_ (RefactoringResult.md §5, D3.13.2): all `i`, with `ξ_i = φ_i/‖φ_i‖` for `φ_i = (|u_i⟩⟨u_i| ⊗ 1)Ω` and `ξ_i = Ω` where `p_i = 0` (weight 0) (`eq_initial_norm_upper`, AreaLawRefactored/S03\_InitialBox/TrialNorm.lean:138). Reason: avoids a subtype of positive eigenvalues.
+_Formal route_ (RefactoringResult.md §5, D3.13.2): all `i`, with `ξ_i = φ_i/‖φ_i‖` for `φ_i = (|u_i⟩⟨u_i| ⊗ 1)Ω` and `ξ_i = Ω` where `p_i = 0` (weight 0) (`eq_initial_norm_upper`, AreaLaw/S03\_InitialBox/TrialNorm.lean:138). Reason: avoids a subtype of positive eigenvalues.
 
 _Used from._ {bpref "D3.12"}[D3.12].
 

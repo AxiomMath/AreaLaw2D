@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurWeylLabels
 /-!
 # The labels occurring in `(ℂ^q)^{⊗k}`
 
+Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
+
 They are the partitions of `k` with at most `q` rows (*A two-dimensional area law from a global
 spectral gap*, `05-replicas.tex`, lines 50–57).
 -/

@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Casimir
 /-!
 # The star operator on a removable-row branch
 
+Extends `Mathlib/RepresentationTheory/Basic.lean`.
+
 The star operator has eigenvalue `(λ_i - i)/k` on the branch `ν = λ - e_i` (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 146–149 and 250–263).
 -/

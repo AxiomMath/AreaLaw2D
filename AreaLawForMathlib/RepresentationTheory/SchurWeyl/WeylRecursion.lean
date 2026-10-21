@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HookRecursion
 /-!
 # The Pieri recursion for the Weyl dimension formula
 
+Extends `Mathlib/LinearAlgebra/Lagrange.lean`.
+
 `∑_i W_{λ + e_i} = q W_λ` (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, lines 237–241).
 -/

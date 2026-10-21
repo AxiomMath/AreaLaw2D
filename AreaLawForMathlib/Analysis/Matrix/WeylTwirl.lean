@@ -14,7 +14,7 @@ import Mathlib.LinearAlgebra.Matrix.Permutation
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.RingTheory.RootsOfUnity.Complex
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-import Arealaw.OpNorm
+import AreaLawForMathlib.Analysis.CStarAlgebra.Matrix
 import QuantumInfo.ForMathlib.Matrix
 
 /-!

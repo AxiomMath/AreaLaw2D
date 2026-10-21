@@ -2,7 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import AreaLawBlueprint.TexPrelude
-import AreaLawRefactored
+import AreaLaw
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -117,7 +117,7 @@ Polynomial bounds depend on the fixed subsystem dimensions only.
 
 *D6.4.22* _Star, difference._ $`\sum_{j<j'\le k}U((j\,j'))-\sum_{j<j'\le k-1}U((j\,j'))=\sum_{j<k}U((j\,k))=kJ_{Q,k}`. On branch $`\lambda\to\lambda-e_i`: $`kJ=\frac12[(c_\lambda-kq)-(c_{\lambda-e_i}-(k-1)q)]=\frac12[c_\lambda-c_{\lambda-e_i}-q]`. Only the $`i`-th summand changes: $`c_\lambda-c_{\lambda-e_i}=2\lambda_i+q-2i`. So $`kJ=\lambda_i-i`.
 
-_Formal route_ (RefactoringResult.md §5, D6.4.15): for a `u`-eigenvector `w` in block `λ`, the images `e^λ_{j i₀} e^λ_{i₀ i₀} w` of the Wedderburn matrix units are `d_λ` linearly independent `u`-eigenvectors, so `d_λ u ≤ Tr ρ` (`dim_mul_le_trace`, AreaLawRefactored/S06\_Replicas/Surprisal.lean:138). Reason: the Wedderburn matrix units are not adjoint-compatible; linear independence suffices.
+_Formal route_ (RefactoringResult.md §5, D6.4.15): for a `u`-eigenvector `w` in block `λ`, the images `e^λ_{j i₀} e^λ_{i₀ i₀} w` of the Wedderburn matrix units are `d_λ` linearly independent `u`-eigenvectors, so `d_λ u ≤ Tr ρ` (`dim_mul_le_trace`, AreaLaw/S06\_Replicas/Surprisal.lean:138). Reason: the Wedderburn matrix units are not adjoint-compatible; linear independence suffices.
 
 _Formal route_ (RefactoringResult.md §5, D6.4.16): `∑_λ Tr π^λ / d_λ` (= `∑_λ dim V_λ` by Schur–Weyl) `≤ dim` of the commutant of the `S_k` action `≤ (k+1)^{q²}` (orbits of `S_k` on pairs of configurations), `finrank_commutant_le`, `sum_trace_π_div_le` (Surprisal.lean:402, :512). Reason: needs neither the partition labels nor D6.4 (1).
 
@@ -208,7 +208,7 @@ $`B,Q` disjoint, $`\phi` a fixed vector on $`B`, $`z` on $`Q`-copies (and other 
 
 *D6.7.4* $`\phi` may be a Bell vector between two factors inside $`B`: only the whole $`B` factor is permuted.
 
-_Formal route_ (RefactoringResult.md §5, D6.7): the identity for every element of `ℂ[S_k]` (`groupAlgebraRep_fixFactor`, AreaLawRefactored/S06\_Replicas/Labels.lean:105), hence for every central label function; disjointness of `B, Q` is not needed once `z` does not depend on the `B` factors. Reason: same steps D6.7.1–3, stated before `W` exists.
+_Formal route_ (RefactoringResult.md §5, D6.7): the identity for every element of `ℂ[S_k]` (`groupAlgebraRep_fixFactor`, AreaLaw/S06\_Replicas/Labels.lean:105), hence for every central label function; disjointness of `B, Q` is not needed once `z` does not depend on the `B` factors. Reason: same steps D6.7.1–3, stated before `W` exists.
 
 _Used from._ {bpref "D6.4"}[D6.4.7]; {bpref "D6.5"}[D6.5]; {bpref "D6.6"}[D6.6.7].
 

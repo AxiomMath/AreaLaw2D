@@ -12,6 +12,8 @@ import AreaLawForMathlib.Analysis.Matrix.GeometricMeanDerivative
 /-!
 # Block-diagonal inputs of finite mean trees
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 Fix an orthogonal decomposition `ℂ^n ⊕ ℂ^m` and write `X ⊕ Y` for the
 block-diagonal matrix `fromBlocks X 0 0 Y`. The functional calculus, the weighted
 geometric mean, and the roots of finite mean trees act blockwise on block-diagonal

@@ -5,6 +5,8 @@ import AreaLawForMathlib.Analysis.Matrix.BlockDiagonalMean
 /-!
 # Functions of `ad_{log M}` and their Fourier representation
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/ExpLog/Basic.lean`.
+
 For a Hermitian `M = U diag(x) U^*` and `f : ℝ → ℂ`, `f(ad_{log M}) X` multiplies the
 eigenbasis entry `(r, t)` of `X` by `f(log x_r - log x_t)`. For positive definite `M`:
 

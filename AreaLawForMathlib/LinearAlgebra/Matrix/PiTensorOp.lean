@@ -7,6 +7,8 @@ import Mathlib.Data.Fintype.BigOperators
 /-!
 # Tensor products of copy-dependent matrices
 
+Extends `Mathlib/LinearAlgebra/PiTensorProduct.lean`.
+
 `⨂_j A_j` on `(ℂ^Ω)^{⊗k}`, the matrix `(x, y) ↦ ∏_j A_j(x_j, y_j)` on configurations
 `Fin k → Ω`. It is multiplicative and `*`-preserving, and choosing one of two matrices at every
 copy and summing over the choices gives `⨂_j (E + G)`.

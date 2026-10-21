@@ -16,6 +16,8 @@ import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
 /-!
 # Logarithm of a product of commuting positive definite matrices
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/ExpLog/Basic.lean`.
+
 For commuting positive definite matrices, the continuous-functional-calculus logarithm
 is additive over products.  This is the logarithmic input to the Section 7 operator means.
 -/

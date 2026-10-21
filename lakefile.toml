@@ -1,7 +1,7 @@
 name = "arealaw"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Arealaw", "OpenAI", "AreaLawForMathlib", "AreaLawRefactored", "Challenge", "Solution"]
+defaultTargets = ["AreaLawForMathlib", "OpenAI", "AreaLaw", "Challenge", "Solution"]
 
 lintDriver = "batteries/runLinter"
 
@@ -30,9 +30,6 @@ git = "https://github.com/leanprover-community/physlib"
 rev = "a50684a1919e84dc1c761028ff4f77cd59e2de6b"
 
 [[lean_lib]]
-name = "Arealaw"
-
-[[lean_lib]]
 name = "OpenAI"
 roots = ["OpenAI.Statements"]
 
@@ -43,7 +40,7 @@ name = "Challenge"
 name = "Solution"
 
 [[lean_lib]]
-name = "AreaLawRefactored"
+name = "AreaLaw"
 
 [[lean_lib]]
 name = "AreaLawForMathlib"

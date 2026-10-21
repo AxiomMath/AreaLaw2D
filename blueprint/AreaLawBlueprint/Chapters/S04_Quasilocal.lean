@@ -2,7 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import AreaLawBlueprint.TexPrelude
-import AreaLawRefactored
+import AreaLaw
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -93,7 +93,7 @@ There are $`C,v,c>0` (depending on $`q,R,J`) such that for every label $`i`, eve
 
 *D4.4.11* _The 2._ $`\|B-E_{i,l}B\|\le\|B\|+\|E_{i,l}B\|\le2\|A\|` (contractivity, $`\|\tau_t(A)\|=\|A\|`).
 
-_Formal route_ (RefactoringResult.md §5, D4.4.5–7): weighted finite Volterra/Gronwall comparison (`finite_volterra_le_weight_mul_exp`, AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:524), each support weighted by `e^{−μ d(X_k, y)}`; same constants `v = 2κe^{cR}`, `C = 2e^{cR}` (`AreaLaw.lemma_4_1`, AreaLawRefactored/S04\_Quasilocal/Propagation.lean:386). Reason: ported old route; the chain sum needs a combinatorial path-count the Volterra form avoids.
+_Formal route_ (RefactoringResult.md §5, D4.4.5–7): weighted finite Volterra/Gronwall comparison (`finite_volterra_le_weight_mul_exp`, AreaLawForMathlib/Analysis/ODE/LiebRobinson.lean:524), each support weighted by `e^{−μ d(X_k, y)}`; same constants `v = 2κe^{cR}`, `C = 2e^{cR}` (`AreaLaw.lemma_4_1`, AreaLaw/S04\_Quasilocal/Propagation.lean:386). Reason: ported old route; the chain sum needs a combinatorial path-count the Volterra form avoids.
 
 _Formal route_ (RefactoringResult.md §5, D4.4.8): the bound for every N ≤ d\_Λ = ⊤, and e^\{−cN\} → 0. Reason: same statement.
 
@@ -323,7 +323,7 @@ For any fixed $`\alpha\in(0,1)` for which `eq:quasilocal-positive-tail` holds, a
 
 *D4.12.7* Numerics: $`r_0^{1/2}\ge\sqrt{C_1}\log n`, so $`e^{-c'r_0^{1/2}}\le n^{-c'\sqrt{C_1}}`. Choose $`C_1` with $`c'\sqrt{C_1}\ge1002+\log_2(C'C_0)` $`\Rightarrow` bound $`\le n^{-1000}` for $`n\ge2`. Enlarging $`C_1` again gives $`C'C_02^{2-c'\sqrt{C_1}}\le g/4`; the bound decreases in $`n`, so this holds for all $`n\ge2`. Hence $`\le\epsilon_n`.
 
-_Formal route_ (RefactoringResult.md §5, D4.12.4–6): `e^{−c max(r₀,⌊d/2⌋)^α} ≤ e^{−(c/2)r₀^α}e^{−(c/2)⌊d/2⌋^α}`, `(d+1)^{m+2}e^{−(c/2)⌊d/2⌋^α} ≤ M`, Σ1/(d+1)² (`step_4_12_5`, AreaLawRefactored/S04\_Quasilocal/VolumeFree.lean:52); c' = c/2. Reason: no incomplete-gamma API in Mathlib.
+_Formal route_ (RefactoringResult.md §5, D4.12.4–6): `e^{−c max(r₀,⌊d/2⌋)^α} ≤ e^{−(c/2)r₀^α}e^{−(c/2)⌊d/2⌋^α}`, `(d+1)^{m+2}e^{−(c/2)⌊d/2⌋^α} ≤ M`, Σ1/(d+1)² (`step_4_12_5`, AreaLaw/S04\_Quasilocal/VolumeFree.lean:52); c' = c/2. Reason: no incomplete-gamma API in Mathlib.
 
 _Used from._ {bpref "D4.6"}[D4.6] (tail), {bpref "D4.3"}[D4.3] ($`\mu_R` labels per anchor), §2 `eq:ball-count`.
 
@@ -351,7 +351,7 @@ Given $`\|\widetilde H-H_F\|\le\epsilon:=\epsilon_n\le g/4`: $`\widetilde E_0\in
 
 *D4.13.6* Phase with $`\langle\Omega,\widetilde\Omega\rangle=s\in[0,1]`: $`\|\widetilde\Omega-\Omega\|^2=2-2s\le2(1-s^2)\le4\epsilon/g` ($`s\ge s^2`).
 
-_Formal route_ (RefactoringResult.md §5, D4.13.2): diagonalise H̃; for each other eigenvector v\_j, the combination −⟨Ω,v\_j⟩Ω̃ + ⟨Ω,Ω̃⟩v\_j ⊥ Ω tested against H̃ ≥ g(1−P\_Ω) − ε; second eigenvalue as the Loewner bound `Ẽ₀P̃ + (g−ε)(1−P̃) ≤ H̃`; D4.13.4 proved first (`step_4_13`, AreaLawRefactored/S04\_Quasilocal/GroundState.lean:20). Reason: no Weyl/Courant–Fischer in Mathlib.
+_Formal route_ (RefactoringResult.md §5, D4.13.2): diagonalise H̃; for each other eigenvector v\_j, the combination −⟨Ω,v\_j⟩Ω̃ + ⟨Ω,Ω̃⟩v\_j ⊥ Ω tested against H̃ ≥ g(1−P\_Ω) − ε; second eigenvalue as the Loewner bound `Ẽ₀P̃ + (g−ε)(1−P̃) ≤ H̃`; D4.13.4 proved first (`step_4_13`, AreaLaw/S04\_Quasilocal/GroundState.lean:20). Reason: no Weyl/Courant–Fischer in Mathlib.
 
 _Used from._ {bpref "D4.6"}[D4.6] ($`H_F\ge0`, $`H_F\Omega=0`, $`H_F\ge g(I-P_\Omega)`), {bpref "D4.12"}[D4.12], {bpref "D2.5"}[D2.5.1] (pure-state trace distance, in D4.13.5).
 

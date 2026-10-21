@@ -2,7 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import AreaLawBlueprint.TexPrelude
-import AreaLawRefactored
+import AreaLaw
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -57,7 +57,7 @@ $`\rho` density matrix on $`xU`, $`d=\dim x`, $`Q=I_x\otimes\widehat\rho_U` ($`Q
 
 *D5.2.5* _$`\mathbb E\,e^{-L}`._ $`\mathbb Ee^{-L}=\sum_{p_i>0,j}q_j|\langle i,j\rangle|^2=\operatorname{Tr}(\Pi_{\supp\rho}Q)`. By D5.2.2 $`\Pi_{\supp\rho}\le\Pi_{x\otimes\supp\rho_U}`, $`Q\ge0`, so $`\operatorname{Tr}(\Pi_{\supp\rho}Q)\le\operatorname{Tr}(\Pi_{x\otimes\supp\rho_U}Q)=d\operatorname{Tr}\rho_U=d`.
 
-_Formal route_ (RefactoringResult.md §5, D5.2.1): the complementary Weyl twirl `d⁻² ∑_{a,b} W_{ab} ρ W_{ab}* = d⁻¹ ρ_U ⊗ I` (library `WeylTwirl.lean`, from §4) contains the term `W_{00} = 1`, so `ρ ≤ d (ρ_U ⊗ I)` (`step_5_2_1`, AreaLawRefactored/S05\_Conditional.lean:85). Reason: the twirl identity was already in the library; same constant `d`.
+_Formal route_ (RefactoringResult.md §5, D5.2.1): the complementary Weyl twirl `d⁻² ∑_{a,b} W_{ab} ρ W_{ab}* = d⁻¹ ρ_U ⊗ I` (library `WeylTwirl.lean`, from §4) contains the term `W_{00} = 1`, so `ρ ≤ d (ρ_U ⊗ I)` (`step_5_2_1`, AreaLaw/S05\_Conditional.lean:85). Reason: the twirl identity was already in the library; same constant `d`.
 
 _Used from._ {bpref "D5.1"}[D5.1]; {bpref "D2.1"}[D2.1] ($`S(x|U)`).
 
@@ -79,7 +79,7 @@ $`\ell=\log(ed)` ($`\ell\ge1`). Universal $`c,C>0` with $$`\Pr(|L|>v)\le2de^{-v}
 
 *D5.3.3* _Taylor._ $`e^{bL}\le1+bL+\tfrac{b^2}2L^2e^{|bL|}` (Lagrange remainder). Take $`\mathbb E`, $`\mathbb EL=-S(x|U)`: $`\mathbb Ee^{bL}\le1-bS(x|U)+\tfrac C2b^2\ell^2`. Apply $`\log(1+y)\le y`.
 
-_Formal route_ (RefactoringResult.md §5, D5.3.2): direct split at `|L| ≤ 2ℓ` with `L² ≤ 8ℓ² + 16e^{|L|/2−ℓ}` (port of old `tilted_second_moment`; `step_5_3`, AreaLawRefactored/S05\_Conditional/LogMoments.lean:94). Reason: shorter for finite sums.
+_Formal route_ (RefactoringResult.md §5, D5.3.2): direct split at `|L| ≤ 2ℓ` with `L² ≤ 8ℓ² + 16e^{|L|/2−ℓ}` (port of old `tilted_second_moment`; `step_5_3`, AreaLaw/S05\_Conditional/LogMoments.lean:94). Reason: shorter for finite sums.
 
 _Used from._ {bpref "D5.2"}[D5.2].
 
@@ -105,7 +105,7 @@ For $`0<a<1/4` put $`K=Q^{-a}\rho Q^{-a}`, $`r=(1-2a)^{-1}\in(1,2)`, $`Z=(\opera
 
 *D5.4.5* _Insert {bpref "D5.3"}[D5.3]_ with $`b=r-1=2ar\le4a` ($`r<2`); need $`|b|\ell\le c_3`, ensured by $`a\ell\le c_3/4`: $$`\log Z\le\tfrac1r\big[-(r-1)S(x|U)+C(r-1)^2\ell^2\big]=-2aS(x|U)+4Ca^2r\ell^2\le-2aS(x|U)+8Ca^2\ell^2.`
 
-_Formal route_ (RefactoringResult.md §5, D5.4.2–4): Araki–Lieb–Thirring `Tr(Q^sAQ^s)^r ≤ Tr A^r Q^{2sr}` proved once by a three-lines/test-matrix argument (`araki_lieb_thirring`, AreaLawRefactored/S05\_Conditional/Movement/ArakiLiebThirring.lean:217), specialised to `s = −a` (`step_5_4_of`, Movement/Schatten.lean:174). Reason: Mathlib has no Schatten norms or matrix interpolation.
+_Formal route_ (RefactoringResult.md §5, D5.4.2–4): Araki–Lieb–Thirring `Tr(Q^sAQ^s)^r ≤ Tr A^r Q^{2sr}` proved once by a three-lines/test-matrix argument (`araki_lieb_thirring`, AreaLaw/S05\_Conditional/Movement/ArakiLiebThirring.lean:217), specialised to `s = −a` (`step_5_4_of`, Movement/Schatten.lean:174). Reason: Mathlib has no Schatten norms or matrix interpolation.
 
 _Used from._ {bpref "D5.2"}[D5.2], {bpref "D5.3"}[D5.3].
 
@@ -155,7 +155,7 @@ leftover $`Ca\ell(1+|u|)^{1/2}a^{1/4}\ell^{1/2}\to Ca^{5/4}\ell^{3/2}\le Ca^{5/4
 
 _D5.5.A (identities)._ $`\theta` pure on $`PxUF`: $`S(xUF)=S(P)`, $`S(UF)=S(xP)`, $`S(U)=S(xPF)`, $`S(xU)=S(PF)`. Then $$`I(x:F|U)=S(xU)+S(UF)-S(U)-S(xUF)=S(PF)+S(xP)-S(U)-S(P)=S(x|P)+S(x|U),` $$`I(x:F|P)=S(xP)+S(PF)-S(P)-S(xPF)=S(xP)+S(PF)-S(P)-S(U),` equal to the previous line. SSA ({bpref "D2.2"}[D2.2] item 1) gives $`I\ge0`.
 
-_Formal route_ (RefactoringResult.md §5, D5.5.9–{bpref "D5.11"}[D5.11]): paired Gaussian three-lines on `g(z) = f(z)·conj f(1−z̄)·e^{B(z−1/2)²}` (reflection `z ↦ 1−z̄` pairs `iu` with `1+iu` at the same `u`), `u`-growth bounded pointwise by `(3+u²)/2` (`step_5_11`, AreaLawRefactored/S05\_Conditional/Interpolation.lean:118; `step_5_5_10` :142). Reason: Mathlib has three-lines but no Poisson kernel/harmonic measure for the strip.
+_Formal route_ (RefactoringResult.md §5, D5.5.9–{bpref "D5.11"}[D5.11]): paired Gaussian three-lines on `g(z) = f(z)·conj f(1−z̄)·e^{B(z−1/2)²}` (reflection `z ↦ 1−z̄` pairs `iu` with `1+iu` at the same `u`), `u`-growth bounded pointwise by `(3+u²)/2` (`step_5_11`, AreaLaw/S05\_Conditional/Interpolation.lean:118; `step_5_5_10` :142). Reason: Mathlib has three-lines but no Poisson kernel/harmonic measure for the strip.
 
 _Formal route_ (RefactoringResult.md §5, D5.5.11): only `τ` regularised (`lemma_5_1_of_faithful`, Movement/Regularise.lean:49). Reason: `σ^{[az]}` is entire and `σ^{[iau]}` a contraction, faithfulness of `σ` not needed.
 
@@ -307,7 +307,7 @@ $`G` vector-valued, analytic in $`0<\Re z<1`, bounded and continuous on the clos
 
 *D5.11.4* Legitimacy: for faithful $`\sigma,\tau` all boundary norms are bounded above and away from zero (unitaries and invertible factors), so integrals are finite and the limit in D5.11.2 is justified.
 
-_Formal route_ (RefactoringResult.md §5, {bpref "D5.5"}[D5.5.9]–D5.11): paired Gaussian three-lines on `g(z) = f(z)·conj f(1−z̄)·e^{B(z−1/2)²}` (reflection `z ↦ 1−z̄` pairs `iu` with `1+iu` at the same `u`), `u`-growth bounded pointwise by `(3+u²)/2` (`step_5_11`, AreaLawRefactored/S05\_Conditional/Interpolation.lean:118; `step_5_5_10` :142). Reason: Mathlib has three-lines but no Poisson kernel/harmonic measure for the strip.
+_Formal route_ (RefactoringResult.md §5, {bpref "D5.5"}[D5.5.9]–D5.11): paired Gaussian three-lines on `g(z) = f(z)·conj f(1−z̄)·e^{B(z−1/2)²}` (reflection `z ↦ 1−z̄` pairs `iu` with `1+iu` at the same `u`), `u`-growth bounded pointwise by `(3+u²)/2` (`step_5_11`, AreaLaw/S05\_Conditional/Interpolation.lean:118; `step_5_5_10` :142). Reason: Mathlib has three-lines but no Poisson kernel/harmonic measure for the strip.
 
 _Used from._ none (step 3 of the lemma this step belongs to supplies the hypotheses).
 
@@ -461,7 +461,7 @@ Small universal $`c_0\le\tfrac14` and universal $`C` with $`|f(z)|\le C` for $`|
 
 *D5.16.6* _Three-lines on $`0\le\Re z\le\tfrac14`_ ($`f` entire, bounded there): $`|f(z)|\le1^{1-4\Re z}(d_h^2)^{4\Re z}=d_h^{8\Re z}`. At $`\Re z\le b=c_0/\ell_h`: $`d_h^{8b}=e^{8c_0\log d_h/\ell_h}\le e^{8c_0}` ($`\log d_h\le\ell_h`). Negative side by D5.16.4.
 
-_Formal route_ (RefactoringResult.md §5, D5.16.3): eigenbasis computation with weighted AM–GM `|t^{[z]}|²|t'^{[−z]}|²t' ≤ 2s t + (1−2s)t'` (`step_5_16`, AreaLawRefactored/S05\_Conditional/SkewStrip.lean:436). Reason: no Schatten norms.
+_Formal route_ (RefactoringResult.md §5, D5.16.3): eigenbasis computation with weighted AM–GM `|t^{[z]}|²|t'^{[−z]}|²t' ≤ 2s t + (1−2s)t'` (`step_5_16`, AreaLaw/S05\_Conditional/SkewStrip.lean:436). Reason: no Schatten norms.
 
 _Used from._ {bpref "D5.1"}[D5.1].
 
@@ -527,7 +527,7 @@ $`m=\min(1,\mathcal R_\eta)`, $`F(z)=(f(z)-p)e^{z^2}`. Then $`|F|\le Cm` on $`\R
 
 *D5.19.4* _Cauchy._ $`g=f-p=Fe^{-z^2}`. On $`|z|\le b/2`: $`|g|\le Cm^{1/2}e^{b^2/4}\le C'm^{1/2}` (disc $`|z|\le b/2` lies in $`|\Re z|\le b/2`). Cauchy's estimates on this disc, $`R=b/2`: $`|g^{(k)}(0)|/k!\le C'm^{1/2}R^{-k}`. $`g(0)=0`, $`g'(0)=f'(0)`. For $`t\le b/8`, $`t/R\le\tfrac14`: $$`|g(t)-tg'(0)|\le C'm^{1/2}\sum_{k\ge2}(t/R)^k\le\tfrac43C'm^{1/2}(t/R)^2=C(t/b)^2m^{1/2}.` Write $`f(t)=p+itb_1+\epsilon`, $`f'(0)=ib_1`, $`|\epsilon|\le C(t/b)^2m^{1/2}`. If $`p>0`: $`|p+itb_1|-p=\frac{t^2b_1^2}{|p+itb_1|+p}\le\frac{t^2b_1^2}{2p}\le Ct^2\mathcal R_\eta^2` ({bpref "D5.18"}[D5.18]: $`b_1^2\le C^2p\mathcal R_\eta^2`). If $`p=0`: $`b_1=0` by {bpref "D5.18"}[D5.18]. $`\Re(p+itb_1)=p`. Then $`|f(t)|-\Re f(t)\le(|p+itb_1|-p)+2|\epsilon|\le Ct^2\mathcal R_\eta^2+C(t\ell_h/c_0)^2m^{1/2}`, i.e. with $`t=a/2` the stated bound.
 
-_Formal route_ (RefactoringResult.md §5, D5.19): three lines with bound 0 already gives 0 (`step_5_19`, AreaLawRefactored/S05\_Conditional/SkewAnalytic.lean:198). Reason: no separate case.
+_Formal route_ (RefactoringResult.md §5, D5.19): three lines with bound 0 already gives 0 (`step_5_19`, AreaLaw/S05\_Conditional/SkewAnalytic.lean:198). Reason: no separate case.
 
 _Used from._ {bpref "D5.16"}[D5.16], {bpref "D5.17"}[D5.17], {bpref "D5.18"}[D5.18].
 

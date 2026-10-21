@@ -17,6 +17,8 @@ import Mathlib.LinearAlgebra.Matrix.Bilinear
 /-!
 # Rectangular matrix intertwining
 
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+
 Minimal finite-dimensional identities used to transport filtered vectors and
 transport states along rectangular intertwiners.
 -/

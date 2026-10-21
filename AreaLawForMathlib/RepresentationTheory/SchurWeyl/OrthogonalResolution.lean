@@ -15,6 +15,8 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 /-!
 # Orthogonal resolutions of the identity and their function algebras
 
+Extends `Mathlib/Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Commute.lean`.
+
 Mutually orthogonal idempotents summing to `1` give an algebra homomorphism from `ι → ℂ`.
 -/
 

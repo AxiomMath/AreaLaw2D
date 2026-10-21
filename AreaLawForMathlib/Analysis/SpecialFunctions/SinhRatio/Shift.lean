@@ -12,6 +12,8 @@ import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Fourier
 /-!
 # Shifted Fourier densities of the hyperbolic-sine ratio
 
+Extends `Mathlib/Analysis/Fourier/FourierTransform.lean`.
+
 For `0 < s < 1/2` the density `m_{s/2}` has no poles in the closed strip
 `|Im w| ≤ s/2`; there `|cosh(2πw) + cos(πs)| ≥ cos(πs) cosh(2π Re w)`. Shifting the
 Fourier contour of `m_{s/2}` by `±is/2` therefore crosses no pole, and the functions
@@ -19,7 +21,7 @@ Fourier contour of `m_{s/2}` by `±is/2` therefore crosses no pole, and the func
   h_\pm(z) = \frac{e^{\pm sz} - 1}{2\sinh(z/2)} = \pm e^{\pm sz/2} g_{s/2}(z)
 \]
 have the Fourier densities `q_±(u) = ± m_{s/2}(u ± is/2)`
-(`AreaLawRefactored/S07_Transport/Fourier.lean`).
+(`AreaLaw/S07_Transport/Fourier.lean`).
 
 ## Main results
 

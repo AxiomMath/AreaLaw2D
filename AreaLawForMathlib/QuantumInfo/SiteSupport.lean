@@ -8,6 +8,8 @@ import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 /-!
 # Concrete support for finite tensor-product matrices
 
+Extends `Mathlib/LinearAlgebra/Matrix/Kronecker.lean`.
+
 Operators on `⊗_v ℂ^{n_v}` acting as the identity outside a set of sites.
 -/
 

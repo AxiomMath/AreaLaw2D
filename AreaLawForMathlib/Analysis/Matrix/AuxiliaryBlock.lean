@@ -3,6 +3,8 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixPowers
 /-!
 # An auxiliary positive block realising the skew defect `|O^*| + |O| - O - O^*`
 
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+
 For a positive definite `A` and a positive semidefinite `h`, put `T = h^{1/2}` and
 `O = A^{-1/2} h A^{1/2}`. For every positive definite `B`, the maps
 `Y = B^{1/2} T A^{-1/2}` and `Z = B^{-1/2} T A^{1/2}` satisfy `Y^* Z = O`. We construct a

@@ -13,6 +13,8 @@ import Mathlib.Analysis.SpecialFunctions.Exponential
 /-!
 # Derivatives of weighted geometric means along paths
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 Helpers for the exact derivative of the area-law paper, Proposition 7.4
 (`06-transport.tex` lines 438--468):
 
@@ -20,10 +22,8 @@ Helpers for the exact derivative of the area-law paper, Proposition 7.4
 * uniqueness of derivatives within the Hermitian matrices;
 * joint differentiability of `(A, B) ↦ A #_r B` within the Hermitian matrices, with the
   partial derivatives `geomMeanDerivLeft` and `geomMeanDerivRight`;
-* the derivative of `q ↦ A #_q B` and its identification with the old-child derivative
+* the derivative of `q ↦ A #_q B` and its identification with the derivative of the geometric mean
   applied to `A^{1/2} log C A^{1/2}` (lines 448--458).
-
-The proofs are written from the paper; no Lean source was adapted.
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

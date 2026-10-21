@@ -3,6 +3,8 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixPowers
 /-!
 # Products of commuting positive definite matrices
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/ExpLog/Order.lean`.
+
 For pairwise commuting positive definite matrices `X_1, …, X_K` the ordered product is positive
 definite and its logarithm is `∑_g log X_g`; whitening a product `∏_g B_g` by a product
 `∏_g A_g` factors band by band when `A_g` commutes with `A_{g'}` and `B_{g'}` for `g ≠ g'`.

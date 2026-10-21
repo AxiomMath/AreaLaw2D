@@ -10,6 +10,8 @@ import Mathlib.LinearAlgebra.Lagrange
 /-!
 # Recursions for the dimension formula
 
+Extends `Mathlib/LinearAlgebra/Lagrange.lean`.
+
 `D_λ = ∑_i D_{λ - e_i}` and `∑_i D_{λ + e_i} = (k + 1) D_λ`, from Lagrange interpolation (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, equation
 `replicas:dimensions`).

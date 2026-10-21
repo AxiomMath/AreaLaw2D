@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TrivialLabel
 /-!
 # The coherent-state resolution of the symmetric projector
 
+Extends `Mathlib/RepresentationTheory/Invariants.lean`.
+
 For a unit one-copy vector `θ`, the coherent projector onto `θ^{⊗k}` resolves the symmetric
 projector after Haar-unitary averaging.
 -/

@@ -4,6 +4,8 @@ import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 /-!
 # Infinitesimal congruence covariance of the weighted geometric mean
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 Congruence covariance `S^* (A #_p B) S = (S^* A S) #_p (S^* B S)` along `S = e^{tX}`,
 differentiated at `t = 0`:
 `∂_A(A #_p B)[X^* A + A X] + ∂_B(A #_p B)[X^* B + B X] = X^* (A #_p B) + (A #_p B) X`.

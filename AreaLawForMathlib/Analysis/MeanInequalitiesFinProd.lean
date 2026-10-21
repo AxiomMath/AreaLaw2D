@@ -3,6 +3,8 @@ import Mathlib.Analysis.MeanInequalities
 /-!
 # Hölder's inequality for a weighted sum of a product of `N` functions
 
+Extends `Mathlib/Analysis/MeanInequalities.lean`.
+
 `∑ᵢ wᵢ ∏_{j} x_j(i) ≤ ∏_{j} (∑ᵢ wᵢ x_j(i)^N)^{1/N}` for nonnegative weights and functions,
 `N` the number of factors; proved from the weighted AM–GM inequality.
 -/

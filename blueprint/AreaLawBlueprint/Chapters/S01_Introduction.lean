@@ -2,7 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import AreaLawBlueprint.TexPrelude
-import AreaLawRefactored
+import AreaLaw
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -100,7 +100,7 @@ Source: `00-introduction.tex` L69–L86.
 
 *D1.7.6* Empty boundary: $`\partial_\Lambda A`, $`\partial_{\rm in}A`, $`Z_A` empty simultaneously; inequalities read $`0\le0`.
 
-_Formal route_ (RefactoringResult.md §5, D1.7.3, D1.7.5): any graph of degree ≤ k (`step_1_7_3`, `step_1_7_5`, AreaLawRefactored/S01\_AreaLaw.lean:77, :94), k = 4 by `card_filter_squareLattice_adj_le` (:124). Reason: dimension rule (2d in ℤ^d).
+_Formal route_ (RefactoringResult.md §5, D1.7.3, D1.7.5): any graph of degree ≤ k (`step_1_7_3`, `step_1_7_5`, AreaLaw/S01\_AreaLaw.lean:77, :94), k = 4 by `card_filter_squareLattice_adj_le` (:124). Reason: dimension rule (2d in ℤ^d).
 
 _Used from._ {bpref "D1.4"}[D1.4], {bpref "D1.6"}[D1.6].
 

@@ -5,6 +5,8 @@ import Mathlib.Order.Filter.AtTopBot.Basic
 /-!
 # A uniform remainder from uniform eventual bounds
 
+Extends `Mathlib/Topology/Instances/Real/Lemmas.lean`.
+
 If, for every `ε > 0`, eventually in `k` the family `F k x` is at most `ε` uniformly in `x`,
 and each `F k ·` is bounded above, then `F k x ≤ r k` for one sequence `r k → 0`, `r k ≥ 0`.
 -/

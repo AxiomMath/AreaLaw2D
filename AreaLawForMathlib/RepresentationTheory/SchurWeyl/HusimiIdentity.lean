@@ -6,7 +6,11 @@ Authors: QICLean contributors
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CoherentResolution
 import QuantumInfo.ForMathlib.Matrix
 
-/-! # The finite-copy coherent-measure identity -/
+/-!
+# The finite-copy coherent-measure identity
+
+Extends `Mathlib/LinearAlgebra/Matrix/Trace.lean`.
+-/
 
 open Matrix PermutationRepresentation MeasureTheory Finset
 open scoped Kronecker

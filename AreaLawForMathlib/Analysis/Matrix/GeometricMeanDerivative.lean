@@ -13,6 +13,8 @@ import AreaLawForMathlib.Analysis.Matrix.WeightedGeometricMean
 /-!
 # Derivatives of the weighted geometric mean and normalized derivative maps
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 For positive definite `A`, `B` and `0 ≤ p ≤ 1`, the mean `M = A #_p B` is
 differentiable in each argument along Hermitian matrices. Differentiating
 `M = A^{1/2} (A^{-1/2} B A^{-1/2})^p A^{1/2}` in `B` gives

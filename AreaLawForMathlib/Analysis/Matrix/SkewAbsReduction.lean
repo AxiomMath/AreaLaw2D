@@ -4,6 +4,8 @@ import AreaLawForMathlib.Analysis.Matrix.ProjectionCompressionCfc
 /-!
 # Reductions of similarity transforms and of the skew defect
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 * `Matrix.list_ofFn_prod_rpow_conj`: for pairwise commuting positive definite factors `D_g`,
   `(∏ D)^{-1/2} X (∏ D)^{1/2} = D_g^{-1/2} X D_g^{1/2}` when `X` commutes with every factor
   except `D_g`.

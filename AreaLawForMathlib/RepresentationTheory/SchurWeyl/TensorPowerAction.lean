@@ -10,6 +10,8 @@ import Mathlib.GroupTheory.Perm.Cycle.Type
 /-!
 # Copy permutations of tensor powers and the symmetric subspace
 
+Extends `Mathlib/LinearAlgebra/PiTensorProduct.lean`.
+
 The operators `U_Q(π)` permuting the copies of a subsystem and the symmetric subspace (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 14–27).
 -/

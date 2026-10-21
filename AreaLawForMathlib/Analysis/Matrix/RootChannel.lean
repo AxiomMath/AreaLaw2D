@@ -8,12 +8,14 @@ Ported and adapted from LionSR/QICLean commit
 as used by LionSR/TNLean commit fc565830cec69e8226e521d56c86d39845d45576.
 Apache 2.0; adapted to this repository's operator-norm and square-root API.
 -/
-import Arealaw.OpNorm
+import AreaLawForMathlib.Analysis.CStarAlgebra.Matrix
 import AreaLawForMathlib.Analysis.Matrix.SqrtHolder
 import Mathlib.Analysis.Matrix.Order
 
 /-!
 # Square-root channels of positive contractions
+
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
 
 For `0 ≤ k ≤ 1`, the roots `G = √(1-k)` and `K = √k` define the channel
 `B ↦ G B G + K B K`.  This file proves positivity and contraction after adjoining an

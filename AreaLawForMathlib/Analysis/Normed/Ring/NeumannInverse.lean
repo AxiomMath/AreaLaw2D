@@ -12,6 +12,8 @@ import Mathlib.Analysis.Normed.Ring.Units
 /-!
 # A quantitative Neumann inverse bound
 
+Extends `Mathlib/Analysis/Normed/Ring/Units.lean`.
+
 This file records quantitative Neumann bounds, both around the identity and around an
 arbitrary invertible base point.  The latter estimates control the inverse and its displacement
 under a relatively small perturbation.

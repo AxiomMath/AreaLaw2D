@@ -3,6 +3,8 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 /-!
 # Nonnegativity of small real powers of arbitrary reals
 
+Extends `Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`.
+
 For `x < 0`, Mathlib's `x ^ y = e^{y log |x|} cos(yπ)`, which is nonnegative for `|y| ≤ 1/2`.
 -/
 

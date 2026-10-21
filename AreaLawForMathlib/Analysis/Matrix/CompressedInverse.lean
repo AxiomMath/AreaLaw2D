@@ -10,6 +10,8 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
 /-!
 # Bounds from a compressed inverse
 
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+
 A bound for the compression of the inverse of a positive-definite matrix yields a lower bound
 for the matrix itself (`07-comparators.tex`, lines 585–605).
 -/

@@ -8,10 +8,12 @@ Ported from LionSR/QICLean commit
 `QICLean/Algebra/L2OpNormReindex.lean`, with the required vectorwise norm helper from
 `QICLean/Algebra/MatrixAux.lean`.
 -/
-import Arealaw.OpNorm
+import AreaLawForMathlib.Analysis.CStarAlgebra.Matrix
 
 /-!
 # Relabelling indices preserves the Euclidean operator norm
+
+Extends `Mathlib/Analysis/CStarAlgebra/Matrix.lean`.
 
 Simultaneously relabelling the rows and columns of a square matrix through an
 equivalence preserves its `L²` operator norm.

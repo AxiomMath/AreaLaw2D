@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.PartitionCount
 /-!
 # Highest-weight vectors from column antisymmetrization
 
+Extends `Mathlib/RepresentationTheory/Basic.lean`.
+
 Antisymmetrizing the row configuration of a Young diagram over its columns gives a highest-weight
 vector of every partition weight (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, lines 46–64).

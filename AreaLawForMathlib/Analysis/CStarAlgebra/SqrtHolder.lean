@@ -1,5 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Order
-import Arealaw.OpNorm
+import AreaLawForMathlib.Analysis.CStarAlgebra.Matrix
 
 /-!
 # Hölder-1/2 continuity of the square root in a C⋆-algebra; Kraus contractions

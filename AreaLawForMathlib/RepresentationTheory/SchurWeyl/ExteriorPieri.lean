@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.BranchingPieri
 /-!
 # Highest-weight vectors in `V_μ ⊗ Λ^r ℂ^q`
 
+Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
+
 The multiplicity of `V_λ` in `V_μ ⊗ Λ^r ℂ^q` is at most one, and nonzero only for
 `λ = μ + 1_S` with `|S| = r` (the highest-weight half of the vertical-strip Pieri rule).
 -/

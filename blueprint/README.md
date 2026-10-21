@@ -15,4 +15,4 @@ cd blueprint
 `scripts/check_dag.py` compares the rendered dependency graph with the DAG of
 `digest/00-overview.md` §2.1. `scripts/patch_versoblueprint.py` patches VersoBlueprint's
 dependency-closure walk, which is exponential in the number of paths of the graph.
-The CI job is `ci/blueprint.yml` (to be placed in `.github/workflows/`).
+The CI job is `ci/workflows/blueprint.yml` in the repository root, to be moved into `.github/workflows/` (see `ci/PENDING_WORKFLOWS.md`).

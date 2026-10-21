@@ -6,6 +6,8 @@ import AreaLawForMathlib.Analysis.Matrix.ReducedVectorState
 /-!
 # Splitting the copies of a tensor power
 
+Extends `Mathlib/RepresentationTheory/Basic.lean`.
+
 A split `Fin m ⊕ Fin r ≃ Fin k` of the copies identifies `V^{⊗k}` with `V^{⊗m} ⊗ V^{⊗r}`, compatibly
 with the copy permutations of subsystems.
 -/

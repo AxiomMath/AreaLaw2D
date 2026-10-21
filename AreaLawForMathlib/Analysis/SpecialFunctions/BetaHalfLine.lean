@@ -9,6 +9,8 @@ import Mathlib.MeasureTheory.Function.JacobianOneDim
 /-!
 # The Beta integral on the half-line
 
+Extends `Mathlib/Analysis/SpecialFunctions/Gamma/Beta.lean`.
+
 For `a, b > 0`,
 
 `∫_0^∞ u^{a-1} (1 + u)^{-(a+b)} du = Γ(a) Γ(b) / Γ(a + b)`.
@@ -17,9 +19,6 @@ This is the Beta integral `B(a, b) = ∫_0^1 x^{a-1} (1 - x)^{b-1} dx`, transpor
 half-line by the substitution `x = u/(1 + u)`. It evaluates the radial integral in the gamma
 computation of the proof of Lemma 6.2 of the area-law paper (*A two-dimensional area law from
 a global spectral gap*, `05-replicas.tex`, lines 347–364).
-
-Ported from `LionSR/QICLean`, `QICLean/Analysis/BetaHalfLine.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 
 ## Main declarations
 

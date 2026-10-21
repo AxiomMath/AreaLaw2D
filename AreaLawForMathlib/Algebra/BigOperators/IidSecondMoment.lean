@@ -10,6 +10,8 @@ import Mathlib.Algebra.BigOperators.Field
 /-!
 # Second moment and Chebyshev bound for iid words
 
+Extends `Mathlib/Probability/Moments/Variance.lean`.
+
 For a probability vector `p` on a finite type `n` and `X : n → ℝ` with mean `μ = ∑ p_i X_i`, the
 words `x : Fin k → n` weighted by `∏_j p_{x_j}` are `k` independent samples. The centred sum
 `∑_j (X_{x_j} - μ)` has second moment `k Var(X)`, and the Chebyshev bound

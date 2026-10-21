@@ -11,6 +11,8 @@ import Mathlib.Algebra.Polynomial.Eval.Defs
 /-!
 # Alternants and the vertical-strip Pieri rule
 
+Extends `Mathlib/LinearAlgebra/Vandermonde.lean`.
+
 The alternant `a_α(y) = det [y_i ^ α_j]` satisfies `a_α e_r = ∑_{|S| = r} a_{α + 1_S}`, whence
 `∑_{|S| = r} V(α + 1_S) = binom(q, r) V(α)` for the Vandermonde product `V` (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 336–364).

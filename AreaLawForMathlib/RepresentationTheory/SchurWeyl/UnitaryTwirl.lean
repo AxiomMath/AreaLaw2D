@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SiteOp
 /-!
 # The unitary twirl of a symmetric operator
 
+Extends `Mathlib/LinearAlgebra/UnitaryGroup.lean`.
+
 For an operator `A` on `(ℂ^Ω)^{⊗k}` commuting with the copy permutations, the twirl over the
 Haar probability measure commutes with every unitary tensor power and with copy permutations,
 so it is a central label function.

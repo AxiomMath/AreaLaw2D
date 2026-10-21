@@ -13,6 +13,8 @@ import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
 # Matrix lemmas used by finite-dimensional orthogonal projections
+
+Extends `Mathlib/Analysis/Matrix/PosDef.lean`.
 -/
 
 open scoped Matrix ComplexOrder BigOperators MatrixOrder

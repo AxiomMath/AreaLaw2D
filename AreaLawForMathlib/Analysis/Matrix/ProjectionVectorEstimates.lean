@@ -5,6 +5,8 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 /-!
 # Vector estimates for projections, products and normalization
 
+Extends `Mathlib/Analysis/Matrix/PosDef.lean`.
+
 Elementary facts about complex vectors and matrices: quadratic forms of Hermitian idempotents,
 invariance of a submodule under a product of matrices, absorption of a commuting idempotent
 into a product, norm bounds for ordered products, normalization of a nonzero vector, a crude

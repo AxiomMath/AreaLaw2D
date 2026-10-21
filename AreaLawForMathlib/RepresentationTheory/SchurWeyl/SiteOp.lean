@@ -11,6 +11,8 @@ import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 /-!
 # One-copy operators on a tensor power of a finite tensor product
 
+Extends `Mathlib/LinearAlgebra/Matrix/Kronecker.lean`.
+
 Commutation relations of the one-copy operator `h^{(j)}` on `(⨂_v ℂ^{n_v})^{⊗k}` with copy
 permutations.
 -/

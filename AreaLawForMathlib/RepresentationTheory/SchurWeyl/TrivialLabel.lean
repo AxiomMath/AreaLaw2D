@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.PermutationRepresentation
 /-!
 # The trivial label
 
+Extends `Mathlib/RepresentationTheory/Invariants.lean`.
+
 The projector onto the invariant vectors is a label projector (*A two-dimensional area law from a
 global spectral gap*, `05-replicas.tex`, lines 15–20).
 -/

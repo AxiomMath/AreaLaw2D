@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CommutantDimension
 /-!
 # Operators central for a permutation action are central label functions
 
+Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
+
 An operator commuting with the permutation operators and their commutant is `∑_λ c_λ π^λ` (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 319–330).
 -/

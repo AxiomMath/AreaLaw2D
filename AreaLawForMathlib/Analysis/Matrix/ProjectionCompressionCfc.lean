@@ -16,6 +16,8 @@ import Mathlib.LinearAlgebra.Lagrange
 /-!
 # Functional calculus on the range of a commuting projection
 
+Extends `Mathlib/Analysis/Matrix/HermitianFunctionalCalculus.lean`.
+
 Let `P` be a matrix that commutes with a Hermitian matrix `Z`. If a second Hermitian matrix `Y`
 agrees with `Z` after multiplication by `P`, then so do all their continuous functions:
 `P f(Y) = P f(Z)`. For an orthogonal projection `P` commuting with `A`, the operator

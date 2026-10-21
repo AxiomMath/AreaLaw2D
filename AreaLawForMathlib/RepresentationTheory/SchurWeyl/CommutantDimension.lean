@@ -13,6 +13,8 @@ import Mathlib.LinearAlgebra.Dimension.Constructions
 /-!
 # The commutant of a permutation representation and the multiplicity count
 
+Extends `Mathlib/RepresentationTheory/Intertwining.lean`.
+
 The total multiplicity `∑_λ m_λ` in `(ℂ^q)^{⊗k}` is at most `(k+1)^{q²}` (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 160–163 and 227–235).
 -/

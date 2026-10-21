@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.StarOperator
 /-!
 # Removable-row branches and their probabilities
 
+Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
+
 The branches `ν = λ - e_i` of Lemma 6.1(6) and their probabilities `d_ν / d_λ ≤ 2^q l_i / k` (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 132–145 and 237–249).
 -/

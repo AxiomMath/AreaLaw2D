@@ -14,6 +14,8 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixProjectionAux
 /-!
 # Orthogonal projections in finite matrix algebras
 
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+
 This file collects the elementary definition and basic properties of orthogonal
 projections in complex matrix algebras.  The material is independent of quantum
 channels and irreducibility.

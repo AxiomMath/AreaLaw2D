@@ -9,6 +9,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 /-!
 # The hook-type dimension formula and its entropy asymptotics
 
+Extends `Mathlib/Analysis/SpecialFunctions/Stirling.lean`.
+
 `|log D_λ - k H(λ/k)| ≤ (q² + q + 1)(log(k + q + 2) + 1)` for the right-hand side `D_λ` of the
 dimension formula (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
 92–103 and 132–163).

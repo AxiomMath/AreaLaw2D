@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.IsotypicDimension
 /-!
 # Restriction of irreducible labels to a subgroup
 
+Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
+
 The restriction multiplicities `c(λ, ν)` satisfy `d_λ = ∑_ν c(λ, ν) d_ν`, and `ρ(a) π^λ` is
 expressed through the `λ` block of `a` (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, lines 132–151 and 237–249).

@@ -19,6 +19,8 @@ import Mathlib.Tactic.Push
 /-!
 # Hermitian exponential paths
 
+Extends `Mathlib/Analysis/Normed/Algebra/MatrixExponential.lean`.
+
 The punctured-neighborhood result uses differentiation and a matrix unit,
 not eigenvalue enumeration or a trigonometric framework.
 -/

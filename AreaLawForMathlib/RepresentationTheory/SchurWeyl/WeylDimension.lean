@@ -10,6 +10,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.JucysRecursion
 /-!
 # The Weyl dimension formula for the multiplicity spaces
 
+Extends `Mathlib/RepresentationTheory/Character.lean`.
+
 `m_λ = ∏_{i<j} (l_i - l_j)/(j - i)` (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, equation `replicas:dimensions`).
 -/

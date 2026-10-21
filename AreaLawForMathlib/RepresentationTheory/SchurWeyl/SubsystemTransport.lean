@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelEstimates
 /-!
 # Transporting labels between subsystems and tensor powers
 
+Extends `Mathlib/RepresentationTheory/Basic.lean`.
+
 Subsystem label projectors are those of `Q^{⊗k}` tensored with the identity (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 51–64).
 -/

@@ -6,6 +6,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 /-!
 # Complex powers of a positive matrix in a fixed eigenbasis
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 For `W` unitary and `l : n → ℝ`, the complex power `W diag(e^{z log l}) W*` is entire in `z`,
 equals `1` at `z = 0` and `W diag(l) W*` at `z = 1` (for `l > 0`), satisfies
 `M^{z+w} = M^z M^w`, is unitary on the imaginary axis and bounded on the strip `0 ≤ Re z ≤ 1`.

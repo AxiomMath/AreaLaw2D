@@ -17,6 +17,8 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Order
 /-!
 # Hölder continuity of the square root in a C⋆-algebra
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Order.lean`.
+
 For positive elements `a, b` of a unital C⋆-algebra,
 `‖√a - √b‖ ≤ √‖a - b‖`. The bound has no dimension factor. Consequently the absolute
 value of self-adjoint elements satisfies

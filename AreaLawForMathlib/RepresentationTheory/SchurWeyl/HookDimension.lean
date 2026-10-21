@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HookRecursion
 /-!
 # The dimension formula for the labels of `S_k`
 
+Extends `Mathlib/LinearAlgebra/Lagrange.lean`.
+
 `d_λ = k! ∏_{i<j} (l_i - l_j) / ∏_i l_i!`, and the restriction of `λ` contains each `λ - e_i`
 exactly once (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, equation
 `replicas:dimensions`).

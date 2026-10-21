@@ -15,7 +15,11 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
 import Mathlib.LinearAlgebra.Matrix.Reindex
 import QuantumInfo.ForMathlib.Isometry
 
-/-! # Unitary covariance of the matrix functional calculus -/
+/-!
+# Unitary covariance of the matrix functional calculus
+
+Extends `Mathlib/Analysis/Matrix/HermitianFunctionalCalculus.lean`.
+-/
 
 open scoped Matrix ComplexOrder MatrixOrder
 

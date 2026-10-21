@@ -15,6 +15,8 @@ import Mathlib.Analysis.Convex.SpecificFunctions.Pow
 /-!
 # The weighted geometric mean of positive definite matrices
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 The one-vertex matrix-mean properties used in Lemma 7.1 of OAI265.
 -/
 

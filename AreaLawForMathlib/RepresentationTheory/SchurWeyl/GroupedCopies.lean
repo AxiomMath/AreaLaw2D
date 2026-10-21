@@ -13,6 +13,8 @@ import Mathlib.GroupTheory.Perm.Fin
 /-!
 # Labels of grouped copies
 
+Extends `Mathlib/RepresentationTheory/Basic.lean`.
+
 Lemma 6.1(4): compatible labels of two groups of copies satisfy `d_α d_β ≤ d_λ ≤ binom(k, r) d_α
 d_β` (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 116–123 and
 214–221).

@@ -14,6 +14,8 @@ import AreaLawForMathlib.Analysis.SpecialFunctions.SinhRatio.Fourier
 
 /-!
 # The filtered vector `M^{-1/4} pre / ‖M^{-1/4} pre‖` and the unitary `M^{-iu}`
+
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator

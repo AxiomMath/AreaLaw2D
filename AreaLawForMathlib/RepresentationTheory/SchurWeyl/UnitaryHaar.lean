@@ -13,6 +13,9 @@ import Mathlib.Topology.Instances.Matrix
 /-!
 # Haar probability measure on the unitary group
 
+Extends `Mathlib/LinearAlgebra/UnitaryGroup.lean` and
+`Mathlib/MeasureTheory/Measure/Haar/Basic.lean`.
+
 The unitary group is compact and carries a Haar probability measure (*A two-dimensional area law
 from a global spectral gap*, `05-replicas.tex`, lines 341–345).
 -/

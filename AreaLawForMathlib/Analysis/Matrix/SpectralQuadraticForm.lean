@@ -9,7 +9,11 @@ Ported from LionSR/QICLean commit
 -/
 import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HermitianCfcSpectral
 
-/-! # Spectral formulas for vector quadratic forms -/
+/-!
+# Spectral formulas for vector quadratic forms
+
+Extends `Mathlib/Analysis/Matrix/Spectrum.lean`.
+-/
 
 open scoped Matrix ComplexOrder BigOperators
 open Finset

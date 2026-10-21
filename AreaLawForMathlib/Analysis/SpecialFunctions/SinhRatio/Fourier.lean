@@ -14,6 +14,8 @@ import Mathlib.Analysis.Complex.RemovableSingularity
 /-!
 # The Fourier formula for the hyperbolic-sine ratio
 
+Extends `Mathlib/Analysis/Fourier/FourierTransform.lean`.
+
 For `0 < s < 1/2` and real `z`,
 \[
   \frac{\sinh(sz)}{\sinh(z/2)} = \int_{\mathbb R} e^{iuz}\, m_s(u)\,du,

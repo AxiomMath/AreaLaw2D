@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurWeylCommutant
 /-!
 # Highest weights in tensor powers
 
+Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
+
 Invariant subspaces of `(ℂ^q)^{⊗k}` under the commutant of the copy permutations contain
 highest-weight vectors, unique and of partition weight when irreducible (*A two-dimensional area law
 from a global spectral gap*, `05-replicas.tex`, lines 46–64).

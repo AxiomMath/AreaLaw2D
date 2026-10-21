@@ -15,6 +15,8 @@ import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 /-!
 # Functional calculus on an orthogonal resolution
+
+Extends `Mathlib/Analysis/Matrix/HermitianFunctionalCalculus.lean`.
 -/
 
 open Matrix Polynomial

@@ -14,6 +14,8 @@ import Mathlib.Data.Matrix.Block
 /-!
 # Kadison--Schwarz for two-positive matrix maps
 
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+
 This file contains the minimal two-positive Schwarz result required by the
 Section 7 transport estimate.  It is stated directly using the existing
 `IsNPositiveMap 2` predicate rather than importing a parallel channel hierarchy.

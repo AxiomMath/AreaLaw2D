@@ -11,6 +11,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.CommutantDimension
 /-!
 # The labels of `S_k` are the partitions of `k`
 
+Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
+
 The highest weight of the multiplicity space is a bijection from labels to partitions (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 46–64).
 -/

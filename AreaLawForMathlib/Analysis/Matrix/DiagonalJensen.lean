@@ -11,7 +11,11 @@ import Mathlib.Analysis.Convex.Jensen
 import Mathlib.Analysis.Matrix.PosDef
 import AreaLawForMathlib.Analysis.Matrix.SpectralQuadraticForm
 
-/-! # Diagonal Jensen inequality for positive semidefinite matrices -/
+/-!
+# Diagonal Jensen inequality for positive semidefinite matrices
+
+Extends `Mathlib/Analysis/Matrix/PosDef.lean`.
+-/
 
 open scoped Matrix ComplexOrder BigOperators
 

@@ -7,6 +7,8 @@ import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
 
 /-!
  # Spectral forms of the Hermitian functional calculus
+
+Extends `Mathlib/Analysis/Matrix/HermitianFunctionalCalculus.lean`.
 -/
 
 namespace Matrix.IsHermitian

@@ -1,5 +1,5 @@
 import OpenAI.Statements
-import Arealaw.Subadditivity
+import AreaLawForMathlib.QuantumInfo.Entropy.Subadditivity
 import QuantumInfo.Entropy.SSA
 
 /-!

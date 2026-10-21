@@ -14,6 +14,7 @@ import Mathlib.Logic.Equiv.Prod
 /-!
 # Reduced density matrices on finite products
 
+Extends Physlib's `QuantumInfo/ForMathlib/Matrix.lean` (`traceRight`).
 A finite family of local basis types describes a finite tensor product in its
 product basis. A region's reduced matrix is Physlib's ordinary partial trace
 after splitting a configuration into its restrictions to the region and its

@@ -6,6 +6,8 @@ import Mathlib.LinearAlgebra.Matrix.Kronecker
 /-!
 # Reduced states of vectors and quadratic forms
 
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+
 For a vector `u` on `X ≃ X₁ × X₂` the reduced density matrix `Tr₂ |u⟩⟨u|` computes the
 expectation of every operator of the form `M₁ ⊗ 1`. It is positive semidefinite with trace
 `‖u‖²`, it is invariant under a permutation of `X₁` that `u` intertwines with a permutation of

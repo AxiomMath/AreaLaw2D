@@ -11,7 +11,11 @@ inverse-antitonicity portion.
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
-/-! # Inverse antitonicity for positive-definite matrices -/
+/-!
+# Inverse antitonicity for positive-definite matrices
+
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+-/
 
 open scoped Matrix ComplexOrder MatrixOrder
 

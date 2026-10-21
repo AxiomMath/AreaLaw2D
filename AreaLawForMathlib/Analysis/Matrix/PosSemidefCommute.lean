@@ -12,6 +12,8 @@ import Mathlib.Analysis.Matrix.Order
 /-!
 # Products of commuting positive-semidefinite matrices
 
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+
 Positive-semidefinite products and scalar floors used by the Section 7 operator-mean layer.
 -/
 

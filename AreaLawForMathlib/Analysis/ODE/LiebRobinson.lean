@@ -17,6 +17,8 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 /-!
 # Commutator recursion and the finite Volterra comparison
 
+Extends `Mathlib/Analysis/ODE/Gronwall.lean`.
+
 Let `H = ∑ⱼ hⱼ` be a finite sum of Hermitian matrices and `τ_t(A) = e^{itH} A e^{-itH}`. For a
 fixed matrix `B` and a subspace `S` of matrices, the norm of `A ↦ [τ_t(A), B]` restricted to
 `S` obeys a Volterra inequality whose coefficients are the norms of the terms that do not
@@ -25,8 +27,7 @@ nonnegative Volterra inequalities is bounded by weights times an exponential
 (`LiebRobinson.finite_volterra_le_weight_mul_exp`).
 
 References: Hastings–Koma, arXiv:math-ph/0507008, Appendix A; Nachtergaele–Ogata–Sims,
-J. Stat. Phys. 124 (2006), Section 2. Ported from `OpenAI/LiebRobinson/CommutatorRecursion.lean`
-and `OpenAI/LiebRobinson/Volterra.lean` (adapted there from LionSR/TNLean, Apache 2.0).
+J. Stat. Phys. 124 (2006), Section 2.
 -/
 
 open NormedSpace

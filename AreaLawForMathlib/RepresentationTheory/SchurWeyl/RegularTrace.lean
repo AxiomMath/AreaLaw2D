@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Branching
 /-!
 # Traces of permutation representations and the character projection
 
+Extends `Mathlib/RepresentationTheory/Character.lean`.
+
 `tr ρ(a) = ∑_λ m_λ tr W_λ(a)`, whence the central-idempotent formula (*A two-dimensional area law
 from a global spectral gap*, `05-replicas.tex`, lines 164–169).
 -/

@@ -12,6 +12,8 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Bas
 /-!
 # The joint resolution of a permutation-invariant matrix and the label projectors
 
+Extends `Mathlib/Analysis/Matrix/Spectrum.lean`.
+
 For a positive semidefinite `ρ` commuting with a permutation representation, the spectral
 projectors of `ρ` and the label projectors form one orthogonal resolution `E_u π^λ`.
 -/

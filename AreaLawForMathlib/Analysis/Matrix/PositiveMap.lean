@@ -17,6 +17,8 @@ import QuantumInfo.Channels.Dual
 /-!
 # Positive matrix maps and trace adjoints
 
+Extends `QuantumInfo/Channels/MatrixMap.lean`.
+
 This file supplies the minimal positive-map API needed to turn the normalized
 leaf maps of a mean tree into density matrices.  It relates one-positivity to
 ordinary positivity, proves self-duality of the positive semidefinite cone for

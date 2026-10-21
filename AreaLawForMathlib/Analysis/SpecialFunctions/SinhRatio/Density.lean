@@ -16,6 +16,8 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 /-!
 # The hyperbolic-sine ratio and its Fourier density
 
+Extends `Mathlib/Analysis/SpecialFunctions/Trigonometric/DerivHyp.lean`.
+
 For `0 < s < 1/2` set
 \[
   g_s(z) = \frac{\sinh(sz)}{\sinh(z/2)}, \qquad g_s(0) = 2s, \qquad

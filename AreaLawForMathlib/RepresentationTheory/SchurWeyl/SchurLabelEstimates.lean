@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.BranchProbability
 /-!
 # Lemma 6.1, parts 1 and 6, on `(ℂ^q)^{⊗k}`
 
+Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
+
 The labels are the partitions with at most `q` rows, with the dimension, entropy and branch
 statements (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
 85–151).

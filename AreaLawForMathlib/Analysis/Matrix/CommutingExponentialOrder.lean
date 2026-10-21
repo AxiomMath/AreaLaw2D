@@ -13,6 +13,8 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Bas
 /-!
 # Exponential order for commuting Hermitian matrices
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/ExpLog/Order.lean`.
+
 The exponential preserves order between commuting Hermitian matrices. The proof
 writes their positive difference as `D` and uses `exp(D) ≥ 1`, together with
 `exp(B)-exp(A)=exp(A)(exp(D)-1)`. Positivity of this last product follows from

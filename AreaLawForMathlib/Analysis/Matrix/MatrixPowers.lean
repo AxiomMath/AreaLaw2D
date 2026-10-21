@@ -14,6 +14,8 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Order
 /-!
 # Real powers of positive definite matrices
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 Elementary real-power identities used by the weighted geometric mean in Section 7.
 -/
 

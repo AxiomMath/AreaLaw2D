@@ -12,6 +12,8 @@ import Mathlib.Analysis.SpecialFunctions.Gamma.BohrMollerup
 /-!
 # Wendel's inequalities for ratios of Gamma values
 
+Extends `Mathlib/Analysis/SpecialFunctions/Gamma/BohrMollerup.lean`.
+
 For `x > 0` and `0 ≤ s ≤ 1`, log-convexity of the Gamma function gives
 
 `x (x + s)^(s - 1) ≤ Γ(x + s) / Γ(x) ≤ x^s`,

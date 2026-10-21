@@ -14,6 +14,9 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Integ
 /-!
 # Resolvent form of the real-power integrand
 
+Extends
+`Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/IntegralRepresentation.lean`.
+
 This file contains the single functional-calculus identity needed by the Section 7
 Fréchet derivative of a positive matrix power.
 -/

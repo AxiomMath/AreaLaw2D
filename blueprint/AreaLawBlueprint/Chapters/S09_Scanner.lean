@@ -2,7 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import AreaLawBlueprint.TexPrelude
-import AreaLawRefactored
+import AreaLaw
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -244,7 +244,7 @@ There are a charge round and $`p_k\in[\epsilon/2,\epsilon]` with $$`\frac{\mathc
 
 *D9.12.6* Averaging over (uniform charge round) $`\times` (Lebesgue on an interval of length $`\epsilon/2`) gives a point with $`\mathcal Q/(KnD)\le\frac2\epsilon\cdot`RHS. Factor 2 into $`C`; $`n^e/m\le Cn^{e-\mu}` ($`m=\lfloor n^\mu\rfloor`). Integrands are bounded at fixed $`k` and continuous in interior $`p`, so plain averaging suffices.
 
-_Formal route_ (RefactoringResult.md §5, D9.12.4–6 (selection of the round and `p_k`)): contrapositive: if every charge round and every `p ∈ [ε/2, ε]` had `𝒬(p)/(KnD) > δ_n + r_k`, Prop 7.4 (b) pointwise with {bpref "D9.11"}[D9.11] bounds each `∫ exactDerivative` over `[0, ε/2]`, `[ε/2, ε]`, `[ε, 1]`, and telescoping over the `2nm` chained rounds contradicts the initial floor plus `comparator:rough-upper` (`step_9_12`, AreaLawRefactored/S09\_Scanner/Scanner/Selection.lean:271). Reason: §7's (b) is pointwise; only `exactDerivative` is known interval-integrable (§7 debt "integrated (b)"), so the gain itself is never integrated.
+_Formal route_ (RefactoringResult.md §5, D9.12.4–6 (selection of the round and `p_k`)): contrapositive: if every charge round and every `p ∈ [ε/2, ε]` had `𝒬(p)/(KnD) > δ_n + r_k`, Prop 7.4 (b) pointwise with {bpref "D9.11"}[D9.11] bounds each `∫ exactDerivative` over `[0, ε/2]`, `[ε/2, ε]`, `[ε, 1]`, and telescoping over the `2nm` chained rounds contradicts the initial floor plus `comparator:rough-upper` (`step_9_12`, AreaLaw/S09\_Scanner/Scanner/Selection.lean:271). Reason: §7's (b) is pointwise; only `exactDerivative` is known interval-integrable (§7 debt "integrated (b)"), so the gain itself is never integrated.
 
 _Used from._ {bpref "D9.11"}[D9.11]; {bpref "D7.3"}[D7.3] (Lemma 7.1 item 5: mean trees preserve the floor); {bpref "D6.9"}[D6.9] (`replicas:leaf-floor`: $`A_k\ge\mathrm{poly}(k)^{-1}I`); {bpref "D8.8"}[D8.8] (`comparator:rough-upper`, proved in {bpref "D8.20"}[D8.20]); {bpref "D8.3"}[D8.3].
 
@@ -272,7 +272,7 @@ At the point of {bpref "D9.12"}[D9.12], $$`\langle v_k,\overline{\widetilde H}v_
 
 *D9.13.6* Only splitting terms carry skew cost (others exactly zero), so no total-volume factor. Symbol remainders are summed over the finite fixed term set before $`k\to\infty`.
 
-_Formal route_ (RefactoringResult.md §5, D9.13.2 (Hölder 8/7, 8)): pointwise Young `η^{1/8} ≤ (7/8) y + (1/8) y^{-7} η` at `y = (max δ 0)^{1/8} + (|ρ_k| + 1/k)^{1/8}`; same bound (`step_9_13`, AreaLawRefactored/S09\_Scanner/Scanner/Energy.lean:271). Reason: avoids measurability of `η` against the product measure.
+_Formal route_ (RefactoringResult.md §5, D9.13.2 (Hölder 8/7, 8)): pointwise Young `η^{1/8} ≤ (7/8) y + (1/8) y^{-7} η` at `y = (max δ 0)^{1/8} + (|ρ_k| + 1/k)^{1/8}`; same bound (`step_9_13`, AreaLaw/S09\_Scanner/Scanner/Energy.lean:271). Reason: avoids measurability of `η` against the product measure.
 
 _Used from._ {bpref "D7.14"}[D7.14](c) (`transport:energy`), $`W_i(p)=\sum_{j\in\mathcal J_i}\pi_j` ({bpref "D7.12"}[D7.12]); requires $`\bar H\,\mathrm{pre}=E_0\mathrm{pre}` ({bpref "D8.8"}[D8.8] supplies $`E_0=\widetilde E_0`); {bpref "D9.8"}[D9.8] items 2–4; {bpref "D9.10"}[D9.10]; {bpref "D9.12"}[D9.12].
 
@@ -464,7 +464,7 @@ With $`\tau=n^{-\nu/4}`, $`S_X=S_{\widetilde\Omega}(X)`, for $`k\to\infty` then 
 
 *D9.23.4* $`B_{\rm sh}\le C_e(nL^e+n)` and $`nL^e\ge n` ($`L\ge1`) so $`B_{\rm sh}\lesssim nL^e`; $`B_{\rm exc}\le CnD`; $`|\log z|\le2n^{-100}`.
 
-_Formal route_ (RefactoringResult.md §5, {bpref "D9.24"}[D9.24.1], D9.23.4): `h(τ) ≤ log 2` and `1/a = K/W ≤ L ≤ n`, so `h(τ)/a ≤ n`; `|log z| ≤ 1` (AreaLawRefactored/S09\_Scanner/SmallBox.lean). Reason: both give the digest's conclusions `O(n)` used by {bpref "D9.24"}[D9.24.2]–3.
+_Formal route_ (RefactoringResult.md §5, {bpref "D9.24"}[D9.24.1], D9.23.4): `h(τ) ≤ log 2` and `1/a = K/W ≤ L ≤ n`, so `h(τ)/a ≤ n`; `|log z| ≤ 1` (AreaLaw/S09\_Scanner/SmallBox.lean). Reason: both give the digest's conclusions `O(n)` used by {bpref "D9.24"}[D9.24.2]–3.
 
 _Used from._ {bpref "D8.8"}[D8.8] (`comparator:rough-upper`, `comparator:rough-lower`); {bpref "D9.22"}[D9.22]; {bpref "D8.3"}[D8.3] (`comparator:typical-entropies`); {bpref "D9.9"}[D9.9.2] ($`B_{\rm sh},B_{\rm exc}`, $`z`, $`w`).
 
@@ -490,7 +490,7 @@ For $`e_*<e\le e_0` with $`F_{\rm box}(r)\le C_er^{1+e}`: $`F_{\rm box}(r)\le C'
 
 *D9.24.5* Iterate from $`e_0`: exponents $`e_0,(1-\ell)e_0,\dots` decrease geometrically; finitely many steps ($`\ell=g_0/10^5` fixed) reach $`\le e_*`; then loosen to $`e_*`. Each step uses only the current $`F_{\rm box}` bound on shell squares. Parameters and step count depend only on the Hamiltonian parameters => final constant uniform in domain and cut.
 
-_Formal route_ (RefactoringResult.md §5, D9.24.1, {bpref "D9.23"}[D9.23.4]): `h(τ) ≤ log 2` and `1/a = K/W ≤ L ≤ n`, so `h(τ)/a ≤ n`; `|log z| ≤ 1` (AreaLawRefactored/S09\_Scanner/SmallBox.lean). Reason: both give the digest's conclusions `O(n)` used by D9.24.2–3.
+_Formal route_ (RefactoringResult.md §5, D9.24.1, {bpref "D9.23"}[D9.23.4]): `h(τ) ≤ log 2` and `1/a = K/W ≤ L ≤ n`, so `h(τ)/a ≤ n`; `|log z| ≤ 1` (AreaLaw/S09\_Scanner/SmallBox.lean). Reason: both give the digest's conclusions `O(n)` used by D9.24.2–3.
 
 _Used from._ {bpref "D9.23"}[D9.23], {bpref "D9.21"}[D9.21].
 
@@ -608,7 +608,7 @@ $`\lvert\log z\rvert/a` — $`-99.25006` — $`-100+0.74994`
 
 *D9.29.2* The $`E_{{\rm def},k}/\tau` term ("mass-loss" in the paper) is controlled uniformly before the limit by $`E_{{\rm def},k}\le Cn^{-0.0005}+o_k(1)` ({bpref "D9.26"}[D9.26]).
 
-_Formal route_ (RefactoringResult.md §5, D9.29 (error table rows `h(τ)/a`, `|log z|/a`)): `a ≤ n^{-7/10}` and `h(τ)/a, |log z|/a ≤ 1/a ≤ K ≤ L ≤ n^{1-ε}` (AreaLawRefactored/S09\_Scanner/Collar.lean). Reason: the conclusion `≤ C n^{1-ε}` is unchanged; uses `ℓ = ε`.
+_Formal route_ (RefactoringResult.md §5, D9.29 (error table rows `h(τ)/a`, `|log z|/a`)): `a ≤ n^{-7/10}` and `h(τ)/a, |log z|/a ≤ 1/a ≤ K ≤ L ≤ n^{1-ε}` (AreaLaw/S09\_Scanner/Collar.lean). Reason: the conclusion `≤ C n^{1-ε}` is unchanged; uses `ℓ = ε`.
 
 _Used from._ {bpref "D9.26"}[D9.26]–{bpref "D9.28"}[D9.28]; $`z\ge1-n^{-100}` ({bpref "D9.9"}[D9.9.2]); $`h(\tau)\le C\tau\log(e/\tau)` (as {bpref "D9.24"}[D9.24.1]).
 

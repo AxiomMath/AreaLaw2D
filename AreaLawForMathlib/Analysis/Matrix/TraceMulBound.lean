@@ -10,7 +10,11 @@ Ported from `LionSR/QICLean`,
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
 import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 
-/-! # Trace pairings with positive semidefinite matrices -/
+/-!
+# Trace pairings with positive semidefinite matrices
+
+Extends `Mathlib/Analysis/Matrix/Order.lean`.
+-/
 
 open scoped Matrix Kronecker Matrix.Norms.L2Operator MatrixOrder ComplexOrder
 

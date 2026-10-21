@@ -11,6 +11,8 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 /-!
 # Operators commuting with all unitary tensor powers
 
+Extends `Mathlib/RepresentationTheory/Invariants.lean`.
+
 Such an operator commutes with every `Δ(A)`, and is central if it also commutes with the copy
 permutations (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
 59–62 and 324–330).

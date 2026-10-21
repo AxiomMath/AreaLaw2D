@@ -1,5 +1,5 @@
 import AreaLawForMathlib.QuantumInfo.RegionToComplex
-import Arealaw.TraceNorm
+import AreaLawForMathlib.QuantumInfo.Region.TraceDistance
 
 /-!
 # States and entropies under the embedding into `ℂ`

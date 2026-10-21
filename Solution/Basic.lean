@@ -1,4 +1,4 @@
-import AreaLawRefactored.Transfer
+import AreaLaw.Transfer
 
 /-! # Satisfying the formal challenge -/
 

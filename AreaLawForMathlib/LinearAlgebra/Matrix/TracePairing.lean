@@ -24,6 +24,8 @@ import Mathlib.LinearAlgebra.Trace
 /-!
 # Trace pairing tools for finite matrix algebras
 
+Extends `Mathlib/LinearAlgebra/Matrix/Trace.lean`.
+
 This file provides linear-algebraic tools for finite complex matrix algebras,
 including nondegeneracy of the trace pairing and the trace-pairing adjoint of a
 linear map between matrix algebras.

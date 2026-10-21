@@ -11,6 +11,8 @@ import AreaLawForMathlib.Analysis.Matrix.OrthogonalResolutionCfc
 /-!
 # Real powers of tensor powers
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 For a positive semidefinite `ρ` and `t ≥ 0`, `(ρ^{⊗k})^t = (ρ^t)^{⊗k}`, used for the
 compensator bound in Lemma 6.3 (`05-replicas.tex`, lines 535–551).
 -/

@@ -10,6 +10,8 @@ import Mathlib.LinearAlgebra.Dimension.Constructions
 /-!
 # Irreducible blocks and joint isotypic components
 
+Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
+
 Matrix-unit calculus for the dimension comparisons of Lemma 6.1(3, 4) (*A two-dimensional area law
 from a global spectral gap*, `05-replicas.tex`, lines 105–123 and 183–221).
 -/

@@ -5,6 +5,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.IsotypicDimension
 /-!
 # Calculus of label observables
 
+Extends `Mathlib/Analysis/Matrix/HermitianFunctionalCalculus.lean`.
+
 Label observables `f(F) = ∑_λ f(λ) π^λ` multiply, subtract, order and take `cfc` pointwise.
 -/
 

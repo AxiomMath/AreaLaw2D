@@ -10,6 +10,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.Branching
 /-!
 # Splitting `m + r` copies into the first `m` and the last `r`
 
+Extends `Mathlib/RepresentationTheory/Character.lean`.
+
 The operators of `(ℂ^q)^{⊗(m + r)} = (ℂ^q)^{⊗m} ⊗ (ℂ^q)^{⊗r}` and the exterior power
 character `Tr(A_r diag(y)^{⊗r}) = e_r(y)` (`05-replicas.tex`, lines 336–364).
 -/

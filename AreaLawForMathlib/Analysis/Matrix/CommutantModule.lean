@@ -13,6 +13,8 @@ import AreaLawForMathlib.LinearAlgebra.Matrix.TracePairing
 /-!
 # Derivative maps over the commutant
 
+Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean`.
+
 A matrix `Z` commuting with `C` makes the derivative of `C ↦ C^p` a right module map over `Z`,
 and likewise the partial derivatives of the weighted geometric mean when `Z` commutes with both
 arguments. Dually the trace adjoint of a right module map over `Z` is a left module map.

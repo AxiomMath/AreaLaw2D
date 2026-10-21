@@ -11,6 +11,8 @@ import Mathlib.LinearAlgebra.Trace
 /-!
 # Isotypic components of a permutation representation
 
+Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
+
 Nonzero invariant subspaces of `range π^λ` have dimension at least `d_λ`, and `tr π^λ = d_λ · m_λ`.
 -/
 

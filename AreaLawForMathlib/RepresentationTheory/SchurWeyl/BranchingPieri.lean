@@ -10,6 +10,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.GroupedCopies
 /-!
 # Highest-weight vectors across the last copy
 
+Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
+
 The restriction multiplicity satisfies `c(λ, ν) ≤ 1`, with `c(λ, ν) = 0` unless `λ = ν + e_i` (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 237–245).
 -/

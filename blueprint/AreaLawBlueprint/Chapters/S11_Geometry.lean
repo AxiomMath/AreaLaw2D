@@ -2,7 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import AreaLawBlueprint.TexPrelude
-import AreaLawRefactored
+import AreaLaw
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -78,7 +78,7 @@ Birth region of a tile: bounded closed planar region assigned at creation. Later
 :::
 
 :::proof "D11.3"
-_Formal route_ (RefactoringResult.md §5, D11.3, {bpref "D11.14"}[D11.14], {bpref "D11.16"}[D11.16] (birth and actual regions)): regions stay closed: each removal subtracts an open sup-ball of radius d(S) (`Repair.currentRegion`, `finalRegion`, AreaLawRefactored/S11\_Geometry/RepairRegions.lean:130, :135); lattice sites agree because no lattice site lies on a square boundary (integer half-sides, `dist_latticePoint_ne_natCast`, AreaLawRefactored/S11\_Geometry/Repairs.lean:421). Reason: closed sets make the separation distances attained; same lattice partition.
+_Formal route_ (RefactoringResult.md §5, D11.3, {bpref "D11.14"}[D11.14], {bpref "D11.16"}[D11.16] (birth and actual regions)): regions stay closed: each removal subtracts an open sup-ball of radius d(S) (`Repair.currentRegion`, `finalRegion`, AreaLaw/S11\_Geometry/RepairRegions.lean:130, :135); lattice sites agree because no lattice site lies on a square boundary (integer half-sides, `dist_latticePoint_ne_natCast`, AreaLaw/S11\_Geometry/Repairs.lean:421). Reason: closed sets make the separation distances attained; same lattice partition.
 
 _Used from._ none.
 
@@ -198,7 +198,7 @@ The residue classes can be chosen, layer by layer, with $$`\#\{\text{belt cells 
 
 *D11.9.4* $`s_kt_k\ge2^{-2}2^{k(1+\delta_0)}2^{k\zeta}=2^{-2}2^{k(2+\delta_0/2)}` and $`r^2=2^{2k}` $`\Rightarrow` $`r^2/(s_kt_k)\le4\cdot2^{-k\delta_0/2}`.
 
-_Formal route_ (RefactoringResult.md §5, D11.9.2): pigeonhole (`step_11_9_2`, AreaLawRefactored/S11\_Geometry/Primaries.lean:173). Reason: same bound.
+_Formal route_ (RefactoringResult.md §5, D11.9.2): pigeonhole (`step_11_9_2`, AreaLaw/S11\_Geometry/Primaries.lean:173). Reason: same bound.
 
 _Used from._ {bpref "D11.6"}[D11.6] (layer has $`\le Cb` cells), {bpref "D11.8"}[D11.8].
 
@@ -254,7 +254,7 @@ Belt cells get tile identifiers and labels such that every positive-length inter
 
 *D11.11.6* So a same-label contact between distinct tiles is a point, and by D11.11.5 one of its tiles is a belt tile.
 
-_Formal route_ (RefactoringResult.md §5, D11.11 (fans, labels, identifiers)): all-midpoint fan (always the 8 octant triangles of the cell); label rule: opposite of the facing primary/dummy, else 0 left/bottom, 1 right/top; identifier `belt k w c` = all triangles of the cell with label c (runs merged even when not consecutive; they meet only at the centre); one function `Layout.tile` defined from floors on the dyadic grids; truncation at a layer K with one exterior tile of label K mod 2 (AreaLawRefactored/S11\_Geometry/BeltFans.lean:170–414, :1054). Reason: a refinement of the paper's fan; turns every constancy claim into 'same side of every grid line'; truncation makes the identifier and mark types finite.
+_Formal route_ (RefactoringResult.md §5, D11.11 (fans, labels, identifiers)): all-midpoint fan (always the 8 octant triangles of the cell); label rule: opposite of the facing primary/dummy, else 0 left/bottom, 1 right/top; identifier `belt k w c` = all triangles of the cell with label c (runs merged even when not consecutive; they meet only at the centre); one function `Layout.tile` defined from floors on the dyadic grids; truncation at a layer K with one exterior tile of label K mod 2 (AreaLaw/S11\_Geometry/BeltFans.lean:170–414, :1054). Reason: a refinement of the paper's fan; turns every constancy claim into 'same side of every grid line'; truncation makes the identifier and mark types finite.
 
 _Used from._ {bpref "D11.8"}[D11.8], {bpref "D11.10"}[D11.10].
 
@@ -297,7 +297,7 @@ Belt cell of side $`t=t_k`.
 
 *D11.13.5* Sectors: two sectors across an active ray have opposite labels by {bpref "D11.11"}[D11.11]. Coincident segments and inactive seams are counted once, so this is the actual tile pattern.
 
-_Formal route_ (RefactoringResult.md §5, D11.13 (Lemma 11.3)): a₀ = 1/64 fixed; the tile is constant on each open octant within t/8 of a mark (`step_11_13_3`, AreaLawRefactored/S11\_Geometry/InitialStars.lean:361). Reason: explicit, no pattern enumeration.
+_Formal route_ (RefactoringResult.md §5, D11.13 (Lemma 11.3)): a₀ = 1/64 fixed; the tile is constant on each open octant within t/8 of a mark (`step_11_13_3`, AreaLaw/S11\_Geometry/InitialStars.lean:361). Reason: explicit, no pattern enumeration.
 
 _Used from._ {bpref "D11.7"}[D11.7], {bpref "D11.8"}[D11.8], {bpref "D11.11"}[D11.11], {bpref "D11.12"}[D11.12].
 
@@ -327,7 +327,7 @@ _first line of the margins._
 
 *D11.14.2* $`S^{\rho_0}\le\frac{a_0}{1000}S\iff S^{1-\rho_0}\ge1000/a_0`, true for $`S\ge S_*:=(1000/a_0)^{1/(1-\rho_0)}` and above.
 
-_Formal route_ (RefactoringResult.md §5, {bpref "D11.3"}[D11.3], D11.14, {bpref "D11.16"}[D11.16] (birth and actual regions)): regions stay closed: each removal subtracts an open sup-ball of radius d(S) (`Repair.currentRegion`, `finalRegion`, AreaLawRefactored/S11\_Geometry/RepairRegions.lean:130, :135); lattice sites agree because no lattice site lies on a square boundary (integer half-sides, `dist_latticePoint_ne_natCast`, AreaLawRefactored/S11\_Geometry/Repairs.lean:421). Reason: closed sets make the separation distances attained; same lattice partition.
+_Formal route_ (RefactoringResult.md §5, {bpref "D11.3"}[D11.3], D11.14, {bpref "D11.16"}[D11.16] (birth and actual regions)): regions stay closed: each removal subtracts an open sup-ball of radius d(S) (`Repair.currentRegion`, `finalRegion`, AreaLaw/S11\_Geometry/RepairRegions.lean:130, :135); lattice sites agree because no lattice site lies on a square boundary (integer half-sides, `dist_latticePoint_ne_natCast`, AreaLaw/S11\_Geometry/Repairs.lean:421). Reason: closed sets make the separation distances attained; same lattice partition.
 
 _Used from._ {bpref "D11.2"}[D11.2], {bpref "D11.12"}[D11.12], {bpref "D11.13"}[D11.13].
 
@@ -359,7 +359,7 @@ Induction on generation; assume the claims for the current generation.
 
 *D11.15.7* Termination. While a branch continues, $`S_{j+1}=d(S_j)\le S_j^{\rho_0}`, $`\rho_0<1`; after finitely many steps $`d(S_j)<S_*` and that removal is terminal.
 
-_Formal route_ (RefactoringResult.md §5, D11.15.3, D11.15.6): explicit child-octant table (`childOctant`, `mem_octantConeAt_child_iff`, AreaLawRefactored/S11\_Geometry/Repairs.lean:51, :257); displacement by induction with factor ½. Reason: same constants at every generation.
+_Formal route_ (RefactoringResult.md §5, D11.15.3, D11.15.6): explicit child-octant table (`childOctant`, `mem_octantConeAt_child_iff`, AreaLaw/S11\_Geometry/Repairs.lean:51, :257); displacement by induction with factor ½. Reason: same constants at every generation.
 
 _Used from._ {bpref "D11.13"}[D11.13] (base case), {bpref "D11.14"}[D11.14].
 
@@ -381,7 +381,7 @@ Every supporting line of every edge has equation $`x_1=o_1+m`, $`x_2=o_2+m`, $`x
 
 *D11.16.3* A line through a point of $`o+\mathbb Z^2` with one of the four slopes has one of the four equations. Irrationality of $`o_1,o_2,o_1\pm o_2` excludes lattice points.
 
-_Formal route_ (RefactoringResult.md §5, {bpref "D11.3"}[D11.3], {bpref "D11.14"}[D11.14], D11.16 (birth and actual regions)): regions stay closed: each removal subtracts an open sup-ball of radius d(S) (`Repair.currentRegion`, `finalRegion`, AreaLawRefactored/S11\_Geometry/RepairRegions.lean:130, :135); lattice sites agree because no lattice site lies on a square boundary (integer half-sides, `dist_latticePoint_ne_natCast`, AreaLawRefactored/S11\_Geometry/Repairs.lean:421). Reason: closed sets make the separation distances attained; same lattice partition.
+_Formal route_ (RefactoringResult.md §5, {bpref "D11.3"}[D11.3], {bpref "D11.14"}[D11.14], D11.16 (birth and actual regions)): regions stay closed: each removal subtracts an open sup-ball of radius d(S) (`Repair.currentRegion`, `finalRegion`, AreaLaw/S11\_Geometry/RepairRegions.lean:130, :135); lattice sites agree because no lattice site lies on a square boundary (integer half-sides, `dist_latticePoint_ne_natCast`, AreaLaw/S11\_Geometry/Repairs.lean:421). Reason: closed sets make the separation distances attained; same lattice partition.
 
 _Used from._ {bpref "D11.5"}[D11.5] ($`o`), {bpref "D11.14"}[D11.14] ($`S_*` increased once so a terminal halfside produced from $`S\ge S_*` is $`\ge2`).
 
@@ -424,7 +424,7 @@ There is a fixed $`c_1>0` such that: let $`\mathcal B` be the closed birth regio
 
 *D11.18.7* Combine. Contact-star pairs: $`c_3c_4u^{\rho_0}`. Other pairs inside the box: $`c_2u\ge c_2u^{\rho_0}` ($`u\ge1`). Pairs with a point outside the box: $`\ge2u\ge u^{\rho_0}`. So $`c_1=\min\{c_2,c_3c_4,1\}`.
 
-_Formal route_ (RefactoringResult.md §5, D11.18 (Lemma 11.5)): explicit c₁ = 1/128: belt half t\_k^\{ρ₀\}/128 via 'two close points are separated by one grid line (excluded by `step_11_11`) or meet at a grid point that is a mark' (`step_11_18_belt`, AreaLawRefactored/S11\_Geometry/Separation.lean:576); replacement half d(d(S))/2 (`step_11_18_replacement`, AreaLawRefactored/S11\_Geometry/RepairRegions.lean:736). Reason: no compactness argument needed.
+_Formal route_ (RefactoringResult.md §5, D11.18 (Lemma 11.5)): explicit c₁ = 1/128: belt half t\_k^\{ρ₀\}/128 via 'two close points are separated by one grid line (excluded by `step_11_11`) or meet at a grid point that is a mark' (`step_11_18_belt`, AreaLaw/S11\_Geometry/Separation.lean:576); replacement half d(d(S))/2 (`step_11_18_replacement`, AreaLaw/S11\_Geometry/RepairRegions.lean:736). Reason: no compactness argument needed.
 
 _Used from._ {bpref "D11.13"}[D11.13], {bpref "D11.14"}[D11.14], {bpref "D11.15"}[D11.15], {bpref "D11.17"}[D11.17].
 
@@ -534,7 +534,7 @@ All birth templates of belt tiles and of their descendant replacements have $`\d
 
 *D11.23.4* Side scales $`s_0\le2t_k=o(r)` so $`4D_0s_0<(C_0-1)r`; $`n\le C t_k` gives $`n^\beta=o(r)` so $`2n^\beta<(C_0-1)r`.
 
-_Formal route_ (RefactoringResult.md §5, D11.23 in the assembly): pointwise bound `le_dist_cut` (AreaLawRefactored/S11\_Geometry/Assembly.lean:59) with C₀ > 4C\_B + 16D₀ + 8; `step_11_23` (Templates.lean:314, eventually in k) is not used by the assembly. Reason: an 'eventually in k' form for a fixed cut would make k₀ depend on Λ, A.
+_Formal route_ (RefactoringResult.md §5, D11.23 in the assembly): pointwise bound `le_dist_cut` (AreaLaw/S11\_Geometry/Assembly.lean:59) with C₀ > 4C\_B + 16D₀ + 8; `step_11_23` (Templates.lean:314, eventually in k) is not used by the assembly. Reason: an 'eventually in k' form for a fixed cut would make k₀ depend on Λ, A.
 
 _Used from._ {bpref "D11.6"}[D11.6], {bpref "D11.15"}[D11.15], {bpref "D11.22"}[D11.22]; Lemma 9.4; Prop 9.6.
 

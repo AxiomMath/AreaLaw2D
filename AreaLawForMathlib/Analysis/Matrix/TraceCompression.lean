@@ -8,6 +8,8 @@ import AreaLawForMathlib.Analysis.Matrix.OperatorConvexity
 /-!
 # Powers of compressions have smaller trace
 
+Extends `Mathlib/Analysis/Matrix/PosDef.lean`.
+
 For a positive semidefinite matrix `A` on `ℂ^n`, an injection `j : m ↪ n` and `p ≥ 1`,
 
 `Tr (A|_m)^p ≤ Tr A^p`,
@@ -21,9 +23,6 @@ The area-law paper (*A two-dimensional area law from a global spectral gap*, `05
 proof of Lemma 6.2, lines 380–388) uses this for `p = 1/t` to bound the trace of the
 compressed samples `τ = (E† σ^t E)^{1/t}` by `Tr σ = 1`; it argues through the min–max
 principle.
-
-Ported from `LionSR/QICLean`, `QICLean/Analysis/TraceCompression.lean`, commit
-`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 
 ## Main declarations
 

@@ -17,6 +17,9 @@ import Mathlib.Analysis.Calculus.ParametricIntegral
 /-!
 # The Fréchet derivative of a real power of a positive definite matrix
 
+Extends
+`Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/IntegralRepresentation.lean`.
+
 For `0 < p < 1` the real power of a positive semidefinite matrix has the Löwner
 integral representation
 \[

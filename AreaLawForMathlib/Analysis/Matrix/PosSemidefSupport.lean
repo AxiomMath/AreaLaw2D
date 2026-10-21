@@ -14,6 +14,8 @@ import AreaLawForMathlib.Analysis.Matrix.OrthogonalProjection
 /-!
 # Support projections of finite Hermitian matrices
 
+Extends `Mathlib/Analysis/Matrix/PosDef.lean`.
+
 This file defines the spectral support projection for a Hermitian matrix on an
 arbitrary finite index type. Its positive-semidefinite and `Fin`-indexed versions
 are specializations of that construction.

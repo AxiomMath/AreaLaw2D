@@ -12,6 +12,8 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Bas
 /-!
 # Functional bounds on an invariant projection range
 
+Extends `Mathlib/Analysis/Matrix/HermitianFunctionalCalculus.lean`.
+
 A lower bound for a Hermitian matrix on a commuting orthogonal projection
 range controls any scalar function bounded above on the corresponding
 half-line. In particular, a lower bound on that range yields an upper

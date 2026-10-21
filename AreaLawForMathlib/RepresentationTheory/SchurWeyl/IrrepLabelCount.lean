@@ -8,6 +8,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TensorPowerAction
 /-!
 # The number of irreducible labels is the number of conjugacy classes
 
+Extends `Mathlib/RepresentationTheory/Character.lean`.
+
 Both count the dimension of the centre of `ℂ[G]` (*A two-dimensional area law from a global spectral
 gap*, `05-replicas.tex`, lines 46–64).
 -/

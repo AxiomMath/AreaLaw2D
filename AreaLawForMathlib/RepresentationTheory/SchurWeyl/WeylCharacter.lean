@@ -9,6 +9,8 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.WeylDimension
 /-!
 # The Weyl character formula for the multiplicity spaces
 
+Extends `Mathlib/RepresentationTheory/Character.lean`.
+
 `Δ(y) χ_λ(y) = det [y_i ^ {l_j}]` for the character `χ_λ(y) = Tr(E^λ_{00} diag(y)^{⊗k})`, via
 the vertical-strip Pieri rule (`05-replicas.tex`, proof of Lemma 6.2, lines 336–364).
 -/

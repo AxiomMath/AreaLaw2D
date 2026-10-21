@@ -10,6 +10,8 @@ import Mathlib.Order.Interval.Finset.Fin
 /-!
 # Counting partitions
 
+Extends `Mathlib/Combinatorics/Enumerative/Partition/Basic.lean`.
+
 Padded partitions of `k` of length `k` and the conjugacy classes of `S_k` are counted by the
 partitions of `k` (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
 46–49).

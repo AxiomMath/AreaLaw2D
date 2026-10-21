@@ -18,6 +18,8 @@ import Mathlib.Topology.Instances.Matrix
 /-!
 # Matrix k-positive maps
 
+Extends `QuantumInfo/Channels/MatrixMap.lean`.
+
 This file contains the small part of the finite-dimensional positive-map API needed
 for the Fréchet derivatives in Section 7: blockwise `k`-positivity, sandwich maps,
 and closure under zero, nonnegative scaling, composition, and Bochner integration.
