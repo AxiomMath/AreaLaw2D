@@ -30,7 +30,7 @@ Each target below is a self-contained statement on `ℤ³`. The order is by expe
 
 **Statement.** For a planar domain `Λ' ⊂ ℤ²` and `h ≥ 1`, let `Λ = Λ' × [0, h)`. For every admissible Hamiltonian on `Λ` with a gapped unique ground state and every cut `A ⊆ Λ`, including cuts that split columns, `S(ρ_A) ≤ C_h |∂_Λ A|`.
 
-**Lean.** `CylinderAreaLaw3D 𝕜 q R J Δ h` (domains with `IsCylinderDomain3D h Λ`), and the reduction `CylinderAreaLawOfPlanar3D 𝕜 q R J Δ h`, which says that the planar area law `AreaLaw 𝕜 (q ^ h) R J' Δ` at every strength `J' > 0` implies `CylinderAreaLaw3D 𝕜 q R J Δ h`.
+**Lean.** `CylinderAreaLaw3D 𝕜 q R J Δ h` (domains with `IsCylinderDomain3D h Λ`), and the reduction `CylinderAreaLawOfPlanar3D 𝕜 q R J Δ h`, which says that the planar area law `AreaLaw 𝕜 (q ^ h) R J' Δ` at every strength `J' > 0` implies `CylinderAreaLaw3D 𝕜 q R J Δ h`. Both are proved in `OpenAI/Cylinder3D.lean`: the reduction as `OpenAI.cylinderAreaLawOfPlanar3D` for every parameter set, and the cylinder law as `OpenAI.cylinderAreaLaw3D` for every `q`, `R`, `J`, `h` and every `Δ > 0`.
 
 **Hypotheses.** Those of `AreaLaw3D`, restricted to cylinder domains. The reduction itself has no hypothesis; combined with `area_law` (`OpenAI/AreaLaw.lean`, which assumes `1 ≤ q`, `0 < J`, `0 < Δ`) it gives the cylinder law for `1 ≤ q` and `0 < Δ`.
 
