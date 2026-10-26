@@ -10,6 +10,10 @@ The vertex operation `A #_p B` (D7.1) is the library's `Matrix.geomMean`
 (`AreaLawForMathlib/Analysis/Matrix/WeightedGeometricMean.lean`), with its Kubo–Ando vertex
 properties; the trees (D7.2), Lemma 7.1 (D7.3), the CP vocabulary (D7.4) and Lemma 7.2 (D7.5)
 are here. No geometry: every statement is over an arbitrary finite index type `n`.
+
+Ported from LionSR/QICLean commit
+5f76b263e3a1c418645102d90f7bef6b92f04cf3,
+`QICLean/Analysis/OperatorMean/TreeDerivative.lean`.
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

@@ -14,6 +14,10 @@ and expectations in symmetric density matrices up to `O(k⁻¹)`.
 
 Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
 `05-replicas.tex`, lines 749–812.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/InjectionPoly.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation Finset MeasureTheory

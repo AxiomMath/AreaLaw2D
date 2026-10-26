@@ -11,6 +11,9 @@ with local dimensions `n : V → ℕ`, as in the §6 anchors (Lemmas 6.3, 6.4); 
 
 An operator `X` on `𝒮_k` that commutes with `Π_k` is written on the whole tensor space as
 `Π_k X + (1 − Π_k)`: it is `X` on `𝒮_k` and the identity on `𝒮_k^⊥` (the band metric D7.8).
+
+Ported from QICLean, file `QICLean/Representation/ReplicaTransport/States.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`.
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

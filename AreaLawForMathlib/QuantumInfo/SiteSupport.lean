@@ -11,6 +11,10 @@ import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 Extends `Mathlib/LinearAlgebra/Matrix/Kronecker.lean`.
 
 Operators on `⊗_v ℂ^{n_v}` acting as the identity outside a set of sites.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+the support interface in `QICLean/Entropy/SupportedMarginalTails.lean`.
 -/
 
 open Matrix

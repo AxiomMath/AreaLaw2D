@@ -10,6 +10,10 @@ Extends `Mathlib/RepresentationTheory/Basic.lean`.
 
 A split `Fin m ⊕ Fin r ≃ Fin k` of the copies identifies `V^{⊗k}` with `V^{⊗m} ⊗ V^{⊗r}`, compatibly
 with the copy permutations of subsystems.
+
+Ported from LionSR/QICLean commit e44381d9054ba5c42c720624cb690b251ad21533,
+`QICLean/Representation/SupportedSubsystemLabelDimension.lean` (Apache 2.0).
+Statements and proofs unchanged.
 -/
 
 open Matrix PermutationRepresentation

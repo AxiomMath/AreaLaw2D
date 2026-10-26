@@ -9,6 +9,9 @@ Hermitian terms `h_i`, `‖h_i‖ ≤ J`, `H = ∑ h_i`, a unit ground vector `�
 `H - E₀ ≥ Δ (I - |Ω⟩⟨Ω|)`. The filter `f` of D4.5 enters through its properties: `f ∈ L¹`,
 `∫ f = 1` (that is, `χ(0) = 1`) and `χ(ω) = ∫ f(t) e^{itω} dt = 0` for `|ω| ≥ δ`, for any
 `δ ≤ Δ` (D4.7 uses `δ = Δ/2`).
+
+Some declarations here come from the v1 file `OpenAI/SpectralFilter/MatrixFilter.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` and `LionSR/TNLean` (see `NOTICE`).
 -/
 
 open MeasureTheory Matrix Complex

@@ -8,6 +8,10 @@ import Mathlib.Analysis.Complex.Schwarz
 
 Digest `digest/03-initial-box.md` (D3.1–D3.2), paper `paper/sections/02-initial.tex`,
 lines 15–212.
+
+Some declarations here come from the v1 files `OpenAI/ModularExpectation.lean`,
+`OpenAI/SchmidtTilt.lean`, whose header records them as ported or adapted from `LionSR/QICLean` and
+`openai/math` (see `NOTICE`).
 -/
 
 namespace AreaLaw

@@ -14,6 +14,10 @@ import Mathlib.LinearAlgebra.Trace
 Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
 
 Nonzero invariant subspaces of `range π^λ` have dimension at least `d_λ`, and `tr π^λ = d_λ · m_λ`.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/IsotypicDimension.lean`.
 -/
 
 open MonoidAlgebra Matrix Module

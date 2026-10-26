@@ -10,6 +10,10 @@ import QuantumInfo.ForMathlib.Matrix
 # The finite-copy coherent-measure identity
 
 Extends `Mathlib/LinearAlgebra/Matrix/Trace.lean`.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/HusimiIdentity.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation MeasureTheory Finset

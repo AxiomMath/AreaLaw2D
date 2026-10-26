@@ -16,6 +16,9 @@ import Mathlib.RingTheory.Polynomial.Pochhammer
 `∫ a_δ(x) a_l(x^t) (∑ x)^{-a} e^{-∑ x} dx = d! t^{binom(d,2)} ∏_j Γ(1 + t l_j) a_δ(l) Γ(D - a)/Γ(D)`
 over the positive orthant, and the replica label function as its normalized value
 (`05-replicas.tex`, lines 347–368).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/ReplicaGammaIntegral.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open MeasureTheory Set Finset Real Matrix Polynomial

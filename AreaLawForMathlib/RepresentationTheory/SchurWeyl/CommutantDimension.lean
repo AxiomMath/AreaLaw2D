@@ -17,6 +17,10 @@ Extends `Mathlib/RepresentationTheory/Intertwining.lean`.
 
 The total multiplicity `∑_λ m_λ` in `(ℂ^q)^{⊗k}` is at most `(k+1)^{q²}` (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 160–163 and 227–235).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/CommutantDimension.lean`.
 -/
 
 open MonoidAlgebra Matrix Module

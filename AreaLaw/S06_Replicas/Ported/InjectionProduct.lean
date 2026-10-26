@@ -14,6 +14,10 @@ intersecting images with probability at most `mn / k`.
 
 Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
 `05-replicas.tex`, equation `replicas:injection-product`.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/InjectionProduct.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix Finset

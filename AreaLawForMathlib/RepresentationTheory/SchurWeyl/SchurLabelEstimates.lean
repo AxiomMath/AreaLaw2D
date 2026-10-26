@@ -13,6 +13,10 @@ Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
 The labels are the partitions with at most `q` rows, with the dimension, entropy and branch
 statements (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
 85–151).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/SchurLabelEstimates.lean`.
 -/
 
 open Finset Matrix PermutationRepresentation

@@ -8,6 +8,9 @@ import AreaLawForMathlib.Analysis.Matrix.FilteredNorm
 Digest `digest/07-transport.md` D7.14 (displays `transport:filtered-vector`,
 `transport:states`): `N(p)`, `v(p)`, the states `σ_{j,u}`, and the three right-hand sides of
 Proposition 7.4. No geometry.
+
+Some declarations here come from the v1 file `OpenAI/ReplicaTransportSetup.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

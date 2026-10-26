@@ -8,6 +8,10 @@ import AreaLawForMathlib.Analysis.Matrix.CommutingProductLog
 Digest `digest/07-transport.md` D7.17–D7.20, paper `paper/sections/06-transport.tex` 487–572.
 No geometry: an arbitrary finite site type `V`, arbitrary `k`. Operators on `𝒮_k` are written on
 the whole tensor space as `Π_k X + (1 − Π_k)` (the band metric D7.8).
+
+Some declarations here come from the v1 files `OpenAI/ReplicaTransportEntropyGain.lean`,
+`OpenAI/ReplicaTransportRelativePinBound.lean`, whose header records them as ported or adapted from
+`LionSR/QICLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

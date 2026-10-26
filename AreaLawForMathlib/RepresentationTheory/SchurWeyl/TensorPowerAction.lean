@@ -14,6 +14,10 @@ Extends `Mathlib/LinearAlgebra/PiTensorProduct.lean`.
 
 The operators `U_Q(π)` permuting the copies of a subsystem and the symmetric subspace (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 14–27).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/TensorPowerAction.lean`.
 -/
 
 open MonoidAlgebra Matrix

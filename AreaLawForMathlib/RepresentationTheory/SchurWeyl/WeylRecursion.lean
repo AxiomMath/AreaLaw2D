@@ -12,6 +12,9 @@ Extends `Mathlib/LinearAlgebra/Lagrange.lean`.
 
 `∑_i W_{λ + e_i} = q W_λ` (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, lines 237–241).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/WeylRecursion.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Finset Polynomial

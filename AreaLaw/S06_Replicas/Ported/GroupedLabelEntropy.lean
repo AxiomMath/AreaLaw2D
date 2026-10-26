@@ -12,6 +12,9 @@ import AreaLaw.S06_Replicas.Ported.SchurSurprisal
 The label entropies of a split of the copies satisfy
 \(F_g + F_b \le F_w \le F_g + F_b + \log\binom{k}{r}\,I\) (Lemma 6.1(4), `05-replicas.tex`,
 lines 116–123).
+
+Ported from `LionSR/QICLean`, file `QICLean/Representation/GroupedLabelEntropy.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation

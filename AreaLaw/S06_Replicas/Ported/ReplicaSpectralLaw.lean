@@ -12,6 +12,9 @@ import AreaLawForMathlib.Analysis.Matrix.CfcConjugation
 
 The samples `σ = U diag(x/∑ x) U†`, with `x` of density `a_δ(x) a_δ(x^t) e^{-∑ x}` on the
 orthant and `U` Haar, satisfy `∫ (σ^t)^{⊗k} = ∑_λ w_k(λ) π^λ` (`05-replicas.tex`, l. 336–364).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/ReplicaSpectralLaw.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open MeasureTheory Matrix Finset PermutationRepresentation Partition

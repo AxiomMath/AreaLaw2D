@@ -13,6 +13,10 @@ Star spectra lie in `[-1, 1]`, so `‖φ(J_{Q,k}) - p(J_{Q,k})‖ ≤ sup_{[-1,1
 
 Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
 `05-replicas.tex`, lines 693–702.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/StarFunction.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation Polynomial

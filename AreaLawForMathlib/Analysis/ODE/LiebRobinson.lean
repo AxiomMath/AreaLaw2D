@@ -28,6 +28,10 @@ nonnegative Volterra inequalities is bounded by weights times an exponential
 
 References: Hastings–Koma, arXiv:math-ph/0507008, Appendix A; Nachtergaele–Ogata–Sims,
 J. Stat. Phys. 124 (2006), Section 2.
+
+Ported and abstracted from LionSR/TNLean commit fc565830cec69e8226e521d56c86d39845d45576,
+TNLean/Circuit/LiebRobinson/CommutatorRecursion.lean. Apache 2.0; adapted to
+Lean/Mathlib 4.33 and to abstract operator-support submodules.
 -/
 
 open NormedSpace

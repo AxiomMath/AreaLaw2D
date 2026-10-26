@@ -11,6 +11,10 @@ definite and its logarithm is `∑_g log X_g`; whitening a product `∏_g B_g` b
 Also: the inverse square root as a real power, a rank-one Loewner bound from quadratic forms,
 and monotonicity of `X ↦ Re Tr(ρ X)` for `ρ ≥ 0`.
 
+Some declarations here come from the v1 files `OpenAI/CfcLogListProduct.lean`,
+`OpenAI/ReplicaTransportEntropyGain.lean`, `OpenAI/ReplicaTransportRelativePinBound.lean`, whose
+header records them as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
+
 ## Main declarations
 
 * `Matrix.PosDef.listProd_ofFn` — the ordered product of commuting positive definite matrices.

@@ -8,6 +8,10 @@ Digest `digest/05-conditional.md`. `G(z) = σ^{[az]} ρ̂_P^{-az} τ^{[a(1-z)]} 
 entire and bounded on the strip `0 ≤ Re z ≤ 1` (`step_5_5_3`); on the left boundary
 `‖G(iu)‖ ≤ ‖τ_u^{[a]} ρ̂_U^{-a} θ‖` (`step_5_6_1`), on the right boundary
 `‖G(1+iu)‖ ≤ ‖σ_u^{[a]} ρ̂_P^{-a} θ_u‖` (`step_5_10_1`).
+
+Some declarations here come from the v1 files `OpenAI/ConditionalSkewValues.lean`,
+`OpenAI/MatrixSqrt.lean`, `OpenAI/ResolventDefect.lean`, whose header records them as ported or
+adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

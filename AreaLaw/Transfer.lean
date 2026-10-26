@@ -18,6 +18,10 @@ unchanged by the embedding (`Arealaw.SubState.regionEntropy_toComplex`,
 
 Proposition 11.2 (`TwoFamilyDecomposition`) has no scalar field and needs no transfer.
 
+Some declarations here come from the v1 files `OpenAI/BufferDiscount.lean`,
+`OpenAI/Scan/MarginalTailsBridge.lean`, whose header records them as ported or adapted from
+`LionSR/TNLean` (see `NOTICE`).
+
 ## Main statements
 
 * `AreaLaw.conditionalContinuity`: Lemma 2.1 over every `RCLike` field.

@@ -1,0 +1,431 @@
+# History
+
+Commit messages of the development branch (AxiomMath/quantum-arealaw, branch ruiz/oai265, tip 70c8970), oldest first.
+
+- 2026-06-18 Area law for the dimer/EPR-pair state (Brandão–Horodecki Fig 1a)
+- 2026-06-18 Add von Neumann -tr(ρ log ρ) form (Eq. 3) and EE = log d generalization
+- 2026-06-23 Refactor to RCLike generality + quality charter (the charter file, BENCHMARK.md)
+- 2026-06-24 Tidy: remove proof-narration comments, fix stale doc note
+- 2026-06-24 Update the charter file: push target is AxiomMath/quantum-arealaw (internal)
+- 2026-06-24 Adopt auctionlib repo conventions
+- 2026-06-24 Remove BENCHMARK.md and its references
+- 2026-08-05 style(arealaw): golf proofs and change naming (#1)
+- 2026-08-06 build(arealaw): bump to Lean/Mathlib v4.32.0 and add physlib dependency
+- 2026-08-06 Merge pull request #3 from AxiomMath/bump-lean-v4.32.0-add-physlib
+- 2026-08-07 ci: audit axioms
+- 2026-08-07 fix
+- 2026-08-12 Merge main into ci-axiom-audit
+- 2026-08-12 post buid clean-up
+- 2026-08-12 pin exact physlib
+- 2026-08-12 Merge pull request #4 from AxiomMath/michal/ci-axiom-audit
+- 2026-08-14 feat(region): mixed-state layer — regions, subset partial trace, purification (M1+M2) (#2)
+- 2026-08-18 ci: run style job on ready_for_review
+- 2026-08-20 refactor(1/2): layout
+- 2026-08-20 refactor(2/2): proofs
+- 2026-08-21 ci: test stacked PRs (#17)
+- 2026-08-21 docs: unslop (#14)
+- 2026-08-21 docs: rules (#15)
+- 2026-08-21 feat(M4 1/3): bridges (#6)
+- 2026-08-22 feat(M4 2/3): tracenorm (#7)
+- 2026-08-22 feat(M4 3/3): subadditivity (#8)
+- 2026-09-03 chore: bump to 4.33.0 (#16)
+- 2026-09-03 feat(M8a 1/3): opnorm (#20)
+- 2026-09-14 feat(M8a 2/3): cor (#21)
+- 2026-09-14 feat(M8a 3/3): geometry, edc (#22)
+- 2026-09-14 refactor: isolate Physlib classical-entropy dependency behind Bridge/Physlib (#5)
+- 2026-09-19 M7 (#25)
+- 2026-09-21 feat(M9 1/2): fidelity (#32)
+- 2026-09-21 feat(M9 2/2): purified distance (#33)
+- 2026-09-25 ci: drop leanchecker (#35)
+- 2026-09-25 feat(M9): Uhlmann (#38)
+- 2026-10-01 Addressing changes in Ruiz's comment (#50)
+- 2026-10-01 feat(sanity): the paper's Fannes-type inequality is false as printed, and the repair (#27)
+- 2026-10-03 Lemma 16 finished (#29)
+- 2026-10-03 feat: prove cor is symmetric in its two regions (#36) (#49)
+- 2026-10-03 feat: postselection lowers correlations (BH12 Lemma 9) (#48)
+- 2026-10-06 feat(M8c): Lemma 20, the data-hiding norm bound (#24)
+- 2026-10-12 style: repo-wide cleanup (#58)
+- 2026-10-12 feat: quantum equipartition property (BH12 Lemma 19) (#56)
+- 2026-10-12 feat(oai265): statement layer for the 2D area law (Phase 0)
+- 2026-10-12 docs(oai265): Phase 0 inventory of repo / Mathlib / Physlib / TNLean status
+- 2026-10-12 feat(oai265): state Proposition 11.2 (not asserted); record re-verification
+- 2026-10-12 Merge branch 'agents/a7585827-d165-5041-bb24-ff1226ca4be5-inventory' (oai265 Phase 0 inventory)
+- 2026-10-12 docs(oai265): Phase 0 plan (conventions, verdict, open decisions, Phase 1 outline)
+- 2026-10-12 feat(oai265): assert Prop 11.2, fix HasGlobalGap citation, add dashboard.toml
+- 2026-10-12 feat(oai265): OpenAI/Audit.lean; commit the charter; CI audit step as a patch
+- 2026-10-12 feat(oai265): statement-layer sanity lemmas (OpenAI/Basic.lean)
+- 2026-10-12 feat(oai265): bridges to the TNLean encoding (OpenAI/Bridges.lean)
+- 2026-10-12 feat(oai265): RCLike-to-C transfer layer (OpenAI/Embedding.lean)
+- 2026-10-12 feat(oai265): Corollary 1.2 from Theorem 1.1 (OpenAI/Corollary.lean)
+- 2026-10-13 feat(oai265): Lemma 2.2 and degenerate cases (OpenAI/ZeroBoundary.lean), region entropy facts
+- 2026-10-13 feat(oai265): Lemma 11.1 proved natively (OpenAI/TwoFamily.lean)
+- 2026-10-13 feat(oai265): freeze Tier 2 statements (Lemma 2.1, 3.1, 3.2, Prop 3.3) as Props
+- 2026-10-13 feat(oai265): unnormalized entropy scaling and subadditivity (Lemma 2.1 prerequisite)
+- 2026-10-13 feat(oai265): conditional entropy superadditivity, upper bound, dimension bound
+- 2026-10-13 feat(oai265): one-sided and product-decomposed terms across a cut (Lemma 3.1 definitions)
+- 2026-10-13 feat(oai265): Lemma 2.1, continuity of conditional entropy (conditional_continuity)
+- 2026-10-13 feat(oai265): Lemma 3.1 prerequisites (strip estimate, modular expectation, surprisal moments, cut transport)
+- 2026-10-13 feat(oai265): Lemma 3.1 bipartite core (Schmidt tilt, gap surprisal, eigenbasis tails)
+- 2026-10-13 feat(oai265): Lemma 3.1, marginal moment and tail bounds (marginal_tails)
+- 2026-10-13 docs(oai265): Lemma 3.2 plan and region-model decision in Memory.md
+- 2026-10-13 feat(oai265): Lemma 3.2 wave 1 (trace Holder, log clipping, harmonic weights, rectangles, region lift, region SSA)
+- 2026-10-13 feat(oai265): Lemma 3.2 wave 2 (filter moment/energy/stationarity/clipping, support counting) and Prop 3.3 pieces (safe-box children, rotated chain rule)
+- 2026-10-13 feat(oai265): Lemma 3.2 wave 3 (filter optimizer, chain, maximizer)
+- 2026-10-13 feat(oai265): Lemma 3.2 wave 4 (chain energy, excitation bound, Schmidt pinning)
+- 2026-10-13 feat(oai265): Lemma 3.2 wave 5 (filter prefix, zero floor, filter power)
+- 2026-10-13 feat(oai265): Lemma 3.2 buffer-discount core (recovered from session 57ed24e1)
+- 2026-10-13 feat(oai265): Prop 3.3 child colouring counts (ChildColoring)
+- 2026-10-13 feat(oai265): Prop 3.3 safe-box entropy F_box (BoxEntropy)
+- 2026-10-13 feat(oai265): Lemma 3.2 buffer discount (buffer_discount), via ℂ transfer
+- 2026-10-13 feat(oai265): Prop 3.3 from Lemma 3.2 (one-parent estimate, scale recurrence)
+- 2026-10-13 chore(oai265): enrol Lemma 3.2 (buffer_discount) in the axiom audit
+- 2026-10-13 docs(oai265): Memory entry for Lemma 3.2
+- 2026-10-13 feat(oai265): Prop 3.3 initial box estimate (initial_box_estimate)
+- 2026-10-14 docs(oai265): plan Proposition 4.3 port
+- 2026-10-14 feat(oai265): port Weyl twirl foundation
+- 2026-10-14 feat(oai265): prove conditional expectation API
+- 2026-10-14 feat(oai265): port positive spectral filter
+- 2026-10-14 feat(oai265): port Lieb-Robinson analytic core
+- 2026-10-14 docs(oai265): plan Proposition 11.2 geometry port
+- 2026-10-14 feat(oai265): prove abstract graph propagation
+- 2026-10-14 feat(oai265): port Proposition 11.2 dyadic scales
+- 2026-10-14 feat(oai265): extend graph propagation to finite supports
+- 2026-10-14 feat(oai265): port translated dyadic layers
+- 2026-10-14 feat(oai265): port dyadic layer separation
+- 2026-10-14 feat(oai265): port sparse belt geometry
+- 2026-10-14 feat(oai265): port primary region geometry
+- 2026-10-14 feat(oai265): port repair scalar estimates
+- 2026-10-14 feat(oai265): port belt mark mesh geometry
+- 2026-10-14 feat(oai265): port concrete cell fans
+- 2026-10-14 feat(oai265): port fan regularity geometry
+- 2026-10-14 feat(oai265): port local fan separation geometry
+- 2026-10-14 feat(oai265): port actual fan side geometry
+- 2026-10-14 feat(oai265): port reciprocal cell contacts
+- 2026-10-14 feat(oai265): port initial marks and fan colors
+- 2026-10-14 feat(oai265): port initial fan region topology
+- 2026-10-14 feat(oai265): complementary Weyl twirl estimate (norm_sub_complementaryWeylTwirl_le)
+- 2026-10-14 feat(oai265): transport Weyl estimate to condExpect
+- 2026-10-14 feat(oai265): specialize localization to admissible Hamiltonians
+- 2026-10-14 feat(oai265): port exact component locality
+- 2026-10-14 feat(oai265): add conditional expectation functional calculus API
+- 2026-10-14 feat(oai265): prove exact support of positive constraints
+- 2026-10-14 prove complex positive replacement
+- 2026-10-14 feat: transfer positive replacement witnesses
+- 2026-10-14 prove Proposition 4.3
+- 2026-10-14 feat(oai265): port initial frontier geometry
+- 2026-10-14 docs: map Proposition 9.6 dependency cone
+- 2026-10-14 feat(oai265): port initial active-ray geometry
+- 2026-10-14 feat: prove root-channel matrix estimates
+- 2026-10-14 feat: prove quasilocal roots lemma
+- 2026-10-14 feat(oai265): port initial component geometry
+- 2026-10-14 docs(oai265): point deviation notes at Memory.md instead of the session owner
+- 2026-10-14 feat: prove volume-free truncation series
+- 2026-10-14 feat: prove logarithmic truncation radius bound
+- 2026-10-14 feat: count finite-set truncation shells
+- 2026-10-14 feat: prove volume-free finite-set truncation error
+- 2026-10-14 feat: discharge lattice truncation counts
+- 2026-10-14 feat: prove phase-minimized vector distance
+- 2026-10-14 feat: prove finite-dimensional gap stability
+- 2026-10-14 feat: bound phase error from overlap loss
+- 2026-10-14 feat: prove pure-state trace-distance formula
+- 2026-10-14 feat: specialize gap stability to matrices
+- 2026-10-14 feat: retain the gap under finite-set truncation
+- 2026-10-14 feat: bound finite-set crossing supports
+- 2026-10-14 feat: prove logarithmic cut budget
+- 2026-10-14 feat: assemble finite truncation from the global gap
+- 2026-10-14 feat: port positive matrix power calculus
+- 2026-10-14 feat(oai265): freeze Prop 11.2 repair statements (octant stars, repair tree, regions, separation, lattice partition)
+- 2026-10-14 feat: prove diagonal spectral Jensen inequality
+- 2026-10-14 feat: prove weighted geometric mean properties
+- 2026-10-14 feat: prove finite weighted mean tree estimates
+- 2026-10-14 feat(oai265): freeze Prop 11.2 instantiation, belt separation, templates, scales, counting and assembly target
+- 2026-10-14 feat: prove k-positive map integral closure
+- 2026-10-14 feat: port quantitative Neumann inverse bounds
+- 2026-10-14 feat: prove real-power resolvent identity
+- 2026-10-14 feat: prove positive matrix power derivative
+- 2026-10-14 feat: prove weighted mean derivative maps
+- 2026-10-14 feat: prove finite mean tree derivative maps
+- 2026-10-14 feat: prove sinh-ratio Fourier multiplier
+- 2026-10-14 feat: prove positive normalized leaf states
+- 2026-10-14 feat(oai265): port transport analytic foundations
+- 2026-10-14 feat(oai265): add transport definitions
+- 2026-10-14 feat(oai265): port transport path derivatives
+- 2026-10-15 feat(oai265): port filtered norm derivative
+- 2026-10-15 feat(oai265): port exact transport derivative
+- 2026-10-15 feat(oai265): port leaf transport derivative
+- 2026-10-15 feat(oai265): port transport commutant invariance
+- 2026-10-15 feat(oai265): add two-positive Schwarz inequality
+- 2026-10-15 feat(oai265): port transport error Fourier bound
+- 2026-10-15 feat(oai265): port transport energy block
+- 2026-10-15 feat(oai265): add rectangular matrix intertwining
+- 2026-10-15 feat(oai265): port filtered vector intertwining
+- 2026-10-15 feat(oai265): add matrix scalar floor bounds
+- 2026-10-15 feat(oai265): port transport metric floor
+- 2026-10-15 feat(oai265): add matrix sandwich intertwining
+- 2026-10-15 feat(oai265): port geometric mean intertwining
+- 2026-10-15 feat(oai265): port power derivative intertwining
+- 2026-10-15 feat(oai265): port geometric mean derivative intertwining
+- 2026-10-15 feat(oai265): port mean tree intertwining
+- 2026-10-15 feat(oai265): port mean tree derivative intertwining
+- 2026-10-15 feat(oai265): add single Kraus adjoint identities
+- 2026-10-15 feat(oai265): port leaf state intertwining
+- 2026-10-15 feat(oai265): port transport state intertwining
+- 2026-10-15 feat(oai265): port unitary Haar measure
+- 2026-10-15 feat(oai265): port projection compression calculus
+- 2026-10-15 feat(oai265): port ordered entropy algebra
+- 2026-10-15 feat(oai265): port permutation representations
+- 2026-10-15 feat(oai265): prove Proposition 11.2 (two_family_decomposition_holds)
+- 2026-10-15 feat(oai265): port finite group irrep labels
+- 2026-10-15 feat(oai265): port permutation label projectors
+- 2026-10-15 feat(oai265): port tensor power actions
+- 2026-10-15 feat(oai265): port trivial representation label
+- 2026-10-15 feat(oai265): complete hermitian trace calculus
+- 2026-10-15 feat(oai265): port orthogonal resolutions
+- 2026-10-15 feat(oai265): port isotypic dimensions
+- 2026-10-15 feat(oai265): port commutant dimension bounds
+- 2026-10-15 docs(oai265): record commutant dimension provenance
+- 2026-10-15 feat(oai265): port central label functions
+- 2026-10-15 feat(oai265): port Schur-Weyl commutant
+- 2026-10-15 feat(oai265): port highest-weight theory
+- 2026-10-15 feat(oai265): port unitary commutant centrality
+- 2026-10-15 feat(oai265): port operator norm reindexing
+- 2026-10-15 feat(oai265): add replica support interface
+- 2026-10-15 feat(oai265): port replica site operators
+- 2026-10-15 feat(oai265): port unitary twirl
+- 2026-10-15 feat(oai265): port coherent resolution
+- 2026-10-15 feat(oai265): port Schur label commutation
+- 2026-10-15 feat(oai265): port orthogonal resolution calculus
+- 2026-10-15 feat(oai265): port gamma ratio bounds
+- 2026-10-15 feat(oai265): port hook formula estimates
+- 2026-10-15 feat(oai265): port replica weights
+- 2026-10-15 feat(oai265): assert Prop 11.2 as two_family_decomposition in its proving module, enrol in the audit
+- 2026-10-15 feat(oai265): port replica ratio estimates
+- 2026-10-15 feat(oai265): add projection matrix auxiliaries
+- 2026-10-15 docs(oai265): rewrap Statements module docstring
+- 2026-10-15 feat(oai265): port orthogonal projections
+- 2026-10-15 feat(oai265): add matrix adjoint pairing lemma
+- 2026-10-15 feat(oai265): port positive semidefinite supports
+- 2026-10-15 feat(oai265): port Schur surprisal bounds
+- 2026-10-15 feat(oai265): port partition counting
+- 2026-10-15 feat(oai265): port irreducible label counting
+- 2026-10-15 feat(oai265): port joint isotypic blocks
+- 2026-10-15 feat(oai265): port column antisymmetrization
+- 2026-10-15 feat(oai265): port Schur-Weyl labels
+- 2026-10-15 feat(oai265): port restriction branching
+- 2026-10-15 feat(oai265): port Schur-Weyl lifting
+- 2026-10-15 feat(oai265): port grouped-copy bounds
+- 2026-10-15 feat(oai265): port Pieri branching
+- 2026-10-15 feat(oai265): port hook recursions
+- 2026-10-15 feat(oai265): port hook dimensions
+- 2026-10-15 feat(oai265): port Casimir identity
+- 2026-10-15 feat(oai265): port star operator
+- 2026-10-15 feat(oai265): port branch probabilities
+- 2026-10-15 feat(oai265): port Schur label estimates
+- 2026-10-15 feat(oai265): port subsystem label transport
+- 2026-10-15 feat(oai265): port replica metrics
+- 2026-10-15 feat(oai265): port forward marked ratio
+- 2026-10-15 feat(oai265): port merge dimensions
+- 2026-10-15 feat(oai265): port merge moment
+- 2026-10-15 feat(oai265): port inverse marked ratio
+- 2026-10-15 feat(oai265): add replica region decomposition
+- 2026-10-15 feat(oai265): port replica similarity
+- 2026-10-15 feat(oai265): add finite product reductions
+- 2026-10-15 feat(oai265): add finite product entropy
+- 2026-10-15 feat(oai265): add finite product conditional information
+- 2026-10-15 feat(oai265): port replica transport setup
+- 2026-10-15 feat(oai265): add symmetric projector facts
+- 2026-10-15 feat(oai265): port replica symmetric metric
+- 2026-10-15 feat(oai265): add replica transport prerequisites
+- 2026-10-15 feat(oai265): port replica transport states
+- 2026-10-15 feat(oai265): add finite product logarithm
+- 2026-10-15 feat(oai265): port coherent average basics
+- 2026-10-15 feat(oai265): port coherent log resolvent
+- 2026-10-15 feat(oai265): port coherent average Schwarz bound
+- 2026-10-15 feat(oai265): port coherent log Jensen bound
+- 2026-10-15 feat(oai265): complete coherent logarithmic passage
+- 2026-10-15 feat(oai265): prove replica entropy gain
+- 2026-10-15 feat(oai265): add replica coherent measure
+- 2026-10-15 feat(oai265): add transport leaf measures
+- 2026-10-15 feat(oai265): prove replica transport energy
+- 2026-10-15 feat(oai265): combine replica transport estimates
+- 2026-10-15 feat(oai265): prove tensor-power rpow calculus
+- 2026-10-15 feat(oai265): prove relative-pin algebra
+- 2026-10-15 feat(oai265): prove kernel completion calculus
+- 2026-10-15 feat(oai265): integrate replica entropy gain
+- 2026-10-15 feat(oai265): prove integrated transport bound
+- 2026-10-15 feat(oai265): prove matrix trace rpow convexity
+- 2026-10-15 feat(oai265): prove trace compression bound
+- 2026-10-15 feat(oai265): prove beta half-line integral
+- 2026-10-15 feat(oai265): prove Weyl Pieri recursion
+- 2026-10-15 feat(oai265): prove alternant Pieri identities
+- 2026-10-15 feat(oai265): prove replica gamma integral
+- 2026-10-15 feat(oai265): prove regular representation trace formulas
+- 2026-10-15 feat(oai265): prove Jucys recursion
+- 2026-10-15 feat(oai265): prove Weyl multiplicity formula
+- 2026-10-15 feat(oai265): prove split-copy antisymmetry identities
+- 2026-10-15 feat(oai265): prove exterior Pieri rank bound
+- 2026-10-15 feat(oai265): prove Weyl character formula
+- 2026-10-15 feat(oai265): prove replica spectral law
+- 2026-10-15 feat(oai265): prove replica metric integral
+- 2026-10-15 feat(oai265): prove lifted replica integral
+- 2026-10-15 feat(oai265): prove replica compensator bound
+- 2026-10-15 feat(oai265): prove concrete support monotonicity
+- 2026-10-15 feat(oai265): prove relative-pin commutation
+- 2026-10-15 feat(oai265): prove conditional spectral powers
+- 2026-10-15 feat(oai265): prove conditional optimizer stability
+- 2026-10-15 feat(oai265): prove conditional movement bounds
+- 2026-10-15 feat(oai265): prove paired three-lines bounds
+- 2026-10-15 feat(oai265): prove logarithmic moment bounds
+- 2026-10-15 feat(oai265): prove matrix interpolation bounds
+- 2026-10-15 feat(oai265): prove normalized row bounds
+- 2026-10-15 feat(oai265): prove spectral entropy Holder bounds
+- 2026-10-15 feat(oai265): prove conditional collision bounds
+- 2026-10-15 feat(oai265): prove spectral phase bounds
+- 2026-10-15 feat(oai265): prove one-filter entropy bound
+- 2026-10-15 feat(oai265): prove conditional optimizer bounds
+- 2026-10-15 feat(oai265): prove Renyi slack phase bounds
+- 2026-10-15 feat(oai265): prove Renyi phase continuity
+- 2026-10-15 feat(oai265): prove optimizer phase transfer
+- 2026-10-15 feat(oai265): prove conditional phase continuity
+- 2026-10-15 feat(oai265): prove logarithmic compression
+- 2026-10-15 feat(oai265): prove partial trace entropy identities
+- 2026-10-15 feat(oai265): prove coefficient strong subadditivity
+- 2026-10-15 feat(oai265): prove conditional entropy bounds
+- 2026-10-15 feat(oai265): prove pure marginal entropy bounds
+- 2026-10-15 feat(oai265): prove conditional entropy continuity
+- 2026-10-15 feat(oai265): prove modular state distance
+- 2026-10-15 feat(oai265): prove conditional filter slack
+- 2026-10-15 feat(oai265): prove one-filter purification bounds
+- 2026-10-15 feat(oai265): prove movement boundary energy bounds
+- 2026-10-15 feat(oai265): prove paired movement interpolation
+- 2026-10-15 feat(oai265): extend movement interpolation to singular weights
+- 2026-10-15 feat(oai265): prove unitary-covariant movement estimate
+- 2026-10-15 feat(oai265): prove conditional movement estimate
+- 2026-10-15 feat(oai265): prove functional calculus reindexing
+- 2026-10-15 feat(oai265): prove regional movement estimate
+- 2026-10-15 feat(oai265): prove concrete lift algebra
+- 2026-10-15 feat(oai265): prove relative coherent pin
+- 2026-10-15 feat(oai265): identify regional movement entropy
+- 2026-10-15 feat(oai265): restate relative pin regionally
+- 2026-10-15 feat(oai265): prove transport relative pin bound
+- 2026-10-15 feat(oai265): prove skew phase departure bound
+- 2026-10-15 feat(oai265): prove von Neumann entropy continuity
+- 2026-10-15 feat(oai265): complete regional split coordinates
+- 2026-10-15 feat(oai265): add marginal phase setup
+- 2026-10-15 feat(oai265): add complex spectral function calculus
+- 2026-10-15 feat(oai265): prove support power sandwich bound
+- 2026-10-15 feat(oai265): prove cfc tensor embedding laws
+- 2026-10-15 feat(oai265): prove cfc transpose covariance
+- 2026-10-15 feat(oai265): add complex hermitian functional calculus
+- 2026-10-15 feat(oai265): define conditional skew lifts
+- 2026-10-15 feat(oai265): prove conditional skew support laws
+- 2026-10-15 feat(oai265): prove conditional skew phase values
+- 2026-10-15 feat(oai265): prove skew strip contraction core
+- 2026-10-15 feat(oai265): prove conditional skew strip bound
+- 2026-10-15 feat(oai265): add spectral tensor coordinates
+- 2026-10-15 feat(oai265): prove resolvent defect positivity
+- 2026-10-15 feat(oai265): prove resolvent Mellin identities
+- 2026-10-15 feat(oai265): integrate resolvent defect
+- 2026-10-15 feat(oai265): represent compression phase gap
+- 2026-10-15 feat(oai265): prove resolvent phase rate tails
+- 2026-10-15 feat(oai265): prove resolvent phase gap bound
+- 2026-10-15 feat(oai265): add faithful marginal powers
+- 2026-10-15 feat(oai265): build faithful marginal compression
+- 2026-10-15 feat(oai265): identify faithful marginal phases
+- 2026-10-15 feat(oai265): prove marginal domination and inverse order
+- 2026-10-15 feat(oai265): bound marginal phase quadratic forms
+- 2026-10-15 feat(oai265): identify marginal phase log gap
+- 2026-10-15 feat(oai265): prove faithful marginal phase comparison
+- 2026-10-15 feat(oai265): prove marginal phase support identities
+- 2026-10-15 feat(oai265): complete spectral function uniqueness
+- 2026-10-15 feat(oai265): construct faithful marginal approximation
+- 2026-10-15 feat(oai265): prove marginal phase convergence
+- 2026-10-15 feat(oai265): prove singular marginal phase comparison
+- 2026-10-15 feat(oai265): prove conditional skew phase core
+- 2026-10-15 feat(oai265): bound conditional mutual information
+- 2026-10-15 feat(oai265): identify conditional skew phase vector
+- 2026-10-15 feat(oai265): prove conditional skew phase comparison
+- 2026-10-15 feat(oai265): bound conditional skew phase rate
+- 2026-10-15 feat(oai265): prove conditional skew estimate
+- 2026-10-15 feat(oai265): prove finite-copy Husimi identity
+- 2026-10-15 feat(oai265): bound positive trace pairings
+- 2026-10-15 feat(oai265): construct coherent replica measure
+- 2026-10-15 feat(oai265): prove injection-average trace identity
+- 2026-10-15 feat(oai265): prove uniform Husimi approximation
+- 2026-10-15 feat(oai265): prove injection-product approximation
+- 2026-10-15 feat(oai265): extend injection approximation to polynomials
+- 2026-10-15 feat(oai265): prove coherent-symbol calculus
+- 2026-10-15 feat(oai265): prove marked-symbol calculus
+- 2026-10-15 feat(oai265): identify marked symbols of star operators
+- 2026-10-15 feat(oai265): prove regional power-symbol bounds
+- 2026-10-15 feat(oai265): close coherent symbols under limits
+- 2026-10-15 feat(oai265): prove coherent functional calculus
+- 2026-10-15 feat(oai265): bound star-operator functional calculus
+- 2026-10-15 feat(oai265): prove marked similarity symbol
+- 2026-10-15 feat(oai265): identify canonical replica marginal
+- 2026-10-15 feat(oai265): bound marked skew symbols
+- 2026-10-15 feat(oai265): express skew bound in regional entropy
+- 2026-10-15 feat(oai265): prove split leaf skew bound
+- 2026-10-15 feat(oai265): close replica transport proposition
+- 2026-10-15 feat(oai265): derive sharp metric floor
+- 2026-10-15 feat(oai265): derive noncommuting lower pin
+- 2026-10-15 feat(oai265): bound Bell overlap remainder
+- 2026-10-15 feat(oai265): reduce rough lower coefficient
+- 2026-10-15 feat(oai265): bound whole inverse replica metric
+- 2026-10-15 feat(oai265): commute restricted label observables
+- 2026-10-15 feat(oai265): bound Schur label tails
+- 2026-10-15 feat(oai265): bound replica metric on label cutoffs
+- 2026-10-15 feat(oai265): formalize typical spectral sets
+- 2026-10-15 feat(oai265): close typical tail scales
+- 2026-10-15 feat(oai265): compare grouped label entropy
+- 2026-10-15 feat(oai265): bound bad copy label dimension
+- 2026-10-15 feat(oai265): control good auxiliary labels
+- 2026-10-15 feat(oai265): compress good auxiliary labels
+- 2026-10-15 feat(oai265): formalize isometric compression
+- 2026-10-15 feat(oai265): transport sharp lower pin
+- 2026-10-15 feat(oai265): derive compressed quadratic bounds
+- 2026-10-15 feat(oai265): prove disjoint replica metric positivity
+- 2026-10-15 feat(oai265): bound excitation subset counts
+- 2026-10-15 feat(oai265): uniformize replica component rate
+- 2026-10-15 feat(oai265): order commuting exponentials
+- 2026-10-15 feat(oai265): bound grouped replica inverse
+- 2026-10-15 feat(oai265): combine five moment bounds
+- 2026-10-15 feat(oai265): control compressed functional calculus
+- 2026-10-15 feat(oai265): compress paired auxiliary labels
+- 2026-10-15 feat(oai265): compare invariant exponentials
+- 2026-10-15 feat(oai265): transport symmetric projections
+- 2026-10-15 feat(oai265): freeze the deterministic Prop 9.6 statements
+- 2026-10-15 feat(oai265): reduce Prop 9.6 to its mutual-information inequality
+- 2026-10-15 feat(oai265): prove the collar leaf entropy identity and MI continuity
+- 2026-10-15 feat(oai265): port the finite exponent iteration of Prop 9.5
+- 2026-10-15 chore(oai265): enrol the Prop 9.6 deterministic steps in the audit
+- 2026-10-15 feat(oai265): freeze the template entropy bounds of Lemma 9.4
+- 2026-10-15 feat(oai265): prove the template entropy bounds of Lemma 9.4
+- 2026-10-15 docs(oai265): record the Prop 9.6 deterministic layer
+- 2026-10-15 feat(oai265): port the Lemma 9.1 scan-history layer from TNLean
+- 2026-10-15 feat(oai265): Lemma 9.1 for the actual scan rounds; first comparator layer
+- 2026-10-15 feat(oai265): second comparator layer of Proposition 8.1
+- 2026-10-15 feat(oai265): third comparator layer of Proposition 8.1
+- 2026-10-15 feat(oai265): fourth comparator layer of Proposition 8.1
+- 2026-10-15 feat(oai265): fifth comparator layer and the global Schmidt-Bell prevector
+- 2026-10-15 feat(oai265): sharp and rough upper comparisons of the replica prevector
+- 2026-10-15 feat(oai265): the rough and sharp-upper comparator roots of Proposition 8.1
+- 2026-10-15 feat(oai265): sharp lower comparison of Proposition 8.1; fold duplicates
+- 2026-10-15 feat(oai265): port TNLean's assembly toward Propositions 9.2 and 9.5
+- 2026-10-15 feat(oai265): port the sharp-lower and marginal layers; freeze the Prop 9.6 remainder
+- 2026-10-15 refactor(oai265): one frozen Prop 9.6 lemma per file
+- 2026-10-15 feat(oai265): Prop 9.2 for the actual collar scan; rough lower, test geometries, shell entropy, final scales
+- 2026-10-15 feat(oai265): truncation inputs, Prop 9.5 comparison step and the sharp collar comparison
+- 2026-10-16 feat(oai265): prove Proposition 9.6 (collar_bound)
+- 2026-10-16 docs(oai265): record Proposition 9.6 pass 3; leaf identity is eq. (9.20)
+- 2026-10-16 merge: Proposition 11.2 branch (agents/45e6e077) into the Prop 9.6 branch; spine sorries left: area_law, amplification
+- 2026-10-16 docs(oai265): Proposition 10.2 plan; copy the pure TNLean/QICLean amplification cone
+- 2026-10-16 docs(oai265): port brief for the Proposition 10.2 cone; copy ConstraintWordLists
+- 2026-10-16 feat(oai265): Proposition 10.2 cone, wave 1
+- 2026-10-16 feat(oai265): Proposition 10.2 cone, wave 2
+- 2026-10-16 feat(oai265): Proposition 10.2 cone, wave 3; move amplification out of Statements
+- 2026-10-16 feat(oai265): prove Proposition 10.2 (amplification)
+- 2026-10-16 chore(oai265): enrol amplification in the axiom audit
+- 2026-10-16 feat(oai265): draft proof of Theorem 1.1 (area law), unchecked
+- 2026-10-16 feat(oai265): prove Theorem 1.1 (area law)
+- 2026-10-16 Merge commit '8b30683' into ruiz/oai265

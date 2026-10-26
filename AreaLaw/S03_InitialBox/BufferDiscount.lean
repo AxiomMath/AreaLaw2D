@@ -5,6 +5,10 @@ import AreaLaw.S03_InitialBox.MarginalTails
 
 Digest `digest/03-initial-box.md` (D3.3–D3.14), paper `paper/sections/02-initial.tex`,
 lines 219–586.
+
+Some declarations here come from the v1 files `OpenAI/Geometry/TemplateCollar.lean`,
+`OpenAI/LogClipping.lean`, `OpenAI/Rectangles.lean`, whose header records them as ported or adapted
+from `LionSR/QICLean` and `LionSR/TNLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

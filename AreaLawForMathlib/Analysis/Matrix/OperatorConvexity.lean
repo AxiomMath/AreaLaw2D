@@ -22,6 +22,9 @@ This module proves the trace convexity and concavity of the map
 * `trace_rpow_concave` — for `p ∈ [0, 1]`, the map is **concave**.
 * `trace_rpow_convex` — for `p ∈ [1, 2]`, the map is **convex**.
 
+Ported from `LionSR/QICLean`, `QICLean/Analysis/OperatorConvexity.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
+
 ## Proof sketch
 
 The common reduction is the private lemma `trace_cfc_convex_bound`, which takes

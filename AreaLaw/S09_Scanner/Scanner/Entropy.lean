@@ -6,6 +6,11 @@ import AreaLaw.S09_Scanner.ComparatorData
 
 Digest `digest/09-scanner.md` D9.10–D9.11, paper `paper/sections/08-scanner.tex` 416–455.
 Graph-level (Map.md, Dimension: `any d`).
+
+Some declarations here come from the v1 files `OpenAI/ReplicaTransportEnergy.lean`,
+`OpenAI/Scan/ActualChargeEntropySum.lean`, `OpenAI/Scan/OldStateIntegral.lean`,
+`OpenAI/Scan/SplitEntropyBound.lean`, whose header records them as ported or adapted from
+`LionSR/QICLean` and `LionSR/TNLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder

@@ -10,6 +10,10 @@ import AreaLaw.S06_Replicas.Ported.ReplicaWeight
 
 `r(k, l) ≍ (l/k)^t` and `|r(k, l) - max((l - d)/k, 0)^t| = O(k^(-t))` on `1 ≤ l ≤ k + d`
 (`05-replicas.tex`, lines 403–417).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+file `QICLean/Representation/ReplicaRatio.lean`.
 -/
 
 open Real

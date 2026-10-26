@@ -12,6 +12,9 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.MergeDimensions
 
 The logarithmic merge deficit `F_Q + F_E - F_{QE}` is positive semidefinite (Lemma 6.1(3),
 `05-replicas.tex`, `replicas:merge-dimensions`; `07-comparators.tex`, lines 501–549).
+
+Ported from `LionSR/QICLean`, file `QICLean/Representation/MergeExponential.lean`,
+commit `e44381d9054ba5c42c720624cb690b251ad21533` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation

@@ -9,6 +9,9 @@ Extends Physlib `QuantumInfo/Entropy/SSA.lean`: block-diagonal (classical–quan
 their entropy, concavity of `Sᵥₙ`, the mixing bound, the two-sided mixture bound for
 `qConditionalEnt` (Winter 2016, Lemma 2), `|S(D|E)| ≤ log d_D`, and the Jordan decomposition of
 a difference of states.
+
+Some declarations here come from the v1 file `OpenAI/ConditionalEntropy.lean`, whose header records
+it as ported or adapted from `LionSR/QICLean` and `openai/math` (see `NOTICE`).
 -/
 
 open Matrix Real

@@ -10,6 +10,10 @@ Extends `Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Ord
   C⋆-algebra (no dimension factor).
 * `Matrix.norm_mul_mul_add_mul_mul_le`: `‖G B G + K B K‖ ≤ ‖B‖` for Hermitian `G, K` with
   `G * G + K * K = 1`, in the L2 operator norm.
+
+Ported from LionSR/QICLean commit 5f76b263e3a1c418645102d90f7bef6b92f04cf3,
+`QICLean/Analysis/SqrtHolder.lean`, as used by LionSR/TNLean commit
+fc565830cec69e8226e521d56c86d39845d45576. Adapted to Lean/Mathlib 4.33.
 -/
 
 namespace CFC

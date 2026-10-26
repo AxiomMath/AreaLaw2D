@@ -20,6 +20,9 @@ half-line by the substitution `x = u/(1 + u)`. It evaluates the radial integral 
 computation of the proof of Lemma 6.2 of the area-law paper (*A two-dimensional area law from
 a global spectral gap*, `05-replicas.tex`, lines 347–364).
 
+Ported from `LionSR/QICLean`, `QICLean/Analysis/BetaHalfLine.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
+
 ## Main declarations
 
 * `Real.integrableOn_rpow_mul_one_add_rpow` — integrability on `(0, ∞)`.

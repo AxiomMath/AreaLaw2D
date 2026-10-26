@@ -14,6 +14,10 @@ Extends `Mathlib/LinearAlgebra/Lagrange.lean`.
 `d_λ = k! ∏_{i<j} (l_i - l_j) / ∏_i l_i!`, and the restriction of `λ` contains each `λ - e_i`
 exactly once (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, equation
 `replicas:dimensions`).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/HookDimension.lean`.
 -/
 
 open Finset Matrix PermutationRepresentation

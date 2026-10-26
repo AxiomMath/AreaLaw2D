@@ -12,6 +12,9 @@ The relative metric `C_{x,k} = A_k^{-1/2} B_k A_k^{-1/2}` of moving `x` from the
 `P`, the inverse Cauchy–Schwarz inequality, and
 `⟨z, C_{x,k}^{-1} z⟩ = ‖W_{Px,k} W_{xY₀,k} W_{P,k}^{-1} W_{Y₀,k}^{-1} z‖²` (`05-replicas.tex`,
 Lemma 6.3, lines 489–533).
+
+Ported from `QICLean/Representation/RelativePinAlgebra.lean` at commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation Entropy

@@ -12,6 +12,10 @@ Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
 
 The branches `ν = λ - e_i` of Lemma 6.1(6) and their probabilities `d_ν / d_λ ≤ 2^q l_i / k` (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 132–145 and 237–249).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/BranchProbability.lean`.
 -/
 
 open Finset Matrix PermutationRepresentation TensorPower

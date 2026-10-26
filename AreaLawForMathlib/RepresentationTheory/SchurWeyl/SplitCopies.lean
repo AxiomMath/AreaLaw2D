@@ -14,6 +14,9 @@ Extends `Mathlib/RepresentationTheory/Character.lean`.
 
 The operators of `(ℂ^q)^{⊗(m + r)} = (ℂ^q)^{⊗m} ⊗ (ℂ^q)^{⊗r}` and the exterior power
 character `Tr(A_r diag(y)^{⊗r}) = e_r(y)` (`05-replicas.tex`, lines 336–364).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/SplitCopies.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra

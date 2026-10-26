@@ -11,6 +11,9 @@ and the primary tiles, the fragments of `D_k` in one pitch interior. Everything 
 `Fin d → ℝ` with its sup metric; counts are in terms of the endpoint set `Z`, `|Z| ≤ 2b`.
 
 Digest `digest/11-geometry.md` D11.8–D11.10.
+
+Some declarations here come from the v1 file `OpenAI/Geometry/PrimaryRegions.lean`, whose header
+records it as ported or adapted from `LionSR/TNLean` (see `NOTICE`).
 -/
 
 open Set Metric

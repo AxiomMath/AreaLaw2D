@@ -8,6 +8,9 @@ Digest `digest/04-quasilocal.md` (D4.8), paper `paper/sections/03-quasilocal.tex
 Graph-level (`Map.md`, Dimension): the localizing map is `E_{i,l}` on the graph induced on `Λ`
 (`step_4_8`); the time-splitting argument itself is stated for any unital linear map `L`
 satisfying the localization bound `eq:quasilocal-lr-ce` (`norm_M_sub_le`).
+
+Some declarations here come from the v1 file `OpenAI/SpectralFilter/FilterLocality.lean`, whose
+header records it as ported or adapted from `LionSR/QICLean` and `LionSR/TNLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

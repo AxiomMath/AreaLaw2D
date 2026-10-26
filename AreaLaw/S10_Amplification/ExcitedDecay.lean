@@ -5,6 +5,9 @@ import AreaLaw.S10_Amplification.Setup
 
 Digest `digest/10-amplification.md` (D10.3, D10.13), paper
 `paper/sections/09-amplification.tex` lines 237–253 and 501–522. No geometry.
+
+Some declarations here come from the v1 file `OpenAI/Transport/ErrorFourier.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

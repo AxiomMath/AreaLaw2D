@@ -11,6 +11,10 @@ import AreaLaw.S06_Replicas.Ported.ReplicaRatio
 
 `R_{Q,k} = W_{Q,k} W_{Q,k-1}^{-1}` satisfies `‖R_{Q,k} - (J_{Q,k})_+^t‖ = O(k^{-t})` and
 `‖R_{Q,k}‖ ≤ C` (`05-replicas.tex`, Lemma 6.2, lines 320–323 and 402–417).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/ReplicaMarkedRatio.lean`.
 -/
 
 open Matrix PermutationRepresentation

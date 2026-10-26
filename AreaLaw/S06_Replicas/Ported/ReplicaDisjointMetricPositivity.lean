@@ -11,6 +11,10 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixPowers
 
 `(W_P^{-1} W_F^{-1} W_Y)²` is positive definite for pairwise disjoint `P, F, Y`
 (`05-replicas.tex`, `replicas:leaf-metric`, lines 459--473).
+
+Ported from `LionSR/QICLean`, file
+`QICLean/Representation/ReplicaDisjointMetricPositivity.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 noncomputable section

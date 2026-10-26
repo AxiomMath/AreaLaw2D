@@ -13,6 +13,10 @@ import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Bas
 Lemma 6.1(5) (`05-replicas.tex`, lines 124–130 and 223–235): for a permutation-invariant
 density matrix `ρ` on `Q^{⊗k}`, `F_Q` commutes with `ρ`, `0 ≤ F_Q ≤ L_ρ` on the support of `ρ`,
 and `Tr ρ exp(b (L_ρ - F_Q)) ≤ (k+1)^{q²}` for `b ≤ 1`.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/SchurSurprisal.lean`.
 -/
 
 open MonoidAlgebra Matrix Module

@@ -9,6 +9,10 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TensorPowerAction
 # Commutation of Schur labels and complementary labels on the symmetric subspace
 
 Extends `Mathlib/RepresentationTheory/Basic.lean`.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+file `QICLean/Representation/SchurLabelCommutation.lean`.
 -/
 
 open MonoidAlgebra Matrix

@@ -13,6 +13,10 @@ Extends `Mathlib/RepresentationTheory/Character.lean`.
 The Casimir identity `∑_{a,b} E_{ab} E_{ba} = k q + ρ(T_k)` evaluates the central element `T_k =
 ∑_{i ≠ j} (i j)` on each label (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, lines 250–263).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/Casimir.lean`.
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra

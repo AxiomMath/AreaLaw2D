@@ -22,6 +22,9 @@ eigenbasis entry `(r, t)` of `X` by `f(log x_r - log x_t)`. For positive definit
 
 Also: the Schwarz inequality for a unital 2-positive map in vector form, and `M^{-iu}` of a
 block-diagonal matrix.
+
+Some declarations here come from the v1 file `OpenAI/Transport/ErrorFourier.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator

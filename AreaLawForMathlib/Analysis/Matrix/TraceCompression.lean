@@ -24,6 +24,9 @@ proof of Lemma 6.2, lines 380–388) uses this for `p = 1/t` to bound the trace 
 compressed samples `τ = (E† σ^t E)^{1/t}` by `Tr σ = 1`; it argues through the min–max
 principle.
 
+Ported from `LionSR/QICLean`, `QICLean/Analysis/TraceCompression.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
+
 ## Main declarations
 
 * `Matrix.embedMatrix j` — the isometry `E` of an injection.

@@ -18,6 +18,10 @@ symbol `f_θ = ⟨θ, ρ_P^t ρ_Y^{-t} h ρ_P^{-t} ρ_Y^t θ⟩`: polynomial app
 
 Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
 `05-replicas.tex`, lines 620–625 and 813–826.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/RegionPowerSymbol.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix Polynomial

@@ -2,6 +2,10 @@ import AreaLaw.S03_InitialBox.Filters
 
 /-!
 # §3.2, D3.12.1–D3.12.2 of digest/03-initial-box.md: zero-floor limit and Schmidt pinning
+
+Some declarations here come from the v1 files `OpenAI/RegionLift.lean`,
+`OpenAI/SchmidtPinning.lean`, whose header records them as ported or adapted from `LionSR/QICLean`
+(see `NOTICE`).
 -/
 
 namespace AreaLaw

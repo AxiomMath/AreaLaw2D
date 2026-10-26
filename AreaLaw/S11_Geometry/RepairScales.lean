@@ -6,7 +6,11 @@ import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-! # §11.5, §11.7 Repair scales
 
-Digest `digest/11-geometry.md` D11.14, D11.15.6–7, D11.19 -/
+Digest `digest/11-geometry.md` D11.14, D11.15.6–7, D11.19
+
+Some declarations here come from the v1 file `OpenAI/Geometry/RepairDepth.lean`, whose header
+records it as ported or adapted from `LionSR/TNLean` (see `NOTICE`).
+-/
 
 open Real Finset
 

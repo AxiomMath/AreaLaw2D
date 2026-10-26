@@ -14,6 +14,9 @@ Extends `Mathlib/RepresentationTheory/Character.lean`.
 
 `m_λ = ∏_{i<j} (l_i - l_j)/(j - i)` (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, equation `replicas:dimensions`).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/WeylDimension.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Finset Matrix PermutationRepresentation

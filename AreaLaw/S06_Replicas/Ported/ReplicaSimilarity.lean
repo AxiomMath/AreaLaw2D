@@ -14,6 +14,10 @@ import AreaLawForMathlib.Analysis.Matrix.PosSemidefCommute
 The partition metric `A_k = (W_{P,k}^{-1} W_{F,k}^{-1} W_{Y,k})²` and the similarity transform
 `O_k = A_k^{-1/2} hbar A_k^{1/2}` of a copy mean; the first assertion of Lemma 6.4,
 `sup_k ‖O_k‖ < ∞` on the symmetric subspace (`05-replicas.tex`, lines 459–473, 615–692).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/ReplicaSimilarity.lean`.
 -/
 
 open Matrix PermutationRepresentation Entropy

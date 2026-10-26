@@ -12,6 +12,9 @@ import AreaLaw.S06_Replicas.Ported.ReplicaWholeInverse
 
 Splitting the copies into good and bad groups costs exactly `choose(k,r)^{2t}` in the inverse
 squared replica metric (`07-comparators.tex`, lines 454--476).
+
+Ported from `LionSR/QICLean`, file `QICLean/Representation/ReplicaGroupedInverse.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 noncomputable section

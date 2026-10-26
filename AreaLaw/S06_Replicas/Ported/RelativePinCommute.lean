@@ -12,6 +12,9 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.MergeMoment
 
 Every label function of a region `Q` commutes with `(M ⊗ 1)^{⊗k}` for `M` supported on a region
 contained in or disjoint from `Q` (`05-replicas.tex`, lines 541–546).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/RelativePinCommute.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation Entropy

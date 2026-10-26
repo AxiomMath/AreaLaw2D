@@ -13,6 +13,9 @@ Extends `Mathlib/RepresentationTheory/Character.lean`.
 
 `Δ(y) χ_λ(y) = det [y_i ^ {l_j}]` for the character `χ_λ(y) = Tr(E^λ_{00} diag(y)^{⊗k})`, via
 the vertical-strip Pieri rule (`05-replicas.tex`, proof of Lemma 6.2, lines 336–364).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/WeylCharacter.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra

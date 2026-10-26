@@ -14,6 +14,9 @@ import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 
 The compensator `T_R = W_{R,k}^{-1} (ρ_R^t)^{⊗k}` satisfies `‖T_R‖ ≤ poly(k)` uniformly in the
 density matrix `ρ_R` (`05-replicas.tex`, proof of Lemma 6.3, lines 535–551).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/RelativePinCompensator.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation Entropy

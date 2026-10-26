@@ -7,6 +7,9 @@ Digest `digest/05-conditional.md`. The regional conditional pair `(ρ_{XE}, I_X 
 log-moment data (`step_5_2_region`), the purity identity `I(X:F|U) = S(X|P) + S(X|U)`
 (`step_5_5_A`), and the reduction (F1) of the state movement to a Hilbert–Schmidt norm
 (`step_5_9_1`).
+
+Some declarations here come from the v1 file `OpenAI/MarginalPhaseSupport.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

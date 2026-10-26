@@ -8,6 +8,9 @@ import AreaLawForMathlib.QuantumInfo.Region
 # §2 Entropy and induced-graph locality
 
 Digest `digest/02-preliminaries.md`, paper `paper/sections/01-preliminaries.tex`.
+
+Some declarations here come from the v1 file `OpenAI/MarginalPhaseQuadratic.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

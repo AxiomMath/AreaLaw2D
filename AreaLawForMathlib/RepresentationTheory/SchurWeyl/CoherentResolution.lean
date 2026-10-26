@@ -13,6 +13,10 @@ Extends `Mathlib/RepresentationTheory/Invariants.lean`.
 
 For a unit one-copy vector `θ`, the coherent projector onto `θ^{⊗k}` resolves the symmetric
 projector after Haar-unitary averaging.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+file `QICLean/Representation/CoherentResolution.lean`.
 -/
 
 open Matrix PermutationRepresentation MeasureTheory Finset

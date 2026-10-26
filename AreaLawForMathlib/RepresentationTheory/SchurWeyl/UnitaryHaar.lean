@@ -18,6 +18,10 @@ Extends `Mathlib/LinearAlgebra/UnitaryGroup.lean` and
 
 The unitary group is compact and carries a Haar probability measure (*A two-dimensional area law
 from a global spectral gap*, `05-replicas.tex`, lines 341–345).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Analysis/UnitaryHaar.lean`.
 -/
 
 open MeasureTheory Topology

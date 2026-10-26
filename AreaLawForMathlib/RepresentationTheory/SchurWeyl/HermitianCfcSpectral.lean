@@ -9,6 +9,10 @@ import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
  # Spectral forms of the Hermitian functional calculus
 
 Extends `Mathlib/Analysis/Matrix/HermitianFunctionalCalculus.lean`.
+
+Ported from LionSR/QICLean commit
+5f76b263e3a1c418645102d90f7bef6b92f04cf3,
+`QICLean/Analysis/TraceCFC.lean`.
 -/
 
 namespace Matrix.IsHermitian

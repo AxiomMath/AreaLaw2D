@@ -16,6 +16,10 @@ Extends `Mathlib/Analysis/Matrix/Spectrum.lean`.
 
 For a positive semidefinite `ρ` commuting with a permutation representation, the spectral
 projectors of `ρ` and the label projectors form one orthogonal resolution `E_u π^λ`.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/SchurSurprisal.lean`.
 -/
 
 open MonoidAlgebra Matrix Module

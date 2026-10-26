@@ -7,6 +7,9 @@ import AreaLawForMathlib.Analysis.ODE.LiebRobinson
 Digest `digest/04-quasilocal.md` (D4.4), paper `paper/sections/03-quasilocal.tex` lines 52–128.
 Graph-level (`Map.md`, Dimension): a simple graph `G` on a site type `σ`, the induced distance
 `d_Λ`, ball growth `V`.
+
+Some declarations here come from the v1 file `OpenAI/LiebRobinson/GraphPropagation.lean`, whose
+header records it as ported or adapted from `LionSR/TNLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

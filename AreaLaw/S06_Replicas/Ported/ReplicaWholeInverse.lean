@@ -11,6 +11,9 @@ import AreaLaw.S06_Replicas.Ported.ReplicaSimilarity
 For pairwise disjoint `P, Y, F`, `((W_P⁻¹ W_F⁻¹ W_Y)²)⁻¹` is bounded by a polynomial in the
 number of copies times `exp(-2t(F_P + F_F - F_Y))` (`05-replicas.tex`, lines 287–316;
 `07-comparators.tex`, lines 454–476).
+
+Ported from `LionSR/QICLean`, file `QICLean/Representation/ReplicaWholeInverse.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 set_option relaxedAutoImplicit false

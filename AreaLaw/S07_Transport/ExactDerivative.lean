@@ -6,6 +6,10 @@ import AreaLawForMathlib.Analysis.Matrix.CommutantModule
 
 Digest `digest/07-transport.md` D7.15–D7.16, paper `paper/sections/06-transport.tex` 441–485.
 No geometry: an arbitrary finite site type, arbitrary `k`.
+
+Some declarations here come from the v1 files `OpenAI/Transport/Commutant.lean`,
+`OpenAI/Transport/Derivative.lean`, whose header records them as ported or adapted from
+`LionSR/QICLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

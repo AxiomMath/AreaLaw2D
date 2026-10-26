@@ -9,6 +9,11 @@ import AreaLawForMathlib.QuantumInfo.SiteSupport
 
 The regional lift `K ↦ K ⊗ 1` on `Entropy.SiteConfig` and the product decomposition of an
 operator supported on a disjoint union.
+
+Ported and specialized from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Entropy/LocalLift.lean` and
+`QICLean/Entropy/RegionUnion.lean`.
 -/
 
 open Matrix

@@ -13,6 +13,10 @@ Extends `Mathlib/RepresentationTheory/Basic.lean`.
 
 Lemma 6.1(3): compatible labels satisfy `d_ν ≤ d_λ d_μ` and `d_λ ≤ d_ν d_μ` (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 105–111 and 183–189).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/MergeDimensions.lean`.
 -/
 
 open MonoidAlgebra Matrix Module

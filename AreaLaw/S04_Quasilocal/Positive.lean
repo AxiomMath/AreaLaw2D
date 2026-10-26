@@ -7,6 +7,10 @@ import AreaLawForMathlib.Analysis.CStarAlgebra.SqrtHolder
 Digest `digest/04-quasilocal.md` (D4.6), paper `paper/sections/03-quasilocal.tex` lines 220–329.
 Graph-level (`Map.md`, Dimension): a simple graph `G` on a site type `σ` with ball growth `V`;
 the constants do not depend on `Λ`.
+
+Ported from LionSR/QICLean commit 5f76b263e3a1c418645102d90f7bef6b92f04cf3,
+\`QICLean/Analysis/RootChannel.lean\` (kernel lemmas only), as used by LionSR/TNLean commit
+fc565830cec69e8226e521d56c86d39845d45576. Adapted to Lean/Mathlib 4.33.
 -/
 
 namespace AreaLaw

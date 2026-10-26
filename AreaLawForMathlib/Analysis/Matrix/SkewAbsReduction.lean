@@ -13,6 +13,9 @@ Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Bas
   commuting with a positive definite `A` and with `X`, the skew defects of the similarity
   transforms of `X` by `P A + (1 - P)` and by `A` agree after multiplication by `P`.
 * `Matrix.proj_mul_cfc_sqrt_proj_mul`: `P (P Y)^{1/2} = P Y^{1/2}` for `[P, Y] = 0`.
+
+Ported from QICLean, file `QICLean/Representation/ReplicaTransport/Energy.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`.
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder

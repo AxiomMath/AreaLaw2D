@@ -13,6 +13,9 @@ import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 
 The integral representation `W_{Q,k} = ∫ ((τ^t ⊗ 1)^{⊗k}) dζ_Q(τ)` of the replica metrics
 (`05-replicas.tex`, equation `replicas:W-integral`), and `‖v^{⊗k}‖ = ‖v‖^k`.
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/ReplicaLift.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open MeasureTheory Matrix Finset PermutationRepresentation Entropy

@@ -7,6 +7,9 @@ import AreaLawForMathlib.Analysis.Matrix.WeylTwirl
 Digest `digest/04-quasilocal.md` (D4.1–D4.3), paper `paper/sections/03-quasilocal.tex`
 lines 14–41. Graph-level (`Map.md`, Dimension): a simple graph `G` on a site type `σ`, the
 induced distance `d_Λ`, ball growth `V`.
+
+Some declarations here come from the v1 file `OpenAI/ConditionalExpectation.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` and `LionSR/TNLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

@@ -6,6 +6,9 @@ import AreaLaw.S07_Transport.ExactDerivative
 Digest `digest/07-transport.md` D7.26, paper `paper/sections/06-transport.tex` 762–771: for fixed
 `k`, `N(p)` is continuous on `[0, 1]`, the exact derivative is bounded uniformly in
 `p ∈ (0, 1)`, and `log N²` at the endpoints is the integral of the derivative. No geometry.
+
+Some declarations here come from the v1 file `OpenAI/Transport/Derivative.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

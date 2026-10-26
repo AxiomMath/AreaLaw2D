@@ -15,6 +15,10 @@ spectra has the composed symbol; in particular `|O_k|` has symbol `|f_θ|`.
 
 Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
 `05-replicas.tex`, lines 832–840.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/CoherentSymbolFunction.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation Polynomial Filter

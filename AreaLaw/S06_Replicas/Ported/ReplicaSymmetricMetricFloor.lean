@@ -13,6 +13,13 @@ import AreaLawForMathlib.Analysis.Matrix.CompressedInverse
 
 On the simultaneous symmetric space the inverse partition metric is bounded by a polynomial in
 the copy number, and the metric has the reciprocal floor (`07-comparators.tex`, lines 603–615).
+
+Ported from LionSR/QICLean commit e44381d9054ba5c42c720624cb690b251ad21533,
+`QICLean/Representation/ReplicaSymmetricMetricFloor.lean` (Apache 2.0).
+Only `exists_replicaMetric_symProj_inverse_bound_and_floor` and
+`exists_replicaMetric_symProj_isometric_floor` are ported; the source's
+`exists_replicaMetric_symmetric_floor` is left out (it needs
+`QICLean.Representation.ReplicaSymmetricSupport`, which is not ported).
 -/
 
 open Matrix PermutationRepresentation

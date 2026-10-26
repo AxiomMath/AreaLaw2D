@@ -14,6 +14,10 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.SchurLabelCommutation
 
 `W_{Q,k} = ∑_λ w_k(λ) π^λ_{Q,k}`: positivity, centrality, `W_{Q,0} = I` and the comparison
 `poly(k)⁻¹ e^{-t F_{Q,k}} ≤ W_{Q,k} ≤ poly(k) e^{-t F_{Q,k}}` (`05-replicas.tex`, Lemma 6.2).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/ReplicaMetric.lean`.
 -/
 
 open Matrix PermutationRepresentation

@@ -112,7 +112,7 @@ The case `∂_Λ A = ∅` (Lemma 2.2) is part of the statement and is proved, no
 
 These are internal to the proof (the paper exports only the results above in §1.3). Their
 statements follow the paper's equations (2.1), (3.1), (3.2), (3.9) and (3.21) with the
-conventions of `RefactoringResult.md` §2 and §5; in particular Lemma 2.1 carries the explicit
+conventions recorded in `docs/oai265/Memory.md`; in particular Lemma 2.1 carries the explicit
 absolute constant `4`, and Proposition 3.3 unfolds the supremum `F_box` into a universally
 quantified bound. They do not affect the faithfulness of Theorem 1.1, which depends on them only
 through the propositions above.

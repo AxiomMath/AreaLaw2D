@@ -9,6 +9,11 @@ Extends `Mathlib/Analysis/CStarAlgebra/Matrix.lean`: column sums and two-sided c
 compactness of the unitaries, entrywise and submatrix bounds, Kronecker products with the
 identity, and rectangular matrices (the bounds go through `l2_opNorm_mulVec`, not the
 C*-algebra structure Mathlib has for square matrices only).
+
+Some declarations here come from the v1 files `OpenAI/ConditionalSkewPhaseCore.lean`,
+`OpenAI/FilterMaximizer.lean`, `OpenAI/MatrixKroneckerContraction.lean`,
+`OpenAI/RestoringVectors.lean`, whose header records them as ported or adapted from `LionSR/QICLean`
+and `LionSR/TNLean` (see `NOTICE`).
 -/
 namespace Arealaw
 

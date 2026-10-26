@@ -9,6 +9,9 @@ Extends `Arealaw/PTrace.lean` and the region operations `OpenAI.condExpect`,
 identity and the conditional expectation commute with the entrywise embedding
 `RCLike.toComplex` and with the entrywise real part `Matrix.realProjection`, and support in a
 subregion is preserved by `Matrix.realProjection` and `Matrix.complexPullback`.
+
+Some declarations here come from the v1 file `OpenAI/ConditionalExpectation.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` and `LionSR/TNLean` (see `NOTICE`).
 -/
 
 open Matrix RCLike

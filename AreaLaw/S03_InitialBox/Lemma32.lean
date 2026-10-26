@@ -7,6 +7,9 @@ Digest `digest/03-initial-box.md` (D3.4, D3.14), paper `paper/sections/02-initia
 lines 219–586. D3.14.1 (`step_3_14_1`) is over any site type; `lemma_3_2` assembles D3.5,
 D3.6, D3.10, D3.11, D3.12.1 (`step_3_12_1`), D3.13 (`eq_initial_norm_upper`) and D3.14 on
 `ℤ × ℤ`.
+
+Some declarations here come from the v1 file `OpenAI/BufferDiscount.lean`, whose header records it
+as ported or adapted from `LionSR/TNLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

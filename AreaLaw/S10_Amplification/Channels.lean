@@ -6,6 +6,9 @@ import AreaLaw.S10_Amplification.Setup
 Digest `digest/10-amplification.md` (D10.2), paper `paper/sections/09-amplification.tex`
 lines 42–235. Graph-level: a simple graph `G` on a site type `σ`; nothing here depends on a
 ball-growth bound. Operators act on `Reg loc Λ × κ`, the spectator `κ` untouched.
+
+Some declarations here come from the v1 file `OpenAI/LiebRobinson/GraphBallStabilization.lean`,
+whose header records it as ported or adapted from `LionSR/TNLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

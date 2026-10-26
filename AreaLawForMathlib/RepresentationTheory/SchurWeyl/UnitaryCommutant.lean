@@ -16,6 +16,10 @@ Extends `Mathlib/RepresentationTheory/Invariants.lean`.
 Such an operator commutes with every `Δ(A)`, and is central if it also commutes with the copy
 permutations (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
 59–62 and 324–330).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/UnitaryCommutant.lean`.
 -/
 
 open Matrix PermutationRepresentation Finset

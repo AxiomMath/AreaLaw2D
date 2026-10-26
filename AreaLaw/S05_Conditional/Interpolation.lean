@@ -9,6 +9,17 @@ import Mathlib.Analysis.Normed.Module.HahnBanach
 Digest `digest/05-conditional.md`, anchors D5.11 (log-interpolation on the strip), D5.5.10 (the
 sum of the two boundary bounds), D5.7.3–4 (the concavity/affinity inequality behind the
 Hellinger estimate), in scalar form.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Entropy/ConditionalMovement/ThreeLines.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
+
+Originally adapted from openai/math (Apache-2.0), commit
+adc7f1241b42e322a6451854ab7e4b4c146bf78a, file
+`lean/OAI/MathematicalPhysics/PEPSMove/ThreeLines.lean`, all declarations of the file;
+modifications: the namespace prefix `OAI.PolynomialPEPS.PhysicalMove` is replaced by
+`ConditionalMovement`, the imports are restricted to the needed modules, and operator
+spacing and line breaks are normalized.  Statements and proofs are otherwise unchanged.
 -/
 
 namespace AreaLaw

@@ -13,6 +13,9 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixPowers
 
 `W_{Q,k} = ∫ (τ^t)^{⊗k}` for a random positive definite subdensity `τ` on `Q` independent of `k`
 (`05-replicas.tex`, equation `replicas:W-integral`).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/ReplicaIntegral.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open MeasureTheory Matrix Finset PermutationRepresentation Partition

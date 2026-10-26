@@ -14,6 +14,10 @@ symmetric vectors.
 
 Reference: OpenAI, *A two-dimensional area law from a global spectral gap*, Lemma 6.4,
 `05-replicas.tex`, lines 693–708 and 813–836.
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/CoherentSymbolLimit.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix PermutationRepresentation Filter

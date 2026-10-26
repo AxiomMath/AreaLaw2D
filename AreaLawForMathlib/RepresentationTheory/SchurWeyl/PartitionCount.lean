@@ -15,6 +15,10 @@ Extends `Mathlib/Combinatorics/Enumerative/Partition/Basic.lean`.
 Padded partitions of `k` of length `k` and the conjugacy classes of `S_k` are counted by the
 partitions of `k` (*A two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines
 46–49).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/PartitionCount.lean`.
 -/
 
 open Finset

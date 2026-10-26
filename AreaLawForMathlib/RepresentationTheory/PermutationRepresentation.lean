@@ -21,6 +21,22 @@ Artin–Wedderburn over `ℂ`, `ℂ[G] ≅ ∏_λ M_{d_λ}(ℂ)`; the factors ar
 irreducible representations of `G`, with central idempotents `e_λ`. Their images are the
 label projectors `π^λ` onto the `λ`-isotypic subspaces.
 
+From the v1 file `OpenAI/IrrepLabels.lean`: Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/IrrepLabels.lean`.
+
+From the v1 file `OpenAI/LabelProjectors.lean`: Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/LabelProjectors.lean`.
+
+From the v1 file `OpenAI/PermutationRepresentation.lean`: Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/PermutationRepresentation.lean`.
+
+From the v1 file `OpenAI/TensorPowerAction.lean`: Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/TensorPowerAction.lean`.
+
 ## Main declarations
 
 * `PermutationRepresentation.permOp φ g`, `PermutationRepresentation.groupAlgebraRep φ`.

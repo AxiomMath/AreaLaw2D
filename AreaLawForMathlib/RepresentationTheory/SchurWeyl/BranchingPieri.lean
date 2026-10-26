@@ -14,6 +14,10 @@ Extends `Mathlib/RepresentationTheory/Semisimple.lean`.
 
 The restriction multiplicity satisfies `c(λ, ν) ≤ 1`, with `c(λ, ν) = 0` unless `λ = ν + e_i` (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 237–245).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/BranchingPieri.lean`.
 -/
 
 open Finset Matrix PermutationRepresentation

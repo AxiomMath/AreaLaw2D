@@ -12,6 +12,10 @@ logarithm) is the diagonal operator `Conditional.spec` in that basis.
 For the instantiation of D5.12 (`A = L_{σ_f} R_{ρ_f⁻¹}`, `B = L_{σ_s} R_{ρ_s⁻¹}` on
 Hilbert–Schmidt spaces) the eigenbasis of `A` is `u_i w_jᴴ` (`u`, `w` eigenbases of `σ_f`, `ρ_f`)
 with eigenvalue `s_i / p_j`; `compress` is D5.12.3 and `V.norm_map` is D5.12.2.
+
+Some declarations here come from the v1 files `OpenAI/ResolventDefect.lean`,
+`OpenAI/ResolventMellin.lean`, whose header records them as ported or adapted from `LionSR/QICLean`
+(see `NOTICE`).
 -/
 
 namespace AreaLaw

@@ -14,6 +14,9 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.TrivialLabel
 For three disjoint subsystems covering the whole space, the signed label operator of any
 permutation subgroup is nonnegative on its simultaneous symmetric subspace
 (`07-comparators.tex`, lines 454--480; `05-replicas.tex`, Lemma 6.1(2)).
+
+Ported from `LionSR/QICLean`, file `QICLean/Representation/GroupedLabelSymmetricSupport.lean`,
+commit `e44381d9054ba5c42c720624cb690b251ad21533` (Apache 2.0).
 -/
 
 noncomputable section

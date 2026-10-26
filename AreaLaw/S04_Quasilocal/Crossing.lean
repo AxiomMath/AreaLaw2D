@@ -6,6 +6,10 @@ import AreaLaw.S04_Quasilocal.Setup
 Digest `digest/04-quasilocal.md` (D4.11 definitions `𝓒_X`, `𝓑_X`; D4.14), paper
 `paper/sections/03-quasilocal.tex` lines 436–454, 505–521. Graph-level (`Map.md`, Dimension):
 a simple graph `G` on a site type `σ` with ball growth `#B_Λ(x, r) ≤ V r`.
+
+Some declarations here come from the v1 files `OpenAI/CrossingBudget.lean`,
+`OpenAI/Scan/DesignatedSampling.lean`, whose header records them as ported or adapted from
+`LionSR/TNLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

@@ -15,6 +15,11 @@ number `k` of copies is arbitrary. No geometry.
 `T_i = h̄_i^{1/2}` acts on the whole tensor space, and `B_{i,j}` is a positive definite matrix
 on the whole space (`Matrix.auxBlock`), instead of the paper's last-copy map
 `T_i : 𝒮_k → 𝒟 = ran T_i` with `B_{i,j}` on `𝒟`; only `T_i^* T_i = h̄_i` is used.
+
+Some declarations here come from the v1 files `OpenAI/BlockDiagonal.lean`,
+`OpenAI/Transport/EnergyBlock.lean`, `OpenAI/Transport/ErrorFourier.lean`,
+`OpenAI/TreeDerivative.lean`, whose header records them as ported or adapted from `LionSR/QICLean`
+(see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder Matrix.Norms.L2Operator unitInterval

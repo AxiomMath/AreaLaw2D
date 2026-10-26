@@ -9,6 +9,9 @@ The system is `𝒱 = ⨂_{v : V} ℂ^{n_v}` over an arbitrary finite site type 
 `Fin (n v)`, as in the ported files). `coherentIntegral b σ φ` is `∫ φ dμ_σ` (D6.11). Item 4
 uses `AreaLaw.lemma_5_3` (§5); the bridges below read the §5 region encoding
 (`Reg`, `extendId`, `marg`, `bracketPow`) on the full region `Reg (Fin ∘ n) univ ≃ SiteConfig n`.
+
+Ported from `LionSR/QICLean`, file `QICLean/Analysis/EntropyContinuity.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 namespace AreaLaw.Replicas

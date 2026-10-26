@@ -15,6 +15,10 @@ Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
 
 The highest weight of the multiplicity space is a bijection from labels to partitions (*A
 two-dimensional area law from a global spectral gap*, `05-replicas.tex`, lines 46–64).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/SchurWeylLabels.lean`.
 -/
 
 open Finset Matrix PermutationRepresentation

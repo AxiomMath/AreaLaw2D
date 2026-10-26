@@ -12,6 +12,9 @@ Extends `Mathlib/RepresentationTheory/Character.lean`.
 
 `tr ρ(a) = ∑_λ m_λ tr W_λ(a)`, whence the central-idempotent formula (*A two-dimensional area law
 from a global spectral gap*, `05-replicas.tex`, lines 164–169).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/RegularTrace.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra

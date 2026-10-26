@@ -11,6 +11,10 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HookFormula
 
 The label function `w_k(λ)`, its positivity, exact marked ratio and entropy asymptotics
 (`05-replicas.tex`, equation `replicas:w-definition` and Lemma 6.2).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+file `QICLean/Representation/ReplicaWeight.lean`.
 -/
 
 open Real Finset

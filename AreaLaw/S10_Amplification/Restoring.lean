@@ -9,6 +9,9 @@ lines 324–447. No geometry: any site type.
 Setting: `X, Y ⊆ Λ` disjoint, `S₀ = X ∪ Y`, `Ω` a unit vector on `Λ`; spectators
 `s', e'` (first and second factor of `Reg loc X × Reg loc X`). `ρ_X = ∑_x p_x |x⟩⟨x|` with
 `|x⟩ = U · x` the columns of the eigenvector unitary; `|0⟩` the blank configuration.
+
+Some declarations here come from the v1 files `OpenAI/FinSum.lean`, `OpenAI/RestoringNorm.lean`,
+whose header records them as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

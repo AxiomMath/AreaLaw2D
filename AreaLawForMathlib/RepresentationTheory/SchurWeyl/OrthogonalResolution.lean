@@ -18,6 +18,10 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 Extends `Mathlib/Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Commute.lean`.
 
 Mutually orthogonal idempotents summing to `1` give an algebra homomorphism from `ι → ℂ`.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Analysis/OrthogonalResolution.lean`.
 -/
 
 open scoped Matrix ComplexOrder

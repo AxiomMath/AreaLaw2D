@@ -15,6 +15,10 @@ Extends `Mathlib/LinearAlgebra/Matrix/Kronecker.lean`.
 
 Commutation relations of the one-copy operator `h^{(j)}` on `(⨂_v ℂ^{n_v})^{⊗k}` with copy
 permutations.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+file `QICLean/Representation/ReplicaSiteOp.lean`.
 -/
 
 open Matrix PermutationRepresentation Entropy

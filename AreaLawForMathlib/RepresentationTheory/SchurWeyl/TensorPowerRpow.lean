@@ -15,6 +15,9 @@ Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Bas
 
 For a positive semidefinite `ρ` and `t ≥ 0`, `(ρ^{⊗k})^t = (ρ^t)^{⊗k}`, used for the
 compensator bound in Lemma 6.3 (`05-replicas.tex`, lines 535–551).
+
+Ported from `QICLean/Representation/TensorPowerRpow.lean` at commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Matrix

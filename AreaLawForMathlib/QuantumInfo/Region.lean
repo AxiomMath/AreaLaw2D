@@ -9,6 +9,9 @@ Extends `Arealaw/Subadditivity.lean` (regions of `Arealaw.Reg`) with Physlib
 `QuantumInfo/Entropy/SSA.lean`: strong subadditivity and its corollaries on regions, the pure-state
 complement identity, contractivity of the trace distance under restriction, the trace distance of
 two pure states, and the vanishing entropy of a projection.
+
+Some declarations here come from the v1 file `OpenAI/PureStateTraceDistance.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace Matrix

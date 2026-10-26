@@ -15,6 +15,10 @@ positive definite `B = auxBlock A h` with `Y^* Y = |O^*|` and `Z^* Z = |O|`
 When `A` and `h` do not commute, `B` is the geometric mean `U^{-1} # V` of the regularized
 Gram operators `U = T A^{-1} T + P₀`, `V = T A T + P₀`, `P₀` the kernel projection of `h`,
 i.e. the positive solution of `B U B = V`.
+
+Some declarations here come from the v1 files `OpenAI/MarginalPhaseSupport.lean`,
+`OpenAI/Transport/EnergyBlock.lean`, whose header records them as ported or adapted from
+`LionSR/QICLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder MatrixOrder

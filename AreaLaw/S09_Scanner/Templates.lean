@@ -9,6 +9,10 @@ Digest `digest/09-scanner.md`, D9.14–D9.18 and D9.21.2: Definition 9.3 (templa
 (rows, coverings and shell entropy) through its steps D9.16 (one piece), D9.17 (mixed squares),
 D9.18 (covering and shell entropy), and the shell entropy of a safe rectangle used by
 Proposition 9.5.
+
+Some declarations here come from the v1 files `OpenAI/Geometry/TemplateCollar.lean`,
+`OpenAI/Rectangles.lean`, whose header records them as ported or adapted from `LionSR/TNLean` (see
+`NOTICE`).
 -/
 
 open scoped Pointwise Matrix

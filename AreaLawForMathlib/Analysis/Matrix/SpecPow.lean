@@ -11,6 +11,10 @@ Extends `Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Bas
 For `W` unitary and `l : n → ℝ`, the complex power `W diag(e^{z log l}) W*` is entire in `z`,
 equals `1` at `z = 0` and `W diag(l) W*` at `z = 1` (for `l > 0`), satisfies
 `M^{z+w} = M^z M^w`, is unitary on the imaginary axis and bounded on the strip `0 ≤ Re z ≤ 1`.
+
+Some declarations here come from the v1 files `OpenAI/FilterPower.lean`,
+`OpenAI/ModularExpectation.lean`, whose header records them as ported or adapted from
+`LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace Matrix

@@ -9,6 +9,10 @@ Digest `digest/06-replicas.md` D6.10, paper `paper/sections/05-replicas.tex` lin
 Lemma 5.1 enters as `AreaLaw.lemma_5_1` (§5). The sites are an arbitrary finite
 type `V` with local dimensions `Fin (n v)`; a vector of the §2 encoding is a function on
 `Reg (fun v => Fin (n v)) univ`, identified with `SiteConfig n` by `univEquiv`.
+
+Some declarations here come from the v1 files `OpenAI/ConditionalMovementEstimate.lean`,
+`OpenAI/MatrixKroneckerContraction.lean`, `OpenAI/ReplicaEtaForms.lean`, whose header records them
+as ported or adapted from `LionSR/QICLean` and `LionSR/TNLean` and `openai/math` (see `NOTICE`).
 -/
 
 namespace AreaLaw.Replicas

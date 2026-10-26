@@ -16,6 +16,9 @@ Extends `Mathlib/LinearAlgebra/Vandermonde.lean`.
 The alternant `a_α(y) = det [y_i ^ α_j]` satisfies `a_α e_r = ∑_{|S| = r} a_{α + 1_S}`, whence
 `∑_{|S| = r} V(α + 1_S) = binom(q, r) V(α)` for the Vandermonde product `V` (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 336–364).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/Alternant.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Finset Matrix Polynomial

@@ -7,7 +7,12 @@ import AreaLawForMathlib.RepresentationTheory.SchurWeyl.HusimiIdentity
 import AreaLawForMathlib.Analysis.Matrix.RootChannel
 import AreaLawForMathlib.Analysis.Matrix.L2OpNormReindex
 
-/-! # Injection averages of fixed-copy operators -/
+/-! # Injection averages of fixed-copy operators
+
+Ported from `LionSR/QICLean`,
+`QICLean/Representation/InjectionAverage.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
+-/
 
 open Matrix PermutationRepresentation Finset
 open scoped Kronecker Matrix.Norms.L2Operator

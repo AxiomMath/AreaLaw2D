@@ -12,6 +12,10 @@ Extends `Mathlib/RepresentationTheory/Basic.lean`.
 
 The star operator has eigenvalue `(λ_i - i)/k` on the branch `ν = λ - e_i` (*A two-dimensional area
 law from a global spectral gap*, `05-replicas.tex`, lines 146–149 and 250–263).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/StarOperator.lean`.
 -/
 
 open Finset PermutationRepresentation MonoidAlgebra TensorPower

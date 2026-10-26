@@ -9,6 +9,9 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 
 Digest `digest/05-conditional.md`, D5.15–D5.19, for an arbitrary entire `f : ℂ → ℂ` with the
 properties D5.16.3–5, D5.17 and D5.18.1 establish for `Conditional.f`.
+
+Some declarations here come from the v1 file `OpenAI/SkewFromPhases.lean`, whose header records it
+as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

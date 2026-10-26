@@ -5,6 +5,9 @@ import AreaLaw.S05_Conditional.Defs
 
 The matrix API of `bracketPow` (`ρ^{[z]}`) and `hatPow` (`ρ̂^z`) used by Lemmas 5.1–5.3, and the
 digest-only facts (F1) and (F2) of D5.1 for the marginals `marg θ hD` of a vector `θ`.
+
+Some declarations here come from the v1 file `OpenAI/PurificationSplitting.lean`, whose header
+records it as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

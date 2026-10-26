@@ -14,6 +14,10 @@ Extends `Mathlib/RepresentationTheory/Basic.lean`.
 Antisymmetrizing the row configuration of a Young diagram over its columns gives a highest-weight
 vector of every partition weight (*A two-dimensional area law from a global spectral gap*,
 `05-replicas.tex`, lines 46–64).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/ColumnAntisymmetrizer.lean`.
 -/
 
 open Finset Matrix PermutationRepresentation

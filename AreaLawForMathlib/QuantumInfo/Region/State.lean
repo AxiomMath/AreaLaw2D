@@ -9,6 +9,9 @@ Extends `Mathlib/Analysis/Matrix/PosDef.lean`: `SubState ι 𝕜` (positive semi
 trace at most one) and `MState ι 𝕜` (unit trace), restriction to a subregion by the partial
 trace, the von Neumann entropy `SubState.entropy`, `SubState.regionEntropy` of a region and
 `SubState.mutualInfo` of two regions.
+
+Some declarations here come from the v1 file `OpenAI/IidSurprisal.lean`, whose header records it as
+ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 namespace Arealaw
 

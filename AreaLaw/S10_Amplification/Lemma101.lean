@@ -11,6 +11,10 @@ D10.2.8–D10.2.11 are stated for abstract channel data: maps `𝓔 i` on a norm
 and contractive, and a site functional `d` (the oscillation `d_y`) with `0 ≤ d_y(B) ≤ 2‖B‖`,
 the oscillation increment D10.2.7 and the shell bound of D10.2.10 as hypotheses; `C₂` is the
 shell constant and `c₁` its rate. The clocks enter through the word law of `Setup.lean`.
+
+Some declarations here come from the v1 files `OpenAI/Amplification/ConstraintWordTruncation.lean`,
+`OpenAI/Amplification/GraphChannelWeightedRow.lean`, whose header records them as ported or adapted
+from `LionSR/TNLean` (see `NOTICE`).
 -/
 
 universe u v

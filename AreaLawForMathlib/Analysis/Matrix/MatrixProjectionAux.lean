@@ -15,6 +15,9 @@ import Mathlib.LinearAlgebra.Matrix.PosDef
 # Matrix lemmas used by finite-dimensional orthogonal projections
 
 Extends `Mathlib/Analysis/Matrix/PosDef.lean`.
+
+Some declarations here come from the v1 file `OpenAI/MatrixIntertwine.lean`, whose header records it
+as ported or adapted from `LionSR/QICLean` (see `NOTICE`).
 -/
 
 open scoped Matrix ComplexOrder BigOperators MatrixOrder

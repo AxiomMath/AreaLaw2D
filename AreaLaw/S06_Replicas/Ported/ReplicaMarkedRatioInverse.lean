@@ -13,6 +13,10 @@ import AreaLawForMathlib.Analysis.Matrix.MatrixIntertwine
 On symmetric vectors, `‖R_{Q,k}^{-1} z‖ ≤ C ‖z‖` and
 `limsup_k sup_z ‖(R_{Q,k}^{-1} - max(J_{Q,k}, δ)^{-t}) z‖ ≤ C δ^{(1-2t)/2}`
 (`05-replicas.tex`, Lemma 6.2, lines 324–335 and 418–430).
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+`QICLean/Representation/ReplicaMarkedRatioInverse.lean`.
 -/
 
 open Matrix PermutationRepresentation Filter Topology

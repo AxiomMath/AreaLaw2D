@@ -14,6 +14,9 @@ Extends `Mathlib/Analysis/Matrix/Order.lean`.
 
 A bound for the compression of the inverse of a positive-definite matrix yields a lower bound
 for the matrix itself (`07-comparators.tex`, lines 585–605).
+
+Ported from `LionSR/QICLean`, file `QICLean/Analysis/InverseCompressionLowerPin.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 noncomputable section

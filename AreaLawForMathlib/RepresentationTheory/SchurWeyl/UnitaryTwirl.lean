@@ -14,6 +14,10 @@ Extends `Mathlib/LinearAlgebra/UnitaryGroup.lean`.
 For an operator `A` on `(ℂ^Ω)^{⊗k}` commuting with the copy permutations, the twirl over the
 Haar probability measure commutes with every unitary tensor power and with copy permutations,
 so it is a central label function.
+
+Ported from LionSR/QICLean commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3`,
+file `QICLean/Representation/UnitaryTwirl.lean`.
 -/
 
 open Matrix PermutationRepresentation MeasureTheory Finset

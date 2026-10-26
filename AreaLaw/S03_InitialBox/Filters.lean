@@ -6,6 +6,10 @@ import AreaLawForMathlib.Analysis.Matrix.TraceHolder
 
 Digest `digest/03-initial-box.md` (D3.7–D3.13), paper `paper/sections/02-initial.tex`,
 lines 335–573.
+
+Some declarations here come from the v1 files `OpenAI/FilterClipping.lean`,
+`OpenAI/FilterStationarity.lean`, whose header records them as ported or adapted from
+`LionSR/QICLean` (see `NOTICE`).
 -/
 
 namespace AreaLaw

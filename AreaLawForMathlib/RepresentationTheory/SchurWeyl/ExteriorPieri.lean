@@ -13,6 +13,9 @@ Extends `Mathlib/RepresentationTheory/Irreducible.lean`.
 
 The multiplicity of `V_λ` in `V_μ ⊗ Λ^r ℂ^q` is at most one, and nonzero only for
 `λ = μ + 1_S` with `|S| = r` (the highest-weight half of the vertical-strip Pieri rule).
+
+Ported from `LionSR/QICLean`, `QICLean/Representation/ExteriorPieri.lean`, commit
+`5f76b263e3a1c418645102d90f7bef6b92f04cf3` (Apache 2.0).
 -/
 
 open Finset Matrix PermutationRepresentation MonoidAlgebra
