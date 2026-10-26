@@ -29,7 +29,7 @@ jobs:
 
       - uses: leanprover/lean-action@v1
         with:
-          # verify the root aggregator (Arealaw.lean) is in sync with the module tree
+          # verify the root aggregator (AreaLaw.lean) is in sync with the module tree
           mk_all-check: true
           lint: "true"         # `lake lint` -> the lintDriver in lakefile.toml
           # No `nanoda`: its module-name detection requires a `[package]` header we do not use.
@@ -44,17 +44,17 @@ jobs:
       # — live, not hypothetical: every physlib lib sets `-Dwarn.sorry=false`, and
       # EntropyBounds.lean and PTrace.lean both import QuantumInfo.
       # Runs after the build so it audits freshly built oleans, not stale ones.
-      - name: Axiom audit (Arealaw/Audit.lean)
+      - name: Axiom audit (scripts/audit.lean)
         shell: bash
         run: |
           set -uo pipefail
           set +e   # GitHub's shell:bash forces -e; without this, grep's exit-1 (no match) fails the clean run
           # anchored to real commands, not the docstring's own "#print axioms" mention
-          expected="$(grep -cE '^#print axioms ' Arealaw/Audit.lean)"
+          expected="$(grep -cE '^#print axioms ' scripts/audit.lean)"
           if [ "$expected" -lt 1 ]; then
-            echo "::error::no '#print axioms' commands found in Arealaw/Audit.lean"; exit 1
+            echo "::error::no '#print axioms' commands found in scripts/audit.lean"; exit 1
           fi
-          out="$(lake env lean Arealaw/Audit.lean 2>&1)"
+          out="$(lake env lean scripts/audit.lean 2>&1)"
           echo "$out"
           n="$(printf '%s\n' "$out" | grep -c 'depends on axioms')"
           if [ "$n" -ne "$expected" ]; then
