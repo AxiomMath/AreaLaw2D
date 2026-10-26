@@ -229,3 +229,22 @@ Not changed: `AreaLawForMathlib/RepresentationTheory/SchurWeyl/JucysRecursion.le
 file had the TNLean copyright block but no port line; the block is still there), and
 `SchurWeyl/LabelObservableCalculus.lean` and `SchurWeyl/ProductVectorMarginal.lean` (new in v2,
 no v1 declarations).
+
+## Internal tool names removed
+
+The rule that no file names an AI model or agent product (beyond the v1 provenance sentence)
+required these changes to v2's material:
+
+- `.axiomcode/bugs/` (19 files): deleted. They are bug reports about the agent tooling used on
+  v2, name its products throughout, and are not part of the formalization.
+- `.gitignore`: the four lines for the tool's scratch directory removed.
+- `Map.md` (14 lines) and `RefactoringResult.md` (38 lines): tool names replaced by neutral
+  wording, nothing else changed. A named search service became "semantic search" (its glob mode
+  "glob search"); a named remote build service and its diagnostics call became "remote route",
+  "remote diagnostics", "a hosted build workspace" and "a remote comparator run"; references to
+  the internal issue tracker became "an internal issue"; the tool's lock and scratch paths were
+  dropped (`flock <lock> lake build` became `lake build`); a named root synchronization tool
+  became "the root synchronization script"; one pointer to a deleted bug report was dropped.
+  `loogle` (a public Lean community tool) is kept. The `agents/<id>` branch names in
+  `RefactoringResult.md` and in v1's `HISTORY.md` are git branch names, not product names, and are
+  kept.
