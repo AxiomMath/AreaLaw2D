@@ -385,3 +385,25 @@ Renamed (v1 name, Map.md row, v2 anchor):
 - `OpenAI.Scan.isSafe_regionEntropy_le_of_boxEntropy_le` (D9.24) → `AreaLaw.Scanner.step_9_24`
 - `OpenAI.improved_box_estimate` (D9.19) → `AreaLaw.Scanner.prop_9_5`
 - `OpenAI.amplification` (D10.4) → `AreaLaw.prop_10_2`
+
+## Step 5: README
+
+v2's README is the base. Changes:
+
+- A paragraph on the three-dimensional statements and the cylinder theorem under "What is
+  proved".
+- Tree table: rows for the 3D files, the audit files, `HISTORY.md` with `docs/oai265/`, and this
+  file; the `Statements.lean` row says when it was frozen and that only its imports moved;
+  `Map.md` row mentions the faithfulness record. The `scripts/audit.lean` row is merged into the
+  audit row.
+- "Building" becomes "Building and verification": v1's commands updated to the new tree
+  (`OpenAI/AuditAreaLaw.lean` no longer exists; `scripts/audit.lean` covers it), plus
+  `OpenAI/Audit3D.lean`; v2's `mk_all --check` kept. `OpenAI.lean` was regenerated with
+  `lake exe mk_all` so that the check passes (it now imports the six `OpenAI/` modules; it is not
+  a library root, so this does not add the audits to `lake build`).
+- v1's no-`sorry` sentence and trust boundary paragraph, updated: the deviations are recorded in
+  `docs/oai265/Memory.md` and `RefactoringResult.md` §2 and §5, and `docs/StatementAudit.md` is
+  named as the clause by clause comparison.
+- A Provenance section with the two paragraphs (v1, v2) and one line that the removed v1 code
+  stays in tag `v1.0` and the ported code stays attributed (headers and `NOTICE`). The only
+  tooling mention is v1's sentence "Axiom's agent tooling and OpenAI Codex".
