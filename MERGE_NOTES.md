@@ -248,3 +248,39 @@ required these changes to v2's material:
   `loogle` (a public Lean community tool) is kept. The `agents/<id>` branch names in
   `RefactoringResult.md` and in v1's `HISTORY.md` are git branch names, not product names, and are
   kept.
+
+## Step 2, 3D files
+
+Taken from `ruiz/3d-targets` (17c87f8):
+
+- `OpenAI/Statements3D.lean` and `OpenAI/Audit3D.lean`: byte identical to the branch. Their only
+  imports (`OpenAI.Statements`, `OpenAI.Cylinder3D`) still exist, so no import had to change.
+- `OpenAI/Cylinder3D.lean`: only the import lines changed. `OpenAI.AreaLaw`,
+  `OpenAI.CutTransport` and `OpenAI.SupportCounting` no longer exist; they are replaced by
+  `OpenAI.Cylinder3DSupport` (`OpenAI.Statements3D` is kept). Everything after the imports is
+  byte identical to the branch (checked with `diff`).
+- `OpenAI/Cylinder3DSupport.lean` (new, differs from both parents): the proof of Cylinder3D uses
+  declarations of v1 that the restructuring removed (`regionEntropy_pureState`, `coeffMatrix`,
+  `EE`, `EE_transpose`, `EE_submatrix_id_equiv`, `domainEDist_of_mem`, `mem_supports_iff`,
+  `mem_edgeBoundary`, `extendId_sum`, `l2_opNorm_extendId_le`, `card_le_of_mem_supports`, the
+  `𝕜` versions `Arealaw.MState.regionEntropy_union_le` and `regionEntropy_le_card_mul_log`, and
+  `OpenAI.area_law`). This module restores them, with what they need, under their v1 names and
+  with their v1 proofs. Two proofs differ from v1: `OpenAI.area_law` is
+  `AreaLaw.areaLaw 𝕜 q R J Δ hq hJ hΔ`, and `Arealaw.MState.regionEntropy_union_le` goes
+  through `AreaLawForMathlib/QuantumInfo/StateToComplex.lean` instead of v1's
+  `OpenAI/Embedding.lean`. `exists_walk_length_le_iff_edist_le` keeps its v1 docstring, which
+  cites TNLean.
+- `docs/3D/Targets.md`: copied unchanged, since both Statements3D and Cylinder3D cite it.
+- `lakefile.toml`: the `OpenAI` library roots become `OpenAI.Statements`,
+  `OpenAI.Statements3D`, `OpenAI.Cylinder3DSupport`, `OpenAI.Cylinder3D` (v2 had only the
+  first; the audit files are run with `lake env lean` and are not roots).
+
+Types of the two theorems after the merge (`#check`), identical to their source signatures,
+which are unchanged:
+
+```
+@OpenAI.cylinderAreaLawOfPlanar3D : ∀ {𝕜 : Type u_1} [inst : RCLike 𝕜] (q R : ℕ) (J Δ : ℝ) (h : ℕ),
+  OpenAI.CylinderAreaLawOfPlanar3D 𝕜 q R J Δ h
+@OpenAI.cylinderAreaLaw3D : ∀ {𝕜 : Type u_1} [inst : RCLike 𝕜] (q R : ℕ) (J Δ : ℝ) (h : ℕ),
+  0 < Δ → OpenAI.CylinderAreaLaw3D 𝕜 q R J Δ h
+```
