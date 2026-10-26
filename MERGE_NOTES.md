@@ -284,3 +284,104 @@ which are unchanged:
 @OpenAI.cylinderAreaLaw3D : ∀ {𝕜 : Type u_1} [inst : RCLike 𝕜] (q R : ℕ) (J Δ : ℝ) (h : ℕ),
   0 < Δ → OpenAI.CylinderAreaLaw3D 𝕜 q R J Δ h
 ```
+
+## Step 4: audit
+
+`OpenAI/Audit.lean` is rebuilt for v2. v1's file has 4309 `#print axioms` lines
+(4304 distinct names). Each name was looked up in the environment of the merged tree
+(`AreaLaw`, `AreaLawForMathlib`, `OpenAI.Cylinder3D`, `Solution.Basic`) by a Lean script; a name
+that is gone was renamed when `Map.md` lists it first in the "Lean declaration(s) now" cell of
+an anchor row whose Step 1 note names a v2 anchor declaration (`lemma_`, `prop_`, `step_`, `eq_`,
+`theorem_` or `corollary_`) that exists.
+
+| | count |
+| --- | --- |
+| kept under the same name | 1331 |
+| renamed (v1 names) | 72 |
+| renamed (distinct v2 anchors) | 71 |
+| dropped | 2901 |
+| `#print axioms` lines in the new file | 1416 |
+
+The new file prints the 13 frozen results of `scripts/audit.lean`, the 2 theorems of
+`OpenAI/Audit3D.lean`, the renamed anchors not already printed, and the kept names in v1's
+order and groups (v1's group comments are kept; its expected output comments are not, since
+`lake env lean` prints them). Of the kept names, 10 exist again only because
+`OpenAI/Cylinder3DSupport.lean` restores them (for example `OpenAI.area_law`,
+`OpenAI.mem_supports_iff`). Dropped names by leading namespace:
+
+`OpenAI` 872, `Matrix` 734, `TensorPower` 492, `ConditionalMovement` 323, `Entropy` 282, `FiniteProduct` 76, `Real` 20, `Arealaw` 18, `Partition` 18, `PermutationRepresentation` 16, `Complex` 13, `TNLean` 6, `SpectralFilter` 4, `Fintype` 4, `NormedRing` 3, `IsStarProjection` 2, `IsOrthogonalProjection` 2, `finite_volterra_le_weight_mul_exp` 1, `Commute` 1, `IsPositiveMap` 1, `singleKrausMap_comp` 1, `MonoidAlgebra` 1, `isOrthogonalProjection_posSemidef` 1, `isOrthogonalProjection_sum_of_pairwise_mul_eq_zero` 1, `orthogonalProjection_mul_eq_zero_of_sum_eq_one` 1, `Finset` 1, `integral_inv_add_sub_inv_one_add` 1, `Asymptotics` 1, `Fin` 1, `LinearIndependent` 1, `MaximallyEntangled` 1, `quantumRelativeEntropy_product_marginals` 1, `Nat` 1.
+
+Renamed (v1 name, Map.md row, v2 anchor):
+
+- `OpenAI.regionEntropy_eq_zero_of_edgeBoundary_eq_empty` (D2.12) → `AreaLaw.lemma_2_2`
+- `OpenAI.regionEntropy_eq_zero_of_range_zero` (D2.11) → `AreaLaw.step_2_11`
+- `OpenAI.two_family_cancellation` (D11.1) → `AreaLaw.lemma_11_1`
+- `OpenAI.two_family_decomposition` (D11.4) → `AreaLaw.Geometry.prop_11_2`
+- `OpenAI.norm_deriv_le_of_phase` (D5.18) → `AreaLaw.step_5_18`
+- `OpenAI.norm_sub_re_le_of_phase_bounds` (D5.19) → `AreaLaw.step_5_19`
+- `OpenAI.exists_max_feasible_chain` (D3.7) → `AreaLaw.step_3_7_1`
+- `OpenAI.pow_sqrt_mul_chainOptimum_le` (D3.11) → `AreaLaw.step_3_11_2`
+- `OpenAI.neg_two_mul_log_le_entropy` (D3.13) → `AreaLaw.eq_initial_norm_upper`
+- `OpenAI.two_mul_condEntropy_le` (D3.14) → `AreaLaw.step_3_14_1`
+- `OpenAI.condEntropy_le_initialBuffer_of_constants` (D3.5) → `AreaLaw.step_3_5`
+- `OpenAI.quasilocal_roots` (D4.10) → `AreaLaw.lemma_4_4`
+- `OpenAI.IsAdmissible.sum_norm_extendId_containing_le` (D4.3) → `AreaLaw.step_4_3`
+- `Matrix.exists_posSemidef_gap_of_norm_sub_le` (D4.13) → `AreaLaw.step_4_13`
+- `Matrix.MeanTree.eval_star_conj` (D7.3) → `AreaLaw.Transport.lemma_7_1`
+- `Matrix.MeanTree.eval_listProd_ofFn` (D7.17) → `AreaLaw.Transport.Round.step_7_17`
+- `Matrix.Transport.exists_auxBlock` (D7.21) → `AreaLaw.Transport.Round.step_7_21`
+- `Matrix.Transport.norm_sq_errorVec_le` (D7.23) → `AreaLaw.Transport.Round.step_7_23`
+- `TensorPower.ReplicaTransport.relativePinBound` (D7.18) → `AreaLaw.Transport.step_7_18`
+- `TensorPower.ReplicaTransport.transport` (D7.14) → `AreaLaw.Transport.prop_7_4`
+- `Real.bellOverlapRemainder` (D8.37) → `AreaLaw.Comparators.prop_8_1`
+- `ConditionalMovement.LocalMove.paired_three_lines` (D5.11) → `AreaLaw.step_5_11`
+- `ConditionalMovement.ConditionalCollision.collision_le` (D5.2) → `AreaLaw.step_5_2_1`
+- `ConditionalMovement.ConditionalCollision.one_filter_entropy_bound` (D5.4) → `AreaLaw.step_5_4_of`
+- `ConditionalMovement.ConditionalCollision.conditional_optimizer_root_stability` (D5.7) → `AreaLaw.step_5_7`
+- `ConditionalMovement.MatrixInterpolation.modular_state_distance` (D5.9) → `AreaLaw.step_5_9_of`
+- `ConditionalMovement.ConditionalCollision.left_boundary_trace` (D5.6) → `AreaLaw.step_5_6`
+- `ConditionalMovement.ConditionalCollision.right_boundary_entropy` (D5.10) → `AreaLaw.step_5_10_1`
+- `Entropy.conditionalMovement_norm_le` (D5.5) → `AreaLaw.lemma_5_1`
+- `Matrix.ResolventCompression.defect_nonneg` (D5.13) → `AreaLaw.step_5_13`
+- `Matrix.ResolventCompression.defect_le_invQuadA` (D5.14) → `AreaLaw.step_5_14`
+- `Entropy.MarginalPhase.norm_phaseDifference_mulVec_le` (D5.12) → `AreaLaw.lemma_5_2`
+- `Entropy.ConditionalSkew.imag_vector_eq` (D5.17) → `AreaLaw.step_5_17`
+- `Entropy.ConditionalSkew.phaseRate_le` (D5.20) → `AreaLaw.step_5_20`
+- `Entropy.ConditionalSkew.conditionalSkew_le` (D5.15) → `AreaLaw.lemma_5_3`
+- `OpenAI.collarLeaf_entropy_identity` (D8.36) → `AreaLaw.Comparators.step_8_36`
+- `OpenAI.abs_mutualInfo_sub_le` (D9.30) → `AreaLaw.Scanner.step_9_30`
+- `OpenAI.card_mixedDyadicIndices_le` (D9.17) → `AreaLaw.Scanner.step_9_17`
+- `OpenAI.templateEntropy_le_of_boxEntropy_le` (D9.18) → `AreaLaw.Scanner.step_9_18`
+- `OpenAI.card_latticeDiamond` (D2.7) → `AreaLaw.eq_ball_count`
+- `OpenAI.card_admissibleSupport_containing_le` (D2.8) → `AreaLaw.step_2_8`
+- `TensorPower.exists_commonLabelCutoff_vector` (D8.18) → `AreaLaw.Comparators.step_8_18`
+- `Matrix.floor_pin_le` (D8.32) → `AreaLaw.Comparators.step_8_32`
+- `Matrix.MeanTree.smul_one_sub_add_smul_projection_le_eval` (D8.33) → `AreaLaw.Comparators.step_8_33`
+- `TensorPower.exists_replicaPinnedFactor_le_exp` (D8.16) → `AreaLaw.Comparators.step_8_16`
+- `Entropy.typicalSpectrum_entropy_bounds` (D8.3) → `AreaLaw.Comparators.step_8_3`
+- `TensorPower.exists_label_sequence_mass_entropy_asymptotic` (D8.12) → `AreaLaw.Comparators.step_8_12`
+- `Matrix.MeanTree.re_dotProduct_log_eval_ge_of_projection_mass` (D8.34) → `AreaLaw.Comparators.step_8_34`
+- `Matrix.MeanTree.re_inner_log_eval_prod_le_of_projection` (D8.21) → `AreaLaw.Comparators.step_8_21`
+- `Matrix.PosSemidef.log_re_trace_finKronecker_signed_label_moments_le` (D8.10) → `AreaLaw.Comparators.step_8_10`
+- `Matrix.MeanTree.mul_sum_log_lower_le_neg_log_norm_sq_of_projection_lower_bound` (D8.35) → `AreaLaw.Comparators.step_8_35`
+- `Matrix.compression_le_of_replicaExcitationComponent_bounds` (D8.31) → `AreaLaw.Comparators.step_8_31`
+- `Matrix.replicaExcitationComponent_goodAuxiliary_labelEntropy_lower` (D8.27) → `AreaLaw.Comparators.step_8_27`
+- `Matrix.partialTraceLeft_typicalPureState_decomposition` (D8.17) → `AreaLaw.Comparators.step_8_17`
+- `Matrix.selectedBellProjection_bellPinPrevector` (D8.14) → `AreaLaw.Comparators.step_8_14`
+- `TensorPower.exists_replicaMetric_compressed_bell_inverse_norm_bound` (D8.20) → `AreaLaw.Comparators.step_8_20`
+- `TensorPower.eventually_suppliedSchmidtBell_sharp_upper` (D8.8) → `AreaLaw.Comparators.prop_8_1`
+- `TensorPower.selectedBellPost_inverse_norm_le_physical` (D8.15) → `AreaLaw.Comparators.step_8_15`
+- `Matrix.exists_replicaExcitationComponent_inverse_sharp_le` (D8.30) → `AreaLaw.Comparators.step_8_30`
+- `Matrix.replicaGoodConfigurationMarginal_exp_mergeDeficits_le` (D8.29) → `AreaLaw.Comparators.step_8_29`
+- `OpenAI.Scan.exists_bootstrap_principal_energy_bound` (D9.22) → `AreaLaw.Scanner.step_9_22`
+- `OpenAI.exists_latticeCrossingBudget` (D4.14) → `AreaLaw.step_4_14`
+- `OpenAI.Scan.exists_sourceScan_selection` (D9.9) → `AreaLaw.Scanner.prop_9_2`
+- `OpenAI.Scan.exists_sourceScan_selected_density` (D9.12) → `AreaLaw.Scanner.step_9_12`
+- `OpenAI.Scan.exists_sourceScan_energy_le` (D9.13) → `AreaLaw.Scanner.step_9_13`
+- `OpenAI.Scan.isSafe_test_geometry` (D9.21) → `AreaLaw.Scanner.step_9_21`
+- `OpenAI.Scan.isTemplate_test_geometry` (D9.15) → `AreaLaw.Scanner.lemma_9_4`
+- `OpenAI.Scan.eventually_final_collar_errors_le` (D9.29) → `AreaLaw.Scanner.step_9_29`
+- `OpenAI.Scan.exists_bootstrap_comparison_cost_le` (D9.23) → `AreaLaw.Scanner.step_9_23`
+- `OpenAI.Scan.isSafe_regionEntropy_le_of_boxEntropy_le` (D9.24) → `AreaLaw.Scanner.step_9_24`
+- `OpenAI.improved_box_estimate` (D9.19) → `AreaLaw.Scanner.prop_9_5`
+- `OpenAI.amplification` (D10.4) → `AreaLaw.prop_10_2`
