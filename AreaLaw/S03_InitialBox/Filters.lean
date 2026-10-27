@@ -1541,7 +1541,7 @@ theorem step_3_11_2 {L : Matrix m m ℂ} (hL : L.IsHermitian) (Ω ψ : Euclidean
 theorem step_3_11_3 {ρ B : Matrix m m ℂ} (hρ : ρ.PosSemidef) (hB : B.PosSemidef) {a : ℝ}
     (ha0 : 0 < a) (ha1 : a < 1) (hBn : ∑ j, hB.1.eigenvalues j ^ (1 / a) = 1) :
     (ρ * B).trace.re ≤ (∑ i, hρ.1.eigenvalues i ^ (1 / (1 - a))) ^ (1 - a) := by
-  have := hρ.re_trace_mul_le hB 
+  have := hρ.re_trace_mul_le hB
     (Real.holderConjugate_one_div (a := 1 - a) (b := a) (by linarith) ha0 (by ring))
   rwa [hBn, Real.one_rpow, mul_one, one_div_one_div, RCLike.re_to_complex] at this
 
