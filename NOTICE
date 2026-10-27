@@ -2,9 +2,11 @@ oai-arealaw
 Copyright 2026 Axiom Math
 
 This product includes software developed by Axiom Math and by the
-contributors to the quantum-arealaw project.
+contributors to the earlier library from which parts of it derive.
 
-Portions of OpenAI/ are ported from:
+Portions of AreaLaw/ (chiefly AreaLaw/S06_Replicas/Ported/) and of
+AreaLawForMathlib/ (chiefly AreaLawForMathlib/RepresentationTheory/SchurWeyl/
+and AreaLawForMathlib/Analysis/Matrix/) are ported from:
 
   LionSR/TNLean  (https://github.com/LionSR/TNLean)
   Copyright 2026 TNLean contributors. Apache License 2.0.
@@ -12,7 +14,9 @@ Portions of OpenAI/ are ported from:
   LionSR/QICLean (https://github.com/LionSR/QICLean)
   Copyright 2026 QICLean contributors. Apache License 2.0.
 
-Each ported file names its source file and commit in its header.
+Each ported file names its source file and commit in its header. Files
+that hold only some ported declarations name the file of tag v1.0 they
+come from, whose header names the source.
 
 This product depends on Mathlib (Apache License 2.0) and Physlib
 (Apache License 2.0).
