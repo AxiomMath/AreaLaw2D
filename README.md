@@ -43,10 +43,8 @@ Theorem 1.1.
 | `Map.md` | Anchor → Lean declaration, with file and line, and the faithfulness of v1 against each anchor. |
 | `blueprint/` | The Verso blueprint (below). |
 | `Challenge/`, `Solution/`, `Comparator/` | The comparator pair for Theorem 1.1 (below). |
-| `RefactoringPlan.md`, `RefactoringResult.md` | The structure the code follows, and the record of route differences from the paper, constants and digest corrections. |
+| `RefactoringResult.md` | The record of the restructuring: route differences from the paper, constants and digest corrections. Defines the "Step 0–3" labels used in `Map.md`. |
 | `docs/StatementAudit.md` | Clause-by-clause comparison of `OpenAI/Statements.lean` with the paper. |
-| `HISTORY.md`, `docs/oai265/` | The history of v1 and its working record (plan, inventory, decisions, one plan per proposition), kept as an archive; they describe the v1 tree. |
-| `MERGE_NOTES.md` | What the v2 candidate took from v1 and from the restructuring. |
 
 ## Building and verification
 
@@ -69,7 +67,7 @@ The trust boundary of a formalization is its statement layer. The paper's object
 `OpenAI/Statements.lean`, which `docs/StatementAudit.md` compares with the paper clause by
 clause. The deviations from the paper's conventions (proofs carried out over `ℂ` and transferred
 to an arbitrary `RCLike` field, the real parameter `D₀`, the lattice encoding of templates and
-cuts) are recorded in `docs/oai265/Memory.md` and `RefactoringResult.md` §2 and §5.
+cuts) are recorded in `RefactoringResult.md` §2 and §5.
 
 ## The comparator
 
@@ -101,15 +99,14 @@ cd blueprint && ./scripts/ci-pages.sh   # site in blueprint/_out/site/html-multi
 Version 1 (October 12 to 16, 2026) proved every result above in the `OpenAI/` tree. The proofs
 were produced by Axiom's agent tooling and OpenAI Codex, directed by Ruiz Chen, who froze the
 statement layer on October 13 and audited it, and checked each result independently. It has
-been public since October 16, tag `v1.0`; its history is in `HISTORY.md`.
+been public since October 16, tag `v1.0`; its history is in that tag.
 
 Version 2 (October 19 to 21, 2026) restructured the proofs into the paper's shape, directed by
-Michał Mogielnicki: one module per section with the paper's numbering in `AreaLaw/`, general
+Michal Mogielnicki: one module per section with the paper's numbering in `AreaLaw/`, general
 results in `AreaLawForMathlib/`, the digest and the blueprint. `Map.md` records the faithfulness
 of v1 against the paper's anchors.
 
-The code of v1 that the restructuring removed stays in tag `v1.0` with its history, and the
-ported code keeps its attribution: every file ported from
+The code keeps its attribution: every file ported from
 [LionSR/TNLean](https://github.com/LionSR/TNLean) or
 [LionSR/QICLean](https://github.com/LionSR/QICLean) names its source in its header, and
 `NOTICE` lists both projects.

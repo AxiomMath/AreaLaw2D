@@ -15,7 +15,7 @@ import OpenAI.Cylinder3D
 * for a v1 result that `Map.md` maps to a renamed anchor, that anchor, once.
 
 Each should depend on `propext`, `Classical.choice` and `Quot.sound` only. The v1 results whose
-declaration no longer exists are dropped; `MERGE_NOTES.md` gives the counts.
+declaration no longer exists are dropped.
 -/
 
 -- The frozen statements.

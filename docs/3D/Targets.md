@@ -2,7 +2,7 @@
 
 This document fixes the statements that a three-dimensional continuation of the two-dimensional area law should aim at. The statements are in `OpenAI/Statements3D.lean`; every one is a `def … : Prop` with no proof attached. The paper is [OAI265], *A two-dimensional area law from a global spectral gap* (24 September 2026, unrefereed), cited by section, equation and result number. Lean declarations are cited by name; the 2D ones are in `OpenAI/Statements.lean` unless another file is named.
 
-Two dimension tables informed the verdicts. The first is §3 of a reader's guide to the paper and its formalization, which lists sixteen places where dimension two enters, cited here as "report item 1" to "report item 16". The second is the "Dimension" table of a refactoring map, which classifies 238 paper anchors as `any d`, `graph` or `2D only`, cited here by anchor (for example "Map D9.25"). Neither file is in this repository. Where they disagree I record the disagreement; where I add an observation of my own I say so.
+Two dimension tables informed the verdicts. The first is §3 of a reader's guide to the paper and its formalization, which lists sixteen places where dimension two enters, cited here as "report item 1" to "report item 16". The second is the "Dimension" table of `Map.md`, which classifies 238 paper anchors as `any d`, `graph` or `2D only`, cited here by anchor (for example "Map D9.25"). The reader's guide is not in this repository. Where they disagree I record the disagreement; where I add an observation of my own I say so.
 
 ## 0. Encoding
 
