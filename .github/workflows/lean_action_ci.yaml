@@ -83,7 +83,7 @@ jobs:
       # ruleset. Explicit because this repo's default workflow token is read-only.
       pull-requests: write
     steps:
-      - uses: leanprover-community/lint-style-action@a7e7428fa44f9635d6eb8e01919d16fd498d387a # 2025-08-18
+      - uses: leanprover-community/lint-style-action@c1e9eda133c7710e4d1c7da18afc4c116e588441 # 2026-10-23
         with:
           mode: suggest
           lint-bib-file: false # no bibliography here
