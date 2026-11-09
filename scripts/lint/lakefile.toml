@@ -1,0 +1,9 @@
+# The `lake lint` driver of the main package (scripts/lint/LintAll.lean). A package of its own,
+# with no dependencies, so that building the driver links no C library of the main package's
+# dependencies.
+name = "lintall"
+defaultTargets = ["lintAll"]
+
+[[lean_exe]]
+name = "lintAll"
+root = "LintAll"

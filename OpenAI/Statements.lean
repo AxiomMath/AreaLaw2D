@@ -1,5 +1,5 @@
-import Arealaw.Mixed
-import Arealaw.TraceDist
+import AreaLawForMathlib.QuantumInfo.Region.State
+import AreaLawForMathlib.QuantumInfo.Region.TraceDistance
 import Mathlib.Algebra.Group.Pointwise.Finset.Basic
 import Mathlib.Analysis.Convex.Hull
 import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
